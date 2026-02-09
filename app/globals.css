@@ -1,0 +1,73 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cosmic-900: #08080c;
+  --cosmic-gold: #c5a358;
+  --cosmic-gold-light: #e3c58e;
+  --cosmic-gold-dim: rgba(197, 163, 88, 0.2);
+}
+
+body {
+  margin: 0;
+  background-color: var(--cosmic-900);
+  color: #f3f4f6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .no-print {
+    @media print {
+      display: none !important;
+    }
+  }
+
+  .text-shadow-premium {
+    text-shadow: 0 0 30px rgba(197, 163, 88, 0.4);
+  }
+
+  .shadow-glow-gold {
+    filter: drop-shadow(0 0 8px rgba(197, 163, 88, 0.6));
+  }
+
+  .shadow-glow-gold-small {
+    box-shadow: 0 0 20px rgba(197, 163, 88, 0.1);
+  }
+
+  .bg-liquid-gold {
+    background: linear-gradient(135deg, #c5a358 0%, #e3c58e 50%, #c5a358 100%);
+  }
+
+  .border-gold-thin {
+    border: 0.5px solid rgba(197, 163, 88, 0.2);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08080c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(197, 163, 88, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c5a358;
+}
+
+::selection {
+  background-color: #c5a358;
+  color: #08080c;
+}
+
+.parchment-container {
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8), 0 0 0 1px rgba(197, 163, 88, 0.05);
+}

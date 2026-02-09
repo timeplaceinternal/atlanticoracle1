@@ -1,0 +1,7 @@
+{
+  "name": "Atlantic Oracle - Spiritual Navigation",
+  "description": "Premium astrology and numerology services for the modern soul.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
