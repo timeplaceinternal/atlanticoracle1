@@ -1,8 +1,12 @@
 
+import { GoogleGenAI } from "@google/genai";
 import { ReadingRequest, ServiceType } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
+  // Инициализация AI напрямую в клиенте
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   const systemInstruction = `
     You are the "Atlantic Oracle", a master of astrology and numerology.
     Your tone is high-end, poetic, and professional.
@@ -24,18 +28,24 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     }
   }
 
-  // Вызываем наш собственный серверный роут вместо прямого обращения к Google
-  const response = await fetch('/api/oracle', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, systemInstruction })
-  });
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: [{ parts: [{ text: prompt }] }],
+      config: {
+        systemInstruction,
+        temperature: 0.8,
+        topP: 0.95,
+      }
+    });
 
-  const data = await response.json();
+    if (!response.text) {
+      throw new Error("The stars are silent. No prophecy was returned.");
+    }
 
-  if (!response.ok) {
-    throw new Error(data.error || "The stars are silent. Connection failed.");
+    return response.text;
+  } catch (error: any) {
+    console.error("Gemini SDK Error:", error);
+    throw new Error(error.message || "Celestial connection interrupted.");
   }
-
-  return data.text;
 };

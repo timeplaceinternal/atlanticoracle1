@@ -5,63 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Atlantic Oracle | Ancient Wisdom for the Modern Soul</title>
-    <meta name="description" content="Atlantic Oracle offers personalized soul horoscopes, union harmony analysis, and career forecasts. Premium spiritual navigation for the European market and beyond." />
-    <meta name="keywords" content="astrology Europe, soul horoscope, numerology, career forecast, union harmony, spiritual guidance Atlantic Oracle" />
-    <link rel="canonical" href="https://atlanticoracle.com" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://atlanticoracle.com/" />
-    <meta property="og:title" content="Atlantic Oracle | Ancient Wisdom for the Modern Soul" />
-    <meta property="og:description" content="Discover your path through professional soul horoscopes and celestial guidance." />
-    <meta property="og:image" content="https://atlanticoracle.com/og-image.jpg" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://atlanticoracle.com/" />
-    <meta property="twitter:title" content="Atlantic Oracle | Ancient Wisdom for the Modern Soul" />
-    <meta property="twitter:description" content="Discover your path through professional soul horoscopes and celestial guidance." />
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "name": "Atlantic Oracle Astrology Services",
-      "description": "Professional astrology and numerology readings including Soul Horoscopes and Union Harmony.",
-      "provider": {
-        "@type": "Organization",
-        "name": "Atlantic Oracle",
-        "url": "https://atlanticoracle.com"
-      },
-      "areaServed": "Europe",
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Astrology Readings",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Soul Horoscope"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Union Harmony"
-            }
-          }
-        ]
-      }
-    }
-    </script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Discover your path through professional soul horoscopes and celestial guidance." />
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind via CDN for immediate styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -80,21 +32,6 @@
                 silver: '#c0c0c0',
                 purple: '#6d28d9',
               }
-            },
-            animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'float': 'float 6s ease-in-out infinite',
-              'twinkle': 'twinkle 3s ease-in-out infinite',
-            },
-            keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-20px)' },
-              },
-              twinkle: {
-                '0%, 100%': { opacity: 0.2 },
-                '50%': { opacity: 1 },
-              }
             }
           }
         }
@@ -102,44 +39,31 @@
     </script>
     <style>
       body {
-        margin: 0;
         background-color: #0a0a14;
         color: white;
-        overflow-x: hidden;
+        margin: 0;
       }
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0a0a14;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #1c1c3d;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #d4af37;
-      }
+      .no-print { @media print { display: none !important; } }
     </style>
   <script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
     "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.3",
+    "path": "https://esm.sh/path@^0.12.7",
     "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
     "next/": "https://esm.sh/next@^16.1.6/",
-    "next": "https://esm.sh/next@^16.1.6",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.3",
-    "vite": "https://esm.sh/vite@^7.3.1",
-    "url": "https://esm.sh/url@^0.11.4",
-    "path": "https://esm.sh/path@^0.12.7"
+    "next": "https://esm.sh/next@^16.1.6"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>
