@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Printer, Shield, ArrowLeft } from 'lucide-react';
 
@@ -11,7 +10,6 @@ interface GiftScrollProps {
 
 const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName, onClose }) => {
   const handlePrint = () => {
-    // Add temporary class to root for print styling
     document.documentElement.setAttribute('data-print-mode', 'scroll');
     window.print();
     document.documentElement.removeAttribute('data-print-mode');
@@ -39,7 +37,7 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
 
       <div id="printable-scroll" className="relative w-full max-w-[850px] bg-[#fcf5e5] shadow-[0_60px_120px_rgba(0,0,0,0.8)] overflow-hidden rounded-sm border-[16px] border-[#e8dcc4] min-h-[1200px] scroll-paper">
         {/* Parchment texture */}
-        <div className="absolute inset-0 opacity-40 mix-blend-multiply pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]"></div>
+        <div className="absolute inset-0 opacity-40 mix-blend-multiply pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/old-map.png')] no-print"></div>
         
         {/* Background Image */}
         {backgroundImage && (
@@ -50,7 +48,7 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
           />
         )}
 
-        <div className="relative h-full flex flex-col p-12 md:p-24 overflow-visible">
+        <div className="relative flex flex-col p-12 md:p-24">
           <div className="text-center mb-20">
             <div className="w-24 h-24 border-2 border-[#8b7355] rounded-full mx-auto flex items-center justify-center mb-8 shadow-inner">
               <Shield className="w-12 h-12 text-[#8b7355]" />
@@ -60,18 +58,18 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
             <p className="text-sm font-cinzel text-[#5d4a36] uppercase tracking-[0.5em] font-bold">Sacred Registry for {userName}</p>
           </div>
 
-          <div className="prose prose-stone max-w-none text-[#1a1510] font-serif leading-relaxed text-xl text-justify hyphens-auto">
+          <div className="prose prose-stone max-w-none text-[#1a1510] font-serif leading-relaxed text-xl text-justify">
              {text.split('\n').map((para, i) => {
                if (para.startsWith('#')) {
                  const title = para.replace(/#/g, '').trim();
                  return (
-                   <h2 key={i} className="font-cinzel text-2xl text-[#5d4a36] mt-16 mb-10 border-b border-[#8b7355]/30 pb-4 uppercase tracking-widest text-center font-bold">
+                   <h2 key={i} className="font-cinzel text-2xl text-[#5d4a36] mt-16 mb-10 border-b border-[#8b7355]/30 pb-4 uppercase tracking-widest text-center font-bold break-after-avoid">
                      {title}
                    </h2>
                  );
                }
                if (para.trim() === '') return <div key={i} className="h-8" />;
-               return <p key={i} className="mb-8 font-serif">{para}</p>;
+               return <p key={i} className="mb-8 font-serif break-inside-avoid-page">{para}</p>;
              })}
           </div>
 
@@ -85,37 +83,51 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         @media print {
+          html[data-print-mode="scroll"], 
+          html[data-print-mode="scroll"] body,
+          html[data-print-mode="scroll"] #root {
+            height: auto !important;
+            overflow: visible !important;
+            background: white !important;
+          }
+
           html[data-print-mode="scroll"] body > *:not(.scroll-container) { display: none !important; }
           html[data-print-mode="scroll"] #root > *:not(.scroll-container) { display: none !important; }
           
           .no-print { display: none !important; }
           
           .scroll-container { 
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: auto !important;
+            position: static !important;
             display: block !important;
             background: white !important;
             padding: 0 !important;
             margin: 0 !important;
+            overflow: visible !important;
           }
           
           #printable-scroll { 
+            position: relative !important;
             margin: 0 auto !important;
-            width: 210mm !important; 
+            width: 100% !important; 
+            max-width: none !important;
             border: none !important;
             box-shadow: none !important;
             background-color: #fcf5e5 !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            overflow: visible !important;
+            min-height: 0 !important;
           }
 
           .bg-print-visible {
-            opacity: 0.25 !important;
-            display: block !important;
+            opacity: 0.15 !important;
             filter: grayscale(100%) !important;
+            position: absolute !important;
+            height: 100% !important;
+          }
+
+          .prose p, .prose h2 {
+            page-break-inside: avoid;
           }
 
           @page { 

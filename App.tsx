@@ -62,13 +62,15 @@ const App: React.FC = () => {
     
     try {
       const content = await generateCosmicReading(currentRequest);
+      // Fixed: Populated birthDate in ReadingResult
       const newResult: ReadingResultType = {
         id: Math.random().toString(36).substring(7),
         serviceId: currentRequest.serviceId,
         content: content,
         timestamp: Date.now(),
         userName: currentRequest.name,
-        language: currentRequest.language
+        language: currentRequest.language,
+        birthDate: currentRequest.birthDate
       };
       setResult(newResult);
       setView('result');
@@ -122,7 +124,7 @@ const App: React.FC = () => {
             </button>
           </nav>
 
-          <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[400px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
             <div className="flex flex-col p-8 gap-6 text-center text-sm font-bold text-cosmic-silver uppercase tracking-[0.2em]">
               <button onClick={() => scrollToSection('philosophy')} className="py-2 hover:text-cosmic-gold">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="py-2 hover:text-cosmic-gold">How it Works</button>

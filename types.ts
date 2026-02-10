@@ -40,4 +40,6 @@ export interface ReadingResult {
   timestamp: number;
   userName: string;
   language: ReportLanguage;
+  // Added birthDate to support subsequent gift generation
+  birthDate: string;
 }

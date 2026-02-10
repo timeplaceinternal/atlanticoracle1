@@ -60,6 +60,9 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
         partnerBirthDate: isUnion ? partnerBirthDate : undefined,
         partnerBirthTime: isUnion ? partnerBirthTime : undefined,
       });
+    } else {
+      // Smooth scroll to top of form on error so mobile users see what's wrong
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -69,12 +72,12 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
 
   return (
-    <div className="max-w-4xl mx-auto p-12 bg-cosmic-800/40 backdrop-blur-3xl rounded-[3rem] border border-cosmic-gold/20 shadow-2xl relative">
-      <div className="absolute top-0 right-0 p-8">
-        <div className="flex items-center gap-2 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
-           <Globe className="w-4 h-4 text-cosmic-gold" />
+    <div className="max-w-4xl mx-auto p-6 sm:p-12 bg-cosmic-800/40 backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[3rem] border border-cosmic-gold/20 shadow-2xl relative z-10">
+      <div className="absolute top-4 sm:top-0 right-4 sm:right-0 p-4 sm:p-8 z-20">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
+           <Globe className="w-3 h-3 text-cosmic-gold" />
            <select 
-             className="bg-transparent text-xs font-bold text-cosmic-gold uppercase focus:outline-none"
+             className="bg-transparent text-[10px] font-bold text-cosmic-gold uppercase focus:outline-none cursor-pointer"
              value={language}
              onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
            >
@@ -83,18 +86,18 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
         </div>
       </div>
 
-      <button onClick={onBack} className="mb-12 flex items-center text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-xs font-bold uppercase tracking-widest">
+      <button onClick={onBack} className="mb-8 sm:mb-12 flex items-center text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-xs font-bold uppercase tracking-widest relative z-20">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Return to Sanctuary
       </button>
 
-      <div className="mb-12">
-        <h2 className="text-4xl font-cinzel text-white mb-2">{service.title}</h2>
-        <p className="text-cosmic-silver italic">The oracle prepares a detailed report for you in {language}. Current date: {MONTHS[currentMonth - 1]} {currentDay}, {currentYear}. Provide precise birth time for supreme accuracy.</p>
+      <div className="mb-8 sm:mb-12">
+        <h2 className="text-3xl sm:text-4xl font-cinzel text-white mb-2">{service.title}</h2>
+        <p className="text-sm text-cosmic-silver italic leading-relaxed">The oracle prepares a detailed report for you in {language}. Provide precise birth time for supreme accuracy.</p>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <form onSubmit={handleSubmit} noValidate className="space-y-8 sm:space-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
            <div className="space-y-6">
               <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Personal Celestial Coordinates</label>
               
@@ -103,34 +106,33 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                   <User className="w-4 h-4 text-cosmic-gold" />
                   <input 
                     placeholder="Full Name" 
-                    autoComplete="off"
-                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors`} 
+                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm`} 
                     value={name} 
                     onChange={e => setName(e.target.value)} 
                   />
                 </div>
-                {showErrors && !name && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold">Identity is required</p>}
+                {showErrors && !name && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Identity is required</p>}
               </div>
               
-              <div className="grid grid-cols-3 gap-4">
-                <select value={year} onChange={e => setYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                <select value={year} onChange={e => setYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                   {years.map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
                 </select>
-                <select value={month} onChange={e => setMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
-                  {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m}</option>)}
+                <select value={month} onChange={e => setMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
+                  {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m.substring(0,3)}</option>)}
                 </select>
-                <select value={day} onChange={e => setDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                <select value={day} onChange={e => setDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                   {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
                 </select>
               </div>
 
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-2 sm:gap-4 items-center">
                 <Clock className="w-4 h-4 text-cosmic-gold" />
                 <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
-                <select value={birthHour} onChange={e => setBirthHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                <select value={birthHour} onChange={e => setBirthHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                   {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
                 </select>
-                <select value={birthMin} onChange={e => setBirthMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                <select value={birthMin} onChange={e => setBirthMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                   {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
                 </select>
               </div>
@@ -140,13 +142,12 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                   <MapPin className="w-4 h-4 text-cosmic-gold" />
                   <input 
                     placeholder="Birth City & Country" 
-                    autoComplete="off"
-                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors`} 
+                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm`} 
                     value={birthPlace} 
                     onChange={e => setBirthPlace(e.target.value)} 
                   />
                 </div>
-                {showErrors && !birthPlace && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold">Location is essential</p>}
+                {showErrors && !birthPlace && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Location is essential</p>}
               </div>
            </div>
 
@@ -159,34 +160,33 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                     <User className="w-4 h-4 text-cosmic-gold" />
                     <input 
                       placeholder="Partner Name" 
-                      autoComplete="off"
-                      className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors`} 
+                      className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm`} 
                       value={partnerName} 
                       onChange={e => setPartnerName(e.target.value)} 
                     />
                   </div>
-                  {showErrors && !partnerName && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold">Partner identity needed</p>}
+                  {showErrors && !partnerName && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Partner identity needed</p>}
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4">
-                  <select value={pYear} onChange={e => setPYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                  <select value={pYear} onChange={e => setPYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                     {years.map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
                   </select>
-                  <select value={pMonth} onChange={e => setPMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
-                    {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m}</option>)}
+                  <select value={pMonth} onChange={e => setPMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
+                    {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m.substring(0,3)}</option>)}
                   </select>
-                  <select value={pDay} onChange={e => setPDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  <select value={pDay} onChange={e => setPDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                     {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
                   </select>
                 </div>
 
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-2 sm:gap-4 items-center">
                   <Clock className="w-4 h-4 text-cosmic-gold" />
                   <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
-                  <select value={pHour} onChange={e => setPHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  <select value={pHour} onChange={e => setPHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                     {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
                   </select>
-                  <select value={pMin} onChange={e => setPMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  <select value={pMin} onChange={e => setPMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                     {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
                   </select>
                 </div>
@@ -194,12 +194,15 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
            )}
         </div>
 
-        <div className="pt-12 flex items-center justify-between border-t border-cosmic-700/50">
-           <div>
-             <span className="text-xs text-cosmic-gold/50 block font-bold tracking-widest uppercase mb-1">Fee for Wisdom</span>
-             <span className="text-4xl font-cinzel text-white">€10</span>
+        <div className="pt-8 sm:pt-12 flex flex-col sm:flex-row items-center justify-between border-t border-cosmic-700/50 gap-6 sm:gap-0">
+           <div className="text-center sm:text-left">
+             <span className="text-[10px] text-cosmic-gold/50 block font-bold tracking-widest uppercase mb-1">Fee for Wisdom</span>
+             <span className="text-3xl sm:text-4xl font-cinzel text-white">€10</span>
            </div>
-           <button type="submit" className="px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/20 flex items-center gap-3">
+           <button 
+             type="submit" 
+             className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/40 flex items-center justify-center gap-3 relative z-[100]"
+           >
              PROCEED TO PAYMENT
              <ShieldCheck className="w-5 h-5" />
            </button>

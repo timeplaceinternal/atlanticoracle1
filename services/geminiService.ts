@@ -36,12 +36,13 @@ const getSystemInstruction = (lang: string) => {
   `;
 };
 
+// Fixed: Corrected SDK usage by passing string directly to contents
 export const translateContent = async (text: string, targetLang: ReportLanguage): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: [{ role: 'user', parts: [{ text: `Translate the following astrological report to ${targetLang}. Keep the markdown structure and professional tone. Do not add any commentary:\n\n${text}` }] }],
+      contents: `Translate the following astrological report to ${targetLang}. Keep the markdown structure and professional tone. Do not add any commentary:\n\n${text}`,
       config: {
         systemInstruction: getSystemInstruction(targetLang),
         temperature: 0.3,
@@ -54,6 +55,7 @@ export const translateContent = async (text: string, targetLang: ReportLanguage)
   }
 };
 
+// Fixed: Corrected SDK usage by passing string directly to contents
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const lang = request.language;
@@ -72,7 +74,7 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
-      contents: [{ role: 'user', parts: [{ text: promptText }] }],
+      contents: promptText,
       config: {
         systemInstruction: getSystemInstruction(lang),
         temperature: 0.8,
@@ -86,6 +88,7 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   }
 };
 
+// Fixed: Corrected SDK usage by passing string directly to contents
 export const generateMonthlyGiftHoroscope = async (name: string, birthDate: string, lang: ReportLanguage): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const promptText = COSMIC_PROMPTS.GIFT_MONTHLY_HOROSCOPE(name, birthDate, lang);
@@ -93,7 +96,7 @@ export const generateMonthlyGiftHoroscope = async (name: string, birthDate: stri
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: [{ role: 'user', parts: [{ text: promptText }] }],
+      contents: promptText,
       config: {
         systemInstruction: getSystemInstruction(lang),
         temperature: 0.9,
