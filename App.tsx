@@ -143,7 +143,7 @@ const App: React.FC = () => {
                   <Sparkles className="w-4 h-4 text-cosmic-gold" />
                   <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">The Synthesis of Stars and Numbers</span>
                 </div>
-                <h1 className="text-5xl md:text-8xl font-cinzel text-white leading-[1.1]">Where Planetary Motion Meets <span className="text-cosmic-gold">Numerical Logic</span></h1>
+                <h1 className="text-5xl md:text-8xl font-cinzel text-white leading-[1.1]">The Secret Language of <span className="text-cosmic-gold">Space and Numbers</span></h1>
                 <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair">"We merge the cosmic mechanics of Astrology with the mathematical fate of Numerology to decode your life's navigation map."</p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
                   <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95">Consult the Oracle</button>
