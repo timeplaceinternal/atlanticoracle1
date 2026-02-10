@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import CosmicBackground from './components/CosmicBackground';
 import ReadingForm from './components/ReadingForm';
@@ -62,7 +61,6 @@ const App: React.FC = () => {
     
     try {
       const content = await generateCosmicReading(currentRequest);
-      // Fixed: Populated birthDate in ReadingResult
       const newResult: ReadingResultType = {
         id: Math.random().toString(36).substring(7),
         serviceId: currentRequest.serviceId,
@@ -111,8 +109,6 @@ const App: React.FC = () => {
             <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
               <button onClick={() => scrollToSection('philosophy')} className="hover:text-cosmic-gold transition-colors">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="hover:text-cosmic-gold transition-colors">How it Works</button>
-              <button onClick={() => scrollToSection('services')} className="hover:text-cosmic-gold transition-colors">Readings</button>
-              <button onClick={() => handleStartService(SERVICES[0])} className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all">Start Reading</button>
             </div>
 
             <button 
@@ -128,7 +124,6 @@ const App: React.FC = () => {
             <div className="flex flex-col p-8 gap-6 text-center text-sm font-bold text-cosmic-silver uppercase tracking-[0.2em]">
               <button onClick={() => scrollToSection('philosophy')} className="py-2 hover:text-cosmic-gold">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="py-2 hover:text-cosmic-gold">How it Works</button>
-              <button onClick={() => scrollToSection('services')} className="py-2 hover:text-cosmic-gold">Our Services</button>
               <button onClick={() => handleStartService(SERVICES[0])} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full">Request Consultation</button>
             </div>
           </div>

@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Service, ServiceType, ReadingRequest, ReportLanguage } from '../types';
-import { ArrowLeft, MapPin, Clock, User, ShieldCheck, Globe } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, User, ShieldCheck } from 'lucide-react';
 
 interface ReadingFormProps {
   service: Service;
@@ -9,7 +8,6 @@ interface ReadingFormProps {
   onSubmit: (data: ReadingRequest) => void;
 }
 
-const LANGUAGES: ReportLanguage[] = ['English', 'French', 'German', 'Spanish', 'Italian', 'Russian', 'Ukrainian'];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) => {
@@ -22,7 +20,9 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
   const [month, setMonth] = useState('1');
   const [day, setDay] = useState('1');
   const [year, setYear] = useState('1990');
-  const [language, setLanguage] = useState<ReportLanguage>('English');
+  
+  // Убран выбор языка, фиксируем English до момента полной локализации сайта
+  const [language] = useState<ReportLanguage>('English');
 
   const [partnerName, setPartnerName] = useState('');
   const [pMonth, setPMonth] = useState('1');
@@ -70,19 +70,6 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
   return (
     <div className="max-w-4xl mx-auto p-6 sm:p-12 bg-cosmic-800/40 backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[3rem] border border-cosmic-gold/20 shadow-2xl relative z-10">
-      <div className="absolute top-4 sm:top-0 right-4 sm:right-0 p-4 sm:p-8 z-20">
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
-           <Globe className="w-3 h-3 text-cosmic-gold" />
-           <select 
-             className="bg-transparent text-[10px] font-bold text-cosmic-gold uppercase focus:outline-none cursor-pointer"
-             value={language}
-             onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
-           >
-             {LANGUAGES.map(l => <option key={l} value={l} className="bg-cosmic-900">{l}</option>)}
-           </select>
-        </div>
-      </div>
-
       <button onClick={onBack} className="mb-8 sm:mb-12 flex items-center text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-xs font-bold uppercase tracking-widest relative z-20">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Return to Sanctuary
@@ -90,7 +77,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
       <div className="mb-8 sm:mb-12">
         <h2 className="text-3xl sm:text-4xl font-cinzel text-white mb-2">{service.title}</h2>
-        <p className="text-sm text-cosmic-silver italic leading-relaxed">The oracle prepares a detailed report for you in {language}. Provide precise birth time for supreme accuracy.</p>
+        <p className="text-sm text-cosmic-silver italic leading-relaxed">The oracle prepares a detailed report for you. Provide precise birth time for supreme accuracy.</p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-8 sm:space-y-12">
@@ -103,7 +90,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                   <User className="w-4 h-4 text-cosmic-gold" />
                   <input 
                     placeholder="Full Name" 
-                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm`} 
+                    className="w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                     value={name} 
                     onChange={e => setName(e.target.value)} 
                   />
@@ -139,7 +126,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                   <MapPin className="w-4 h-4 text-cosmic-gold" />
                   <input 
                     placeholder="Birth City & Country" 
-                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm`} 
+                    className="w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                     value={birthPlace} 
                     onChange={e => setBirthPlace(e.target.value)} 
                   />
@@ -157,7 +144,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                     <User className="w-4 h-4 text-cosmic-gold" />
                     <input 
                       placeholder="Partner Name" 
-                      className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm`} 
+                      className="w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                       value={partnerName} 
                       onChange={e => setPartnerName(e.target.value)} 
                     />

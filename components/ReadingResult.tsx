@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Download, RefreshCw, AlertCircle, Gift, Loader2, Copy, Check, Send, Printer, Share2, Star, Sparkles, Globe } from 'lucide-react';
+import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles } from 'lucide-react';
 import { ReadingResult as ReadingResultType, ReportLanguage } from '../types';
-import { generateAestheticBackground, ScrollLanguage } from '../services/imageService';
-import { generateMonthlyGiftHoroscope, translateContent } from '../services/geminiService';
+import { generateAestheticBackground } from '../services/imageService';
+import { generateMonthlyGiftHoroscope } from '../services/geminiService';
 import GiftScroll from './GiftScroll';
 
 interface ReadingResultProps {
@@ -10,12 +10,9 @@ interface ReadingResultProps {
   onReset: () => void;
 }
 
-const LANGUAGES: ReportLanguage[] = ['English', 'French', 'German', 'Spanish', 'Italian', 'Russian', 'Ukrainian'];
-
 const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
-  const [content, setContent] = useState(result.content);
-  const [currentLang, setCurrentLang] = useState<ReportLanguage>(result.language);
-  const [isTranslating, setIsTranslating] = useState(false);
+  const [content] = useState(result.content);
+  const [currentLang] = useState<ReportLanguage>(result.language);
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [scrollBg, setScrollBg] = useState<string | null>(null);
@@ -25,29 +22,8 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
   const [isGeneratingGift, setIsGeneratingGift] = useState(false);
   const [giftResult, setGiftResult] = useState<string | null>(null);
 
-  const handleLanguageChange = async (newLang: ReportLanguage) => {
-    if (newLang === currentLang || isTranslating) return;
-    setIsTranslating(true);
-    try {
-      const translatedMain = await translateContent(content, newLang);
-      setContent(translatedMain);
-      
-      if (giftResult) {
-        const translatedGift = await translateContent(giftResult, newLang);
-        setGiftResult(translatedGift);
-      }
-      
-      setCurrentLang(newLang);
-    } catch (e) {
-      console.error("Translation error", e);
-      alert("Celestial translation failed. Using current version.");
-    } finally {
-      setIsTranslating(false);
-    }
-  };
-
   const handleClaimGift = async () => {
-    if (isGeneratingGift || isTranslating) return;
+    if (isGeneratingGift) return;
     setIsGeneratingGift(true);
     try {
       const gift = await generateMonthlyGiftHoroscope(
@@ -62,7 +38,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
       }, 100);
     } catch (error: any) {
       console.error("Gift generation error:", error);
-      alert("The stars are currently obscured. Please try claiming your gift again later.");
+      alert("The stars are currently obscured. Please try again later.");
     } finally {
       setIsGeneratingGift(false);
     }
@@ -99,32 +75,14 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
     }
   };
 
-  const handlePrint = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handlePrint = () => {
+    // Принудительно вызываем системный диалог печати
+    // Все стили @media print в index.html позаботятся о чистоте PDF
     window.print();
   };
 
   return (
     <div className="max-w-4xl mx-auto pb-32 animate-in fade-in duration-1000 relative">
-      {/* Translation Overlay */}
-      {isTranslating && (
-        <div className="fixed inset-0 z-[120] bg-cosmic-900/90 backdrop-blur-xl flex flex-col items-center justify-center no-print text-center px-6">
-          <div className="relative mb-10">
-            <Globe className="w-20 h-20 text-cosmic-gold animate-spin [animation-duration:4s]" />
-            <div className="absolute inset-0 bg-cosmic-gold/30 rounded-full animate-ping"></div>
-          </div>
-          <div className="space-y-4 max-w-md">
-            <h2 className="text-2xl md:text-3xl font-cinzel text-white uppercase tracking-[0.4em] animate-pulse">
-              {currentLang === 'Russian' ? 'Перевод откровения...' : 'Translating Decree...'}
-            </h2>
-            <div className="w-48 h-[2px] bg-cosmic-gold/20 mx-auto relative overflow-hidden">
-              <div className="absolute inset-0 bg-cosmic-gold w-1/2 animate-[loading_1.5s_infinite]"></div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {showGiftMode && scrollBg && (
         <GiftScroll 
           backgroundImage={scrollBg}
@@ -149,38 +107,25 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
         {/* Aesthetic generation controls */}
         <div className="mb-12 p-8 bg-cosmic-gold/5 border border-cosmic-gold/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 no-print">
           <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-white font-cinzel text-xl tracking-widest uppercase">Language & Export</h3>
-            <p className="text-cosmic-silver text-xs opacity-70">Set document language for your PDF or Gift Scroll.</p>
+            <h3 className="text-white font-cinzel text-xl tracking-widest uppercase">Premium Export</h3>
+            <p className="text-cosmic-silver text-xs opacity-70">Transform your decree into a visual masterpiece.</p>
           </div>
           
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <div className="flex items-center gap-2 px-4 py-2 bg-cosmic-900 border border-cosmic-gold/20 rounded-xl">
-               <Globe className="w-4 h-4 text-cosmic-gold" />
-               <select 
-                 value={currentLang}
-                 onChange={(e) => handleLanguageChange(e.target.value as ReportLanguage)}
-                 disabled={isTranslating}
-                 className="bg-transparent text-cosmic-gold text-xs font-bold uppercase tracking-widest focus:outline-none disabled:opacity-50 cursor-pointer"
-               >
-                 {LANGUAGES.map(lang => (
-                   <option key={lang} value={lang} className="bg-cosmic-900">{lang}</option>
-                 ))}
-               </select>
-            </div>
-            
             <button 
+              type="button"
               onClick={handleGenerateScroll}
-              disabled={isGenerating || isTranslating}
+              disabled={isGenerating}
               className="px-8 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-all flex items-center gap-2 text-sm disabled:opacity-50 shadow-lg shadow-cosmic-gold/10 uppercase tracking-widest active:scale-95"
             >
               {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
-              <span>Create Scroll</span>
+              <span>Create Artistic Scroll</span>
             </button>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className={`prose prose-invert max-w-none text-cosmic-silver leading-relaxed font-light transition-all duration-700 ${isTranslating ? 'opacity-20 blur-sm translate-y-2' : 'opacity-100 translate-y-0'}`}>
+        <div className="prose prose-invert max-w-none text-cosmic-silver leading-relaxed font-light transition-all duration-700">
           {content.split('\n').map((para, i) => {
             if (para.startsWith('#')) {
               const text = para.replace(/#/g, '').trim();
@@ -204,8 +149,9 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
               </p>
             </div>
             <button 
+              type="button"
               onClick={handleClaimGift}
-              disabled={isGeneratingGift || isTranslating}
+              disabled={isGeneratingGift}
               className="px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/20 flex items-center justify-center gap-3 mx-auto disabled:opacity-50 uppercase tracking-widest"
             >
               {isGeneratingGift ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
@@ -240,6 +186,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
         {/* Action Footer */}
         <div className="mt-24 pt-12 border-t border-cosmic-gold/10 flex flex-col sm:flex-row items-center justify-between gap-8 no-print">
           <button 
+            type="button"
             onClick={onReset}
             className="flex items-center gap-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors font-bold uppercase tracking-widest text-xs"
           >
@@ -248,6 +195,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
           
           <div className="flex items-center gap-6">
             <button 
+              type="button"
               onClick={handlePrint}
               className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
               title="Print Decree"
@@ -255,6 +203,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
               <Printer className="w-5 h-5" />
             </button>
             <button 
+              type="button"
               onClick={() => {
                 navigator.clipboard.writeText(content + (giftResult ? `\n\n${giftResult}` : ''));
                 alert("The decree has been copied to your clipboard.");
@@ -270,13 +219,14 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
 
       {/* Fixed Floating Action Bar for Print */}
       {!showGiftMode && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] no-print">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] no-print">
           <button 
+            type="button"
             onClick={handlePrint}
-            className="flex items-center gap-3 px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.3)] uppercase tracking-[0.2em] text-sm group"
+            className="flex items-center gap-3 px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-sm group"
           >
             <Printer className="w-6 h-6 group-hover:scale-110 transition-transform" />
-            <span>Save PDF / Print Scroll</span>
+            <span>Save PDF / Print Decree</span>
           </button>
         </div>
       )}
