@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Service, ServiceType, ReadingRequest } from '../types';
-import { ArrowLeft, Sparkles, MapPin, Clock, User, ChevronDown, AlertCircle } from 'lucide-react';
+import { Service, ServiceType, ReadingRequest, ReportLanguage } from '../types';
+import { ArrowLeft, MapPin, Clock, User, ShieldCheck, Globe } from 'lucide-react';
 
 interface ReadingFormProps {
   service: Service;
@@ -9,174 +9,200 @@ interface ReadingFormProps {
   onSubmit: (data: ReadingRequest) => void;
 }
 
-const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
+const LANGUAGES: ReportLanguage[] = ['English', 'French', 'German', 'Spanish', 'Italian', 'Russian', 'Ukrainian'];
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) => {
+  const currentYear = 2026;
+  const currentMonth = 2; // February
+  const currentDay = 9;
+
   const [name, setName] = useState('');
   const [birthPlace, setBirthPlace] = useState('');
-  const [birthTime, setBirthTime] = useState('12:00');
+  const [birthHour, setBirthHour] = useState('12');
+  const [birthMin, setBirthMin] = useState('00');
   const [month, setMonth] = useState('1');
   const [day, setDay] = useState('1');
   const [year, setYear] = useState('1990');
-  const [partnerName, setPartnerName] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [language, setLanguage] = useState<ReportLanguage>('English');
 
-  const isUnion = service.id === ServiceType.UNION_HARMONY;
+  const [partnerName, setPartnerName] = useState('');
+  const [pMonth, setPMonth] = useState('1');
+  const [pDay, setPDay] = useState('1');
+  const [pYear, setPYear] = useState('1990');
+  const [pHour, setPHour] = useState('12');
+  const [pMin, setPMin] = useState('00');
+
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Custom validation to avoid browser-default Russian bubbles
-    if (!name.trim()) {
-      setError("Please reveal your name to the Oracle.");
-      return;
-    }
-    if (!birthPlace.trim()) {
-      setError("The Oracle requires your city of origin.");
-      return;
-    }
-    if (isUnion && !partnerName.trim()) {
-      setError("The synergy reading requires the partner's name.");
-      return;
-    }
+    setShowErrors(true);
 
-    setError(null);
-    const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    onSubmit({
-      serviceId: service.id,
-      name,
-      birthDate,
-      birthTime,
-      birthPlace,
-      partnerName: isUnion ? partnerName : undefined,
-    });
+    const isUnion = service.id === ServiceType.CELESTIAL_UNION;
+    const isMainValid = name.trim() !== '' && birthPlace.trim() !== '';
+    const isPartnerValid = !isUnion || partnerName.trim() !== '';
+
+    if (isMainValid && isPartnerValid) {
+      const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const partnerBirthDate = `${pYear}-${pMonth.padStart(2, '0')}-${pDay.padStart(2, '0')}`;
+      const birthTime = `${birthHour}:${birthMin}`;
+      const partnerBirthTime = `${pHour}:${pMin}`;
+
+      onSubmit({
+        serviceId: service.id,
+        name,
+        birthDate,
+        birthTime,
+        birthPlace,
+        language,
+        partnerName: isUnion ? partnerName : undefined,
+        partnerBirthDate: isUnion ? partnerBirthDate : undefined,
+        partnerBirthTime: isUnion ? partnerBirthTime : undefined,
+      });
+    }
   };
 
-  const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - 18 - i);
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
-  const inputClass = "w-full bg-white/10 border border-white/20 rounded-xl py-4 px-6 text-white placeholder:text-white/30 focus:outline-none focus:border-[#d4af37] focus:bg-white/15 transition-all text-sm";
+  const isUnion = service.id === ServiceType.CELESTIAL_UNION;
+  const years = Array.from({ length: 121 }, (_, i) => currentYear - i);
+  const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+  const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
 
   return (
-    <div className="max-w-3xl mx-auto p-8 md:p-12 bg-cosmic-800/60 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
-      <button 
-        onClick={onBack}
-        className="mb-10 flex items-center text-cosmic-silver/80 hover:text-[#d4af37] transition-all text-[11px] font-bold uppercase tracking-[0.2em]"
-      >
+    <div className="max-w-4xl mx-auto p-12 bg-cosmic-800/40 backdrop-blur-3xl rounded-[3rem] border border-cosmic-gold/20 shadow-2xl relative">
+      <div className="absolute top-0 right-0 p-8">
+        <div className="flex items-center gap-2 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
+           <Globe className="w-4 h-4 text-cosmic-gold" />
+           <select 
+             className="bg-transparent text-xs font-bold text-cosmic-gold uppercase focus:outline-none"
+             value={language}
+             onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
+           >
+             {LANGUAGES.map(l => <option key={l} value={l} className="bg-cosmic-900">{l}</option>)}
+           </select>
+        </div>
+      </div>
+
+      <button onClick={onBack} className="mb-12 flex items-center text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-xs font-bold uppercase tracking-widest">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Return to Sanctuary
       </button>
 
-      <div className="flex items-center gap-6 mb-12">
-        <div className="p-4 bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#d4af37] rounded-2xl">
-          <Sparkles className="w-8 h-8" />
-        </div>
-        <div>
-          <h2 className="text-3xl font-cinzel text-white uppercase tracking-[0.1em]">{service.title}</h2>
-          <p className="text-[10px] text-white/50 font-bold uppercase tracking-[0.4em] mt-1">Celestial Entry Coordinates</p>
-        </div>
+      <div className="mb-12">
+        <h2 className="text-4xl font-cinzel text-white mb-2">{service.title}</h2>
+        <p className="text-cosmic-silver italic">The oracle prepares a detailed report for you in {language}. Current date: {MONTHS[currentMonth - 1]} {currentDay}, {currentYear}. Provide precise birth time for supreme accuracy.</p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-8">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d4af37] border-b border-white/10 pb-3">Natal Data</h3>
-            
-            <div className="space-y-6">
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  className={`${inputClass} pl-12`}
-                  value={name}
-                  onChange={(e) => { setName(e.target.value); if(error) setError(null); }}
-                />
+           <div className="space-y-6">
+              <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Personal Celestial Coordinates</label>
+              
+              <div className="space-y-1">
+                <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
+                  <User className="w-4 h-4 text-cosmic-gold" />
+                  <input 
+                    placeholder="Full Name" 
+                    autoComplete="off"
+                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors`} 
+                    value={name} 
+                    onChange={e => setName(e.target.value)} 
+                  />
+                </div>
+                {showErrors && !name && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold">Identity is required</p>}
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <select value={year} onChange={e => setYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  {years.map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
+                </select>
+                <select value={month} onChange={e => setMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m}</option>)}
+                </select>
+                <select value={day} onChange={e => setDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
+                </select>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                <div className="relative">
-                  <select value={month} onChange={(e) => setMonth(e.target.value)} className={`${inputClass} appearance-none cursor-pointer pr-10 text-xs font-bold`}>
-                    {MONTHS.map((m, i) => <option key={i} value={i + 1} className="bg-cosmic-900">{m}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-[#d4af37] pointer-events-none" />
+              <div className="flex gap-4 items-center">
+                <Clock className="w-4 h-4 text-cosmic-gold" />
+                <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
+                <select value={birthHour} onChange={e => setBirthHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
+                </select>
+                <select value={birthMin} onChange={e => setBirthMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                  {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
+                  <MapPin className="w-4 h-4 text-cosmic-gold" />
+                  <input 
+                    placeholder="Birth City & Country" 
+                    autoComplete="off"
+                    className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors`} 
+                    value={birthPlace} 
+                    onChange={e => setBirthPlace(e.target.value)} 
+                  />
                 </div>
-                <div className="relative">
-                  <select value={day} onChange={(e) => setDay(e.target.value)} className={`${inputClass} appearance-none cursor-pointer pr-10 text-xs font-bold`}>
-                    {days.map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-[#d4af37] pointer-events-none" />
+                {showErrors && !birthPlace && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold">Location is essential</p>}
+              </div>
+           </div>
+
+           {isUnion && (
+             <div className="space-y-6">
+                <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Partner Celestial Coordinates</label>
+                
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
+                    <User className="w-4 h-4 text-cosmic-gold" />
+                    <input 
+                      placeholder="Partner Name" 
+                      autoComplete="off"
+                      className={`w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors`} 
+                      value={partnerName} 
+                      onChange={e => setPartnerName(e.target.value)} 
+                    />
+                  </div>
+                  {showErrors && !partnerName && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold">Partner identity needed</p>}
                 </div>
-                <div className="relative">
-                  <select value={year} onChange={(e) => setYear(e.target.value)} className={`${inputClass} appearance-none cursor-pointer pr-10 text-xs font-bold`}>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <select value={pYear} onChange={e => setPYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
                     {years.map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
                   </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-[#d4af37] pointer-events-none" />
+                  <select value={pMonth} onChange={e => setPMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                    {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m}</option>)}
+                  </select>
+                  <select value={pDay} onChange={e => setPDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
+                  </select>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="relative">
-                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                  <input
-                    type="time"
-                    className={`${inputClass} pl-12 text-xs font-bold`}
-                    value={birthTime}
-                    onChange={(e) => setBirthTime(e.target.value)}
-                  />
+                <div className="flex gap-4 items-center">
+                  <Clock className="w-4 h-4 text-cosmic-gold" />
+                  <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
+                  <select value={pHour} onChange={e => setPHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                    {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
+                  </select>
+                  <select value={pMin} onChange={e => setPMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none">
+                    {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
+                  </select>
                 </div>
-                <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                  <input
-                    type="text"
-                    placeholder="Birth City"
-                    className={`${inputClass} pl-12 text-xs`}
-                    value={birthPlace}
-                    onChange={(e) => { setBirthPlace(e.target.value); if(error) setError(null); }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {isUnion && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-700">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d4af37] border-b border-white/10 pb-3">Synergy Link</h3>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                <input
-                  type="text"
-                  placeholder="Partner's Name"
-                  className={`${inputClass} pl-12`}
-                  value={partnerName}
-                  onChange={(e) => { setPartnerName(e.target.value); if(error) setError(null); }}
-                />
-              </div>
-            </div>
-          )}
+             </div>
+           )}
         </div>
 
-        {error && (
-          <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in slide-in-from-top-2 duration-300">
-            <AlertCircle className="w-5 h-5 text-red-400" />
-            <span className="text-xs font-bold text-red-200 uppercase tracking-widest">{error}</span>
-          </div>
-        )}
-
-        <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left">
-            <span className="text-white/40 text-[10px] block uppercase tracking-[0.4em] mb-1">Exchange</span>
-            <span className="text-4xl font-cinzel text-white">€{service.price}</span>
-          </div>
-          <button
-            type="submit"
-            className="w-full md:w-auto px-16 py-6 bg-[#d4af37] text-[#0a0a14] font-black rounded-full shadow-[0_10px_30px_rgba(212,175,55,0.4)] hover:bg-[#e3c58e] hover:scale-105 active:scale-95 transition-all text-sm uppercase tracking-[0.25em]"
-          >
-            Generate Reading
-          </button>
+        <div className="pt-12 flex items-center justify-between border-t border-cosmic-700/50">
+           <div>
+             <span className="text-xs text-cosmic-gold/50 block font-bold tracking-widest uppercase mb-1">Fee for Wisdom</span>
+             <span className="text-4xl font-cinzel text-white">€10</span>
+           </div>
+           <button type="submit" className="px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/20 flex items-center gap-3">
+             PROCEED TO PAYMENT
+             <ShieldCheck className="w-5 h-5" />
+           </button>
         </div>
       </form>
     </div>

@@ -1,6 +1,4 @@
 
-'use client';
-
 import React, { useState } from 'react';
 import CosmicBackground from './components/CosmicBackground';
 import ReadingForm from './components/ReadingForm';
@@ -9,15 +7,25 @@ import ReadingResult from './components/ReadingResult';
 import PhilosophySection from './components/PhilosophySection';
 import HowItWorksSection from './components/HowItWorksSection';
 import { SERVICES, getServiceIcon } from './constants';
-import { Service, ReadingRequest, ReadingResult as ReadingResultType } from './types';
+import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, Activity, Sparkles as SparklesIcon } from 'lucide-react';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker } from 'lucide-react';
+
+const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'form' | 'loading' | 'result' | 'error'>('home');
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result'>('home');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
   const [result, setResult] = useState<ReadingResultType | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const resetToHome = () => {
+    setView('home');
+    setSelectedService(null);
+    setCurrentRequest(null);
+    setResult(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleStartService = (service: Service) => {
     setSelectedService(service);
@@ -25,178 +33,174 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleFormSubmit = async (request: ReadingRequest) => {
+  const handleFormSubmit = (request: ReadingRequest) => {
+    setCurrentRequest(request);
+    console.log("Saving to database with status: PENDING...", request);
+    setView('payment');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleProceedToStripe = () => {
+    window.open(STRIPE_URL, '_blank');
+    alert("Payment page opened. After payment, the registry will update your status.");
+  };
+
+  const simulateSuccess = async () => {
+    if (!currentRequest) return;
     setView('loading');
-    setErrorMessage(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    const aistudio = (window as any).aistudio;
+    if (aistudio) {
+      try {
+        const hasKey = await aistudio.hasSelectedApiKey();
+        if (!hasKey) await aistudio.openSelectKey();
+      } catch (e) { console.warn("AI Studio key manager unavailable"); }
+    }
+    
     try {
-      const content = await generateCosmicReading(request);
+      const content = await generateCosmicReading(currentRequest);
       const newResult: ReadingResultType = {
         id: Math.random().toString(36).substring(7),
-        serviceId: request.serviceId,
+        serviceId: currentRequest.serviceId,
         content: content,
         timestamp: Date.now(),
-        userName: request.name
+        userName: currentRequest.name,
+        language: currentRequest.language
       };
       setResult(newResult);
       setView('result');
     } catch (error: any) {
-      console.error("Submission error:", error);
-      setErrorMessage(error.message || "An unexpected planetary alignment blocked the signal.");
-      setView('error');
+      alert(error.message || "Connection failed.");
+      setView('home');
     }
   };
 
   const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (view !== 'home') {
+      setView('home');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.getElementById(id);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
-    <div className="min-h-screen font-inter bg-cosmic-900 transition-colors duration-1000 selection:bg-[#d4af37] selection:text-black">
+    <div className="min-h-screen font-inter selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden">
       <CosmicBackground />
       
-      <header className="fixed top-0 left-0 right-0 z-50 bg-cosmic-900/40 backdrop-blur-xl border-b border-white/5">
-        <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div 
-            className="flex items-center gap-4 cursor-pointer group"
-            onClick={() => { setView('home'); setSelectedService(null); }}
-          >
-            <Star className="w-6 h-6 text-[#d4af37] fill-current group-hover:scale-110 transition-transform duration-500 shadow-[0_0_15px_rgba(212,175,55,0.6)]" />
-            <span className="text-xl font-cinzel font-bold tracking-[0.25em] text-white uppercase drop-shadow-md">Atlantic Oracle</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-10">
-            {['services', 'how-it-works', 'philosophy'].map((sec) => (
-              <button 
-                key={sec}
-                onClick={() => scrollToSection(sec)} 
-                className="text-[10px] font-bold uppercase tracking-[0.3em] text-cosmic-silver/60 hover:text-[#d4af37] transition-all relative group"
-              >
-                {sec.replace('-', ' ')}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#d4af37] transition-all duration-300 group-hover:w-full"></span>
-              </button>
-            ))}
-          </div>
-
-          <div className="w-20 hidden md:block"></div>
-        </nav>
-      </header>
-
-      <main className="relative z-10">
-        {view === 'home' && (
-          <div className="space-y-40 pt-40 pb-48">
-            <section className="px-6 text-center max-w-6xl mx-auto space-y-14 min-h-[60vh] flex flex-col justify-center">
-              <div className="space-y-6">
-                <h1 className="text-5xl md:text-8xl font-cinzel text-white leading-tight tracking-[0.05em] uppercase">
-                  The Secret Language <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-b from-white via-cosmic-gold-light to-[#d4af37] drop-shadow-2xl">of Stars & Numbers</span>
-                </h1>
-                <div className="h-[2px] w-32 bg-gradient-to-r from-transparent via-[#d4af37]/40 to-transparent mx-auto mt-8"></div>
+      {/* Wrapper to handle print visibility */}
+      <div className="main-ui-wrapper">
+        <header className="fixed top-0 left-0 right-0 z-[100] bg-cosmic-900/60 backdrop-blur-xl border-b border-cosmic-gold/10 no-print">
+          <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <button onClick={resetToHome} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 bg-cosmic-gold rounded-lg flex items-center justify-center shadow-lg">
+                <Star className="text-cosmic-900 w-6 h-6" />
               </div>
-              <p className="text-2xl md:text-4xl text-cosmic-silver/90 font-playfair italic max-w-4xl mx-auto leading-relaxed">
-                "Decrypting the sacred resonance of the universe to illuminate your path."
-              </p>
-            </section>
+              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase">Atlantic Oracle</span>
+            </button>
+            <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
+              <button onClick={() => scrollToSection('philosophy')} className="hover:text-cosmic-gold transition-colors">Philosophy</button>
+              <button onClick={() => scrollToSection('how-it-works')} className="hover:text-cosmic-gold transition-colors">How it Works</button>
+              <button onClick={() => handleStartService(SERVICES[0])} className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all">Get Reading</button>
+            </div>
+          </nav>
+        </header>
 
-            <section id="services" className="px-6 max-w-7xl mx-auto scroll-mt-32">
-              <div className="mb-24 flex justify-center">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-[#d4af37]/10 blur-[60px] rounded-full animate-pulse-slow scale-125"></div>
-                  <div className="relative px-12 py-8 bg-[#05051a]/60 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#d4af37]/50 to-transparent"></div>
-                    <div className="flex items-center gap-8">
-                      <SparklesIcon className="w-6 h-6 text-[#d4af37] opacity-60" />
-                      <h2 className="text-xl md:text-3xl font-cinzel font-bold uppercase tracking-[0.5em] text-white">
-                        Consult The Oracle
-                      </h2>
-                      <SparklesIcon className="w-6 h-6 text-[#d4af37] opacity-60" />
+        <main className="container mx-auto pt-20">
+          {view === 'loading' && <LoadingAnimation />}
+
+          {view === 'home' && (
+            <div className="space-y-32 py-20">
+              <section className="text-center max-w-5xl mx-auto px-6 space-y-8 animate-in fade-in slide-in-from-top-4 duration-1000 pt-20">
+                <h1 className="text-6xl md:text-8xl font-cinzel text-white leading-[1.1]">The Secret Language of <span className="text-cosmic-gold">Space and Numbers</span></h1>
+                <p className="text-xl text-cosmic-silver font-light max-w-2xl mx-auto italic">Professional soul horoscopes and celestial guidance. Comprehensive 3-5 page reports.</p>
+                <button onClick={() => scrollToSection('services')} className="px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-110 transition-transform active:scale-95">Oracle Consultations</button>
+              </section>
+
+              <section id="services" className="px-6 max-w-7xl mx-auto scroll-mt-32">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {SERVICES.map(s => (
+                    <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-700/50 p-10 rounded-[2.5rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-xl">
+                      <div className="mb-8">{getServiceIcon(s.icon)}</div>
+                      <h3 className="text-2xl font-cinzel text-white mb-4">{s.title}</h3>
+                      <p className="text-cosmic-silver font-light text-sm mb-8 leading-relaxed h-20 overflow-hidden line-clamp-4">{s.description}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-cosmic-gold font-cinzel text-xl">€{s.price}</span>
+                        <ChevronRight className="text-white group-hover:translate-x-2 transition-transform" />
+                      </div>
                     </div>
+                  ))}
+                </div>
+              </section>
+              <PhilosophySection />
+              <HowItWorksSection />
+            </div>
+          )}
+
+          {view === 'form' && selectedService && (
+            <div className="py-20 px-6">
+              <ReadingForm service={selectedService} onBack={resetToHome} onSubmit={handleFormSubmit} />
+            </div>
+          )}
+
+          {view === 'payment' && (
+            <div className="py-20 px-6 flex flex-col items-center justify-center min-h-[60vh]">
+              <div className="bg-cosmic-800/60 p-12 rounded-[3rem] border border-cosmic-gold/30 text-center max-w-md w-full backdrop-blur-3xl animate-in zoom-in-95 shadow-2xl">
+                <ShieldCheck className="w-16 h-16 text-cosmic-gold mx-auto mb-6" />
+                <h2 className="text-3xl font-cinzel text-white mb-4">Secure Access</h2>
+                <p className="text-cosmic-silver mb-8 italic">Your professional report in {currentRequest?.language} is ready. Fee: €10.</p>
+                
+                <div className="space-y-4">
+                  <button 
+                    onClick={handleProceedToStripe} 
+                    className="w-full py-5 bg-white text-cosmic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
+                  >
+                    Pay via Stripe <ExternalLink className="w-5 h-5" />
+                  </button>
+                  
+                  <div className="py-4 flex items-center gap-4">
+                     <div className="h-px flex-1 bg-cosmic-700"></div>
+                     <span className="text-[10px] text-cosmic-silver uppercase tracking-widest opacity-40">Development Preview</span>
+                     <div className="h-px flex-1 bg-cosmic-700"></div>
                   </div>
+
+                  <button 
+                    onClick={simulateSuccess} 
+                    className="w-full py-4 bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-2xl hover:bg-cosmic-gold hover:text-cosmic-900 transition-all flex items-center justify-center gap-3"
+                  >
+                    <Beaker className="w-4 h-4" /> Simulate Payment & Generate
+                  </button>
+
+                  <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Cancel Request</button>
                 </div>
               </div>
+            </div>
+          )}
+          
+          {view === 'result' && result && (
+            <div className="py-20 px-6">
+              <ReadingResult result={result} onReset={resetToHome} />
+            </div>
+          )}
+        </main>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {SERVICES.map((service, index) => (
-                  <div 
-                    key={service.id}
-                    className="group relative bg-white/[0.03] backdrop-blur-md border border-white/5 p-8 rounded-3xl hover:bg-white/[0.06] hover:border-[#d4af37]/40 transition-all duration-500 cursor-pointer flex flex-col"
-                    onClick={() => handleStartService(service)}
-                  >
-                    <div className="absolute top-6 right-8 text-[#d4af37]/5 font-cinzel text-6xl group-hover:text-[#d4af37]/10 transition-all">
-                      {(index + 1).toString().padStart(2, '0')}
-                    </div>
-                    <div className="mb-8 p-3 bg-white/5 w-fit rounded-2xl group-hover:bg-[#d4af37]/10 transition-colors">
-                      {getServiceIcon(service.icon)}
-                    </div>
-                    <h3 className="text-lg font-cinzel text-white mb-4 tracking-widest uppercase group-hover:text-[#d4af37] transition-colors">{service.title}</h3>
-                    <p className="text-cosmic-silver/60 text-sm leading-relaxed mb-10 font-light italic flex-grow">
-                      {service.description}
-                    </p>
-                    <div className="flex items-center justify-between pt-8 border-t border-white/5">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-[#d4af37]/60 font-bold uppercase tracking-[0.3em] mb-1">Exchange</span>
-                        <span className="text-white font-cinzel text-2xl tracking-tighter">€{service.price}</span>
-                      </div>
-                      <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-[#d4af37] group-hover:text-black transition-all shadow-xl">
-                        <ChevronRight className="w-5 h-5" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <HowItWorksSection />
-            <PhilosophySection />
+        <footer className="border-t border-cosmic-700/50 py-20 bg-cosmic-900 px-6 text-center no-print">
+          <div className="max-w-7xl mx-auto space-y-12">
+            <div className="flex items-center justify-center gap-2">
+              <Star className="text-cosmic-gold w-8 h-8" />
+              <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
+            </div>
+            <p className="text-cosmic-silver text-xs max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-widest">
+              ATLANTICORACLE.COM © 2026. PROFESSIONAL ASTROLOGY SERVICES.
+            </p>
           </div>
-        )}
-        
-        {view === 'form' && selectedService && (
-          <div className="pt-32 pb-40 px-6">
-            <ReadingForm 
-              service={selectedService} 
-              onBack={() => setView('home')} 
-              onSubmit={handleFormSubmit}
-            />
-          </div>
-        )}
-        
-        {view === 'loading' && <LoadingAnimation />}
-        
-        {view === 'result' && result && (
-          <div className="pt-32 pb-40 px-6">
-            <ReadingResult result={result} onReset={() => setView('home')} />
-          </div>
-        )}
-
-        {view === 'error' && (
-          <div className="pt-40 pb-40 px-6 min-h-[70vh] flex flex-col items-center justify-center text-center">
-            <Activity className="w-16 h-16 text-red-500/40 mb-10 animate-pulse" />
-            <h2 className="text-3xl font-cinzel text-white mb-6 uppercase tracking-[0.2em]">Signal Lost</h2>
-            <p className="text-cosmic-silver/70 max-w-xl mb-12 text-lg italic leading-relaxed">"{errorMessage}"</p>
-            <button 
-              onClick={() => setView('home')}
-              className="px-12 py-5 bg-[#d4af37] text-black text-[10px] font-black rounded-full hover:bg-[#e3c58e] transition-all uppercase tracking-[0.4em] shadow-2xl"
-            >
-              Return to Sanctuary
-            </button>
-          </div>
-        )}
-      </main>
-
-      <footer className="bg-black/40 backdrop-blur-3xl border-t border-white/5 pt-24 pb-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col items-center space-y-12">
-          <div className="flex flex-col items-center gap-4">
-            <Star className="w-10 h-10 text-[#d4af37] opacity-60" />
-            <span className="text-2xl font-cinzel font-bold text-white uppercase tracking-[0.4em]">Atlantic Oracle</span>
-          </div>
-          <div className="text-[9px] text-cosmic-silver/20 uppercase tracking-[0.4em] pt-12 border-t border-white/5 w-full text-center">
-            © {new Date().getFullYear()} Atlantic Oracle. Synthesized Celestial Wisdom.
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 };

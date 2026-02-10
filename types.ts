@@ -1,14 +1,17 @@
 
 export enum ServiceType {
-  SOUL_HOROSCOPE = 'soul-horoscope',
-  UNION_HARMONY = 'union-harmony',
-  CAREER_FINANCE = 'career-finance',
-  BEST_MOMENT = 'best-moment',
-  NUMEROLOGY = 'numerology',
-  MUNDANE = 'mundane',
-  ANNUAL_FORECAST = 'annual-forecast',
-  MONTHLY_FORECAST = 'monthly-forecast'
+  NATAL_MATRIX = 'natal-matrix',
+  CELESTIAL_UNION = 'celestial-union',
+  PYTHAGOREAN_DESTINY = 'pythagorean-destiny',
+  MATRIX_FATE = 'matrix-fate',
+  VOCATIONAL_STARS = 'vocational-stars',
+  SOLAR_RETURN = 'solar-return',
+  KARMIC_ECHOES = 'karmic-echoes',
+  GOLDEN_NAME = 'golden-name',
+  TRANSIT_ORACLE = 'transit-oracle'
 }
+
+export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Russian' | 'Ukrainian';
 
 export interface Service {
   id: ServiceType;
@@ -25,7 +28,9 @@ export interface ReadingRequest {
   birthDate: string;
   partnerBirthDate?: string;
   birthTime?: string;
+  partnerBirthTime?: string;
   birthPlace: string;
+  language: ReportLanguage;
 }
 
 export interface ReadingResult {
@@ -34,4 +39,5 @@ export interface ReadingResult {
   content: string;
   timestamp: number;
   userName: string;
+  language: ReportLanguage;
 }

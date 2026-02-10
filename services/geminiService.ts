@@ -1,51 +1,108 @@
 
 import { GoogleGenAI } from "@google/genai";
-import { ReadingRequest, ServiceType } from "../types";
+import { ServiceType, ReadingRequest, ReportLanguage } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
-export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
-  // Инициализация AI напрямую в клиенте
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
-  const systemInstruction = `
-    You are the "Atlantic Oracle", a master of astrology and numerology.
-    Your tone is high-end, poetic, and professional.
-    Structure your output as a luxurious spiritual consultation.
-    RULES:
-    1. Use high-quality Markdown.
-    2. Provide at least 1000 words of deep, personalized insight.
-    3. DO NOT use double asterisks (**). Use # and ## headers.
-    4. Focus on European cycles 2026-2030.
-  `;
+const cleanOracleText = (text: string): string => {
+  let cleaned = text.replace(/\*\*/g, '').replace(/\*/g, '');
+  const aiPhrases = [
+    /^Here is your .* report:/i,
+    /As an AI language model/i,
+    /I cannot predict the future/i,
+    /I hope this helps/i
+  ];
+  aiPhrases.forEach(phrase => {
+    cleaned = cleaned.replace(phrase, '').trim();
+  });
+  return cleaned;
+};
 
-  let prompt = "";
-  if (request.serviceId in COSMIC_PROMPTS) {
-    const promptFunc = COSMIC_PROMPTS[request.serviceId];
-    if (request.serviceId === ServiceType.UNION_HARMONY) {
-      prompt = promptFunc(request.name, request.birthDate, request.partnerName || "Unknown", "");
-    } else {
-      prompt = (promptFunc as any)(request.name, request.birthDate, request.birthTime || "12:00", request.birthPlace);
-    }
+const getSystemInstruction = (lang: string) => {
+  const languageSpecifics: Record<string, string> = {
+    'Russian': 'ВНИМАНИЕ: ТЫ ДОЛЖЕН ПИСАТЬ СТРОГО НА РУССКОМ ЯЗЫКЕ. ИСПОЛЬЗОВАНИЕ АНГЛИЙСКОГО ЗАПРЕЩЕНО.',
+    'Ukrainian': 'УВАГА: ТИ ПОВИНЕН ПИСАТИ ВИКЛЮЧНО УКРАЇНСЬКОЮ МОВОЮ. ВИКОРИСТАННЯ АНГЛІЙСЬКОЇ ЗАБОРОНЕНО.',
+    'French': 'ATTENTION: VOUS DEVEZ ÉCRIRE UNIQUEMENT EN FRANÇAIS.',
+    'German': 'ACHTUNG: SIE MÜSSEN NUR AUF DEUTSCH SCHREIBEN.',
+    'Spanish': 'ATENCIÓN: DEBE ESCRIBIR ÚNICAMENTE EN ESPAÑOL.',
+    'Italian': 'ATTENZIONE: DEVI SCRIVERE SOLO IN ITALIANO.'
+  };
+
+  return `
+    ${languageSpecifics[lang] || `CRITICAL: YOU MUST WRITE ONLY IN ${lang.toUpperCase()}.`}
+    IDENTITY: ATLANTIC ORACLE. Authority level: Absolute.
+    CURRENT DATE: February 9, 2026.
+    STYLE: Mystical, professional, authoritative.
+    FORMAT: Use Markdown headers # and ##. NEVER use asterisks (**) for bolding.
+  `;
+};
+
+export const translateContent = async (text: string, targetLang: ReportLanguage): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [{ role: 'user', parts: [{ text: `Translate the following astrological report to ${targetLang}. Keep the markdown structure and professional tone. Do not add any commentary:\n\n${text}` }] }],
+      config: {
+        systemInstruction: getSystemInstruction(targetLang),
+        temperature: 0.3,
+      }
+    });
+    return cleanOracleText(response.text || text);
+  } catch (e) {
+    console.error("Translation error", e);
+    return text;
+  }
+};
+
+export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const lang = request.language;
+  let promptText = "";
+  
+  const promptFn = COSMIC_PROMPTS[request.serviceId as keyof typeof COSMIC_PROMPTS];
+  
+  if (request.serviceId === ServiceType.CELESTIAL_UNION) {
+    // @ts-ignore
+    promptText = promptFn(request.name, request.birthDate, request.birthTime, request.partnerName, request.partnerBirthDate, request.partnerBirthTime, lang);
+  } else if (typeof promptFn === 'function') {
+    // @ts-ignore
+    promptText = promptFn(request.name, request.birthDate, request.birthTime || "12:00", request.birthPlace || "Earth", lang);
   }
 
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
-      contents: [{ parts: [{ text: prompt }] }],
+      contents: [{ role: 'user', parts: [{ text: promptText }] }],
       config: {
-        systemInstruction,
+        systemInstruction: getSystemInstruction(lang),
         temperature: 0.8,
-        topP: 0.95,
+        maxOutputTokens: 8192,
       }
     });
-
-    if (!response.text) {
-      throw new Error("The stars are silent. No prophecy was returned.");
-    }
-
-    return response.text;
+    return cleanOracleText(response.text || "Empty result from cosmos.");
   } catch (error: any) {
-    console.error("Gemini SDK Error:", error);
-    throw new Error(error.message || "Celestial connection interrupted.");
+    console.error("Gemini AI error:", error);
+    throw new Error("COSMIC_INTERFERENCE");
+  }
+};
+
+export const generateMonthlyGiftHoroscope = async (name: string, birthDate: string, lang: ReportLanguage): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const promptText = COSMIC_PROMPTS.GIFT_MONTHLY_HOROSCOPE(name, birthDate, lang);
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [{ role: 'user', parts: [{ text: promptText }] }],
+      config: {
+        systemInstruction: getSystemInstruction(lang),
+        temperature: 0.9,
+        maxOutputTokens: 4096,
+      }
+    });
+    return cleanOracleText(response.text || "No gift received from the stars.");
+  } catch (error: any) {
+    console.error("Gift generation error:", error);
+    throw new Error("GIFT_GENERATION_FAILED");
   }
 };
