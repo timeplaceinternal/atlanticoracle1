@@ -56,8 +56,7 @@
 
       /* Глубокая настройка печати для PDF */
       @media print {
-        /* Скрываем всё, что не касается документа */
-        .no-print, header, footer, button, .constellation-overlay, canvas, select, nav {
+        .no-print, header, footer, button, .constellation-overlay, canvas, select, nav, .fixed {
           display: none !important;
         }
         
@@ -85,13 +84,12 @@
           display: block !important;
         }
 
-        /* Оформляем отчет как официальный документ */
         .printable-area {
           background: white !important;
           color: black !important;
           border: none !important;
           box-shadow: none !important;
-          padding: 2cm !important;
+          padding: 1.5cm !important;
           margin: 0 !important;
           display: block !important;
           width: 100% !important;
@@ -102,16 +100,11 @@
           max-width: none !important;
         }
 
-        /* Заголовки всегда начинаются с новой страницы, если места мало */
-        h1, h2 {
+        h1, h2, h3 {
           color: black !important;
-          page-break-before: auto;
           page-break-after: avoid;
-          margin-top: 1.5cm !important;
-        }
-
-        h1:first-of-type {
-          margin-top: 0 !important;
+          page-break-before: auto;
+          margin-top: 1cm !important;
         }
 
         p {
@@ -119,29 +112,26 @@
           page-break-inside: avoid;
           orphans: 3;
           widows: 3;
-          margin-bottom: 0.5cm !important;
+          margin-bottom: 0.4cm !important;
         }
 
-        /* Поля страницы */
         @page {
-          margin: 1.5cm;
+          margin: 1cm;
           size: A4 portrait;
         }
 
-        /* Имитация водяного знака или логотипа в печати */
         .printable-area::before {
-          content: "ATLANTIC ORACLE REPORT";
+          content: "ATLANTIC ORACLE • COSMIC REGISTRY REPORT";
           position: fixed;
-          top: 0.5cm;
-          right: 1.5cm;
+          top: 0.4cm;
+          right: 1cm;
           font-family: 'Cinzel', serif;
-          font-size: 8pt;
+          font-size: 7pt;
           color: #d4af37;
-          opacity: 0.5;
+          opacity: 0.4;
         }
       }
 
-      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }

@@ -5,15 +5,37 @@ import LoadingAnimation from './components/LoadingAnimation';
 import ReadingResult from './components/ReadingResult';
 import PhilosophySection from './components/PhilosophySection';
 import HowItWorksSection from './components/HowItWorksSection';
+import PrivacyPolicy from './components/PrivacyPolicy';
 import { SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker, Menu, X, Sparkles, BookOpen, Compass } from 'lucide-react';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote } from 'lucide-react';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 
+const TESTIMONIALS = [
+  {
+    quote: "Mind-blown.",
+    text: "Finally, something that actually resonates. That 'Projector' advice hit home. It’s like they’ve known me my whole life.",
+    author: "Jordan K.",
+    location: "NYC"
+  },
+  {
+    quote: "So accurate!",
+    text: "The report is beautiful and very deep. I printed my Decree and put it on my desk. It gives me so much peace.",
+    author: "Amelia W.",
+    location: "London"
+  },
+  {
+    quote: "Simply perfect.",
+    text: "I love the golden stars! The words are true and the PDF is very good. My destiny is clear now. 10/10.",
+    author: "Ivan P.",
+    location: "Prague"
+  }
+];
+
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result'>('home');
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy'>('home');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
   const [result, setResult] = useState<ReadingResultType | null>(null);
@@ -103,12 +125,19 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-cosmic-gold rounded-lg flex items-center justify-center shadow-lg">
                 <Star className="text-cosmic-900 w-6 h-6" />
               </div>
-              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase">Atlantic Oracle</span>
+              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase hidden sm:inline">Atlantic Oracle</span>
+              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase sm:hidden">Oracle</span>
             </button>
 
             <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
               <button onClick={() => scrollToSection('philosophy')} className="hover:text-cosmic-gold transition-colors">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="hover:text-cosmic-gold transition-colors">How it Works</button>
+              <button 
+                onClick={() => scrollToSection('services')} 
+                className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all font-cinzel tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.1)] active:scale-95"
+              >
+                Oracle Consult
+              </button>
             </div>
 
             <button 
@@ -124,7 +153,7 @@ const App: React.FC = () => {
             <div className="flex flex-col p-8 gap-6 text-center text-sm font-bold text-cosmic-silver uppercase tracking-[0.2em]">
               <button onClick={() => scrollToSection('philosophy')} className="py-2 hover:text-cosmic-gold">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="py-2 hover:text-cosmic-gold">How it Works</button>
-              <button onClick={() => handleStartService(SERVICES[0])} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full">Request Consultation</button>
+              <button onClick={() => scrollToSection('services')} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">Oracle Consult</button>
             </div>
           </div>
         </header>
@@ -199,6 +228,41 @@ const App: React.FC = () => {
               
               <PhilosophySection />
               <HowItWorksSection />
+
+              {/* TESTIMONIALS SECTION */}
+              <section id="testimonials" className="px-6 max-w-7xl mx-auto py-20 relative">
+                <div className="text-center mb-20 space-y-4">
+                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">Echoes from the <span className="text-cosmic-gold">Souls</span></h3>
+                  <div className="w-24 h-px bg-gradient-to-r from-transparent via-cosmic-gold to-transparent mx-auto"></div>
+                  <p className="text-cosmic-silver italic font-playfair">Voices of those who walked the path before you.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                  {TESTIMONIALS.map((t, i) => (
+                    <div key={i} className="bg-cosmic-800/10 backdrop-blur-sm border border-cosmic-gold/10 p-10 rounded-[3rem] space-y-6 relative group hover:border-cosmic-gold/30 transition-all duration-500 hover:shadow-2xl hover:shadow-cosmic-gold/5">
+                      <Quote className="absolute top-8 right-10 w-12 h-12 text-cosmic-gold/5 group-hover:text-cosmic-gold/10 transition-colors" />
+                      
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map(s => (
+                          <Star key={s} className="w-3 h-3 text-cosmic-gold fill-cosmic-gold" />
+                        ))}
+                      </div>
+
+                      <div className="space-y-4">
+                        <h4 className="text-white font-cinzel text-lg tracking-widest uppercase">"{t.quote}"</h4>
+                        <p className="text-cosmic-silver/80 font-light text-sm leading-relaxed italic">
+                          {t.text}
+                        </p>
+                      </div>
+
+                      <div className="pt-6 border-t border-cosmic-gold/10">
+                        <span className="block text-white font-cinzel text-xs tracking-[0.2em] uppercase">{t.author}</span>
+                        <span className="block text-cosmic-silver/40 text-[10px] uppercase tracking-widest mt-1">{t.location}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </div>
           )}
 
@@ -247,15 +311,43 @@ const App: React.FC = () => {
               <ReadingResult result={result} onReset={resetToHome} />
             </div>
           )}
+
+          {view === 'privacy' && (
+            <div className="py-20 px-6">
+              <PrivacyPolicy onBack={resetToHome} />
+            </div>
+          )}
         </main>
 
         <footer className="border-t border-cosmic-700/50 py-20 bg-cosmic-900 px-6 text-center no-print">
           <div className="max-w-7xl mx-auto space-y-12">
-            <div className="flex items-center justify-center gap-2">
-              <Star className="text-cosmic-gold w-8 h-8" />
-              <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
+            <div className="flex flex-col items-center justify-center gap-4">
+              <div className="flex items-center gap-2">
+                <Star className="text-cosmic-gold w-8 h-8" />
+                <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
+              </div>
+              
+              <div className="space-y-3 pt-4">
+                 <a 
+                   href="mailto:oracle@atlanticoracle.com" 
+                   className="flex items-center justify-center gap-3 text-cosmic-gold hover:text-white transition-all group"
+                 >
+                   <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                   <span className="text-sm font-bold tracking-[0.2em] uppercase">oracle@atlanticoracle.com</span>
+                 </a>
+                 <div className="flex flex-col gap-2">
+                    <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.3em] font-medium">Contact • Suggestions • Support</p>
+                    <button 
+                      onClick={() => setView('privacy')} 
+                      className="text-cosmic-silver/60 hover:text-cosmic-gold transition-colors text-[9px] uppercase tracking-[0.3em] underline underline-offset-4 decoration-cosmic-gold/30"
+                    >
+                      Privacy Policy
+                    </button>
+                 </div>
+              </div>
             </div>
-            <p className="text-cosmic-silver text-xs max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-widest">
+
+            <p className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8">
               ATLANTICORACLE.COM © 2026. THE SECRET LANGUAGE OF SPACE AND NUMBERS.
             </p>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles } from 'lucide-react';
+import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles, Share2, Facebook, Send, MessageCircle } from 'lucide-react';
 import { ReadingResult as ReadingResultType, ReportLanguage } from '../types';
 import { generateAestheticBackground } from '../services/imageService';
 import { generateMonthlyGiftHoroscope } from '../services/geminiService';
@@ -17,6 +17,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [scrollBg, setScrollBg] = useState<string | null>(null);
   const [showGiftMode, setShowGiftMode] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   // Gift Horoscope State
   const [isGeneratingGift, setIsGeneratingGift] = useState(false);
@@ -76,13 +77,42 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
   };
 
   const handlePrint = () => {
-    // Принудительно вызываем системный диалог печати
-    // Все стили @media print в index.html позаботятся о чистоте PDF
     window.print();
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Atlantic Oracle Decree',
+      text: `I just received my personal cosmic reading from Atlantic Oracle! 🌌 Explore your path at atlanticoracle.com`,
+      url: 'https://atlanticoracle.com'
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        setShowShareMenu(true);
+      }
+    } else {
+      setShowShareMenu(true);
+    }
+  };
+
+  const shareToSocial = (platform: 'fb' | 'wa' | 'tg') => {
+    const text = encodeURIComponent(`I just received my cosmic decree from Atlantic Oracle! 🌌 Check your path: `);
+    const url = encodeURIComponent('https://atlanticoracle.com');
+    
+    let link = '';
+    if (platform === 'fb') link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    if (platform === 'wa') link = `https://wa.me/?text=${text}${url}`;
+    if (platform === 'tg') link = `https://t.me/share/url?url=${url}&text=${text}`;
+    
+    window.open(link, '_blank');
+    setShowShareMenu(false);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto pb-32 animate-in fade-in duration-1000 relative">
+    <div className="max-w-4xl mx-auto pb-48 animate-in fade-in duration-1000 relative">
       {showGiftMode && scrollBg && (
         <GiftScroll 
           backgroundImage={scrollBg}
@@ -193,7 +223,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
             Seek Another Truth
           </button>
           
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
             <button 
               type="button"
               onClick={handlePrint}
@@ -204,8 +234,17 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
             </button>
             <button 
               type="button"
+              onClick={handleShare}
+              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
+              title="Share Decree"
+            >
+              <Share2 className="w-5 h-5" />
+            </button>
+            <button 
+              type="button"
               onClick={() => {
-                navigator.clipboard.writeText(content + (giftResult ? `\n\n${giftResult}` : ''));
+                const fullText = content + (giftResult ? `\n\n# YOUR MONTHLY GIFT\n\n${giftResult}` : '');
+                navigator.clipboard.writeText(fullText);
                 alert("The decree has been copied to your clipboard.");
               }}
               className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
@@ -217,16 +256,59 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
         </div>
       </div>
 
-      {/* Fixed Floating Action Bar for Print */}
+      {/* Share Popover */}
+      {showShareMenu && (
+        <div className="fixed inset-0 z-[400] bg-cosmic-900/90 backdrop-blur-xl flex items-center justify-center p-6 no-print" onClick={() => setShowShareMenu(false)}>
+          <div className="bg-cosmic-800 border border-cosmic-gold/30 p-10 rounded-[2.5rem] max-w-sm w-full space-y-8 animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+            <div className="text-center">
+              <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">Share the Light</h3>
+              <p className="text-cosmic-silver text-xs mt-2 italic">Choose a channel to spread the wisdom.</p>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <button onClick={() => shareToSocial('wa')} className="flex flex-col items-center gap-3 group">
+                <div className="w-14 h-14 bg-[#25D366]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#25D366] group-hover:text-white transition-all">
+                  <MessageCircle className="w-6 h-6 text-[#25D366] group-hover:text-white" />
+                </div>
+                <span className="text-[10px] uppercase font-bold text-cosmic-silver tracking-widest">WhatsApp</span>
+              </button>
+              <button onClick={() => shareToSocial('tg')} className="flex flex-col items-center gap-3 group">
+                <div className="w-14 h-14 bg-[#0088cc]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#0088cc] group-hover:text-white transition-all">
+                  <Send className="w-6 h-6 text-[#0088cc] group-hover:text-white" />
+                </div>
+                <span className="text-[10px] uppercase font-bold text-cosmic-silver tracking-widest">Telegram</span>
+              </button>
+              <button onClick={() => shareToSocial('fb')} className="flex flex-col items-center gap-3 group">
+                <div className="w-14 h-14 bg-[#1877F2]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#1877F2] group-hover:text-white transition-all">
+                  <Facebook className="w-6 h-6 text-[#1877F2] group-hover:text-white" />
+                </div>
+                <span className="text-[10px] uppercase font-bold text-cosmic-silver tracking-widest">Facebook</span>
+              </button>
+            </div>
+            <button onClick={() => setShowShareMenu(false)} className="w-full py-4 bg-cosmic-gold/10 text-cosmic-gold text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-cosmic-gold/20 transition-all">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Fixed Floating Action Bar for Result */}
       {!showGiftMode && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] no-print">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] no-print flex items-center gap-4 w-[90%] sm:w-auto">
           <button 
             type="button"
             onClick={handlePrint}
-            className="flex items-center gap-3 px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-sm group"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
           >
-            <Printer className="w-6 h-6 group-hover:scale-110 transition-transform" />
-            <span>Save PDF / Print Decree</span>
+            <Printer className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+            <span>Save PDF</span>
+          </button>
+          <button 
+            type="button"
+            onClick={handleShare}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-white text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(255,255,255,0.1)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
+          >
+            <Share2 className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+            <span>Share</span>
           </button>
         </div>
       )}
