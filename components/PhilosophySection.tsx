@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, Moon, Sparkles, Wind } from 'lucide-react';
+import { Star, Moon, Sparkles } from 'lucide-react';
 
 const PhilosophySection: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const PhilosophySection: React.FC = () => {
             Our <span className="text-cosmic-gold">Philosophy</span>
           </h2>
           <p className="text-xl md:text-2xl font-playfair italic text-cosmic-silver/80">
-            "Harmony is the rhythm of the soul dancing with the cosmos."
+            "Destiny is not a cage, but a set of coordinates."
           </p>
         </div>
 
@@ -30,8 +30,7 @@ const PhilosophySection: React.FC = () => {
           
           <div className="space-y-10 first-letter:text-5xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:mr-3 first-letter:float-left">
             <p>
-              Every person naturally seeks harmony — within themselves, with their loved ones, and with the world around them. 
-              We are not alone in this journey. We live in a world governed by universal laws, natural rhythms, and vibrations.
+              We view life as a complex interplay of natural rhythms. Just as a navigator needs both a compass and a map of the stars, a person seeking harmony needs to understand both their internal frequency and the external environment.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-8">
@@ -41,7 +40,7 @@ const PhilosophySection: React.FC = () => {
                   Astrology
                 </div>
                 <p className="text-base leading-relaxed">
-                  Astrology is a tool for understanding the language of the Stars. It reveals the unique rhythm you were born with, highlighting your inner potential, your growth cycles, and the natural flow of your energy.
+                  Astrology is the study of cosmic cycles and planetary transits. It reveals the "climate" of your life—when to act, when to wait, and where the universal energy is flowing at any given moment.
                 </p>
               </div>
 
@@ -51,18 +50,18 @@ const PhilosophySection: React.FC = () => {
                   Numerology
                 </div>
                 <p className="text-base leading-relaxed">
-                  Numerology is a tool for understanding the language of Numbers. It reveals your personal "frequency" — the unique vibration hidden in your name and birth date that forms the very heart of who you are.
+                  Numerology decodes the structural vibration of your name and birth date. It describes your "engine"—the innate qualities, strengths, and spiritual lessons that define your unique identity.
                 </p>
               </div>
             </div>
 
             <p className="text-center max-w-3xl mx-auto italic font-playfair text-2xl text-white">
-              We help you discover your unique vibration and give you practical ways to "tune" it. This allows you to stop fighting against life and start moving in sync with the world around you.
+              By combining these two ancient disciplines, we provide a high-resolution view of your path, allowing you to move in sync with the world rather than against it.
             </p>
 
             <div className="bg-gradient-to-br from-cosmic-gold/10 to-transparent border-l-2 border-cosmic-gold p-10 rounded-r-3xl">
               <p className="text-xl md:text-2xl font-cinzel text-white leading-relaxed">
-                When you are in harmony with the Universe, stress fades away. In its place come clarity, peace, and a deep feeling of being right where you belong. <span className="text-cosmic-gold">This is true harmony.</span>
+                When the internal vibration (Numbers) aligns with the external rhythm (Stars), friction disappears. This is the state of natural flow we help our visitors achieve.
               </p>
             </div>
           </div>
@@ -70,11 +69,11 @@ const PhilosophySection: React.FC = () => {
           {/* Footer Signature */}
           <div className="pt-20 text-center">
             <div className="inline-block relative">
-              <span className="text-3xl md:text-5xl font-cinzel text-white font-bold tracking-tighter">ATLANTIC ORACLE</span>
+              <span className="text-3xl md:text-5xl font-cinzel text-white font-bold tracking-tighter uppercase">Atlantic Oracle</span>
               <div className="absolute -bottom-4 left-0 right-0 h-px bg-cosmic-gold"></div>
             </div>
             <p className="mt-8 text-cosmic-silver/60 text-sm tracking-[0.3em] uppercase">
-              Align your soul with the secret language of the stars.
+              Deciphering the secret language of the stars.
             </p>
           </div>
         </article>
