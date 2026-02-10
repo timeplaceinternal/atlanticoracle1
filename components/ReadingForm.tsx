@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Service, ServiceType, ReadingRequest, ReportLanguage } from '../types';
 import { ArrowLeft, MapPin, Clock, User, ShieldCheck } from 'lucide-react';
@@ -11,7 +12,7 @@ interface ReadingFormProps {
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) => {
-  const currentYear = 2026;
+  const currentYear = new Date().getFullYear();
 
   const [name, setName] = useState('');
   const [birthPlace, setBirthPlace] = useState('');

@@ -27,10 +27,17 @@ const getSystemInstruction = (lang: string) => {
     'Italian': 'ATTENZIONE: DEVI SCRIVERE SOLO IN ITALIANO.'
   };
 
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+
   return `
     ${languageSpecifics[lang] || `CRITICAL: YOU MUST WRITE ONLY IN ${lang.toUpperCase()}.`}
     IDENTITY: ATLANTIC ORACLE. Authority level: Absolute.
-    CURRENT DATE: February 9, 2026.
+    CURRENT DATE: ${dateStr}.
     STYLE: Mystical, professional, authoritative.
     FORMAT: Use Markdown headers # and ##. NEVER use asterisks (**) for bolding.
   `;

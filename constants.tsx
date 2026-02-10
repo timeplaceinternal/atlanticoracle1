@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
@@ -23,7 +24,7 @@ export const SERVICES: Service[] = [
   {
     id: ServiceType.YEARLY_SOLAR,
     title: "The 12-Month Solar Return (Yearly Forecast)",
-    description: "\"Your Year Ahead.\" A comprehensive roadmap for 2026. Identify key dates of fortune, periods of luck, and celestial warnings from birthday to birthday.",
+    description: "\"Your Year Ahead.\" A comprehensive roadmap for the next 12 months. Identify key dates of fortune, periods of luck, and celestial warnings from birthday to birthday.",
     icon: "calendar",
     price: 10
   },
@@ -97,10 +98,19 @@ const PROMPT_CORE = (lang: string) => {
     'Ukrainian': 'ВІДПОВІДАЙ ВИКЛЮЧНО УКРАЇНСЬКОЮ МОВОЮ. ВИКОРИСТОВУЙ КИРИЛИЦЮ.',
     'English': 'REPLY ONLY IN ENGLISH.'
   };
+  
+  // Dynamic Date Generation
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  }).toUpperCase();
+
   return `
     ${langRules[lang] || `Reply strictly in ${lang}.`}
     IDENTITY: ATLANTIC ORACLE. Authority in Astrology, Numerology, and Human Design.
-    CURRENT DATE: FEBRUARY 9, 2026.
+    CURRENT DATE: ${dateStr}.
     FORMAT: No stars (*). Use headers # and ##.
     DEPTH: Professional, analytical, and extensive (800-1500 words).
     
@@ -123,8 +133,8 @@ export const COSMIC_PROMPTS = {
   `,
   [ServiceType.YEARLY_SOLAR]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    Service: 12-Month Solar Return (Yearly Forecast 2026). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Map out the year ahead. Identify lucky transits, critical windows for action, and celestial warnings.
+    Service: 12-Month Solar Return (Yearly Forecast). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Map out the year ahead starting from the current date. Identify lucky transits, critical windows for action, and celestial warnings.
   `,
   [ServiceType.KARMIC_DESTINY]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
