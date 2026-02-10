@@ -1,73 +1,72 @@
-
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint
 } from 'lucide-react';
 import { ServiceType, Service } from './types';
 
 export const SERVICES: Service[] = [
   {
-    id: ServiceType.NATAL_MATRIX,
-    title: "The Natal Matrix (Matrix Natalis)",
-    description: "A complete personality decoding based on your precise birth coordinates. Discover your hidden talents, core fears, and the manual to your true self.",
+    id: ServiceType.NATAL_CHART,
+    title: "The Natal Matrix (Natal Chart Report)",
+    description: "Your cosmic blueprint. A deep psychological portrait based on planetary positions at birth. Discover your innate strengths, core weaknesses, and the unique architecture of your personality.",
     icon: "sparkles",
     price: 10
   },
   {
-    id: ServiceType.CELESTIAL_UNION,
-    title: "Celestial Union (Unio Caelestis)",
-    description: "A deep synastry analysis of two souls. Explore the karmic tasks, points of harmony, and potential challenges within your partnership.",
+    id: ServiceType.LOVE_SYNASTRY,
+    title: "Synastry & Love Compatibility",
+    description: "Our most requested guide. Why are you drawn to each other? Explore relationship dynamics, domestic harmony, and sexual chemistry between two souls.",
     icon: "heart",
     price: 10
   },
   {
-    id: ServiceType.PYTHAGOREAN_DESTINY,
-    title: "The Pythagorean Destiny (Destinatio Pythagorica)",
-    description: "The pure mathematics of destiny. Analysis based on the Pythagoras Square and the core numbers of your soul and path.",
-    icon: "hash",
-    price: 10
-  },
-  {
-    id: ServiceType.MATRIX_FATE,
-    title: "Personal Horoscope for 1 Year (Horoscopus Annua)",
-    description: "A comprehensive map of your upcoming year. Detailed analysis of planetary transits and life-changing cycles tailored to your unique birth chart.",
-    icon: "zap",
-    price: 10
-  },
-  {
-    id: ServiceType.VOCATIONAL_STARS,
-    title: "Vocational Stars (Astra Vocationalis)",
-    description: "Align your career and finances with the stars. Analysis of the 2nd, 8th, and 10th houses to find your path to success and wealth.",
-    icon: "briefcase",
-    price: 10
-  },
-  {
-    id: ServiceType.SOLAR_RETURN,
-    title: "Solar Return (Revolutio Solaris)",
-    description: "Your personal annual roadmap. A comprehensive forecast from your current birthday to the next, mapping your upcoming 12 months.",
+    id: ServiceType.YEARLY_SOLAR,
+    title: "The 12-Month Solar Return (Yearly Forecast)",
+    description: "\"Your Year Ahead.\" A comprehensive roadmap for 2026. Identify key dates of fortune, periods of luck, and celestial warnings from birthday to birthday.",
     icon: "calendar",
     price: 10
   },
   {
-    id: ServiceType.KARMIC_ECHOES,
-    title: "Karmic Echoes (Echoes Karmica)",
-    description: "Unveil the mysteries of your previous incarnations. Understand the Rahu and Ketu nodes and the lessons influencing your current life.",
+    id: ServiceType.KARMIC_DESTINY,
+    title: "Karmic Destiny & Past Lives",
+    description: "Identify the lessons you've brought from past incarnations. Understand your Nodes of Fate (North/South Node) and your soul's current mission in this life.",
     icon: "history",
     price: 10
   },
   {
-    id: ServiceType.GOLDEN_NAME,
-    title: "The Golden Name (Nomen Aureum)",
-    description: "The vibration of your name and its impact on your luck. A perfect analysis for those choosing names for children or business.",
-    icon: "star",
+    id: ServiceType.CAREER_WEALTH,
+    title: "Career & Wealth Alignment",
+    description: "A niche guide for professionals and seekers. Discover where your abundance lies, which sectors offer the highest returns, and the best timing for career shifts.",
+    icon: "briefcase",
     price: 10
   },
   {
-    id: ServiceType.TRANSIT_ORACLE,
-    title: "Transit Oracle (Oraculum Transitus)",
-    description: "Real-time celestial guidance. Understand how current planetary transits (Saturn, Jupiter) influence your unique personal biorhythms.",
-    icon: "moonstar",
+    id: ServiceType.PYTHAGOREAN_CODE,
+    title: "The Pythagorean Code (Numerology)",
+    description: "Mathematical precision for the modern mind. Calculation of your Life Path Number and core vibrations hidden within your birth date and name.",
+    icon: "hash",
+    price: 10
+  },
+  {
+    id: ServiceType.HUMAN_DESIGN,
+    title: "Human Design: The Strategy of Life",
+    description: "Identify your energetic type (Manifestor, Generator, etc.). Learn how to make decisions without resistance and align with your natural flow.",
+    icon: "fingerprint",
+    price: 10
+  },
+  {
+    id: ServiceType.ASTRO_CARTOGRAPHY,
+    title: "Astro-Cartography (Relocation Map)",
+    description: "\"Where is your city of power?\" Find specific coordinates on Earth where you'll encounter love, career breakthroughs, or spiritual peace.",
+    icon: "globe",
+    price: 10
+  },
+  {
+    id: ServiceType.SATURN_RETURN,
+    title: "Saturn Return Survival Guide",
+    description: "Navigate the critical crisis of age 29-30. Learn how to survive this cosmic 'coming of age' and emerge as a mature, victorious version of yourself.",
+    icon: "zap",
     price: 10
   }
 ];
@@ -87,6 +86,7 @@ export const getServiceIcon = (iconName: string) => {
     case 'zap': return <Zap {...props} className="text-orange-400" />;
     case 'star': return <Star {...props} className="text-cosmic-gold" />;
     case 'gift': return <Gift {...props} className="text-cosmic-gold" />;
+    case 'fingerprint': return <Fingerprint {...props} className="text-cosmic-purple" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -99,51 +99,66 @@ const PROMPT_CORE = (lang: string) => {
   };
   return `
     ${langRules[lang] || `Reply strictly in ${lang}.`}
-    IDENTITY: ATLANTIC ORACLE. Authority in Astrology & Numerology.
-    DATE: FEBRUARY 9, 2026.
+    IDENTITY: ATLANTIC ORACLE. Authority in Astrology, Numerology, and Human Design.
+    CURRENT DATE: FEBRUARY 9, 2026.
     FORMAT: No stars (*). Use headers # and ##.
-    DEPTH: Professional and extensive analysis.
+    DEPTH: Professional, analytical, and extensive (800-1500 words).
     
     MANDATORY FINAL SECTION: 
-    Every report MUST end with a substantial section titled "# Synthesis and the Path of Harmony" (or translation). 
-    REQUIREMENTS FOR THIS FINAL SECTION:
-    1. Summarize the entire study in simple, clear, and accessible language (layman's terms).
-    2. Motivate the subject towards creativity, positive construction, and deep mutual understanding.
-    3. Infuse the text with a "High Vibration" - a positive, uplifting, and empowering vibe.
-    4. Include a gentle protective warning against impulsive, reactive, or ill-considered decisions.
-    5. Ensure it feels like a standalone "Page of Wisdom" that the user will want to remember.
+    Every report MUST end with a substantial section titled "# Synthesis and the Path of Harmony".
+    Summarize the study in clear terms, motivate the subject towards growth, and provide high-vibration guidance.
   `;
 };
 
 export const COSMIC_PROMPTS = {
-  [ServiceType.NATAL_MATRIX]: (name: string, date: string, time: string, place: string, lang: string) => `
+  [ServiceType.NATAL_CHART]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    Service: Matrix Natalis. Subject: ${name}, born ${date} at ${time} in ${place}.
-    Generate 2000-2500 words. Comprehensive soul map, Ascendant, Moon nodes. Include the final "Path of Harmony" section.
+    Service: Natal Chart Report (Cosmic Blueprint). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Generate a deep psychological portrait. Analyze the Ascendant, Sun, and Moon placements. Focus on internal architecture, strengths, and shadow aspects.
   `,
-  [ServiceType.CELESTIAL_UNION]: (n1: string, d1: string, t1: string, n2: string, d2: string, t2: string, lang: string) => `
+  [ServiceType.LOVE_SYNASTRY]: (n1: string, d1: string, t1: string, n2: string, d2: string, t2: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    Service: Unio Caelestis. ${n1} (${d1} ${t1}) and ${n2} (${d2} ${t2}).
-    Analyze synastry. 2000-2500 words. Karmic connection and advice. Include the final "Path of Harmony" section.
+    Service: Synastry & Love Compatibility (Relationship Analysis). Partners: ${n1} (${d1} ${t1}) and ${n2} (${d2} ${t2}).
+    Analyze the energetic pull between them. Discuss compatibility in domestic life, emotional support, and physical intimacy. Explain the 'why' behind their connection.
+  `,
+  [ServiceType.YEARLY_SOLAR]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: 12-Month Solar Return (Yearly Forecast 2026). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Map out the year ahead. Identify lucky transits, critical windows for action, and celestial warnings.
+  `,
+  [ServiceType.KARMIC_DESTINY]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: Karmic Destiny & Past Lives. Subject: ${name}, born ${date} at ${time} in ${place}.
+    Explore the Lunar Nodes (North/South). What lessons are brought from previous lives? What is the current life's spiritual mandate?
+  `,
+  [ServiceType.CAREER_WEALTH]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: Career & Wealth Alignment. Subject: ${name}, born ${date} at ${time} in ${place}.
+    Focus on the 2nd, 6th, and 10th houses. Identify sectors of abundance, professional timing for shifts, and financial hurdles to overcome.
+  `,
+  [ServiceType.PYTHAGOREAN_CODE]: (name: string, date: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: The Pythagorean Code (Numerology). Subject: ${name}, born ${date}.
+    Calculate the Life Path Number with mathematical precision. Explain its vibration and the destined trajectory it sets for the subject.
+  `,
+  [ServiceType.HUMAN_DESIGN]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: Human Design Strategy. Subject: ${name}, born ${date} at ${time} in ${place}.
+    Identify Type, Authority, and Profile. Explain how to make decisions correctly to avoid resistance and live authentically.
+  `,
+  [ServiceType.ASTRO_CARTOGRAPHY]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: Astro-Cartography (Power Locations). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Suggest global locations based on planetary lines. Where will they find love? Where is the career rise? Where is the sanctuary?
+  `,
+  [ServiceType.SATURN_RETURN]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: Saturn Return Survival Guide (Age 29-30 Crisis). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Analyze Saturn's placement. Explain the significance of the 29.5-year cycle. Provide advice for maturity and mastering life's heavy lessons.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    SPECIAL GIFT SERVICE: Monthly Personal Horoscope. 
-    Subject: ${name}, born ${date}.
-    Generate a 1200-1500 word forecast for the next 30 days starting from February 9, 2026.
-    Structure:
-    1. Overall monthly vibration.
-    2. Weekly breakdown (Weeks 1-4).
-    3. Days of power.
-    4. Health and Love focus.
-    5. Final "Path of Harmony" section (Motivation, Simple Summary, High Vibrations).
-    Tone: Deeply encouraging, precise, mystical.
-  `,
-  [ServiceType.PYTHAGOREAN_DESTINY]: (name: string, date: string, lang: string) => `${PROMPT_CORE(lang)} Service: Destinatio Pythagorica. ${name} (${date}). 2000+ words. Include Path of Harmony.`,
-  [ServiceType.MATRIX_FATE]: (name: string, date: string, lang: string) => `${PROMPT_CORE(lang)} Service: Horoscopus Annua. ${name} (${date}). 2000+ words. Include Path of Harmony.`,
-  [ServiceType.VOCATIONAL_STARS]: (name: string, date: string, time: string, lang: string) => `${PROMPT_CORE(lang)} Service: Astra Vocationalis. ${name} (${date} ${time}). 2000+ words. Include Path of Harmony.`,
-  [ServiceType.SOLAR_RETURN]: (name: string, date: string, time: string, lang: string) => `${PROMPT_CORE(lang)} Service: Revolutio Solaris. ${name} (${date} ${time}). 2000+ words. Include Path of Harmony.`,
-  [ServiceType.KARMIC_ECHOES]: (name: string, date: string, time: string, lang: string) => `${PROMPT_CORE(lang)} Service: Echoes Karmica. ${name} (${date} ${time}). 2000+ words. Include Path of Harmony.`,
-  [ServiceType.GOLDEN_NAME]: (name: string, date: string, lang: string) => `${PROMPT_CORE(lang)} Service: Nomen Aureum. ${name} (${date}). 2000+ words. Include Path of Harmony.`,
-  [ServiceType.TRANSIT_ORACLE]: (name: string, date: string, time: string, lang: string) => `${PROMPT_CORE(lang)} Service: Oraculum Transitus. ${name} (${date} ${time}). 2000+ words. Include Path of Harmony.`
+    SPECIAL GIFT: Personal Monthly Forecast. Subject: ${name}, born ${date}.
+    Provide a detailed 30-day forecast. Highlight major transits, weekly focus points, and high-vibration spiritual advice.
+  `
 };

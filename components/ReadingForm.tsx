@@ -14,8 +14,6 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 
 const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) => {
   const currentYear = 2026;
-  const currentMonth = 2; // February
-  const currentDay = 9;
 
   const [name, setName] = useState('');
   const [birthPlace, setBirthPlace] = useState('');
@@ -35,11 +33,12 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
   const [showErrors, setShowErrors] = useState(false);
 
+  const isUnion = service.id === ServiceType.LOVE_SYNASTRY;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShowErrors(true);
 
-    const isUnion = service.id === ServiceType.CELESTIAL_UNION;
     const isMainValid = name.trim() !== '' && birthPlace.trim() !== '';
     const isPartnerValid = !isUnion || partnerName.trim() !== '';
 
@@ -61,12 +60,10 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
         partnerBirthTime: isUnion ? partnerBirthTime : undefined,
       });
     } else {
-      // Smooth scroll to top of form on error so mobile users see what's wrong
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const isUnion = service.id === ServiceType.CELESTIAL_UNION;
   const years = Array.from({ length: 121 }, (_, i) => currentYear - i);
   const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));

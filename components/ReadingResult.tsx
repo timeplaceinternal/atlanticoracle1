@@ -243,14 +243,13 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
             onClick={onReset}
             className="flex items-center gap-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors font-bold uppercase tracking-widest text-xs"
           >
-            <RefreshCw className="w-4 h-4" />
             Seek Another Truth
           </button>
           
           <div className="flex items-center gap-6">
             <button 
               onClick={handlePrint}
-              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20"
+              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
               title="Print Decree"
             >
               <Printer className="w-5 h-5" />
@@ -260,7 +259,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
                 navigator.clipboard.writeText(content + (giftResult ? `\n\n${giftResult}` : ''));
                 alert("The decree has been copied to your clipboard.");
               }}
-              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20"
+              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
               title="Copy to Clipboard"
             >
               <Copy className="w-5 h-5" />
@@ -268,6 +267,19 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
           </div>
         </div>
       </div>
+
+      {/* Fixed Floating Action Bar for Print */}
+      {!showGiftMode && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] no-print">
+          <button 
+            onClick={handlePrint}
+            className="flex items-center gap-3 px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.3)] uppercase tracking-[0.2em] text-sm group"
+          >
+            <Printer className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <span>Save PDF / Print Scroll</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

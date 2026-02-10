@@ -1,14 +1,14 @@
 
 export enum ServiceType {
-  NATAL_MATRIX = 'natal-matrix',
-  CELESTIAL_UNION = 'celestial-union',
-  PYTHAGOREAN_DESTINY = 'pythagorean-destiny',
-  MATRIX_FATE = 'matrix-fate',
-  VOCATIONAL_STARS = 'vocational-stars',
-  SOLAR_RETURN = 'solar-return',
-  KARMIC_ECHOES = 'karmic-echoes',
-  GOLDEN_NAME = 'golden-name',
-  TRANSIT_ORACLE = 'transit-oracle'
+  NATAL_CHART = 'natal-chart',
+  LOVE_SYNASTRY = 'love-synastry',
+  YEARLY_SOLAR = 'yearly-solar',
+  KARMIC_DESTINY = 'karmic-destiny',
+  CAREER_WEALTH = 'career-wealth',
+  PYTHAGOREAN_CODE = 'pythagorean-code',
+  HUMAN_DESIGN = 'human-design',
+  ASTRO_CARTOGRAPHY = 'astro-cartography',
+  SATURN_RETURN = 'saturn-return'
 }
 
 export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Russian' | 'Ukrainian';
@@ -40,6 +40,5 @@ export interface ReadingResult {
   timestamp: number;
   userName: string;
   language: ReportLanguage;
-  // Added birthDate to support subsequent gift generation
   birthDate: string;
 }

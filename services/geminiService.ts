@@ -36,7 +36,6 @@ const getSystemInstruction = (lang: string) => {
   `;
 };
 
-// Fixed: Corrected SDK usage by passing string directly to contents
 export const translateContent = async (text: string, targetLang: ReportLanguage): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
@@ -55,7 +54,6 @@ export const translateContent = async (text: string, targetLang: ReportLanguage)
   }
 };
 
-// Fixed: Corrected SDK usage by passing string directly to contents
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const lang = request.language;
@@ -63,9 +61,12 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   
   const promptFn = COSMIC_PROMPTS[request.serviceId as keyof typeof COSMIC_PROMPTS];
   
-  if (request.serviceId === ServiceType.CELESTIAL_UNION) {
+  if (request.serviceId === ServiceType.LOVE_SYNASTRY) {
     // @ts-ignore
     promptText = promptFn(request.name, request.birthDate, request.birthTime, request.partnerName, request.partnerBirthDate, request.partnerBirthTime, lang);
+  } else if (request.serviceId === ServiceType.PYTHAGOREAN_CODE) {
+    // @ts-ignore
+    promptText = promptFn(request.name, request.birthDate, lang);
   } else if (typeof promptFn === 'function') {
     // @ts-ignore
     promptText = promptFn(request.name, request.birthDate, request.birthTime || "12:00", request.birthPlace || "Earth", lang);
@@ -88,7 +89,6 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   }
 };
 
-// Fixed: Corrected SDK usage by passing string directly to contents
 export const generateMonthlyGiftHoroscope = async (name: string, birthDate: string, lang: ReportLanguage): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const promptText = COSMIC_PROMPTS.GIFT_MONTHLY_HOROSCOPE(name, birthDate, lang);
