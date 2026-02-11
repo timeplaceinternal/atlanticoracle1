@@ -22,7 +22,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
   const [day, setDay] = useState('1');
   const [year, setYear] = useState('1990');
   
-  // Убран выбор языка, фиксируем English до момента полной локализации сайта
+  // Language selection is hidden, defaulting to English until full localization is complete.
   const [language] = useState<ReportLanguage>('English');
 
   const [partnerName, setPartnerName] = useState('');

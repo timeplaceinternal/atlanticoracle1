@@ -1,10 +1,7 @@
-
 import React, { useState } from 'react';
 import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles, Share2, Facebook, Send, MessageCircle, ChevronRight, Shield } from 'lucide-react';
 import { ReadingResult as ReadingResultType, ReportLanguage } from '../types';
-import { generateAestheticBackground } from '../services/imageService';
 import { generateMonthlyGiftHoroscope } from '../services/geminiService';
-import GiftScroll from './GiftScroll';
 
 interface ReadingResultProps {
   result: ReadingResultType;
@@ -15,9 +12,6 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
   const [content] = useState(result.content);
   const [currentLang] = useState<ReportLanguage>(result.language);
   
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [scrollBg, setScrollBg] = useState<string | null>(null);
-  const [showGiftMode, setShowGiftMode] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   // Gift Horoscope State
@@ -48,37 +42,6 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
     }
   };
 
-  const handleGenerateScroll = async () => {
-    const aistudio = (window as any).aistudio;
-    if (aistudio) {
-      try {
-        const hasKey = await aistudio.hasSelectedApiKey();
-        if (!hasKey) {
-          await aistudio.openSelectKey();
-        }
-      } catch (e) {
-        console.warn("Key selection unavailable, proceeding anyway.");
-      }
-    }
-
-    try {
-      setIsGenerating(true);
-      const bg = await generateAestheticBackground(currentLang as any);
-      setScrollBg(bg);
-      setShowGiftMode(true);
-    } catch (error: any) {
-      console.error("Scroll Generation Error:", error);
-      if (error.message === "API_KEY_ERROR") {
-        alert("Please select your API key to generate premium imagery.");
-        if (aistudio) await aistudio.openSelectKey();
-      } else {
-        alert("Celestial turbulence. Please try again.");
-      }
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   const handlePrint = () => {
     window.print();
   };
@@ -103,15 +66,6 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
 
   return (
     <div className="max-w-4xl mx-auto pb-48 animate-in fade-in duration-1000 relative result-page">
-      {showGiftMode && scrollBg && (
-        <GiftScroll 
-          backgroundImage={scrollBg}
-          text={giftResult ? `${content}\n\n# YOUR MONTHLY GIFT\n\n${giftResult}` : content}
-          userName={result.userName}
-          onClose={() => setShowGiftMode(false)}
-        />
-      )}
-
       {/* Result Header */}
       <div className="text-center mb-12 py-10 border-b border-cosmic-gold/10 no-print">
         {isFree && <div className="inline-block px-3 py-0.5 bg-cosmic-gold text-cosmic-900 text-[8px] font-bold uppercase tracking-[0.3em] rounded mb-3">Free Insight</div>}
@@ -134,26 +88,6 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
            <h2 className="text-3xl font-cinzel text-[#2d2419] tracking-[0.2em] uppercase print:text-black">Sacred Registry</h2>
            <p className="text-[10px] font-cinzel text-[#8b7355] uppercase tracking-[0.4em] mt-2 font-bold print:text-black">For the seeker: {result.userName}</p>
         </div>
-
-        {/* Premium Export Trigger - Modern Float */}
-        {!isFree && (
-          <div className="mb-16 p-8 bg-[#1a1510]/5 border-2 border-dashed border-[#d4af37]/30 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 no-print">
-            <div className="space-y-1 text-center md:text-left">
-              <h3 className="text-[#2d2419] font-cinzel text-lg tracking-widest uppercase font-bold">Artistic Calligraphy</h3>
-              <p className="text-[#8b7355] text-xs font-serif italic">Transform this registry into an illuminated manuscript.</p>
-            </div>
-            
-            <button 
-              type="button"
-              onClick={handleGenerateScroll}
-              disabled={isGenerating}
-              className="px-8 py-4 bg-[#2d2419] text-[#f4ecd8] font-bold rounded-full hover:scale-105 transition-all flex items-center gap-3 text-xs disabled:opacity-50 shadow-xl uppercase tracking-widest active:scale-95"
-            >
-              {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
-              <span>{isGenerating ? "Preparing Parchment..." : "Generate Artistic Scroll"}</span>
-            </button>
-          </div>
-        )}
 
         {/* Content Body with Antique Typography */}
         <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif text-lg selection:bg-[#d4af37]/30 transition-all duration-700 print:text-black">
@@ -284,18 +218,16 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
       </div>
 
       {/* Fixed Floating Action Bar for Result */}
-      {!showGiftMode && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] no-print flex items-center gap-4 w-[90%] sm:w-auto">
-          <button 
-            type="button"
-            onClick={handlePrint}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-[#d4af37] text-[#2d2419] font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
-          >
-            <Printer className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-            <span>Save Registry PDF</span>
-          </button>
-        </div>
-      )}
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] no-print flex items-center gap-4 w-[90%] sm:w-auto">
+        <button 
+          type="button"
+          onClick={handlePrint}
+          className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-[#d4af37] text-[#2d2419] font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
+        >
+          <Printer className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
+          <span>Save Registry PDF</span>
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,5 @@
 {
   "name": "Atlantic Oracle - Spiritual Navigation & Astrology",
   "description": "Premium astrology and numerology services for the modern soul. Discover your path through professional soul horoscopes and celestial guidance at atlanticoracle.com.",
-  "requestFramePermissions": [
-    "geolocation"
-  ]
+  "requestFramePermissions": []
 }

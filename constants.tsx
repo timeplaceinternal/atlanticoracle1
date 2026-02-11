@@ -124,8 +124,8 @@ export const getServiceIcon = (iconName: string) => {
 
 const PROMPT_CORE = (lang: string) => {
   const langRules: Record<string, string> = {
-    'Russian': 'ОТВЕЧАЙ ТОЛЬКО НА РУССКОМ ЯЗЫКЕ. ИСПОЛЬЗУЙ КИРИЛЛИЦУ.',
-    'Ukrainian': 'ВІДПОВІДАЙ ВИКЛЮЧНО УКРАЇНСЬКОЮ МОВОЮ. ВИКОРИСТОВУЙ КИРИЛИЦЮ.',
+    'Russian': 'REPLY ONLY IN RUSSIAN. USE CYRILLIC.',
+    'Ukrainian': 'REPLY ONLY IN UKRAINIAN. USE CYRILLIC.',
     'English': 'REPLY ONLY IN ENGLISH.'
   };
   

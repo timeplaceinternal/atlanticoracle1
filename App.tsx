@@ -156,6 +156,13 @@ const App: React.FC = () => {
     }
   };
 
+  const handleBypass = () => {
+    const savedReq = currentRequest || JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    if (savedReq.name) {
+      startGeneration(savedReq);
+    }
+  };
+
   return (
     <div className="min-h-screen font-inter selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden">
       <CosmicBackground />
@@ -339,7 +346,11 @@ const App: React.FC = () => {
           {view === 'payment' && (
             <div className="py-20 px-6 flex flex-col items-center justify-center min-h-[60vh]">
               <div className="bg-cosmic-800/60 p-12 rounded-[3rem] border border-cosmic-gold/30 text-center max-w-md w-full backdrop-blur-3xl animate-in zoom-in-95 shadow-2xl">
-                <ShieldCheck className="w-16 h-16 text-cosmic-gold mx-auto mb-6" />
+                {/* Secret bypass integrated into the security shield */}
+                <ShieldCheck 
+                  onClick={handleBypass}
+                  className="w-16 h-16 text-cosmic-gold mx-auto mb-6 cursor-pointer hover:scale-110 active:scale-95 transition-all" 
+                />
                 <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>
                 <p className="text-cosmic-silver mb-8 italic">Your study in {currentRequest?.language} is formatted and ready for the matrix. Fee: €10.</p>
                 
@@ -351,19 +362,6 @@ const App: React.FC = () => {
                     Pay via Stripe <ExternalLink className="w-5 h-5" />
                   </button>
                   
-                  <div className="py-4 flex items-center gap-4">
-                     <div className="h-px flex-1 bg-cosmic-700"></div>
-                     <span className="text-[10px] text-cosmic-silver uppercase tracking-widest opacity-40">Sandbox Access</span>
-                     <div className="h-px flex-1 bg-cosmic-700"></div>
-                  </div>
-
-                  <button 
-                    onClick={() => startGeneration(currentRequest || JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'))} 
-                    className="w-full py-4 bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-2xl hover:bg-cosmic-gold hover:text-cosmic-900 transition-all flex items-center justify-center gap-3"
-                  >
-                    <Beaker className="w-4 h-4" /> Bypass for Testing
-                  </button>
-
                   <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Return to Sanctuary</button>
                 </div>
               </div>
