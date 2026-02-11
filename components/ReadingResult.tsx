@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles, Share2, Facebook, Send, MessageCircle, ChevronRight } from 'lucide-react';
+import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles, Share2, Facebook, Send, MessageCircle, ChevronRight, Shield } from 'lucide-react';
 import { ReadingResult as ReadingResultType, ReportLanguage } from '../types';
 import { generateAestheticBackground } from '../services/imageService';
 import { generateMonthlyGiftHoroscope } from '../services/geminiService';
@@ -136,52 +136,72 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
         </p>
       </div>
 
-      {/* Main Report Area */}
-      <div className="bg-cosmic-800/40 backdrop-blur-3xl rounded-[3rem] p-8 md:p-16 border border-cosmic-gold/10 relative shadow-2xl printable-area">
-        {/* Aesthetic generation controls */}
+      {/* Main Report Area - Defaulting to Antique Scroll Look */}
+      <div className="antique-paper rounded-sm p-8 md:p-20 border-[12px] border-double border-[#d4af37]/40 relative shadow-2xl printable-area">
+        
+        {/* Heraldic Header */}
+        <div className="text-center mb-20 border-b-2 border-[#d4af37]/20 pb-12">
+           <div className="w-20 h-20 bg-transparent border-2 border-[#d4af37]/50 rounded-full mx-auto flex items-center justify-center mb-6">
+             <Shield className="w-10 h-10 text-[#d4af37]" />
+           </div>
+           <h2 className="text-3xl font-cinzel text-[#2d2419] tracking-[0.2em] uppercase">Sacred Registry</h2>
+           <p className="text-[10px] font-cinzel text-[#8b7355] uppercase tracking-[0.4em] mt-2 font-bold">For the seeker: {result.userName}</p>
+        </div>
+
+        {/* Premium Export Trigger - Modern Float */}
         {!isFree && (
-          <div className="mb-12 p-8 bg-cosmic-gold/5 border border-cosmic-gold/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 no-print">
+          <div className="mb-16 p-8 bg-[#1a1510]/5 border-2 border-dashed border-[#d4af37]/30 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6 no-print">
             <div className="space-y-1 text-center md:text-left">
-              <h3 className="text-white font-cinzel text-xl tracking-widest uppercase">Premium Export</h3>
-              <p className="text-cosmic-silver text-xs opacity-70">Transform your decree into a visual masterpiece.</p>
+              <h3 className="text-[#2d2419] font-cinzel text-lg tracking-widest uppercase font-bold">Artistic Calligraphy</h3>
+              <p className="text-[#8b7355] text-xs font-serif italic">Transform this registry into an illuminated manuscript.</p>
             </div>
             
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <button 
-                type="button"
-                onClick={handleGenerateScroll}
-                disabled={isGenerating}
-                className="px-8 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-all flex items-center gap-2 text-sm disabled:opacity-50 shadow-lg shadow-cosmic-gold/10 uppercase tracking-widest active:scale-95"
-              >
-                {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
-                <span>Artistic Scroll</span>
-              </button>
-            </div>
+            <button 
+              type="button"
+              onClick={handleGenerateScroll}
+              disabled={isGenerating}
+              className="px-8 py-4 bg-[#2d2419] text-[#f4ecd8] font-bold rounded-full hover:scale-105 transition-all flex items-center gap-3 text-xs disabled:opacity-50 shadow-xl uppercase tracking-widest active:scale-95"
+            >
+              {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
+              <span>{isGenerating ? "Preparing Parchment..." : "Generate Artistic Scroll"}</span>
+            </button>
           </div>
         )}
 
-        {/* Content Body */}
-        <div className="prose prose-invert max-w-none text-cosmic-silver leading-relaxed font-light transition-all duration-700">
+        {/* Content Body with Antique Typography */}
+        <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif text-lg selection:bg-[#d4af37]/30 transition-all duration-700">
           {content.split('\n').map((para, i) => {
             if (para.startsWith('#')) {
               const text = para.replace(/#/g, '').trim();
-              return <h2 key={i} className="text-3xl font-cinzel text-white mt-16 mb-8 border-b border-cosmic-gold/20 pb-4 uppercase tracking-widest break-after-avoid">{text}</h2>;
+              return <h2 key={i} className="text-2xl md:text-3xl font-cinzel text-[#2d2419] mt-16 mb-8 border-b-2 border-[#d4af37]/20 pb-4 uppercase tracking-[0.15em] font-bold break-after-avoid">{text}</h2>;
             }
             if (para.trim() === '') return <div key={i} className="h-6" />;
-            return <p key={i} className="mb-6 text-justify text-lg font-light leading-relaxed break-inside-avoid-page">{para}</p>;
+            
+            // Drop cap for the very first paragraph
+            if (i === 1 || (i === 0 && !para.startsWith('#'))) {
+              const firstChar = para.charAt(0);
+              const rest = para.slice(1);
+              return (
+                <p key={i} className="mb-8 text-justify font-serif leading-[1.8] first-letter:text-6xl first-letter:font-cinzel first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-[#d4af37] break-inside-avoid-page">
+                  {para}
+                </p>
+              );
+            }
+
+            return <p key={i} className="mb-8 text-justify font-serif leading-[1.8] break-inside-avoid-page">{para}</p>;
           })}
         </div>
 
         {/* Upsell for Free Reports */}
         {isFree && (
-          <div className="mt-20 p-12 bg-cosmic-gold text-cosmic-900 rounded-[3rem] text-center space-y-6 no-print shadow-2xl shadow-cosmic-gold/20 animate-in zoom-in-95">
+          <div className="mt-20 p-12 bg-[#2d2419] text-[#f4ecd8] rounded-xl text-center space-y-6 no-print shadow-2xl animate-in zoom-in-95">
             <h3 className="text-2xl font-cinzel font-bold uppercase tracking-widest leading-tight">Unlock Your Full <br/> Cosmic Decree</h3>
-            <p className="text-sm font-medium opacity-80 max-w-md mx-auto italic">
+            <p className="text-sm font-serif opacity-80 max-w-md mx-auto italic">
               Experience the depth of a 3-5 page analysis mapping your entire soul's architectural blueprint and karmic path.
             </p>
             <button 
               onClick={onReset}
-              className="px-10 py-4 bg-cosmic-900 text-white font-bold rounded-full hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mx-auto shadow-xl uppercase tracking-widest text-xs"
+              className="px-10 py-4 bg-[#d4af37] text-[#2d2419] font-bold rounded-full hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mx-auto shadow-xl uppercase tracking-widest text-xs"
             >
               Consult Full Oracle <ChevronRight className="w-4 h-4" />
             </button>
@@ -190,13 +210,13 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
 
         {/* Gift Section Call-to-action */}
         {!isFree && !giftResult && (
-          <div className="mt-20 p-12 bg-gradient-to-br from-cosmic-gold/20 via-cosmic-gold/5 to-transparent border border-cosmic-gold/30 rounded-[3rem] text-center space-y-8 no-print animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 shadow-[0_0_60px_rgba(212,175,55,0.05)]">
-            <div className="w-20 h-20 bg-cosmic-gold rounded-full mx-auto flex items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.3)]">
-              <Gift className="w-10 h-10 text-cosmic-900" />
+          <div className="mt-20 p-12 bg-white/50 border-2 border-[#d4af37]/30 rounded-xl text-center space-y-8 no-print animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 shadow-inner">
+            <div className="w-16 h-16 bg-[#d4af37] rounded-full mx-auto flex items-center justify-center shadow-lg">
+              <Gift className="w-8 h-8 text-[#2d2419]" />
             </div>
             <div className="space-y-4">
-              <h3 className="text-3xl font-cinzel text-white uppercase tracking-widest">A Celestial Gift Awaits</h3>
-              <p className="text-cosmic-silver max-w-lg mx-auto italic">
+              <h3 className="text-2xl font-cinzel text-[#2d2419] uppercase tracking-widest font-bold">A Celestial Gift Awaits</h3>
+              <p className="text-[#1a1510] font-serif max-w-lg mx-auto italic">
                 The oracle has prepared a special 30-day personal forecast as a token of cosmic alignment.
               </p>
             </div>
@@ -204,43 +224,43 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
               type="button"
               onClick={handleClaimGift}
               disabled={isGeneratingGift}
-              className="px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/20 flex items-center justify-center gap-3 mx-auto disabled:opacity-50 uppercase tracking-widest"
+              className="px-12 py-5 bg-[#2d2419] text-[#f4ecd8] font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3 mx-auto disabled:opacity-50 uppercase tracking-widest text-xs"
             >
               {isGeneratingGift ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-              <span>Claim Monthly Forecast</span>
+              <span>{isGeneratingGift ? "Consulting..." : "Claim Monthly Forecast"}</span>
             </button>
           </div>
         )}
 
         {/* Gift Content Section */}
         {giftResult && (
-          <div id="gift-horoscope" className="mt-20 pt-20 border-t border-cosmic-gold/20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <div id="gift-horoscope" className="mt-20 pt-20 border-t-2 border-[#d4af37]/20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
              <div className="flex items-center gap-4 mb-12">
-               <div className="w-12 h-px bg-cosmic-gold/30"></div>
-               <Gift className="w-6 h-6 text-cosmic-gold" />
-               <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">Your Monthly Gift</h3>
-               <div className="h-px flex-1 bg-cosmic-gold/30"></div>
+               <div className="w-12 h-px bg-[#d4af37]/30"></div>
+               <Gift className="w-6 h-6 text-[#d4af37]" />
+               <h3 className="text-2xl font-cinzel text-[#2d2419] uppercase tracking-widest font-bold">Your Monthly Gift</h3>
+               <div className="h-px flex-1 bg-[#d4af37]/30"></div>
              </div>
              
-             <div className="prose prose-invert max-w-none text-cosmic-silver/90 leading-relaxed font-light">
+             <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif">
                {giftResult.split('\n').map((para, i) => {
                  if (para.startsWith('#')) {
                    const text = para.replace(/#/g, '').trim();
-                   return <h3 key={i} className="text-2xl font-cinzel text-white mt-12 mb-6 uppercase tracking-wider">{text}</h3>;
+                   return <h3 key={i} className="text-xl font-cinzel text-[#2d2419] mt-12 mb-6 uppercase tracking-wider font-bold">{text}</h3>;
                  }
                  if (para.trim() === '') return <div key={i} className="h-4" />;
-                 return <p key={i} className="mb-4 text-justify">{para}</p>;
+                 return <p key={i} className="mb-4 text-justify leading-[1.8]">{para}</p>;
                })}
              </div>
           </div>
         )}
 
         {/* Action Footer */}
-        <div className="mt-24 pt-12 border-t border-cosmic-gold/10 flex flex-col sm:flex-row items-center justify-between gap-8 no-print">
+        <div className="mt-24 pt-12 border-t border-[#d4af37]/20 flex flex-col sm:flex-row items-center justify-between gap-8 no-print">
           <button 
             type="button"
             onClick={onReset}
-            className="flex items-center gap-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors font-bold uppercase tracking-widest text-xs"
+            className="flex items-center gap-2 text-[#8b7355] hover:text-[#2d2419] transition-colors font-bold uppercase tracking-widest text-[10px]"
           >
             Seek Another Truth
           </button>
@@ -249,7 +269,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
             <button 
               type="button"
               onClick={handlePrint}
-              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
+              className="p-4 bg-[#1a1510]/5 text-[#2d2419] rounded-full hover:bg-[#d4af37] hover:text-[#2d2419] transition-all border border-[#d4af37]/20 flex items-center justify-center"
               title="Print Decree"
             >
               <Printer className="w-5 h-5" />
@@ -257,7 +277,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
             <button 
               type="button"
               onClick={handleShare}
-              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
+              className="p-4 bg-[#1a1510]/5 text-[#2d2419] rounded-full hover:bg-[#d4af37] hover:text-[#2d2419] transition-all border border-[#d4af37]/20 flex items-center justify-center"
               title="Share Decree"
             >
               <Share2 className="w-5 h-5" />
@@ -269,7 +289,7 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
                 navigator.clipboard.writeText(fullText);
                 alert("The decree has been copied to your clipboard.");
               }}
-              className="p-4 bg-cosmic-gold/10 text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all border border-cosmic-gold/20 flex items-center justify-center"
+              className="p-4 bg-[#1a1510]/5 text-[#2d2419] rounded-full hover:bg-[#d4af37] hover:text-[#2d2419] transition-all border border-[#d4af37]/20 flex items-center justify-center"
               title="Copy to Clipboard"
             >
               <Copy className="w-5 h-5" />
@@ -278,59 +298,16 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
         </div>
       </div>
 
-      {/* Share Popover */}
-      {showShareMenu && (
-        <div className="fixed inset-0 z-[400] bg-cosmic-900/90 backdrop-blur-xl flex items-center justify-center p-6 no-print" onClick={() => setShowShareMenu(false)}>
-          <div className="bg-cosmic-800 border border-cosmic-gold/30 p-10 rounded-[2.5rem] max-w-sm w-full space-y-8 animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
-            <div className="text-center">
-              <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">Share the Light</h3>
-              <p className="text-cosmic-silver text-xs mt-2 italic">Choose a channel to spread the wisdom.</p>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <button onClick={() => shareToSocial('wa')} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-[#25D366]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#25D366] group-hover:text-white transition-all">
-                  <MessageCircle className="w-6 h-6 text-[#25D366] group-hover:text-white" />
-                </div>
-                <span className="text-[10px] uppercase font-bold text-cosmic-silver tracking-widest">WhatsApp</span>
-              </button>
-              <button onClick={() => shareToSocial('tg')} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-[#0088cc]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#0088cc] group-hover:text-white transition-all">
-                  <Send className="w-6 h-6 text-[#0088cc] group-hover:text-white" />
-                </div>
-                <span className="text-[10px] uppercase font-bold text-cosmic-silver tracking-widest">Telegram</span>
-              </button>
-              <button onClick={() => shareToSocial('fb')} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-[#1877F2]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#1877F2] group-hover:text-white transition-all">
-                  <Facebook className="w-6 h-6 text-[#1877F2] group-hover:text-white" />
-                </div>
-                <span className="text-[10px] uppercase font-bold text-cosmic-silver tracking-widest">Facebook</span>
-              </button>
-            </div>
-            <button onClick={() => setShowShareMenu(false)} className="w-full py-4 bg-cosmic-gold/10 text-cosmic-gold text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-cosmic-gold/20 transition-all">
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Fixed Floating Action Bar for Result */}
       {!showGiftMode && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] no-print flex items-center gap-4 w-[90%] sm:w-auto">
           <button 
             type="button"
             onClick={handlePrint}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-[#d4af37] text-[#2d2419] font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(212,175,55,0.4)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
           >
             <Printer className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-            <span>Save PDF</span>
-          </button>
-          <button 
-            type="button"
-            onClick={handleShare}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 sm:px-12 py-5 bg-white text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_10px_40px_rgba(255,255,255,0.1)] uppercase tracking-[0.2em] text-[10px] sm:text-xs group"
-          >
-            <Share2 className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform" />
-            <span>Share</span>
+            <span>Save Registry PDF</span>
           </button>
         </div>
       )}

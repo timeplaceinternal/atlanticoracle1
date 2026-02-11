@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Printer, Shield, ArrowLeft, Share2, Facebook, Send, MessageCircle, X } from 'lucide-react';
 
@@ -49,111 +50,124 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
   };
 
   return (
-    <div className="fixed inset-0 z-[110] bg-black/98 flex flex-col items-center overflow-y-auto py-10 px-4 animate-in fade-in duration-500 scroll-container no-scrollbar">
-      {/* Control Bar - Hidden on print */}
+    <div className="fixed inset-0 z-[600] bg-black/98 flex flex-col items-center overflow-y-auto py-10 px-4 animate-in fade-in duration-500 scroll-container no-scrollbar">
+      {/* Control Bar */}
       <div className="w-full max-w-[850px] flex flex-wrap justify-between items-center mb-10 gap-4 no-print">
         <button 
           onClick={onClose} 
           className="flex items-center gap-2 px-6 py-3 bg-white/5 text-cosmic-silver rounded-full hover:bg-white/10 transition-all border border-white/10 uppercase tracking-widest text-[10px] font-bold"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Return</span>
+          <span>Exit Scroll View</span>
         </button>
         
         <div className="flex items-center gap-3">
           <button 
             onClick={handleShare} 
-            className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white font-bold rounded-full hover:bg-white/20 transition-all border border-white/20 uppercase tracking-widest text-[10px]"
+            className="px-6 py-3 bg-white/10 text-white font-bold rounded-full hover:bg-white/20 transition-all border border-white/20 uppercase tracking-widest text-[10px]"
           >
             <Share2 className="w-4 h-4" />
-            <span>Share</span>
           </button>
           <button 
             onClick={handlePrint} 
-            className="flex items-center gap-2 px-10 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 transition-all shadow-2xl group uppercase tracking-widest text-xs"
+            className="flex items-center gap-2 px-10 py-4 bg-[#d4af37] text-[#050510] font-bold rounded-full hover:scale-105 transition-all shadow-2xl group uppercase tracking-widest text-xs"
           >
             <Printer className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span>Save PDF / Print Scroll</span>
+            <span>Save Artistic PDF</span>
           </button>
         </div>
       </div>
 
-      <div id="printable-scroll" className="relative w-full max-w-[850px] bg-[#fcf5e5] shadow-[0_60px_120px_rgba(0,0,0,0.8)] overflow-hidden rounded-sm border-[16px] border-[#e8dcc4] min-h-[1200px] scroll-paper">
-        {/* Parchment texture */}
+      {/* The Scroll Container */}
+      <div id="printable-scroll" className="relative w-full max-w-[850px] antique-paper shadow-[0_60px_120px_rgba(0,0,0,0.8)] overflow-hidden rounded-sm border-[20px] border-double border-[#d4af37]/40 min-h-[1400px] scroll-paper">
+        
+        {/* Parchment texture Overlay */}
         <div className="absolute inset-0 opacity-40 mix-blend-multiply pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/old-map.png')] no-print"></div>
         
-        {/* Background Image */}
+        {/* AI Generated Background Image */}
         {backgroundImage && (
           <img 
             src={backgroundImage} 
             alt="" 
-            className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale contrast-125 bg-print-visible" 
+            className="absolute inset-0 w-full h-full object-cover opacity-25 grayscale contrast-125 bg-print-visible" 
           />
         )}
 
         <div className="relative flex flex-col p-12 md:p-24">
-          <div className="text-center mb-20">
-            <div className="w-24 h-24 border-2 border-[#8b7355] rounded-full mx-auto flex items-center justify-center mb-8 shadow-inner">
-              <Shield className="w-12 h-12 text-[#8b7355]" />
+          <div className="text-center mb-24 border-b-2 border-[#d4af37]/30 pb-12">
+            <div className="w-24 h-24 border-2 border-[#d4af37] rounded-full mx-auto flex items-center justify-center mb-8 shadow-inner bg-white/10">
+              <Shield className="w-12 h-12 text-[#d4af37]" />
             </div>
-            <h1 className="text-4xl md:text-6xl font-cinzel text-[#2d2419] font-bold tracking-[0.2em] uppercase mb-4">Atlantic Oracle</h1>
-            <div className="w-48 h-[2px] bg-[#8b7355] mx-auto mb-8"></div>
-            <p className="text-sm font-cinzel text-[#5d4a36] uppercase tracking-[0.5em] font-bold">Sacred Registry for {userName}</p>
+            <h1 className="text-4xl md:text-6xl font-cinzel text-[#1a1a1a] font-bold tracking-[0.2em] uppercase mb-4">Atlantic Oracle</h1>
+            <div className="w-48 h-[2px] bg-[#d4af37] mx-auto mb-8"></div>
+            <p className="text-sm font-cinzel text-[#1a1a1a] uppercase tracking-[0.5em] font-bold">Authorized Cosmic Registry for {userName}</p>
           </div>
 
-          <div className="prose prose-stone max-w-none text-[#1a1510] font-serif leading-relaxed text-xl text-justify">
+          <div className="prose prose-stone max-w-none text-[#1a1a1a] font-serif leading-[1.8] text-xl text-justify">
              {text.split('\n').map((para, i) => {
                if (para.startsWith('#')) {
                  const title = para.replace(/#/g, '').trim();
                  return (
-                   <h2 key={i} className="font-cinzel text-2xl text-[#5d4a36] mt-16 mb-10 border-b border-[#8b7355]/30 pb-4 uppercase tracking-widest text-center font-bold break-after-avoid">
+                   <h2 key={i} className="font-cinzel text-2xl md:text-3xl text-[#1a1a1a] mt-16 mb-12 border-b-2 border-[#d4af37]/20 pb-4 uppercase tracking-[0.15em] text-center font-bold break-after-avoid">
                      {title}
                    </h2>
                  );
                }
                if (para.trim() === '') return <div key={i} className="h-8" />;
-               return <p key={i} className="mb-8 font-serif break-inside-avoid-page">{para}</p>;
+
+               // Apply drop cap to the first paragraph of content
+               if (i === 1 || (i === 0 && !para.startsWith('#'))) {
+                const firstChar = para.charAt(0);
+                const rest = para.slice(1);
+                return (
+                  <p key={i} className="mb-10 font-serif break-inside-avoid-page first-letter:text-6xl first-letter:font-cinzel first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-[#d4af37]">
+                    {para}
+                  </p>
+                );
+              }
+
+               return <p key={i} className="mb-10 font-serif break-inside-avoid-page">{para}</p>;
              })}
           </div>
 
-          <div className="mt-32 pt-20 text-center border-t border-[#8b7355]/20">
-             <span className="text-xs font-cinzel text-[#8b7355] uppercase tracking-[0.6em] font-bold">Authorized by the Atlantic Oracle Registry • AD 2026</span>
+          <div className="mt-40 pt-20 text-center border-t-2 border-[#d4af37]/20">
+             <span className="text-[10px] font-cinzel text-[#1a1a1a] uppercase tracking-[0.6em] font-bold">Authentic Celestial Registry • AD 2026 • Atlantic Oracle Society</span>
           </div>
         </div>
       </div>
 
       {/* Share Popover */}
       {showShareMenu && (
-        <div className="fixed inset-0 z-[500] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 no-print" onClick={() => setShowShareMenu(false)}>
-          <div className="bg-[#1a1510] border border-[#8b7355]/50 p-10 rounded-[2.5rem] max-w-sm w-full space-y-8 animate-in zoom-in-95 relative" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setShowShareMenu(false)} className="absolute top-6 right-6 text-[#8b7355] hover:text-white transition-colors">
+        <div className="fixed inset-0 z-[700] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 no-print" onClick={() => setShowShareMenu(false)}>
+          <div className="bg-[#1a1510] border border-[#d4af37]/50 p-10 rounded-[2.5rem] max-w-sm w-full space-y-8 animate-in zoom-in-95 relative" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowShareMenu(false)} className="absolute top-6 right-6 text-[#d4af37] hover:text-white transition-colors">
               <X className="w-6 h-6" />
             </button>
             <div className="text-center">
               <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">Share the Wisdom</h3>
-              <p className="text-[#8b7355] text-xs mt-2 italic">Spread the cosmic light to your circle.</p>
+              <p className="text-[#d4af37] text-xs mt-2 italic">Spread the cosmic light to your circle.</p>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <button onClick={() => shareToSocial('wa')} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-[#25D366]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#25D366] transition-all">
+                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-[#25D366] transition-all">
                   <MessageCircle className="w-6 h-6 text-[#25D366] group-hover:text-white" />
                 </div>
-                <span className="text-[10px] uppercase font-bold text-[#8b7355] tracking-widest">WhatsApp</span>
+                <span className="text-[10px] uppercase font-bold text-[#d4af37] tracking-widest">WhatsApp</span>
               </button>
               <button onClick={() => shareToSocial('tg')} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-[#0088cc]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#0088cc] transition-all">
+                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-[#0088cc] transition-all">
                   <Send className="w-6 h-6 text-[#0088cc] group-hover:text-white" />
                 </div>
-                <span className="text-[10px] uppercase font-bold text-[#8b7355] tracking-widest">Telegram</span>
+                <span className="text-[10px] uppercase font-bold text-[#d4af37] tracking-widest">Telegram</span>
               </button>
               <button onClick={() => shareToSocial('fb')} className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-[#1877F2]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#1877F2] transition-all">
+                <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-[#1877F2] transition-all">
                   <Facebook className="w-6 h-6 text-[#1877F2] group-hover:text-white" />
                 </div>
-                <span className="text-[10px] uppercase font-bold text-[#8b7355] tracking-widest">Facebook</span>
+                <span className="text-[10px] uppercase font-bold text-[#d4af37] tracking-widest">Facebook</span>
               </button>
             </div>
-            <button onClick={() => setShowShareMenu(false)} className="w-full py-4 bg-[#8b7355]/10 text-[#8b7355] text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#8b7355]/20 transition-all border border-[#8b7355]/20">
+            <button onClick={() => setShowShareMenu(false)} className="w-full py-4 bg-[#d4af37]/10 text-[#d4af37] text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#d4af37]/20 transition-all border border-[#d4af37]/20">
               Close
             </button>
           </div>
@@ -201,7 +215,7 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
           }
 
           .bg-print-visible {
-            opacity: 0.15 !important;
+            opacity: 0.25 !important;
             filter: grayscale(100%) !important;
             position: absolute !important;
             height: 100% !important;
