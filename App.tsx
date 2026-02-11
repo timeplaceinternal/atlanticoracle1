@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import CosmicBackground from './components/CosmicBackground';
 import ReadingForm from './components/ReadingForm';
@@ -13,6 +12,7 @@ import { generateCosmicReading } from './services/geminiService';
 import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Zap } from 'lucide-react';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
+const STORAGE_KEY = "atlantic_oracle_pending_request";
 
 const TESTIMONIALS = [
   {
@@ -36,11 +36,48 @@ const TESTIMONIALS = [
 ];
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy'>('home');
+  // Initialize view based on URL to prevent home page flicker when returning from Stripe
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
+        return 'loading';
+      }
+    }
+    return 'home';
+  });
+
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
   const [result, setResult] = useState<ReadingResultType | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Auto-detection logic to start generation on return from payment
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment_status');
+    
+    if (paymentStatus === 'success') {
+      const savedRequest = localStorage.getItem(STORAGE_KEY);
+      if (savedRequest) {
+        try {
+          const request = JSON.parse(savedRequest) as ReadingRequest;
+          // Clean up URL and storage immediately
+          window.history.replaceState({}, document.title, window.location.pathname);
+          localStorage.removeItem(STORAGE_KEY);
+          
+          // Trigger the generation
+          startGeneration(request);
+        } catch (e) {
+          console.error("Failed to parse saved request", e);
+          setView('home');
+        }
+      } else if (view === 'loading') {
+        // Fallback if view was loading but no data found
+        setView('home');
+      }
+    }
+  }, []);
 
   const resetToHome = () => {
     setView('home');
@@ -61,22 +98,20 @@ const App: React.FC = () => {
   const handleFormSubmit = (request: ReadingRequest) => {
     setCurrentRequest(request);
     if (selectedService?.isFree) {
-      simulateSuccess(request);
+      startGeneration(request);
     } else {
+      // Save request to localStorage so it survives the Stripe redirect
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(request));
       setView('payment');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleProceedToStripe = () => {
-    window.open(STRIPE_URL, '_blank');
-    alert("Payment page opened. After payment, the registry will update your status.");
+    window.location.href = STRIPE_URL;
   };
 
-  const simulateSuccess = async (overrideRequest?: ReadingRequest) => {
-    const request = overrideRequest || currentRequest;
-    if (!request) return;
-    
+  const startGeneration = async (request: ReadingRequest) => {
     setView('loading');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -194,7 +229,7 @@ const App: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {FREE_SERVICES.map(s => (
                     <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
-                      <div className="absolute top-4 right-4 text-[9px] font-bold text-cosmic-gold border border-cosmic-gold/40 px-3 py-1 rounded-full tracking-[0.2em] uppercase bg-cosmic-gold/10 shadow-[0_0_10px_rgba(212,175,55,0.2)]">FREE</div>
+                      <div className="absolute top-4 right-4 text-[9px] font-black text-cosmic-900 px-3 py-1 rounded-full tracking-[0.2em] uppercase bg-cosmic-gold shadow-[0_0_20px_rgba(212,175,55,0.6)] animate-pulse">FREE</div>
                       <div className="mb-6">{getServiceIcon(s.icon)}</div>
                       <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
                       <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
@@ -323,7 +358,7 @@ const App: React.FC = () => {
                   </div>
 
                   <button 
-                    onClick={() => simulateSuccess()} 
+                    onClick={() => startGeneration(currentRequest || JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'))} 
                     className="w-full py-4 bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-2xl hover:bg-cosmic-gold hover:text-cosmic-900 transition-all flex items-center justify-center gap-3"
                   >
                     <Beaker className="w-4 h-4" /> Bypass for Testing
