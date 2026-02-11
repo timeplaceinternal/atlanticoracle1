@@ -9,8 +9,8 @@ import { ServiceType, Service } from './types';
 export const FREE_SERVICES: Service[] = [
   {
     id: ServiceType.FORTUNE_MAP,
-    title: "The Fortune Map",
-    description: "Weekly luck indices and numerical windows for opportunity.",
+    title: "The Fortune Map (Weekly Forecast)",
+    description: "Your personalized weekly luck index, power windows, and numerical vibrations for the next 7 days.",
     icon: "trending",
     price: 0,
     isFree: true

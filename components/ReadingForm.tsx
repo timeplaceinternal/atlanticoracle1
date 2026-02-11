@@ -78,7 +78,15 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
       <div className="mb-8 sm:mb-12">
         <h2 className="text-3xl sm:text-4xl font-cinzel text-white mb-2">{service.title}</h2>
-        <p className="text-sm text-cosmic-silver italic leading-relaxed">The oracle prepares a detailed report for you. Provide precise birth time for supreme accuracy.</p>
+        {service.isFree ? (
+          <p className="text-sm text-cosmic-silver italic leading-relaxed">
+            The oracle prepares a <strong className="text-cosmic-gold uppercase">brief insight</strong> for you. Full comprehensive Decrees are available as premium services.
+          </p>
+        ) : (
+          <p className="text-sm text-cosmic-silver italic leading-relaxed">
+            The oracle prepares a <strong className="text-cosmic-gold uppercase">detailed report</strong> for you. Provide precise birth time for supreme accuracy.
+          </p>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-8 sm:space-y-12">
