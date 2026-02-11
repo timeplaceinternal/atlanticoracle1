@@ -101,21 +101,8 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
     }
   };
 
-  const shareToSocial = (platform: 'fb' | 'wa' | 'tg') => {
-    const text = encodeURIComponent(`I just received my cosmic decree from Atlantic Oracle! 🌌 Check your path: `);
-    const url = encodeURIComponent('https://atlanticoracle.com');
-    
-    let link = '';
-    if (platform === 'fb') link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-    if (platform === 'wa') link = `https://wa.me/?text=${text}${url}`;
-    if (platform === 'tg') link = `https://t.me/share/url?url=${url}&text=${text}`;
-    
-    window.open(link, '_blank');
-    setShowShareMenu(false);
-  };
-
   return (
-    <div className="max-w-4xl mx-auto pb-48 animate-in fade-in duration-1000 relative">
+    <div className="max-w-4xl mx-auto pb-48 animate-in fade-in duration-1000 relative result-page">
       {showGiftMode && scrollBg && (
         <GiftScroll 
           backgroundImage={scrollBg}
@@ -144,8 +131,8 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
            <div className="w-20 h-20 bg-transparent border-2 border-[#d4af37]/50 rounded-full mx-auto flex items-center justify-center mb-6">
              <Shield className="w-10 h-10 text-[#d4af37]" />
            </div>
-           <h2 className="text-3xl font-cinzel text-[#2d2419] tracking-[0.2em] uppercase">Sacred Registry</h2>
-           <p className="text-[10px] font-cinzel text-[#8b7355] uppercase tracking-[0.4em] mt-2 font-bold">For the seeker: {result.userName}</p>
+           <h2 className="text-3xl font-cinzel text-[#2d2419] tracking-[0.2em] uppercase print:text-black">Sacred Registry</h2>
+           <p className="text-[10px] font-cinzel text-[#8b7355] uppercase tracking-[0.4em] mt-2 font-bold print:text-black">For the seeker: {result.userName}</p>
         </div>
 
         {/* Premium Export Trigger - Modern Float */}
@@ -169,26 +156,24 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
         )}
 
         {/* Content Body with Antique Typography */}
-        <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif text-lg selection:bg-[#d4af37]/30 transition-all duration-700">
+        <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif text-lg selection:bg-[#d4af37]/30 transition-all duration-700 print:text-black">
           {content.split('\n').map((para, i) => {
             if (para.startsWith('#')) {
               const text = para.replace(/#/g, '').trim();
-              return <h2 key={i} className="text-2xl md:text-3xl font-cinzel text-[#2d2419] mt-16 mb-8 border-b-2 border-[#d4af37]/20 pb-4 uppercase tracking-[0.15em] font-bold break-after-avoid">{text}</h2>;
+              return <h2 key={i} className="text-2xl md:text-3xl font-cinzel text-[#2d2419] mt-16 mb-8 border-b-2 border-[#d4af37]/20 pb-4 uppercase tracking-[0.15em] font-bold break-after-avoid print:text-black">{text}</h2>;
             }
             if (para.trim() === '') return <div key={i} className="h-6" />;
             
             // Drop cap for the very first paragraph
             if (i === 1 || (i === 0 && !para.startsWith('#'))) {
-              const firstChar = para.charAt(0);
-              const rest = para.slice(1);
               return (
-                <p key={i} className="mb-8 text-justify font-serif leading-[1.8] first-letter:text-6xl first-letter:font-cinzel first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-[#d4af37] break-inside-avoid-page">
+                <p key={i} className="mb-8 text-justify font-serif leading-[1.8] first-letter:text-6xl first-letter:font-cinzel first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-[#d4af37] break-inside-avoid-page print:text-black">
                   {para}
                 </p>
               );
             }
 
-            return <p key={i} className="mb-8 text-justify font-serif leading-[1.8] break-inside-avoid-page">{para}</p>;
+            return <p key={i} className="mb-8 text-justify font-serif leading-[1.8] break-inside-avoid-page print:text-black">{para}</p>;
           })}
         </div>
 
@@ -238,18 +223,18 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
              <div className="flex items-center gap-4 mb-12">
                <div className="w-12 h-px bg-[#d4af37]/30"></div>
                <Gift className="w-6 h-6 text-[#d4af37]" />
-               <h3 className="text-2xl font-cinzel text-[#2d2419] uppercase tracking-widest font-bold">Your Monthly Gift</h3>
+               <h3 className="text-2xl font-cinzel text-[#2d2419] uppercase tracking-widest font-bold print:text-black">Your Monthly Gift</h3>
                <div className="h-px flex-1 bg-[#d4af37]/30"></div>
              </div>
              
-             <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif">
+             <div className="prose prose-stone max-w-none text-[#1a1510] leading-relaxed font-serif print:text-black">
                {giftResult.split('\n').map((para, i) => {
                  if (para.startsWith('#')) {
                    const text = para.replace(/#/g, '').trim();
-                   return <h3 key={i} className="text-xl font-cinzel text-[#2d2419] mt-12 mb-6 uppercase tracking-wider font-bold">{text}</h3>;
+                   return <h3 key={i} className="text-xl font-cinzel text-[#2d2419] mt-12 mb-6 uppercase tracking-wider font-bold print:text-black">{text}</h3>;
                  }
                  if (para.trim() === '') return <div key={i} className="h-4" />;
-                 return <p key={i} className="mb-4 text-justify leading-[1.8]">{para}</p>;
+                 return <p key={i} className="mb-4 text-justify leading-[1.8] print:text-black">{para}</p>;
                })}
              </div>
           </div>

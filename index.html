@@ -69,6 +69,14 @@
       }
 
       @media print {
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          animation: none !important;
+          transition: none !important;
+          opacity: 1 !important;
+        }
+
         .no-print, header, footer, button, .constellation-overlay, canvas, select, nav, .fixed {
           display: none !important;
         }
@@ -79,8 +87,12 @@
           background: white !important;
           margin: 0 !important;
           padding: 0 !important;
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
+        }
+
+        #root, .main-ui-wrapper, main {
+          display: block !important;
+          height: auto !important;
+          overflow: visible !important;
         }
 
         .printable-area {
@@ -92,13 +104,15 @@
           margin: 0 !important;
           display: block !important;
           width: 100% !important;
+          box-shadow: none !important;
+          min-height: 297mm; /* Ensure it covers full page */
         }
 
         .prose {
           color: #1a1a1a !important;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, p, span {
           color: #1a1a1a !important;
           font-family: 'Cinzel', serif !important;
         }
