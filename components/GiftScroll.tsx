@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Printer, Shield, ArrowLeft, Share2, Facebook, Send, MessageCircle, X } from 'lucide-react';
 
 interface GiftScrollProps {
@@ -13,9 +14,13 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   const handlePrint = () => {
+    // Set a print mode attribute on the HTML element to toggle CSS states
     document.documentElement.setAttribute('data-print-mode', 'scroll');
     window.print();
-    document.documentElement.removeAttribute('data-print-mode');
+    // Use a slight delay or a simple reset to ensure standard UI returns if they cancel
+    setTimeout(() => {
+      document.documentElement.removeAttribute('data-print-mode');
+    }, 500);
   };
 
   const handleShare = async () => {
@@ -49,7 +54,8 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
     setShowShareMenu(false);
   };
 
-  return (
+  // Using a portal to avoid parent container constraints during print
+  const scrollContent = (
     <div className="fixed inset-0 z-[600] bg-black/98 flex flex-col items-center overflow-y-auto py-10 px-4 animate-in fade-in duration-500 scroll-container no-scrollbar">
       {/* Control Bar */}
       <div className="w-full max-w-[850px] flex flex-wrap justify-between items-center mb-10 gap-4 no-print">
@@ -90,6 +96,7 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
             src={backgroundImage} 
             alt="" 
             className="absolute inset-0 w-full h-full object-cover opacity-25 grayscale contrast-125 bg-print-visible" 
+            style={{ display: 'block' }}
           />
         )}
 
@@ -117,8 +124,6 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
 
                // Apply drop cap to the first paragraph of content
                if (i === 1 || (i === 0 && !para.startsWith('#'))) {
-                const firstChar = para.charAt(0);
-                const rest = para.slice(1);
                 return (
                   <p key={i} className="mb-10 font-serif break-inside-avoid-page first-letter:text-6xl first-letter:font-cinzel first-letter:float-left first-letter:mr-3 first-letter:mt-2 first-letter:text-[#d4af37]">
                     {para}
@@ -178,26 +183,16 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         @media print {
-          html[data-print-mode="scroll"], 
-          html[data-print-mode="scroll"] body,
-          html[data-print-mode="scroll"] #root {
-            height: auto !important;
-            overflow: visible !important;
-            background: white !important;
-          }
-
-          html[data-print-mode="scroll"] body > *:not(.scroll-container) { display: none !important; }
-          html[data-print-mode="scroll"] #root > *:not(.scroll-container) { display: none !important; }
-          
-          .no-print { display: none !important; }
-          
-          .scroll-container { 
-            position: static !important;
+          html[data-print-mode="scroll"] .scroll-container { 
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
             display: block !important;
             background: white !important;
             padding: 0 !important;
             margin: 0 !important;
             overflow: visible !important;
+            z-index: 9999 !important;
           }
           
           #printable-scroll { 
@@ -205,34 +200,31 @@ const GiftScroll: React.FC<GiftScrollProps> = ({ backgroundImage, text, userName
             margin: 0 auto !important;
             width: 100% !important; 
             max-width: none !important;
-            border: none !important;
+            border: 1px solid #d4af37 !important;
             box-shadow: none !important;
             background-color: #fcf5e5 !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
             overflow: visible !important;
-            min-height: 0 !important;
+            min-height: 297mm !important;
           }
 
           .bg-print-visible {
             opacity: 0.25 !important;
             filter: grayscale(100%) !important;
             position: absolute !important;
+            width: 100% !important;
             height: 100% !important;
+            display: block !important;
           }
 
           .prose p, .prose h2 {
             page-break-inside: avoid;
           }
-
-          @page { 
-            margin: 0; 
-            size: A4 portrait; 
-          }
         }
       `}</style>
     </div>
   );
+
+  return createPortal(scrollContent, document.body);
 };
 
 export default GiftScroll;

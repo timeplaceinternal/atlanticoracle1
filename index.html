@@ -89,9 +89,25 @@
           padding: 0 !important;
         }
 
-        #root, .main-ui-wrapper, main {
+        /* Logic for printing the main UI (Default Registry) */
+        html:not([data-print-mode="scroll"]) #root {
           display: block !important;
           height: auto !important;
+        }
+
+        /* Logic for printing the Artistic Scroll (Modal) */
+        html[data-print-mode="scroll"] .main-ui-wrapper {
+          display: none !important;
+        }
+
+        html[data-print-mode="scroll"] .scroll-container {
+          position: relative !important;
+          display: block !important;
+          height: auto !important;
+          width: 100% !important;
+          background: white !important;
+          padding: 0 !important;
+          margin: 0 !important;
           overflow: visible !important;
         }
 
@@ -105,7 +121,6 @@
           display: block !important;
           width: 100% !important;
           box-shadow: none !important;
-          min-height: 297mm; /* Ensure it covers full page */
         }
 
         .prose {
