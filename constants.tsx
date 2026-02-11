@@ -2,9 +2,36 @@
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery
 } from 'lucide-react';
 import { ServiceType, Service } from './types';
+
+export const FREE_SERVICES: Service[] = [
+  {
+    id: ServiceType.FORTUNE_MAP,
+    title: "The Fortune Map",
+    description: "Weekly luck indices and numerical windows for opportunity.",
+    icon: "trending",
+    price: 0,
+    isFree: true
+  },
+  {
+    id: ServiceType.CAPITAL_ALIGNMENT,
+    title: "Capital Alignment",
+    description: "Identify your ведущую энергию дохода and financial resource leaks.",
+    icon: "coins",
+    price: 0,
+    isFree: true
+  },
+  {
+    id: ServiceType.ENERGY_PULSE,
+    title: "The Energy Pulse",
+    description: "Biological rhythm guide and a 1-minute mental reset technique.",
+    icon: "battery",
+    price: 0,
+    isFree: true
+  }
+];
 
 export const SERVICES: Service[] = [
   {
@@ -88,6 +115,9 @@ export const getServiceIcon = (iconName: string) => {
     case 'star': return <Star {...props} className="text-cosmic-gold" />;
     case 'gift': return <Gift {...props} className="text-cosmic-gold" />;
     case 'fingerprint': return <Fingerprint {...props} className="text-cosmic-purple" />;
+    case 'trending': return <TrendingUp {...props} className="text-cosmic-gold" />;
+    case 'coins': return <Coins {...props} className="text-cosmic-gold" />;
+    case 'battery': return <Battery {...props} className="text-cosmic-gold" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -99,7 +129,6 @@ const PROMPT_CORE = (lang: string) => {
     'English': 'REPLY ONLY IN ENGLISH.'
   };
   
-  // Dynamic Date Generation
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { 
     month: 'long', 
@@ -112,11 +141,8 @@ const PROMPT_CORE = (lang: string) => {
     IDENTITY: ATLANTIC ORACLE. Authority in Astrology, Numerology, and Human Design.
     CURRENT DATE: ${dateStr}.
     FORMAT: No stars (*). Use headers # and ##.
-    DEPTH: Professional, analytical, and extensive (800-1500 words).
-    
-    MANDATORY FINAL SECTION: 
-    Every report MUST end with a substantial section titled "# Synthesis and the Path of Harmony".
-    Summarize the study in clear terms, motivate the subject towards growth, and provide high-vibration guidance.
+    DEPTH: Professional, analytical.
+    STRICTION: DO NOT use Markdown tables. Use plain text or sequential lists.
   `;
 };
 
@@ -165,6 +191,33 @@ export const COSMIC_PROMPTS = {
     ${PROMPT_CORE(lang)}
     Service: Saturn Return Survival Guide (Age 29-30 Crisis). Subject: ${name}, born ${date} at ${time} in ${place}.
     Analyze Saturn's placement. Explain the significance of the 29.5-year cycle. Provide advice for maturity and mastering life's heavy lessons.
+  `,
+  // FREE SERVICES PROMPTS
+  [ServiceType.FORTUNE_MAP]: (name: string, date: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: [FREE] THE FORTUNE MAP. Subject: ${name}, born ${date}.
+    1. Weekly Chart: List 7 days sequentially. Format: "Day 1 - [Details], Day 2 - [Details]...". Include Luck Index (1-10), Power Window, and Risk Level for each day. DO NOT USE TABLES.
+    2. Numerology: Calculate 3 'Golden Numbers' for the subject this week.
+    3. Player Advice: Define the emotional state in which they MUST NOT make risky decisions.
+    End with a call to see their full Natal Decree.
+  `,
+  [ServiceType.CAPITAL_ALIGNMENT]: (name: string, date: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: [FREE] CAPITAL ALIGNMENT. Subject: ${name}, born ${date}.
+    1. Capital Analysis: Define leading income energy (structure, charisma, or intuition).
+    2. Loss Zone: Where are they leaking resources internally?
+    3. Investment in SELF: Advice on why knowing their mechanics provides the highest ROI.
+    4. Weekly Plan: List 3 specific financial actions sequentially (Action 1, Action 2, Action 3). DO NOT USE TABLES.
+    End with a link to the full Career & Wealth Decree.
+  `,
+  [ServiceType.ENERGY_PULSE]: (name: string, date: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: [FREE] THE ENERGY PULSE. Subject: ${name}, born ${date}.
+    1. Force Dynamics: List weekly energy peak and silence days sequentially. DO NOT USE TABLES.
+    2. Bio-rhythms: Sleep/activity advice based on birth date.
+    3. Reset Technique: One 1-minute mental reset practice (breathing/visualization).
+    4. Focus Mode: Where to direct energy (Health, Relations, Career).
+    End with a call to unlock their full energetic cycles in a Natal Decree.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}

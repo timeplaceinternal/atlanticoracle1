@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import CosmicBackground from './components/CosmicBackground';
 import ReadingForm from './components/ReadingForm';
@@ -6,10 +7,10 @@ import ReadingResult from './components/ReadingResult';
 import PhilosophySection from './components/PhilosophySection';
 import HowItWorksSection from './components/HowItWorksSection';
 import PrivacyPolicy from './components/PrivacyPolicy';
-import { SERVICES, getServiceIcon } from './constants';
+import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote } from 'lucide-react';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Zap } from 'lucide-react';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 
@@ -59,8 +60,12 @@ const App: React.FC = () => {
 
   const handleFormSubmit = (request: ReadingRequest) => {
     setCurrentRequest(request);
-    setView('payment');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (selectedService?.isFree) {
+      simulateSuccess(request);
+    } else {
+      setView('payment');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleProceedToStripe = () => {
@@ -68,8 +73,10 @@ const App: React.FC = () => {
     alert("Payment page opened. After payment, the registry will update your status.");
   };
 
-  const simulateSuccess = async () => {
-    if (!currentRequest) return;
+  const simulateSuccess = async (overrideRequest?: ReadingRequest) => {
+    const request = overrideRequest || currentRequest;
+    if (!request) return;
+    
     setView('loading');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -82,15 +89,15 @@ const App: React.FC = () => {
     }
     
     try {
-      const content = await generateCosmicReading(currentRequest);
+      const content = await generateCosmicReading(request);
       const newResult: ReadingResultType = {
         id: Math.random().toString(36).substring(7),
-        serviceId: currentRequest.serviceId,
+        serviceId: request.serviceId,
         content: content,
         timestamp: Date.now(),
-        userName: currentRequest.name,
-        language: currentRequest.language,
-        birthDate: currentRequest.birthDate
+        userName: request.name,
+        language: request.language,
+        birthDate: request.birthDate
       };
       setResult(newResult);
       setView('result');
@@ -173,7 +180,29 @@ const App: React.FC = () => {
                 <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair">"We merge the cosmic mechanics of Astrology with the mathematical fate of Numerology to decode your life's navigation map."</p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
                   <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95">Consult the Oracle</button>
-                  <button onClick={() => scrollToSection('philosophy')} className="w-full sm:w-auto px-10 py-5 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/5 transition-all">Explore Philosophy</button>
+                  <button onClick={() => scrollToSection('free-insights')} className="w-full sm:w-auto px-10 py-5 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/5 transition-all">Free Insights</button>
+                </div>
+              </section>
+
+              {/* FREE INSIGHTS SECTION */}
+              <section id="free-insights" className="px-6 max-w-7xl mx-auto scroll-mt-32">
+                <div className="text-center mb-16 space-y-4">
+                  <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[9px] uppercase tracking-[0.3em] rounded mb-2">Essential Access</div>
+                  <h3 className="text-3xl font-cinzel text-white uppercase tracking-[0.2em]">Free Oracle <span className="text-cosmic-gold">Services</span></h3>
+                  <p className="text-cosmic-silver italic font-playfair text-sm">Experience the precision of the Registry through these introductory studies.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {FREE_SERVICES.map(s => (
+                    <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
+                      <div className="absolute top-4 right-4 text-[8px] font-bold text-cosmic-gold/40 border border-cosmic-gold/20 px-2 py-0.5 rounded tracking-widest uppercase">[FREE]</div>
+                      <div className="mb-6">{getServiceIcon(s.icon)}</div>
+                      <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
+                      <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
+                      <div className="flex justify-end">
+                        <ChevronRight className="text-cosmic-gold group-hover:translate-x-1 transition-transform w-4 h-4" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
 
@@ -208,8 +237,8 @@ const App: React.FC = () => {
               {/* SERVICES SECTION */}
               <section id="services" className="px-6 max-w-7xl mx-auto scroll-mt-32">
                 <div className="text-center mb-16 space-y-4">
-                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">Available Pathfinds</h3>
-                  <p className="text-cosmic-silver italic font-playfair">Select a focus area for your personalized study.</p>
+                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">Cosmic Decrees</h3>
+                  <p className="text-cosmic-silver italic font-playfair">Select a focus area for your comprehensive study.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {SERVICES.map(s => (
@@ -294,10 +323,10 @@ const App: React.FC = () => {
                   </div>
 
                   <button 
-                    onClick={simulateSuccess} 
+                    onClick={() => simulateSuccess()} 
                     className="w-full py-4 bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-2xl hover:bg-cosmic-gold hover:text-cosmic-900 transition-all flex items-center justify-center gap-3"
                   >
-                    <Beaker className="w-4 h-4" /> Bypas for Testing
+                    <Beaker className="w-4 h-4" /> Bypass for Testing
                   </button>
 
                   <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Return to Sanctuary</button>

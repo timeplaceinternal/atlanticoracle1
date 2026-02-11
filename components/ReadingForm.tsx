@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Service, ServiceType, ReadingRequest, ReportLanguage } from '../types';
-import { ArrowLeft, MapPin, Clock, User, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, User, ShieldCheck, Sparkles } from 'lucide-react';
 
 interface ReadingFormProps {
   service: Service;
@@ -182,14 +182,14 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
         <div className="pt-8 sm:pt-12 flex flex-col sm:flex-row items-center justify-between border-t border-cosmic-700/50 gap-6 sm:gap-0">
            <div className="text-center sm:text-left">
              <span className="text-[10px] text-cosmic-gold/50 block font-bold tracking-widest uppercase mb-1">Fee for Wisdom</span>
-             <span className="text-3xl sm:text-4xl font-cinzel text-white">€10</span>
+             <span className="text-3xl sm:text-4xl font-cinzel text-white">{service.isFree ? "FREE" : "€10"}</span>
            </div>
            <button 
              type="submit" 
              className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/40 flex items-center justify-center gap-3 relative z-[100]"
            >
-             PROCEED TO PAYMENT
-             <ShieldCheck className="w-5 h-5" />
+             {service.isFree ? "START" : "PROCEED TO PAYMENT"}
+             {service.isFree ? <Sparkles className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5" />}
            </button>
         </div>
       </form>

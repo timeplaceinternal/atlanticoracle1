@@ -71,7 +71,10 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   if (request.serviceId === ServiceType.LOVE_SYNASTRY) {
     // @ts-ignore
     promptText = promptFn(request.name, request.birthDate, request.birthTime, request.partnerName, request.partnerBirthDate, request.partnerBirthTime, lang);
-  } else if (request.serviceId === ServiceType.PYTHAGOREAN_CODE) {
+  } else if (request.serviceId === ServiceType.PYTHAGOREAN_CODE || 
+             request.serviceId === ServiceType.FORTUNE_MAP || 
+             request.serviceId === ServiceType.CAPITAL_ALIGNMENT || 
+             request.serviceId === ServiceType.ENERGY_PULSE) {
     // @ts-ignore
     promptText = promptFn(request.name, request.birthDate, lang);
   } else if (typeof promptFn === 'function') {
@@ -80,13 +83,14 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   }
 
   try {
+    const isFree = request.serviceId.toString().startsWith('free-');
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
+      model: isFree ? 'gemini-3-flash-preview' : 'gemini-3-pro-preview',
       contents: promptText,
       config: {
         systemInstruction: getSystemInstruction(lang),
         temperature: 0.8,
-        maxOutputTokens: 8192,
+        maxOutputTokens: isFree ? 2048 : 8192,
       }
     });
     return cleanOracleText(response.text || "Empty result from cosmos.");

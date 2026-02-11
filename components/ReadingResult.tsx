@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles, Share2, Facebook, Send, MessageCircle } from 'lucide-react';
+import { Download, RefreshCw, Gift, Loader2, Copy, Printer, Star, Sparkles, Share2, Facebook, Send, MessageCircle, ChevronRight } from 'lucide-react';
 import { ReadingResult as ReadingResultType, ReportLanguage } from '../types';
 import { generateAestheticBackground } from '../services/imageService';
 import { generateMonthlyGiftHoroscope } from '../services/geminiService';
@@ -22,6 +23,8 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
   // Gift Horoscope State
   const [isGeneratingGift, setIsGeneratingGift] = useState(false);
   const [giftResult, setGiftResult] = useState<string | null>(null);
+
+  const isFree = result.serviceId.toString().startsWith('free-');
 
   const handleClaimGift = async () => {
     if (isGeneratingGift) return;
@@ -124,8 +127,9 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
 
       {/* Result Header */}
       <div className="text-center mb-12 py-10 border-b border-cosmic-gold/10 no-print">
+        {isFree && <div className="inline-block px-3 py-0.5 bg-cosmic-gold text-cosmic-900 text-[8px] font-bold uppercase tracking-[0.3em] rounded mb-3">Free Insight</div>}
         <h1 className="text-4xl md:text-6xl font-cinzel text-cosmic-gold mb-4 leading-tight uppercase tracking-widest">
-          The Oracle's Decree
+          {isFree ? "Oracle Insight" : "The Oracle's Decree"}
         </h1>
         <p className="text-cosmic-silver italic max-w-xl mx-auto font-playfair text-lg">
           "The stars do not command, they whisper truth to the soul."
@@ -135,24 +139,26 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
       {/* Main Report Area */}
       <div className="bg-cosmic-800/40 backdrop-blur-3xl rounded-[3rem] p-8 md:p-16 border border-cosmic-gold/10 relative shadow-2xl printable-area">
         {/* Aesthetic generation controls */}
-        <div className="mb-12 p-8 bg-cosmic-gold/5 border border-cosmic-gold/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 no-print">
-          <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-white font-cinzel text-xl tracking-widest uppercase">Premium Export</h3>
-            <p className="text-cosmic-silver text-xs opacity-70">Transform your decree into a visual masterpiece.</p>
+        {!isFree && (
+          <div className="mb-12 p-8 bg-cosmic-gold/5 border border-cosmic-gold/20 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 no-print">
+            <div className="space-y-1 text-center md:text-left">
+              <h3 className="text-white font-cinzel text-xl tracking-widest uppercase">Premium Export</h3>
+              <p className="text-cosmic-silver text-xs opacity-70">Transform your decree into a visual masterpiece.</p>
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <button 
+                type="button"
+                onClick={handleGenerateScroll}
+                disabled={isGenerating}
+                className="px-8 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-all flex items-center gap-2 text-sm disabled:opacity-50 shadow-lg shadow-cosmic-gold/10 uppercase tracking-widest active:scale-95"
+              >
+                {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
+                <span>Artistic Scroll</span>
+              </button>
+            </div>
           </div>
-          
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <button 
-              type="button"
-              onClick={handleGenerateScroll}
-              disabled={isGenerating}
-              className="px-8 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-all flex items-center gap-2 text-sm disabled:opacity-50 shadow-lg shadow-cosmic-gold/10 uppercase tracking-widest active:scale-95"
-            >
-              {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
-              <span>Create Artistic Scroll</span>
-            </button>
-          </div>
-        </div>
+        )}
 
         {/* Content Body */}
         <div className="prose prose-invert max-w-none text-cosmic-silver leading-relaxed font-light transition-all duration-700">
@@ -166,8 +172,24 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
           })}
         </div>
 
+        {/* Upsell for Free Reports */}
+        {isFree && (
+          <div className="mt-20 p-12 bg-cosmic-gold text-cosmic-900 rounded-[3rem] text-center space-y-6 no-print shadow-2xl shadow-cosmic-gold/20 animate-in zoom-in-95">
+            <h3 className="text-2xl font-cinzel font-bold uppercase tracking-widest leading-tight">Unlock Your Full <br/> Cosmic Decree</h3>
+            <p className="text-sm font-medium opacity-80 max-w-md mx-auto italic">
+              Experience the depth of a 3-5 page analysis mapping your entire soul's architectural blueprint and karmic path.
+            </p>
+            <button 
+              onClick={onReset}
+              className="px-10 py-4 bg-cosmic-900 text-white font-bold rounded-full hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 mx-auto shadow-xl uppercase tracking-widest text-xs"
+            >
+              Consult Full Oracle <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
         {/* Gift Section Call-to-action */}
-        {!giftResult && (
+        {!isFree && !giftResult && (
           <div className="mt-20 p-12 bg-gradient-to-br from-cosmic-gold/20 via-cosmic-gold/5 to-transparent border border-cosmic-gold/30 rounded-[3rem] text-center space-y-8 no-print animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 shadow-[0_0_60px_rgba(212,175,55,0.05)]">
             <div className="w-20 h-20 bg-cosmic-gold rounded-full mx-auto flex items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.3)]">
               <Gift className="w-10 h-10 text-cosmic-900" />

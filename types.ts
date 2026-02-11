@@ -8,7 +8,11 @@ export enum ServiceType {
   PYTHAGOREAN_CODE = 'pythagorean-code',
   HUMAN_DESIGN = 'human-design',
   ASTRO_CARTOGRAPHY = 'astro-cartography',
-  SATURN_RETURN = 'saturn-return'
+  SATURN_RETURN = 'saturn-return',
+  // Free Services
+  FORTUNE_MAP = 'free-fortune-map',
+  CAPITAL_ALIGNMENT = 'free-capital-alignment',
+  ENERGY_PULSE = 'free-energy-pulse'
 }
 
 export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Russian' | 'Ukrainian';
@@ -19,6 +23,7 @@ export interface Service {
   description: string;
   icon: string;
   price: number;
+  isFree?: boolean;
 }
 
 export interface ReadingRequest {
