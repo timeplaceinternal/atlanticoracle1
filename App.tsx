@@ -9,7 +9,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Beaker, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Zap } from 'lucide-react';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote } from 'lucide-react';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 const STORAGE_KEY = "atlantic_oracle_pending_request";
@@ -36,7 +36,6 @@ const TESTIMONIALS = [
 ];
 
 const App: React.FC = () => {
-  // Initialize view based on URL to prevent home page flicker when returning from Stripe
   const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -52,7 +51,6 @@ const App: React.FC = () => {
   const [result, setResult] = useState<ReadingResultType | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Auto-detection logic to start generation on return from payment
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment_status');
@@ -62,18 +60,14 @@ const App: React.FC = () => {
       if (savedRequest) {
         try {
           const request = JSON.parse(savedRequest) as ReadingRequest;
-          // Clean up URL and storage immediately
           window.history.replaceState({}, document.title, window.location.pathname);
           localStorage.removeItem(STORAGE_KEY);
-          
-          // Trigger the generation
           startGeneration(request);
         } catch (e) {
           console.error("Failed to parse saved request", e);
           setView('home');
         }
       } else if (view === 'loading') {
-        // Fallback if view was loading but no data found
         setView('home');
       }
     }
@@ -100,7 +94,6 @@ const App: React.FC = () => {
     if (selectedService?.isFree) {
       startGeneration(request);
     } else {
-      // Save request to localStorage so it survives the Stripe redirect
       localStorage.setItem(STORAGE_KEY, JSON.stringify(request));
       setView('payment');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -114,14 +107,6 @@ const App: React.FC = () => {
   const startGeneration = async (request: ReadingRequest) => {
     setView('loading');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    const aistudio = (window as any).aistudio;
-    if (aistudio) {
-      try {
-        const hasKey = await aistudio.hasSelectedApiKey();
-        if (!hasKey) await aistudio.openSelectKey();
-      } catch (e) { console.warn("AI Studio key manager unavailable"); }
-    }
     
     try {
       const content = await generateCosmicReading(request);
@@ -168,7 +153,7 @@ const App: React.FC = () => {
       <CosmicBackground />
       
       <div className="main-ui-wrapper">
-        <header className="fixed top-0 left-0 right-0 z-[100] bg-cosmic-900/60 backdrop-blur-xl border-b border-cosmic-gold/10 no-print">
+        <header className="fixed top-0 left-0 right-0 z-[100] bg-cosmic-900/40 backdrop-blur-xl border-b border-cosmic-gold/10 no-print">
           <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <button onClick={resetToHome} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 bg-cosmic-gold rounded-lg flex items-center justify-center shadow-lg">
@@ -346,7 +331,6 @@ const App: React.FC = () => {
           {view === 'payment' && (
             <div className="py-20 px-6 flex flex-col items-center justify-center min-h-[60vh]">
               <div className="bg-cosmic-800/60 p-12 rounded-[3rem] border border-cosmic-gold/30 text-center max-w-md w-full backdrop-blur-3xl animate-in zoom-in-95 shadow-2xl">
-                {/* Secret bypass integrated into the security shield */}
                 <ShieldCheck 
                   onClick={handleBypass}
                   className="w-16 h-16 text-cosmic-gold mx-auto mb-6 cursor-pointer hover:scale-110 active:scale-95 transition-all" 
