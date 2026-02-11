@@ -177,7 +177,7 @@ const App: React.FC = () => {
                   <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">The Synthesis of Stars and Numbers</span>
                 </div>
                 <h1 className="text-5xl md:text-8xl font-cinzel text-white leading-[1.1]">The Secret Language of <span className="text-cosmic-gold">Space and Numbers</span></h1>
-                <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair">"We merge the cosmic mechanics of Astrology with the mathematical fate of Numerology to decode your life's navigation map."</p>
+                <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair text-lg md:text-2xl">"We merge the cosmic mechanics of Astrology with the mathematical fate of Numerology to decode your life's navigation map."</p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
                   <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95">Consult the Oracle</button>
                   <button onClick={() => scrollToSection('free-insights')} className="w-full sm:w-auto px-10 py-5 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/5 transition-all">Free Insights</button>
@@ -194,7 +194,7 @@ const App: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {FREE_SERVICES.map(s => (
                     <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
-                      <div className="absolute top-4 right-4 text-[8px] font-bold text-cosmic-gold/40 border border-cosmic-gold/20 px-2 py-0.5 rounded tracking-widest uppercase">[FREE]</div>
+                      <div className="absolute top-4 right-4 text-[9px] font-bold text-cosmic-gold border border-cosmic-gold/40 px-3 py-1 rounded-full tracking-[0.2em] uppercase bg-cosmic-gold/10 shadow-[0_0_10px_rgba(212,175,55,0.2)]">FREE</div>
                       <div className="mb-6">{getServiceIcon(s.icon)}</div>
                       <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
                       <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
