@@ -18,7 +18,7 @@ export const FREE_SERVICES: Service[] = [
   {
     id: ServiceType.CAPITAL_ALIGNMENT,
     title: "Capital Alignment",
-    description: "Identify your ведущую энергию дохода and financial resource leaks.",
+    description: "Identify your leading income energy and financial resource leaks.",
     icon: "coins",
     price: 0,
     isFree: true
