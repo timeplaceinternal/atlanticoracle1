@@ -137,3 +137,58 @@ export const generateMonthlyGiftHoroscope = async (name: string, birthDate: stri
     throw new Error("GIFT_GENERATION_FAILED");
   }
 };
+
+export const generateDailyForecast = async (lang: ReportLanguage, userPrompt?: string): Promise<{title: string, text: string, imageUrl: string}> => {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("MISSING_API_KEY");
+  const ai = new GoogleGenAI({ apiKey });
+
+  try {
+    // 1. Generate Text
+    const textResponse = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: `Generate a daily cosmic forecast for today. 
+      ${userPrompt ? `Focus on this specific theme: "${userPrompt}".` : 'Topic: General energy, astrology, and advice.'}
+      Style: Mystical, professional.
+      Language: ${lang}.
+      Format: Return JSON with "title" and "text" fields.`,
+      config: {
+        responseMimeType: "application/json",
+        systemInstruction: getSystemInstruction(lang),
+      }
+    });
+    
+    const parsed = JSON.parse(textResponse.text || '{}');
+    const title = parsed.title || "Daily Cosmic Alignment";
+    const text = parsed.text || "The stars are aligning in a unique pattern today.";
+
+    // 2. Generate Image Prompt
+    const promptResponse = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: `Based on this forecast title: "${title}", generate a short, highly descriptive image prompt for an AI image generator. 
+      Focus on: 17th-century astronomical style, parchment, stars, mystical symbols, antique map feel. 
+      Return only the prompt text.`,
+    });
+    const imagePrompt = promptResponse.text || `A mystical 17th-century astronomical map representing ${title}`;
+
+    // 3. Generate Image
+    const imageResponse = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: { parts: [{ text: imagePrompt }] },
+      config: { imageConfig: { aspectRatio: "16:9" } }
+    });
+
+    let imageUrl = '';
+    for (const part of imageResponse.candidates?.[0]?.content?.parts || []) {
+      if (part.inlineData) {
+        imageUrl = `data:image/png;base64,${part.inlineData.data}`;
+        break;
+      }
+    }
+
+    return { title, text, imageUrl: imageUrl || 'https://picsum.photos/seed/cosmos/800/400' };
+  } catch (error) {
+    console.error("Daily forecast generation error:", error);
+    throw error;
+  }
+};
