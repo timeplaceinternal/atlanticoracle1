@@ -43,8 +43,19 @@ const getSystemInstruction = (lang: string) => {
   `;
 };
 
+const getApiKey = () => {
+  const key = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  if (!key) {
+    console.warn("Gemini API Key is missing. Please ensure GEMINI_API_KEY is set.");
+  }
+  return key || "";
+};
+
 export const translateContent = async (text: string, targetLang: ReportLanguage): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("MISSING_API_KEY");
+  
+  const ai = new GoogleGenAI({ apiKey });
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
@@ -62,7 +73,10 @@ export const translateContent = async (text: string, targetLang: ReportLanguage)
 };
 
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("MISSING_API_KEY");
+
+  const ai = new GoogleGenAI({ apiKey });
   const lang = request.language;
   let promptText = "";
   
@@ -85,7 +99,7 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   try {
     const isFree = request.serviceId.toString().startsWith('free-');
     const response = await ai.models.generateContent({
-      model: isFree ? 'gemini-3-flash-preview' : 'gemini-3-pro-preview',
+      model: isFree ? 'gemini-3-flash-preview' : 'gemini-3.1-pro-preview',
       contents: promptText,
       config: {
         systemInstruction: getSystemInstruction(lang),
@@ -101,7 +115,10 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
 };
 
 export const generateMonthlyGiftHoroscope = async (name: string, birthDate: string, lang: ReportLanguage): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error("MISSING_API_KEY");
+
+  const ai = new GoogleGenAI({ apiKey });
   const promptText = COSMIC_PROMPTS.GIFT_MONTHLY_HOROSCOPE(name, birthDate, lang);
 
   try {

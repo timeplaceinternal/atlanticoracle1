@@ -6,6 +6,8 @@ import ReadingResult from './components/ReadingResult';
 import PhilosophySection from './components/PhilosophySection';
 import HowItWorksSection from './components/HowItWorksSection';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import NewsPage from './components/NewsPage';
+import AdminPanel from './components/AdminPanel';
 import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
 import { generateCosmicReading } from './services/geminiService';
@@ -36,9 +38,14 @@ const TESTIMONIALS = [
 ];
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy'>(() => {
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      const path = window.location.pathname;
+      
+      if (path === '/admin') return 'admin';
+      if (path === '/news') return 'news';
+      
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
         return 'loading';
       }
@@ -164,6 +171,7 @@ const App: React.FC = () => {
             </button>
 
             <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
+              <button onClick={() => setView('news')} className="hover:text-cosmic-gold transition-colors">Cosmic News</button>
               <button onClick={() => scrollToSection('philosophy')} className="hover:text-cosmic-gold transition-colors">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="hover:text-cosmic-gold transition-colors">How it Works</button>
               <button 
@@ -185,6 +193,7 @@ const App: React.FC = () => {
 
           <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[400px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
             <div className="flex flex-col p-8 gap-6 text-center text-sm font-bold text-cosmic-silver uppercase tracking-[0.2em]">
+              <button onClick={() => setView('news')} className="py-2 hover:text-cosmic-gold">Cosmic News</button>
               <button onClick={() => scrollToSection('philosophy')} className="py-2 hover:text-cosmic-gold">Philosophy</button>
               <button onClick={() => scrollToSection('how-it-works')} className="py-2 hover:text-cosmic-gold">How it Works</button>
               <button onClick={() => scrollToSection('services')} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">Oracle Consult</button>
@@ -361,6 +370,18 @@ const App: React.FC = () => {
           {view === 'privacy' && (
             <div className="py-20 px-6">
               <PrivacyPolicy onBack={resetToHome} />
+            </div>
+          )}
+
+          {view === 'news' && (
+            <div className="py-20">
+              <NewsPage />
+            </div>
+          )}
+
+          {view === 'admin' && (
+            <div className="py-20">
+              <AdminPanel />
             </div>
           )}
         </main>

@@ -21,7 +21,10 @@ const LANGUAGE_INSCRIPTIONS: Record<ScrollLanguage, string> = {
  */
 export const generateAestheticBackground = async (language: ScrollLanguage): Promise<string> => {
   // Always create a new instance to pick up the latest injected API key
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  if (!apiKey) throw new Error("MISSING_API_KEY");
+
+  const ai = new GoogleGenAI({ apiKey });
   const inscription = LANGUAGE_INSCRIPTIONS[language];
 
   const prompt = `

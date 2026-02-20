@@ -47,3 +47,16 @@ export interface ReadingResult {
   language: ReportLanguage;
   birthDate: string;
 }
+
+export type PostFormat = 'fact' | 'forecast' | 'series';
+
+export interface NewsPost {
+  id: string;
+  title: string;
+  text: string;
+  imageUrl: string;
+  format: PostFormat;
+  topic: 'astrology' | 'numerology' | 'astronomy';
+  date: string;
+  images?: string[]; // For slider format
+}

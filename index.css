@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cosmic-900 text-white overflow-x-hidden m-0 font-inter;
+  }
+}
+
+@layer components {
+  .constellation-overlay {
+    @apply fixed inset-0 opacity-10 pointer-events-none -z-10;
+    background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  }
+
+  .antique-paper {
+    @apply bg-[#f4ecd8] text-[#1a1a1a] shadow-[inset_0_0_100px_rgba(0,0,0,0.1),0_20px_50px_rgba(0,0,0,0.5)];
+    background-image: url("https://www.transparenttextures.com/patterns/old-map.png");
+  }
+
+  .ornate-border {
+    @apply relative border-[20px] border-transparent;
+    border-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0V80H80V0H0ZM70 70H10V10H70V70Z' fill='%23d4af37'/%3E%3Cpath d='M15 15H65V65H15V15Z' fill='none' stroke='%23d4af37' stroke-width='1'/%3E%3C/svg%3E") 30 stretch;
+  }
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+
+  .no-print, header, footer, button, .constellation-overlay, canvas, select, nav, .fixed {
+    display: none !important;
+  }
+  
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html:not([data-print-mode="scroll"]) #root {
+    display: block !important;
+    height: auto !important;
+  }
+
+  html[data-print-mode="scroll"] #root,
+  html[data-print-mode="scroll"] .main-ui-wrapper {
+    display: none !important;
+  }
+
+  html[data-print-mode="scroll"] .scroll-container {
+    position: relative !important;
+    display: block !important;
+    height: auto !important;
+    width: 100% !important;
+    background: #fcf5e5 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    z-index: 9999 !important;
+  }
+
+  #printable-scroll {
+    position: relative !important;
+    display: block !important;
+    margin: 0 auto !important;
+    width: 210mm !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: none !important;
+    background-color: #fcf5e5 !important;
+    background-image: url("https://www.transparenttextures.com/patterns/old-map.png") !important;
+  }
+
+  .printable-area {
+    background-color: #fcf5e5 !important;
+    background-image: url("https://www.transparenttextures.com/patterns/old-map.png") !important;
+    color: #1a1a1a !important;
+    border: 1px solid #d4af37 !important;
+    padding: 2cm !important;
+    margin: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .bg-print-visible {
+    display: block !important;
+    opacity: 0.2 !important;
+    filter: grayscale(100%) !important;
+  }
+
+  .prose {
+    color: #1a1a1a !important;
+  }
+
+  h1, h2, h3, p, span {
+    color: #1a1a1a !important;
+    font-family: 'Cinzel', serif !important;
+  }
+
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #050510; }
+::-webkit-scrollbar-thumb { background: #d4af3733; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #d4af3766; }

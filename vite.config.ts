@@ -4,12 +4,24 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 3000,
+    host: '0.0.0.0',
+  },
   define: {
-    // Прокидываем API_KEY в клиентский код, как того требует SDK
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
+    'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || process.env.GEMINI_API_KEY)
   },
   build: {
     outDir: 'dist',
-    emptyOutDir: true
-  }
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'oracle-vendor': ['lucide-react', '@google/genai'],
+        },
+      },
+    },
+  },
 });

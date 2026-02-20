@@ -4,7 +4,69 @@ import {
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
   History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery
 } from 'lucide-react';
-import { ServiceType, Service } from './types';
+import { ServiceType, Service, NewsPost } from './types';
+
+export const INITIAL_NEWS: NewsPost[] = [
+  {
+    id: '1',
+    title: 'Mercury Retrograde: The Shadow Phase Begins',
+    text: 'As Mercury enters its shadow phase, expect communication delays and technical glitches. This is a time for reflection, not new beginnings. Double-check your emails and travel plans.',
+    imageUrl: 'https://picsum.photos/seed/mercury/800/400',
+    format: 'forecast',
+    topic: 'astrology',
+    date: '2026-02-15'
+  },
+  {
+    id: '2',
+    title: 'The Secret of the North Star',
+    text: 'Polaris, our guiding light, isn\'t just one star but a triple star system. Ancient navigators used its fixed position to find their way across the Atlantic.',
+    imageUrl: 'https://picsum.photos/seed/polaris/150/150',
+    format: 'fact',
+    topic: 'astronomy',
+    date: '2026-02-18'
+  },
+  {
+    id: '3',
+    title: 'Weekly Numerology: The Power of 7',
+    text: 'This week is dominated by the vibration of 7. It is a period for spiritual seeking, solitude, and deep inner work. Your intuition is at its peak.',
+    imageUrl: 'https://picsum.photos/seed/seven/800/400',
+    format: 'forecast',
+    topic: 'numerology',
+    date: '2026-02-19'
+  },
+  {
+    id: '4',
+    title: 'Celestial Series: The Zodiac Constellations',
+    text: 'Explore the myths and legends behind the 12 signs of the zodiac. From the bravery of Aries to the wisdom of Pisces.',
+    imageUrl: 'https://picsum.photos/seed/zodiac/800/400',
+    format: 'series',
+    topic: 'astronomy',
+    date: '2026-02-20',
+    images: [
+      'https://picsum.photos/seed/aries/800/400',
+      'https://picsum.photos/seed/leo/800/400',
+      'https://picsum.photos/seed/sagittarius/800/400'
+    ]
+  },
+  {
+    id: '5',
+    title: 'Solar Eclipse Warning',
+    text: 'The upcoming total solar eclipse in April will be a major energetic shift. Prepare for sudden endings and powerful new beginnings.',
+    imageUrl: 'https://picsum.photos/seed/eclipse/150/150',
+    format: 'fact',
+    topic: 'astronomy',
+    date: '2026-02-10'
+  },
+  {
+    id: '6',
+    title: 'Venus in Pisces: Love Transcends',
+    text: 'With Venus moving through Pisces, relationships take on a more spiritual and compassionate tone. Idealism is high, but beware of illusions.',
+    imageUrl: 'https://picsum.photos/seed/venus/800/400',
+    format: 'forecast',
+    topic: 'astrology',
+    date: '2026-02-12'
+  }
+];
 
 export const FREE_SERVICES: Service[] = [
   {
