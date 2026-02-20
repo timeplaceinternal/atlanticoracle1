@@ -129,11 +129,17 @@ const NewsPage: React.FC = () => {
 };
 
 const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
+
+  const firstSentence = post.text.split(/[.!?]/)[0] + '.';
 
   if (post.format === 'fact') {
     return (
-      <div className="group flex flex-col md:flex-row gap-8 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all">
+      <div 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="group flex flex-col md:flex-row gap-8 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer"
+      >
         <div className="w-full md:w-[150px] h-[150px] shrink-0 rounded-xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-800 flex items-center justify-center">
           {videoId ? (
             <div className="relative w-full h-full">
@@ -144,7 +150,7 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
             <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
           )}
         </div>
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center flex-1">
           <div className="flex items-center gap-4 mb-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic-gold px-2 py-0.5 bg-cosmic-gold/10 rounded border border-cosmic-gold/20">
               {post.topic}
@@ -155,8 +161,11 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
           </div>
           <h3 className="text-xl font-cinzel font-bold text-white mb-2 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
           <div className="text-cosmic-silver font-inter text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
-            <Markdown>{post.text}</Markdown>
+            <Markdown>{isExpanded ? post.text : firstSentence}</Markdown>
           </div>
+          {!isExpanded && post.text.length > firstSentence.length && (
+            <span className="text-cosmic-gold text-[10px] font-bold uppercase tracking-widest mt-2">Read More...</span>
+          )}
         </div>
       </div>
     );
@@ -164,7 +173,10 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
 
   if (post.format === 'forecast') {
     return (
-      <div className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all">
+      <div 
+        onClick={() => !videoId && setIsExpanded(!isExpanded)}
+        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''}`}
+      >
         <div className="w-full h-[400px] overflow-hidden relative bg-cosmic-800">
           {videoId ? (
             <iframe
@@ -193,11 +205,13 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
           </div>
           <h3 className="text-3xl md:text-4xl font-cinzel font-bold text-white mb-6 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
           <div className="text-cosmic-silver font-inter text-lg leading-relaxed max-w-4xl prose prose-invert prose-lg max-w-none">
-            <Markdown>{post.text}</Markdown>
+            <Markdown>{isExpanded || videoId ? post.text : firstSentence}</Markdown>
           </div>
-          <button className="mt-8 flex items-center gap-2 text-cosmic-gold font-bold uppercase tracking-widest text-xs hover:gap-4 transition-all">
-            Read Full Forecast <ChevronRight className="w-4 h-4" />
-          </button>
+          {!isExpanded && !videoId && post.text.length > firstSentence.length && (
+            <button className="mt-8 flex items-center gap-2 text-cosmic-gold font-bold uppercase tracking-widest text-xs hover:gap-4 transition-all">
+              Read Full Forecast <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     );
@@ -212,14 +226,26 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
 
 const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
   const images = post.images || [post.imageUrl];
 
-  const next = () => setCurrentIndex((prev) => (prev + 1) % images.length);
-  const prev = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  const next = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+  const prev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const firstSentence = post.text.split(/[.!?]/)[0] + '.';
 
   return (
-    <div className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all">
+    <div 
+      onClick={() => setIsExpanded(!isExpanded)}
+      className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer"
+    >
       <div className="relative w-full h-[400px] overflow-hidden bg-cosmic-800">
         {videoId && currentIndex === 0 ? (
           <iframe
@@ -270,8 +296,11 @@ const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
       </div>
       <div className="p-8">
         <div className="text-cosmic-silver font-inter text-base leading-relaxed prose prose-invert max-w-none">
-          <Markdown>{post.text}</Markdown>
+          <Markdown>{isExpanded ? post.text : firstSentence}</Markdown>
         </div>
+        {!isExpanded && post.text.length > firstSentence.length && (
+          <span className="text-cosmic-gold text-[10px] font-bold uppercase tracking-widest mt-4 block">Read More...</span>
+        )}
       </div>
     </div>
   );
