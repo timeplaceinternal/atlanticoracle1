@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Markdown from 'react-markdown';
 import { NewsPost, PostFormat } from '../types';
 import { INITIAL_NEWS } from '../constants';
 import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube } from 'lucide-react';
@@ -153,7 +154,9 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
             </span>
           </div>
           <h3 className="text-xl font-cinzel font-bold text-white mb-2 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
-          <p className="text-cosmic-silver font-inter text-sm leading-relaxed">{post.text}</p>
+          <div className="text-cosmic-silver font-inter text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
+            <Markdown>{post.text}</Markdown>
+          </div>
         </div>
       </div>
     );
@@ -189,7 +192,9 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
             <Calendar className="w-3 h-3" /> {post.date}
           </div>
           <h3 className="text-3xl md:text-4xl font-cinzel font-bold text-white mb-6 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
-          <p className="text-cosmic-silver font-inter text-lg leading-relaxed max-w-4xl">{post.text}</p>
+          <div className="text-cosmic-silver font-inter text-lg leading-relaxed max-w-4xl prose prose-invert prose-lg max-w-none">
+            <Markdown>{post.text}</Markdown>
+          </div>
           <button className="mt-8 flex items-center gap-2 text-cosmic-gold font-bold uppercase tracking-widest text-xs hover:gap-4 transition-all">
             Read Full Forecast <ChevronRight className="w-4 h-4" />
           </button>
@@ -264,7 +269,9 @@ const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
         </div>
       </div>
       <div className="p-8">
-        <p className="text-cosmic-silver font-inter text-base leading-relaxed">{post.text}</p>
+        <div className="text-cosmic-silver font-inter text-base leading-relaxed prose prose-invert max-w-none">
+          <Markdown>{post.text}</Markdown>
+        </div>
       </div>
     </div>
   );

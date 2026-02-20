@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Markdown from 'react-markdown';
 import { NewsPost, PostFormat, ReportLanguage } from '../types';
 import { 
   Plus, Trash2, Layout, Image as ImageIcon, Type, Tag, 
@@ -408,9 +409,9 @@ const AdminPanel: React.FC = () => {
 
                   <h3 className="text-3xl font-cinzel font-bold text-[#1a1a1a] mb-6 leading-tight">{formData.title || 'Untitled Transmission'}</h3>
                   <div className="prose prose-stone max-w-none">
-                    <p className="text-[#333] font-inter text-lg leading-relaxed whitespace-pre-wrap">
-                      {formData.text || 'Begin your cosmic transmission...'}
-                    </p>
+                    <div className="text-[#333] font-inter text-lg leading-relaxed">
+                      <Markdown>{formData.text || 'Begin your cosmic transmission...'}</Markdown>
+                    </div>
                   </div>
                 </div>
               </div>

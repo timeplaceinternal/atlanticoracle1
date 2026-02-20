@@ -23,6 +23,25 @@
     @apply relative border-[20px] border-transparent;
     border-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0V80H80V0H0ZM70 70H10V10H70V70Z' fill='%23d4af37'/%3E%3Cpath d='M15 15H65V65H15V15Z' fill='none' stroke='%23d4af37' stroke-width='1'/%3E%3C/svg%3E") 30 stretch;
   }
+
+  /* Cosmic Prose Styles */
+  .prose-invert {
+    --tw-prose-body: theme('colors.cosmic.silver');
+    --tw-prose-headings: theme('colors.cosmic.gold');
+    --tw-prose-links: theme('colors.cosmic.gold');
+    --tw-prose-bold: theme('colors.white');
+    --tw-prose-bullets: theme('colors.cosmic.gold');
+    --tw-prose-hr: theme('colors.cosmic.gold / 0.2');
+  }
+
+  .prose-stone {
+    --tw-prose-body: #333;
+    --tw-prose-headings: #1a1a1a;
+    --tw-prose-links: #d4af37;
+    --tw-prose-bold: #000;
+    --tw-prose-bullets: #d4af37;
+    --tw-prose-hr: rgba(0,0,0,0.1);
+  }
 }
 
 @media print {
