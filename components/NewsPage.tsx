@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { NewsPost, PostFormat } from '../types';
 import { INITIAL_NEWS } from '../constants';
-import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter } from 'lucide-react';
+import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube } from 'lucide-react';
+
+const getYouTubeId = (url: string) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+};
 
 const NewsPage: React.FC = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
@@ -122,11 +128,20 @@ const NewsPage: React.FC = () => {
 };
 
 const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
+  const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
+
   if (post.format === 'fact') {
     return (
       <div className="group flex flex-col md:flex-row gap-8 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all">
-        <div className="w-full md:w-[150px] h-[150px] shrink-0 rounded-xl overflow-hidden border border-cosmic-gold/20">
-          <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+        <div className="w-full md:w-[150px] h-[150px] shrink-0 rounded-xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-800 flex items-center justify-center">
+          {videoId ? (
+            <div className="relative w-full h-full">
+              <img src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} className="w-full h-full object-cover opacity-50" />
+              <Youtube className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-red-500" />
+            </div>
+          ) : (
+            <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          )}
         </div>
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-4 mb-2">
@@ -147,9 +162,22 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
   if (post.format === 'forecast') {
     return (
       <div className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all">
-        <div className="w-full h-[400px] overflow-hidden relative">
-          <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-          <div className="absolute inset-0 bg-gradient-to-t from-cosmic-900 via-transparent to-transparent opacity-60" />
+        <div className="w-full h-[400px] overflow-hidden relative bg-cosmic-800">
+          {videoId ? (
+            <iframe
+              className="w-full h-full"
+              src={`https://www.youtube.com/embed/${videoId}`}
+              title={post.title}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          ) : (
+            <>
+              <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-cosmic-900 via-transparent to-transparent opacity-60" />
+            </>
+          )}
           <div className="absolute top-6 left-6 flex gap-3">
             <span className="px-4 py-1 bg-cosmic-gold text-cosmic-900 rounded-full text-[10px] font-bold uppercase tracking-widest">
               {post.topic}
@@ -179,6 +207,7 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
 
 const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
   const images = post.images || [post.imageUrl];
 
   const next = () => setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -186,16 +215,27 @@ const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
 
   return (
     <div className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all">
-      <div className="relative w-full h-[400px] overflow-hidden">
-        {images.map((img, idx) => (
-          <div 
-            key={idx}
-            className={`absolute inset-0 transition-opacity duration-700 ${idx === currentIndex ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <img src={img} alt={`${post.title} ${idx}`} className="w-full h-full object-cover" />
-          </div>
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-cosmic-900/80 to-transparent" />
+      <div className="relative w-full h-[400px] overflow-hidden bg-cosmic-800">
+        {videoId && currentIndex === 0 ? (
+          <iframe
+            className="w-full h-full"
+            src={`https://www.youtube.com/embed/${videoId}`}
+            title={post.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          images.map((img, idx) => (
+            <div 
+              key={idx}
+              className={`absolute inset-0 transition-opacity duration-700 ${idx === currentIndex ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img src={img} alt={`${post.title} ${idx}`} className="w-full h-full object-cover" />
+            </div>
+          ))
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-cosmic-900/80 to-transparent pointer-events-none" />
         
         <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
           <div>

@@ -59,4 +59,5 @@ export interface NewsPost {
   topic: 'astrology' | 'numerology' | 'astronomy';
   date: string;
   images?: string[]; // For slider format
+  videoUrl?: string; // YouTube URL
 }
