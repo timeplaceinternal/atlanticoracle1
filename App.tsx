@@ -177,7 +177,11 @@ const App: React.FC = () => {
       <div className="main-ui-wrapper">
         <header className="fixed top-0 left-0 right-0 z-[100] bg-cosmic-900/40 backdrop-blur-xl border-b border-cosmic-gold/10 no-print">
           <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <button onClick={resetToHome} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <button 
+              onClick={resetToHome} 
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              aria-label="Atlantic Oracle Home"
+            >
               <div className="w-10 h-10 bg-cosmic-gold rounded-lg flex items-center justify-center shadow-lg">
                 <Star className="text-cosmic-900 w-6 h-6" />
               </div>
@@ -186,12 +190,31 @@ const App: React.FC = () => {
             </button>
 
             <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
-              <button onClick={() => setView('news')} className="hover:text-cosmic-gold transition-colors">Cosmic News</button>
-              <button onClick={() => scrollToSection('philosophy')} className="hover:text-cosmic-gold transition-colors">Philosophy</button>
-              <button onClick={() => scrollToSection('how-it-works')} className="hover:text-cosmic-gold transition-colors">How it Works</button>
+              <button 
+                onClick={() => setView('news')} 
+                className="hover:text-cosmic-gold transition-colors"
+                aria-label="View Cosmic News"
+              >
+                Cosmic News
+              </button>
+              <button 
+                onClick={() => scrollToSection('philosophy')} 
+                className="hover:text-cosmic-gold transition-colors"
+                aria-label="Read our Philosophy"
+              >
+                Philosophy
+              </button>
+              <button 
+                onClick={() => scrollToSection('how-it-works')} 
+                className="hover:text-cosmic-gold transition-colors"
+                aria-label="How it Works"
+              >
+                How it Works
+              </button>
               <button 
                 onClick={() => scrollToSection('services')} 
                 className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all font-cinzel tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.1)] active:scale-95"
+                aria-label="Oracle Consult"
               >
                 Oracle Consult
               </button>
