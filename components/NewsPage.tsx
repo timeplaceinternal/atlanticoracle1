@@ -52,11 +52,21 @@ const NewsPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
         <div>
-          <h1 className="text-5xl md:text-7xl font-cinzel font-bold text-cosmic-gold mb-4 tracking-tighter">
-            Cosmic News <span className="text-white block md:inline">& Forecasts</span>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-px bg-cosmic-gold/30 flex-1"></div>
+            <span className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.4em]">The Atlantic Oracle Gazette</span>
+            <div className="h-px bg-cosmic-gold/30 flex-1"></div>
+          </div>
+          <h1 className="text-6xl md:text-8xl font-cinzel font-bold text-cosmic-gold mb-4 tracking-tighter text-center md:text-left">
+            Cosmic <span className="text-white">News</span>
           </h1>
-          <p className="text-cosmic-silver font-inter text-lg max-w-2xl">
-            Stay aligned with the celestial rhythms. Weekly forecasts, astronomical events, and the numerical vibrations of the Atlantic Oracle.
+          <div className="flex justify-between items-center border-y border-cosmic-gold/20 py-2 mb-8">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-cosmic-silver">Vol. I — No. 42</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-cosmic-gold">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase()}</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-cosmic-silver">Price: One Soul</span>
+          </div>
+          <p className="text-cosmic-silver font-inter text-lg max-w-2xl italic opacity-80">
+            "As above, so below. The celestial rhythms captured in ink and light."
           </p>
         </div>
 
@@ -87,9 +97,9 @@ const NewsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-12">
-        {currentPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-min">
+        {currentPosts.map((post, index) => (
+          <PostCard key={post.id} post={post} index={index} />
         ))}
       </div>
 
@@ -128,19 +138,26 @@ const NewsPage: React.FC = () => {
   );
 };
 
-const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
+const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
 
   const firstSentence = post.text.split(/[.!?]/)[0] + '.';
 
+  // Newspaper grid logic
+  let gridClasses = "col-span-1 row-span-1";
+  if (post.format === 'forecast') gridClasses = "md:col-span-2 md:row-span-2";
+  if (post.format === 'series') gridClasses = "md:col-span-2 md:row-span-1";
+  // Alternate sizing for facts to keep it interesting
+  if (post.format === 'fact' && index % 5 === 0) gridClasses = "md:col-span-1 md:row-span-2";
+
   if (post.format === 'fact') {
     return (
       <div 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="group flex flex-col md:flex-row gap-8 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer"
+        className={`group flex flex-col gap-6 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} h-full`}
       >
-        <div className="w-full md:w-[150px] h-[150px] shrink-0 rounded-xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-800 flex items-center justify-center">
+        <div className="w-full aspect-square shrink-0 rounded-xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-800 flex items-center justify-center">
           {videoId ? (
             <div className="relative w-full h-full">
               <img src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} className="w-full h-full object-cover opacity-50" />
@@ -150,7 +167,7 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
             <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
           )}
         </div>
-        <div className="flex flex-col justify-center flex-1">
+        <div className="flex flex-col flex-1">
           <div className="flex items-center gap-4 mb-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic-gold px-2 py-0.5 bg-cosmic-gold/10 rounded border border-cosmic-gold/20">
               {post.topic}
@@ -164,7 +181,7 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
             <Markdown>{isExpanded ? post.text : firstSentence}</Markdown>
           </div>
           {!isExpanded && post.text.length > firstSentence.length && (
-            <span className="text-cosmic-gold text-[10px] font-bold uppercase tracking-widest mt-2">Read More...</span>
+            <span className="text-cosmic-gold text-[10px] font-bold uppercase tracking-widest mt-auto pt-4">Read More...</span>
           )}
         </div>
       </div>
@@ -175,9 +192,9 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
     return (
       <div 
         onClick={() => !videoId && setIsExpanded(!isExpanded)}
-        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''}`}
+        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''} ${gridClasses} flex flex-col`}
       >
-        <div className="w-full h-[400px] overflow-hidden relative bg-cosmic-800">
+        <div className="w-full h-[300px] md:h-[400px] overflow-hidden relative bg-cosmic-800 shrink-0">
           {videoId ? (
             <iframe
               className="w-full h-full"
@@ -199,12 +216,12 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
             </span>
           </div>
         </div>
-        <div className="p-10">
+        <div className="p-8 md:p-10 flex-1 flex flex-col">
           <div className="flex items-center gap-2 mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic-silver">
             <Calendar className="w-3 h-3" /> {post.date}
           </div>
-          <h3 className="text-3xl md:text-4xl font-cinzel font-bold text-white mb-6 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
-          <div className="text-cosmic-silver font-inter text-lg leading-relaxed max-w-4xl prose prose-invert prose-lg max-w-none">
+          <h3 className="text-2xl md:text-4xl font-cinzel font-bold text-white mb-6 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
+          <div className="text-cosmic-silver font-inter text-base md:text-lg leading-relaxed prose prose-invert prose-lg max-w-none flex-1">
             <Markdown>{isExpanded || videoId ? post.text : firstSentence}</Markdown>
           </div>
           {!isExpanded && !videoId && post.text.length > firstSentence.length && (
@@ -218,17 +235,20 @@ const PostCard: React.FC<{ post: NewsPost }> = ({ post }) => {
   }
 
   if (post.format === 'series') {
-    return <SliderPost post={post} />;
+    return <SliderPost post={post} index={index} />;
   }
 
   return null;
 };
 
-const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
+const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
   const images = post.images || [post.imageUrl];
+
+  // Newspaper grid logic
+  const gridClasses = "md:col-span-2 md:row-span-1";
 
   const next = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -244,9 +264,9 @@ const SliderPost: React.FC<{ post: NewsPost }> = ({ post }) => {
   return (
     <div 
       onClick={() => setIsExpanded(!isExpanded)}
-      className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer"
+      className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} flex flex-col`}
     >
-      <div className="relative w-full h-[400px] overflow-hidden bg-cosmic-800">
+      <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden bg-cosmic-800 shrink-0">
         {videoId && currentIndex === 0 ? (
           <iframe
             className="w-full h-full"
