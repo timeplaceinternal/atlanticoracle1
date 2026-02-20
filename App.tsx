@@ -43,8 +43,9 @@ const App: React.FC = () => {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
       
-      if (path === '/admin') return 'admin';
-      if (path === '/news') return 'news';
+      // Support both path and query param for static hosting
+      if (path === '/admin' || params.get('view') === 'admin') return 'admin';
+      if (path === '/news' || params.get('view') === 'news') return 'news';
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
         return 'loading';
@@ -52,6 +53,20 @@ const App: React.FC = () => {
     }
     return 'home';
   });
+
+  // Sync URL with view state (without reloading)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (view === 'home') {
+        url.searchParams.delete('view');
+        window.history.pushState({}, '', url.pathname + url.search);
+      } else if (['news', 'admin', 'privacy'].includes(view)) {
+        url.searchParams.set('view', view);
+        window.history.pushState({}, '', url.pathname + url.search);
+      }
+    }
+  }, [view]);
 
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
