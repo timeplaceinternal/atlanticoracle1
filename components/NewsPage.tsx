@@ -177,7 +177,7 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
             </span>
           </div>
           <h3 className="text-xl font-cinzel font-bold text-white mb-2 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
-          <div className="text-cosmic-silver font-inter text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
+          <div className="text-cosmic-silver font-inter text-sm leading-relaxed prose prose-invert prose-sm max-w-none markdown-body">
             <Markdown>{isExpanded ? post.text : firstSentence}</Markdown>
           </div>
           {!isExpanded && post.text.length > firstSentence.length && (
@@ -221,7 +221,7 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
             <Calendar className="w-3 h-3" /> {post.date}
           </div>
           <h3 className="text-2xl md:text-4xl font-cinzel font-bold text-white mb-6 group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
-          <div className="text-cosmic-silver font-inter text-base md:text-lg leading-relaxed prose prose-invert prose-lg max-w-none flex-1">
+          <div className="text-cosmic-silver font-inter text-base md:text-lg leading-relaxed prose prose-invert prose-lg max-w-none flex-1 markdown-body">
             <Markdown>{isExpanded || videoId ? post.text : firstSentence}</Markdown>
           </div>
           {!isExpanded && !videoId && post.text.length > firstSentence.length && (
@@ -315,7 +315,7 @@ const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }
         </div>
       </div>
       <div className="p-8">
-        <div className="text-cosmic-silver font-inter text-base leading-relaxed prose prose-invert max-w-none">
+        <div className="text-cosmic-silver font-inter text-base leading-relaxed prose prose-invert max-w-none markdown-body">
           <Markdown>{isExpanded ? post.text : firstSentence}</Markdown>
         </div>
         {!isExpanded && post.text.length > firstSentence.length && (

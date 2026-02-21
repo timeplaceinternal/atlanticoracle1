@@ -44,8 +44,8 @@ const App: React.FC = () => {
       const path = window.location.pathname;
       
       // Support both path and query param for static hosting
-      if (path === '/admin' || params.get('view') === 'admin') return 'admin';
-      if (path === '/news' || params.get('view') === 'news') return 'news';
+      if (path.endsWith('/admin') || params.get('view') === 'admin') return 'admin';
+      if (path.endsWith('/news') || params.get('view') === 'news') return 'news';
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
         return 'loading';
@@ -483,7 +483,10 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8">
+            <p 
+              onClick={() => setView('admin')}
+              className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 cursor-default hover:text-cosmic-gold transition-colors"
+            >
               ATLANTICORACLE.COM © 2026. THE SECRET LANGUAGE OF SPACE AND NUMBERS.
             </p>
           </div>

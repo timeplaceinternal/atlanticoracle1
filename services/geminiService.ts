@@ -151,10 +151,17 @@ export const generateDailyForecast = async (lang: ReportLanguage, userPrompt?: s
       ${userPrompt ? `Focus on this specific theme: "${userPrompt}".` : 'Topic: General energy, astrology, and advice.'}
       Style: Mystical, professional.
       Language: ${lang}.
-      Structure: Use Markdown. Include a catchy title, an introduction, and then break down the forecast by zodiac signs or cosmic themes using headers (##) and bullet points.
-      Format: Return JSON with "title" and "text" fields. The "text" field should contain the full Markdown content.`,
+      Structure: Use Markdown. Include a catchy title, an introduction, and then break down the forecast by zodiac signs or cosmic themes using headers (##) and bullet points.`,
       config: {
         responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            title: { type: "STRING" },
+            text: { type: "STRING" }
+          },
+          required: ["title", "text"]
+        },
         systemInstruction: getSystemInstruction(lang),
       }
     });
