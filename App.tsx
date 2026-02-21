@@ -11,7 +11,7 @@ import AdminPanel from './components/AdminPanel';
 import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote } from 'lucide-react';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle } from 'lucide-react';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 const STORAGE_KEY = "atlantic_oracle_pending_request";
@@ -431,6 +431,36 @@ const App: React.FC = () => {
                 <Star className="text-cosmic-gold w-8 h-8" />
                 <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
               </div>
+
+              <div className="flex items-center gap-6 pt-2">
+                <a 
+                  href="https://www.facebook.com/atlanticoracle" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-cosmic-silver/60 hover:text-cosmic-gold transition-all hover:scale-110"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a 
+                  href="https://t.me/+HdwxIRpFv3xkM2M0" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-cosmic-silver/60 hover:text-cosmic-gold transition-all hover:scale-110"
+                  aria-label="Telegram"
+                >
+                  <Send className="w-5 h-5" />
+                </a>
+                <a 
+                  href="https://whatsapp.com/channel/0029Vb7qaTg11ulKGsQXZq2g" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-cosmic-silver/60 hover:text-cosmic-gold transition-all hover:scale-110"
+                  aria-label="Whatsapp"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                </a>
+              </div>
               
               <div className="space-y-3 pt-4">
                  <a 
@@ -442,6 +472,7 @@ const App: React.FC = () => {
                  </a>
                  <div className="flex flex-col gap-2">
                     <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.3em] font-medium">Contact • Suggestions • Support</p>
+                    <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.2em] font-medium">R. Dom Martinho Castelo Branco 12 14, 8500-782 Portimão, Portugal</p>
                     <button 
                       onClick={() => setView('privacy')} 
                       className="text-cosmic-silver/60 hover:text-cosmic-gold transition-colors text-[9px] uppercase tracking-[0.3em] underline underline-offset-4 decoration-cosmic-gold/30"

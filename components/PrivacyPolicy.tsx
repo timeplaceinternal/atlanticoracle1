@@ -28,10 +28,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-white font-cinzel tracking-wider uppercase text-lg">
             <Lock className="w-5 h-5 text-cosmic-gold" />
-            1. Data Sovereignty
+            1. Data Sovereignty & The Ephemeral Nature
           </div>
           <p>
-            At Atlantic Oracle, we believe your cosmic coordinates belong to you. We do not require user accounts, passwords, or persistent profiles. Your interaction with the Oracle is <strong>ephemeral</strong>.
+            At Atlantic Oracle, we believe your cosmic coordinates—the precise alignment of stars and numbers at your birth—belong solely to you. We do not require user accounts, passwords, or persistent profiles. Your interaction with the Oracle is <strong>ephemeral</strong>; we do not build a "shadow profile" of your destiny.
           </p>
         </section>
 
@@ -39,15 +39,15 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-white font-cinzel tracking-wider uppercase text-lg">
             <EyeOff className="w-5 h-5 text-cosmic-gold" />
-            2. Personal Information Collected
+            2. Celestial Data Collection
           </div>
           <p>
-            To generate your report, we temporarily process your:
+            To generate your unique report, we temporarily process the following data points:
           </p>
           <ul className="list-disc pl-6 space-y-2 marker:text-cosmic-gold">
-            <li>Full Name (for numerological calculations)</li>
-            <li>Birth Date, Time, and Location (for celestial mapping)</li>
-            <li>Email address (only as provided via Stripe for receipt purposes)</li>
+            <li><strong>Full Name:</strong> Used exclusively for Gematria and Pythagorean numerological calculations.</li>
+            <li><strong>Birth Coordinates:</strong> Date, exact time, and location are used to map the celestial sphere at your moment of entry.</li>
+            <li><strong>Email Address:</strong> If you choose a premium study, your email is processed via Stripe for receipt delivery and secure access to your PDF.</li>
           </ul>
         </section>
 
@@ -55,10 +55,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-white font-cinzel tracking-wider uppercase text-lg">
             <Trash2 className="w-5 h-5 text-cosmic-gold" />
-            3. Data Retention & Deletion
+            3. Immediate Purge Protocol
           </div>
           <p>
-            We do not store your birth data in any database. The coordinates you provide are used in a single generation cycle via the Google Gemini API. Once your session ends or you refresh the page, the data is purged from our active memory. We recommend saving your PDF report immediately, as it cannot be recovered by our staff.
+            We do not maintain a permanent database of your birth data. The information you provide is used in a single, isolated generation cycle via the Google Gemini API. Once the report is generated and your session ends, the data is purged from our active memory. <strong>We cannot recover lost reports</strong> because we do not store them. We strongly advise downloading your PDF immediately upon generation.
           </p>
         </section>
 
@@ -66,10 +66,10 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-white font-cinzel tracking-wider uppercase text-lg">
             <CreditCard className="w-5 h-5 text-cosmic-gold" />
-            4. Payments
+            4. Financial Security
           </div>
           <p>
-            Financial transactions are handled exclusively by <strong>Stripe</strong>. Atlantic Oracle does not see or store your credit card numbers, CVVs, or billing addresses. Stripe’s privacy policy governs the processing of your payment data.
+            All financial transactions are handled by <strong>Stripe</strong>, a global leader in secure payments. Atlantic Oracle never sees, touches, or stores your credit card numbers or sensitive billing details. Stripe’s independent Privacy Policy governs your payment data.
           </p>
         </section>
 
@@ -80,14 +80,14 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
             5. Cookies & Tracking
           </div>
           <p>
-            We use zero marketing cookies. No pixels, no trackers, no profiling. We may use essential session storage purely to manage your current report generation process.
+            We operate a "Zero-Tracking" sanctuary. We do not use marketing cookies, tracking pixels, or third-party profiling tools. We use only essential local storage to ensure your report generation process remains stable during your visit.
           </p>
         </section>
 
         {/* Section 6 */}
         <section className="pt-8 border-t border-cosmic-gold/10 text-center">
           <p className="text-sm italic">
-            Questions regarding our sanctuary's privacy practices can be directed to:<br />
+            If you have questions regarding the security of your cosmic data, please reach out to the Oracle's stewards at:<br />
             <a href="mailto:oracle@atlanticoracle.com" className="text-cosmic-gold hover:text-white transition-colors font-bold mt-2 inline-block">oracle@atlanticoracle.com</a>
           </p>
         </section>
