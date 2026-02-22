@@ -27,24 +27,42 @@ const AdminPanel: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('atlantic_oracle_news');
-    if (saved) {
+    const fetchPosts = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        // Ensure we don't duplicate INITIAL_NEWS if they were somehow saved
-        const customPosts = parsed.filter((p: NewsPost) => !INITIAL_NEWS.find(initial => initial.id === p.id));
-        setPosts([...INITIAL_NEWS, ...customPosts]);
+        const response = await fetch('/api/news');
+        if (response.ok) {
+          const parsed = await response.json();
+          // Ensure we don't duplicate INITIAL_NEWS if they were somehow saved
+          const customPosts = parsed.filter((p: NewsPost) => !INITIAL_NEWS.find(initial => initial.id === p.id));
+          setPosts([...INITIAL_NEWS, ...customPosts]);
+        }
       } catch (e) {
+        console.error("Failed to fetch news from API", e);
         setPosts(INITIAL_NEWS);
       }
-    } else {
-      setPosts(INITIAL_NEWS);
-    }
+    };
+    fetchPosts();
   }, []);
 
-  const saveToStorage = (newPosts: NewsPost[]) => {
-    localStorage.setItem('atlantic_oracle_news', JSON.stringify(newPosts));
-    setPosts(newPosts);
+  const saveToStorage = async (newPosts: NewsPost[]) => {
+    // We only want to save custom posts to the database, not INITIAL_NEWS
+    const customPosts = newPosts.filter(p => !INITIAL_NEWS.find(initial => initial.id === p.id));
+    
+    try {
+      const response = await fetch('/api/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customPosts)
+      });
+      
+      if (response.ok) {
+        setPosts(newPosts);
+      } else {
+        setError('Failed to save to the celestial database.');
+      }
+    } catch (e) {
+      setError('Connection to the database lost.');
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

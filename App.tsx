@@ -231,10 +231,10 @@ const App: React.FC = () => {
 
           <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[400px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
             <div className="flex flex-col p-8 gap-6 text-center text-sm font-bold text-cosmic-silver uppercase tracking-[0.2em]">
-              <button onClick={() => setView('news')} className="py-2 hover:text-cosmic-gold">Cosmic News</button>
-              <button onClick={() => scrollToSection('philosophy')} className="py-2 hover:text-cosmic-gold">Philosophy</button>
-              <button onClick={() => scrollToSection('how-it-works')} className="py-2 hover:text-cosmic-gold">How it Works</button>
-              <button onClick={() => scrollToSection('services')} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">Oracle Consult</button>
+              <button onClick={() => { setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">Cosmic News</button>
+              <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">Philosophy</button>
+              <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">How it Works</button>
+              <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">Oracle Consult</button>
             </div>
           </div>
         </header>
@@ -412,7 +412,7 @@ const App: React.FC = () => {
           )}
 
           {view === 'news' && (
-            <div className="py-20">
+            <div className="py-10 md:py-20">
               <NewsPage />
             </div>
           )}

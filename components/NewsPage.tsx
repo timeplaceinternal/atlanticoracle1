@@ -18,17 +18,21 @@ const NewsPage: React.FC = () => {
   const postsPerPage = 4;
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem('atlantic_oracle_news');
-    if (savedPosts) {
+    const fetchPosts = async () => {
       try {
-        const parsed = JSON.parse(savedPosts);
-        setPosts([...INITIAL_NEWS, ...parsed].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+        const response = await fetch('/api/news');
+        if (response.ok) {
+          const parsed = await response.json();
+          setPosts([...INITIAL_NEWS, ...parsed].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+        } else {
+          setPosts(INITIAL_NEWS);
+        }
       } catch (e) {
+        console.error("Failed to fetch news from API", e);
         setPosts(INITIAL_NEWS);
       }
-    } else {
-      setPosts(INITIAL_NEWS);
-    }
+    };
+    fetchPosts();
   }, []);
 
   const filteredPosts = posts.filter(post => {
@@ -57,7 +61,7 @@ const NewsPage: React.FC = () => {
             <span className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.4em]">The Atlantic Oracle Gazette</span>
             <div className="h-px bg-cosmic-gold/30 flex-1"></div>
           </div>
-          <h1 className="text-6xl md:text-8xl font-cinzel font-bold text-cosmic-gold mb-4 tracking-tighter text-center md:text-left">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-cinzel font-bold text-cosmic-gold mb-4 tracking-tighter text-center md:text-left">
             Cosmic <span className="text-white">News</span>
           </h1>
           <div className="flex justify-between items-center border-y border-cosmic-gold/20 py-2 mb-8">
@@ -98,9 +102,15 @@ const NewsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-min">
-        {currentPosts.map((post, index) => (
-          <PostCard key={post.id} post={post} index={index} />
-        ))}
+        {currentPosts.length === 0 ? (
+          <div className="col-span-full py-20 text-center text-cosmic-silver italic opacity-50">
+            No cosmic transmissions found in this sector.
+          </div>
+        ) : (
+          currentPosts.map((post, index) => (
+            <PostCard key={post.id} post={post} index={index} />
+          ))
+        )}
       </div>
 
       {totalPages > 1 && (
@@ -146,10 +156,10 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
 
   // Newspaper grid logic
   let gridClasses = "col-span-1 row-span-1";
-  if (post.format === 'forecast') gridClasses = "md:col-span-2 md:row-span-2";
-  if (post.format === 'series') gridClasses = "md:col-span-2 md:row-span-1";
+  if (post.format === 'forecast') gridClasses = "col-span-1 md:col-span-2 md:row-span-2";
+  if (post.format === 'series') gridClasses = "col-span-1 md:col-span-2 md:row-span-1";
   // Alternate sizing for facts to keep it interesting
-  if (post.format === 'fact' && index % 5 === 0) gridClasses = "md:col-span-1 md:row-span-2";
+  if (post.format === 'fact' && index % 5 === 0) gridClasses = "col-span-1 md:col-span-1 md:row-span-2";
 
   if (post.format === 'fact') {
     return (
