@@ -27,6 +27,7 @@ const AdminPanel: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    console.log('AdminPanel mounted');
     const fetchPosts = async () => {
       try {
         const response = await fetch('/api/news');

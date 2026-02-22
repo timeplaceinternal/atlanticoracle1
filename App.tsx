@@ -44,9 +44,11 @@ const App: React.FC = () => {
       const path = window.location.pathname;
       
       // Support both path and query param for static hosting
-      const cleanPath = path.replace(/\/$/, ''); // Remove trailing slash
-      console.log('Current path:', cleanPath);
-      if (cleanPath.includes('/admin162463') || params.get('view') === 'admin') return 'admin';
+      const cleanPath = path.toLowerCase().replace(/\/$/, '');
+      const hash = window.location.hash;
+      console.log('Admin check - Path:', cleanPath, 'Params:', params.toString(), 'Hash:', hash);
+      
+      if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
@@ -64,8 +66,9 @@ const App: React.FC = () => {
         url.searchParams.delete('view');
         window.history.pushState({}, '', url.pathname + url.search);
       } else if (view === 'admin') {
-        // Use the secret path for admin
-        window.history.pushState({}, '', '/admin162463');
+        // Use the secret path for admin and add a query param as backup
+        url.searchParams.set('view', 'admin');
+        window.history.pushState({}, '', '/admin162463' + url.search);
       } else if (['news', 'privacy'].includes(view)) {
         url.searchParams.set('view', view);
         window.history.pushState({}, '', url.pathname + url.search);
@@ -77,9 +80,10 @@ const App: React.FC = () => {
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
-      const cleanPath = path.replace(/\/$/, '');
+      const hash = window.location.hash;
+      const cleanPath = path.toLowerCase().replace(/\/$/, '');
       
-      if (cleanPath.includes('/admin162463') || params.get('view') === 'admin') {
+      if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
       } else if (cleanPath.includes('/news') || params.get('view') === 'news') {
         setView('news');
@@ -91,7 +95,15 @@ const App: React.FC = () => {
     };
 
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
+    (window as any).setAppView = setView;
   }, []);
 
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -509,12 +521,17 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <p 
-              onClick={() => setView('admin')}
-              className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 cursor-pointer hover:text-cosmic-gold transition-colors"
+            <a 
+              href="/admin162463"
+              onClick={(e) => {
+                e.preventDefault();
+                console.log('Footer admin clicked');
+                setView('admin');
+              }}
+              className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 cursor-pointer hover:text-cosmic-gold transition-colors block"
             >
               ATLANTICORACLE.COM © 2026. THE SECRET LANGUAGE OF SPACE AND NUMBERS.
-            </p>
+            </a>
           </div>
         </footer>
       </div>
