@@ -44,7 +44,7 @@ const App: React.FC = () => {
       const path = window.location.pathname;
       
       // Support both path and query param for static hosting
-      if (path.endsWith('/admin') || params.get('view') === 'admin') return 'admin';
+      if (path.endsWith('/admin162463') || params.get('view') === 'admin') return 'admin';
       if (path.endsWith('/news') || params.get('view') === 'news') return 'news';
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
@@ -61,7 +61,10 @@ const App: React.FC = () => {
       if (view === 'home') {
         url.searchParams.delete('view');
         window.history.pushState({}, '', url.pathname + url.search);
-      } else if (['news', 'admin', 'privacy'].includes(view)) {
+      } else if (view === 'admin') {
+        // Use the secret path for admin
+        window.history.pushState({}, '', '/admin162463');
+      } else if (['news', 'privacy'].includes(view)) {
         url.searchParams.set('view', view);
         window.history.pushState({}, '', url.pathname + url.search);
       }
