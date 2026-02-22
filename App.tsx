@@ -45,8 +45,9 @@ const App: React.FC = () => {
       
       // Support both path and query param for static hosting
       const cleanPath = path.replace(/\/$/, ''); // Remove trailing slash
-      if (cleanPath.endsWith('/admin162463') || params.get('view') === 'admin') return 'admin';
-      if (cleanPath.endsWith('/news') || params.get('view') === 'news') return 'news';
+      console.log('Current path:', cleanPath);
+      if (cleanPath.includes('/admin162463') || params.get('view') === 'admin') return 'admin';
+      if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
         return 'loading';
@@ -71,6 +72,27 @@ const App: React.FC = () => {
       }
     }
   }, [view]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const path = window.location.pathname;
+      const cleanPath = path.replace(/\/$/, '');
+      
+      if (cleanPath.includes('/admin162463') || params.get('view') === 'admin') {
+        setView('admin');
+      } else if (cleanPath.includes('/news') || params.get('view') === 'news') {
+        setView('news');
+      } else if (params.get('view') === 'privacy') {
+        setView('privacy');
+      } else {
+        setView('home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
@@ -489,7 +511,7 @@ const App: React.FC = () => {
 
             <p 
               onClick={() => setView('admin')}
-              className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 cursor-default hover:text-cosmic-gold transition-colors"
+              className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 cursor-pointer hover:text-cosmic-gold transition-colors"
             >
               ATLANTICORACLE.COM © 2026. THE SECRET LANGUAGE OF SPACE AND NUMBERS.
             </p>
