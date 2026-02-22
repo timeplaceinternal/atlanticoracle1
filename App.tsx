@@ -64,7 +64,7 @@ const App: React.FC = () => {
       const url = new URL(window.location.href);
       if (view === 'home') {
         url.searchParams.delete('view');
-        window.history.pushState({}, '', url.pathname + url.search);
+        window.history.pushState({}, '', '/' + url.search);
       } else if (view === 'admin') {
         // Use the secret path for admin and add a query param as backup
         url.searchParams.set('view', 'admin');
@@ -140,6 +140,11 @@ const App: React.FC = () => {
     setResult(null);
     setIsMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Ensure we are at the root path
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+    }
   };
 
   const handleStartService = (service: Service) => {
@@ -465,10 +470,14 @@ const App: React.FC = () => {
         <footer className="border-t border-cosmic-700/50 py-20 bg-cosmic-900 px-6 text-center no-print">
           <div className="max-w-7xl mx-auto space-y-12">
             <div className="flex flex-col items-center justify-center gap-4">
-              <div className="flex items-center gap-2">
+              <button 
+                onClick={resetToHome}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                aria-label="Atlantic Oracle Home"
+              >
                 <Star className="text-cosmic-gold w-8 h-8" />
                 <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
-              </div>
+              </button>
 
               <div className="flex items-center gap-6 pt-2">
                 <a 
