@@ -64,7 +64,8 @@ const AdminPanel: React.FC = () => {
         setError(data.error || 'Failed to save to the celestial database.');
       }
     } catch (e) {
-      setError('Connection to the database lost.');
+      console.error("Save error:", e);
+      setError(`Connection to the database lost: ${e instanceof Error ? e.message : 'Unknown network error'}`);
     }
   };
 
