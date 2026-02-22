@@ -44,8 +44,9 @@ const App: React.FC = () => {
       const path = window.location.pathname;
       
       // Support both path and query param for static hosting
-      if (path.endsWith('/admin162463') || params.get('view') === 'admin') return 'admin';
-      if (path.endsWith('/news') || params.get('view') === 'news') return 'news';
+      const cleanPath = path.replace(/\/$/, ''); // Remove trailing slash
+      if (cleanPath.endsWith('/admin162463') || params.get('view') === 'admin') return 'admin';
+      if (cleanPath.endsWith('/news') || params.get('view') === 'news') return 'news';
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
         return 'loading';
