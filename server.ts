@@ -60,6 +60,7 @@ async function startServer() {
       const blob = await put(NEWS_FILE_PATH, JSON.stringify(posts), {
         access: 'public',
         addRandomSuffix: false,
+        allowOverwrite: true,
       });
 
       console.log("Upload successful:", blob.url);

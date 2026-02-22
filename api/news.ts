@@ -32,6 +32,7 @@ export default async function handler(req: any, res: any) {
       await put(NEWS_FILE_PATH, JSON.stringify(posts), {
         access: 'public',
         addRandomSuffix: false,
+        allowOverwrite: true,
         token
       });
 
