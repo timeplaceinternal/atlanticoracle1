@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import { NewsPost, PostFormat } from '../types';
 import { INITIAL_NEWS } from '../constants';
-import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube } from 'lucide-react';
+import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube, Share2, Check } from 'lucide-react';
 
 const getYouTubeId = (url: string) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -51,6 +51,28 @@ const NewsPage: React.FC = () => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('post');
+    if (postId && posts.length > 0) {
+      const postIndex = filteredPosts.findIndex(p => p.id === postId);
+      if (postIndex !== -1) {
+        const page = Math.ceil((postIndex + 1) / postsPerPage);
+        setCurrentPage(page);
+        setTimeout(() => {
+          const element = document.getElementById(`post-${postId}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('ring-2', 'ring-cosmic-gold', 'ring-offset-4', 'ring-offset-cosmic-950');
+            setTimeout(() => {
+              element.classList.remove('ring-2', 'ring-cosmic-gold', 'ring-offset-4', 'ring-offset-cosmic-950');
+            }, 3000);
+          }
+        }, 500);
+      }
+    }
+  }, [posts, filteredPosts]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -150,7 +172,33 @@ const NewsPage: React.FC = () => {
 
 const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}${window.location.pathname}?view=news&post=${post.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: `Check out this cosmic transmission from Atlantic Oracle: ${post.title}`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+      }
+    }
+  };
 
   const firstSentence = post.text.split(/[.!?]/)[0] + '.';
 
@@ -164,9 +212,17 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
   if (post.format === 'fact') {
     return (
       <div 
+        id={`post-${post.id}`}
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`group flex flex-col gap-6 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} h-full`}
+        className={`group flex flex-col gap-6 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} h-full relative`}
       >
+        <button 
+          onClick={handleShare}
+          className="absolute top-4 right-4 p-2 bg-cosmic-900/80 border border-cosmic-gold/20 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all z-10"
+          title="Share Transmission"
+        >
+          {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+        </button>
         <div className="w-full aspect-square shrink-0 rounded-xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-800 flex items-center justify-center">
           {videoId ? (
             <div className="relative w-full h-full">
@@ -201,9 +257,17 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
   if (post.format === 'forecast') {
     return (
       <div 
+        id={`post-${post.id}`}
         onClick={() => !videoId && setIsExpanded(!isExpanded)}
-        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''} ${gridClasses} flex flex-col`}
+        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''} ${gridClasses} flex flex-col relative`}
       >
+        <button 
+          onClick={handleShare}
+          className="absolute top-6 right-6 p-3 bg-cosmic-900/80 border border-cosmic-gold/20 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all z-10"
+          title="Share Transmission"
+        >
+          {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
+        </button>
         <div className="w-full h-[300px] md:h-[400px] overflow-hidden relative bg-cosmic-800 shrink-0">
           {videoId ? (
             <iframe
@@ -254,8 +318,34 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
 const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
   const images = post.images || [post.imageUrl];
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}${window.location.pathname}?view=news&post=${post.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: `Check out this cosmic transmission from Atlantic Oracle: ${post.title}`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+      }
+    }
+  };
 
   // Newspaper grid logic
   const gridClasses = "md:col-span-2 md:row-span-1";
@@ -273,9 +363,17 @@ const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }
 
   return (
     <div 
+      id={`post-${post.id}`}
       onClick={() => setIsExpanded(!isExpanded)}
-      className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} flex flex-col`}
+      className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} flex flex-col relative`}
     >
+      <button 
+        onClick={handleShare}
+        className="absolute top-6 right-6 p-3 bg-cosmic-900/80 border border-cosmic-gold/20 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all z-10"
+        title="Share Transmission"
+      >
+        {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
+      </button>
       <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden bg-cosmic-800 shrink-0">
         {videoId && currentIndex === 0 ? (
           <iframe
