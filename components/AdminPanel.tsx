@@ -57,8 +57,10 @@ const AdminPanel: React.FC = () => {
       
       if (response.ok) {
         setPosts(newPosts);
+        setSuccess('Post published to the cosmos!');
       } else {
-        setError('Failed to save to the celestial database.');
+        const data = await response.json();
+        setError(data.error || 'Failed to save to the celestial database.');
       }
     } catch (e) {
       setError('Connection to the database lost.');
