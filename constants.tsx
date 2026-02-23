@@ -6,7 +6,17 @@ import {
 } from 'lucide-react';
 import { ServiceType, Service, NewsPost } from './types';
 
-export const INITIAL_NEWS: NewsPost[] = [];
+export const INITIAL_NEWS: NewsPost[] = [
+  {
+    id: 'init-1',
+    title: 'The Saturn Shift: Navigating the Great Restructuring',
+    date: '2026-02-22',
+    topic: 'astrology',
+    format: 'forecast',
+    text: 'As Saturn moves through the final degrees of its current transit, the collective consciousness is undergoing a profound restructuring. This period marks the end of old systems and the birth of new, more resilient structures. For individuals, this is a time to audit your foundations. What is built on sand will crumble; what is built on truth will endure. Pay close attention to your professional boundaries and long-term commitments during this celestial window.',
+    imageUrl: 'https://picsum.photos/seed/saturn/1200/800'
+  }
+];
 
 export const FREE_SERVICES: Service[] = [
   {

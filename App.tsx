@@ -5,6 +5,7 @@ import LoadingAnimation from './components/LoadingAnimation';
 import ReadingResult from './components/ReadingResult';
 import PhilosophySection from './components/PhilosophySection';
 import HowItWorksSection from './components/HowItWorksSection';
+import LatestNewsPreview from './components/LatestNewsPreview';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import NewsPage from './components/NewsPage';
 import AdminPanel from './components/AdminPanel';
@@ -372,6 +373,8 @@ const App: React.FC = () => {
                 </div>
               </section>
               
+              <LatestNewsPreview onViewNews={() => setView('news')} />
+              
               <PhilosophySection />
               <HowItWorksSection />
 
@@ -530,17 +533,9 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <a 
-              href="/admin162463"
-              onClick={(e) => {
-                e.preventDefault();
-                console.log('Footer admin clicked');
-                setView('admin');
-              }}
-              className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 cursor-pointer hover:text-cosmic-gold transition-colors block"
-            >
+            <p className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 block">
               ATLANTICORACLE.COM © 2026. THE SECRET LANGUAGE OF SPACE AND NUMBERS.
-            </a>
+            </p>
           </div>
         </footer>
       </div>

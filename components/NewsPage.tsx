@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import { NewsPost, PostFormat } from '../types';
 import { INITIAL_NEWS } from '../constants';
-import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube, Share2, Check } from 'lucide-react';
+import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube, Share2, Check, Send, MessageCircle, Facebook, Twitter, Link as LinkIcon, X } from 'lucide-react';
 
 const getYouTubeId = (url: string) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -170,33 +170,115 @@ const NewsPage: React.FC = () => {
   );
 };
 
+const ShareMenu: React.FC<{ 
+  post: NewsPost; 
+  onClose: () => void;
+  onCopy: () => void;
+  copied: boolean;
+}> = ({ post, onClose, onCopy, copied }) => {
+  const shareUrl = `${window.location.origin}/?view=news&post=${post.id}`;
+  const shareText = `Check out this cosmic transmission from Atlantic Oracle: ${post.title}`;
+  
+  const socialLinks = [
+    { 
+      name: 'Telegram', 
+      icon: <Send className="w-4 h-4" />, 
+      url: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
+      color: 'bg-[#229ED9]'
+    },
+    { 
+      name: 'WhatsApp', 
+      icon: <MessageCircle className="w-4 h-4" />, 
+      url: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`,
+      color: 'bg-[#25D366]'
+    },
+    { 
+      name: 'Facebook', 
+      icon: <Facebook className="w-4 h-4" />, 
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+      color: 'bg-[#1877F2]'
+    },
+    { 
+      name: 'X', 
+      icon: <X className="w-4 h-4" />, 
+      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+      color: 'bg-black'
+    }
+  ];
+
+  return (
+    <div 
+      className="absolute inset-0 z-[100] bg-cosmic-950/95 backdrop-blur-xl flex items-center justify-center p-6 animate-in fade-in zoom-in-95 duration-300 rounded-3xl"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button 
+        onClick={onClose}
+        className="absolute top-6 right-6 p-2 text-cosmic-silver hover:text-white transition-colors"
+      >
+        <X className="w-6 h-6" />
+      </button>
+      
+      <div className="w-full max-w-xs space-y-8 text-center">
+        <div className="space-y-2">
+          <h4 className="font-cinzel text-cosmic-gold text-xl font-bold uppercase tracking-[0.2em]">Share Transmission</h4>
+          <p className="text-cosmic-silver/60 text-[10px] uppercase tracking-widest">Spread the celestial knowledge</p>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          {socialLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cosmic-gold/30 transition-all group"
+            >
+              <div className={`w-12 h-12 ${link.color} rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                {link.icon}
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-cosmic-silver">{link.name}</span>
+            </a>
+          ))}
+        </div>
+        
+        <button
+          onClick={onCopy}
+          className="w-full flex items-center justify-center gap-3 p-5 rounded-2xl bg-cosmic-gold text-cosmic-900 font-bold uppercase tracking-widest text-xs hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-cosmic-gold/10"
+        >
+          {copied ? (
+            <>
+              <Check className="w-4 h-4" /> Copied to Clipboard
+            </>
+          ) : (
+            <>
+              <LinkIcon className="w-4 h-4" /> Copy Direct Link
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
 
-  const handleShare = async (e: React.MouseEvent) => {
+  const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}${window.location.pathname}?view=news&post=${post.id}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: `Check out this cosmic transmission from Atlantic Oracle: ${post.title}`,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.error('Error sharing:', err);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        console.error('Error copying to clipboard:', err);
-      }
+    setShowShareMenu(true);
+  };
+
+  const handleCopy = async () => {
+    const shareUrl = `${window.location.origin}/?view=news&post=${post.id}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
     }
   };
 
@@ -214,8 +296,16 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
       <div 
         id={`post-${post.id}`}
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`group flex flex-col gap-6 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} h-full relative`}
+        className={`group flex flex-col gap-6 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} h-full relative overflow-hidden`}
       >
+        {showShareMenu && (
+          <ShareMenu 
+            post={post} 
+            onClose={() => setShowShareMenu(false)} 
+            onCopy={handleCopy}
+            copied={copied}
+          />
+        )}
         <button 
           onClick={handleShare}
           className="absolute top-4 right-4 p-2 bg-cosmic-900/80 border border-cosmic-gold/20 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all z-10"
@@ -261,6 +351,14 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
         onClick={() => !videoId && setIsExpanded(!isExpanded)}
         className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''} ${gridClasses} flex flex-col relative`}
       >
+        {showShareMenu && (
+          <ShareMenu 
+            post={post} 
+            onClose={() => setShowShareMenu(false)} 
+            onCopy={handleCopy}
+            copied={copied}
+          />
+        )}
         <button 
           onClick={handleShare}
           className="absolute top-6 right-6 p-3 bg-cosmic-900/80 border border-cosmic-gold/20 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all z-10"
@@ -318,32 +416,24 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
 const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const videoId = post.videoUrl ? getYouTubeId(post.videoUrl) : null;
   const images = post.images || [post.imageUrl];
 
-  const handleShare = async (e: React.MouseEvent) => {
+  const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}${window.location.pathname}?view=news&post=${post.id}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: `Check out this cosmic transmission from Atlantic Oracle: ${post.title}`,
-          url: shareUrl,
-        });
-      } catch (err) {
-        console.error('Error sharing:', err);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (err) {
-        console.error('Error copying to clipboard:', err);
-      }
+    setShowShareMenu(true);
+  };
+
+  const handleCopy = async () => {
+    const shareUrl = `${window.location.origin}/?view=news&post=${post.id}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
     }
   };
 
@@ -367,6 +457,14 @@ const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }
       onClick={() => setIsExpanded(!isExpanded)}
       className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} flex flex-col relative`}
     >
+      {showShareMenu && (
+        <ShareMenu 
+          post={post} 
+          onClose={() => setShowShareMenu(false)} 
+          onCopy={handleCopy}
+          copied={copied}
+        />
+      )}
       <button 
         onClick={handleShare}
         className="absolute top-6 right-6 p-3 bg-cosmic-900/80 border border-cosmic-gold/20 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all z-10"
