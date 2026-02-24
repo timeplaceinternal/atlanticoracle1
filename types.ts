@@ -9,10 +9,12 @@ export enum ServiceType {
   HUMAN_DESIGN = 'human-design',
   ASTRO_CARTOGRAPHY = 'astro-cartography',
   SATURN_RETURN = 'saturn-return',
+  DREAM_INTERPRETATION = 'dream-interpretation',
   // Free Services
   FORTUNE_MAP = 'free-fortune-map',
   CAPITAL_ALIGNMENT = 'free-capital-alignment',
-  ENERGY_PULSE = 'free-energy-pulse'
+  ENERGY_PULSE = 'free-energy-pulse',
+  FREE_DREAM_INTERPRETATION = 'free-dream-interpretation'
 }
 
 export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Russian' | 'Ukrainian';
@@ -36,6 +38,10 @@ export interface ReadingRequest {
   partnerBirthTime?: string;
   birthPlace: string;
   language: ReportLanguage;
+  dreamDescription?: string;
+  dreamKeywords?: string;
+  dreamDate?: string;
+  dreamTime?: string;
 }
 
 export interface ReadingResult {

@@ -32,9 +32,18 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
   const [pHour, setPHour] = useState('12');
   const [pMin, setPMin] = useState('00');
 
+  const [dreamDescription, setDreamDescription] = useState('');
+  const [dreamKeywords, setDreamKeywords] = useState('');
+  const [dreamMonth, setDreamMonth] = useState('1');
+  const [dreamDay, setDreamDay] = useState('1');
+  const [dreamYear, setDreamYear] = useState(currentYear.toString());
+  const [dreamHour, setDreamHour] = useState('12');
+  const [dreamMin, setDreamMin] = useState('00');
+
   const [showErrors, setShowErrors] = useState(false);
 
   const isUnion = service.id === ServiceType.LOVE_SYNASTRY;
+  const isDream = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,12 +51,15 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
     const isMainValid = name.trim() !== '' && birthPlace.trim() !== '';
     const isPartnerValid = !isUnion || partnerName.trim() !== '';
+    const isDreamValid = !isDream || (dreamDescription.trim() !== '' && dreamKeywords.trim() !== '');
 
-    if (isMainValid && isPartnerValid) {
+    if (isMainValid && isPartnerValid && isDreamValid) {
       const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       const partnerBirthDate = `${pYear}-${pMonth.padStart(2, '0')}-${pDay.padStart(2, '0')}`;
+      const dreamDate = `${dreamYear}-${dreamMonth.padStart(2, '0')}-${dreamDay.padStart(2, '0')}`;
       const birthTime = `${birthHour}:${birthMin}`;
       const partnerBirthTime = `${pHour}:${pMin}`;
+      const dreamTime = `${dreamHour}:${dreamMin}`;
 
       onSubmit({
         serviceId: service.id,
@@ -59,13 +71,17 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
         partnerName: isUnion ? partnerName : undefined,
         partnerBirthDate: isUnion ? partnerBirthDate : undefined,
         partnerBirthTime: isUnion ? partnerBirthTime : undefined,
+        dreamDescription: isDream ? dreamDescription : undefined,
+        dreamKeywords: isDream ? dreamKeywords : undefined,
+        dreamDate: isDream ? dreamDate : undefined,
+        dreamTime: isDream ? dreamTime : undefined,
       });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const years = Array.from({ length: 121 }, (_, i) => currentYear - i);
+  const years = Array.from({ length: 151 }, (_, i) => currentYear - i);
   const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
 
@@ -143,6 +159,63 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                 {showErrors && !birthPlace && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Location is essential</p>}
               </div>
            </div>
+
+           {isDream && (
+             <div className="space-y-6 md:col-span-2 border-t border-cosmic-700/50 pt-8 mt-4">
+                <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Dream Details</label>
+                
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <textarea 
+                      placeholder="Describe your dream in detail..." 
+                      className="w-full bg-cosmic-900/50 border border-cosmic-700 rounded-2xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors text-sm min-h-[150px] resize-none" 
+                      value={dreamDescription} 
+                      onChange={e => setDreamDescription(e.target.value)} 
+                    />
+                    {showErrors && !dreamDescription && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Dream description is required</p>}
+                  </div>
+
+                  <div className="space-y-1">
+                    <input 
+                      placeholder="Key images or words (e.g., water, flight, old house)" 
+                      className="w-full bg-cosmic-900/50 border border-cosmic-700 rounded-2xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
+                      value={dreamKeywords} 
+                      onChange={e => setDreamKeywords(e.target.value)} 
+                    />
+                    {showErrors && !dreamKeywords && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Key images are helpful for the sage</p>}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">When did it happen?</span>
+                      <div className="grid grid-cols-3 gap-2">
+                        <select value={dreamYear} onChange={e => setDreamYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                          {years.slice(0, 21).map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
+                        </select>
+                        <select value={dreamMonth} onChange={e => setDreamMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                          {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m.substring(0,3)}</option>)}
+                        </select>
+                        <select value={dreamDay} onChange={e => setDreamDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                          {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">Approximate Time:</span>
+                      <div className="flex gap-2 items-center">
+                        <select value={dreamHour} onChange={e => setDreamHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                          {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
+                        </select>
+                        <select value={dreamMin} onChange={e => setDreamMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                          {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+             </div>
+           )}
 
            {isUnion && (
              <div className="space-y-6">

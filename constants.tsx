@@ -42,6 +42,14 @@ export const FREE_SERVICES: Service[] = [
     icon: "battery",
     price: 0,
     isFree: true
+  },
+  {
+    id: ServiceType.FREE_DREAM_INTERPRETATION,
+    title: "The Dream Whisper (FREE)",
+    description: "A brief psychological insight into your dream. Soft advice from a wise sage to help you find clarity.",
+    icon: "moonstar",
+    price: 0,
+    isFree: true
   }
 ];
 
@@ -107,6 +115,13 @@ export const SERVICES: Service[] = [
     title: "Saturn Return Survival Guide",
     description: "Navigate the critical crisis of age 29-30. Learn how to survive this cosmic 'coming of age' and emerge as a mature, victorious version of yourself.",
     icon: "zap",
+    price: 10
+  },
+  {
+    id: ServiceType.DREAM_INTERPRETATION,
+    title: "The Sage's Dream Decree",
+    description: "A comprehensive interpretation of your dream. Discover the psychological roots, symbolic meanings, and how it aligns with your cosmic path.",
+    icon: "moonstar",
     price: 10
   }
 ];
@@ -230,6 +245,32 @@ export const COSMIC_PROMPTS = {
     3. Reset Technique: One 1-minute mental reset practice (breathing/visualization).
     4. Focus Mode: Where to direct energy (Health, Relations, Career).
     End with a call to unlock their full energetic cycles in a Natal Decree.
+  `,
+  [ServiceType.FREE_DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: [FREE] THE DREAM WHISPER. Subject: ${name}. 
+    DREAM DATE/TIME: ${dDate} ${dTime}.
+    DREAM DESCRIPTION: ${description}
+    KEYWORDS: ${keywords}
+    
+    TASK: Provide a brief psychological interpretation (~0.5 A4 page). 
+    STYLE: Trusting, positive, problem-solving, soft advice from a "wise sage". 
+    Avoid complex psychological terms. Focus on clarity and a gentle path forward.
+  `,
+  [ServiceType.DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: THE SAGE'S DREAM DECREE. Subject: ${name}, born ${bDate} at ${bTime} in ${bPlace}.
+    DREAM DATE/TIME: ${dDate} ${dTime}.
+    DREAM DESCRIPTION: ${description}
+    KEYWORDS: ${keywords}
+    
+    TASK: Provide a comprehensive interpretation. 
+    1. The Interpretation: Deep psychological and symbolic analysis.
+    2. The "Why": Explain the logic behind this interpretation (symbols, archetypes).
+    3. Cosmic Alignment: How this dream relates to the subject's current astrological and numerical vibrations (based on their birth data and the dream's timing).
+    4. The Sage's Summary: A gentle, wise summary and advice.
+    
+    STYLE: Simple, understandable language of a "wise sage". Trusting and positive.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}

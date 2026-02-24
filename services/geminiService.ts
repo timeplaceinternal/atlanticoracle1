@@ -40,6 +40,8 @@ const getSystemInstruction = (lang: string) => {
     CURRENT DATE: ${dateStr}.
     STYLE: Mystical, professional, authoritative.
     FORMAT: Use Markdown headers # and ##. NEVER use asterisks (**) for bolding.
+
+    HUMOR & DATA ANOMALIES: If the input data seems unrealistic or humorous (e.g., a 1-year-old seeker, a 150-year-old sage, or a dream from the distant past), do not break character. Instead, include a brief, witty, and sophisticated remark about it in your opening (e.g., "A seeker of such tender age? Your ability to consult the stars before your first steps is truly celestial."). Always provide the full service regardless of the data's realism, treating it as a "special case" in the cosmic fabric.
   `;
 };
 
@@ -91,6 +93,10 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
              request.serviceId === ServiceType.ENERGY_PULSE) {
     // @ts-ignore
     promptText = promptFn(request.name, request.birthDate, lang);
+  } else if (request.serviceId === ServiceType.DREAM_INTERPRETATION || 
+             request.serviceId === ServiceType.FREE_DREAM_INTERPRETATION) {
+    // @ts-ignore
+    promptText = promptFn(request.name, request.birthDate, request.birthTime || "12:00", request.birthPlace || "Earth", request.dreamDescription || "", request.dreamKeywords || "", request.dreamDate || "", request.dreamTime || "", lang);
   } else if (typeof promptFn === 'function') {
     // @ts-ignore
     promptText = promptFn(request.name, request.birthDate, request.birthTime || "12:00", request.birthPlace || "Earth", lang);
