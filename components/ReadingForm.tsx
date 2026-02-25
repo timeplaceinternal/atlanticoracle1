@@ -100,9 +100,17 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
             The oracle prepares a <strong className="text-cosmic-gold uppercase">brief insight</strong> for you. Full comprehensive Decrees are available as premium services.
           </p>
         ) : (
-          <p className="text-sm text-cosmic-silver italic leading-relaxed">
-            The oracle prepares a <strong className="text-cosmic-gold uppercase">detailed report</strong> for you. Provide precise birth time for supreme accuracy.
-          </p>
+          <div className="space-y-4">
+            <p className="text-sm text-cosmic-silver italic leading-relaxed">
+              The oracle prepares a <strong className="text-cosmic-gold uppercase">detailed report</strong> for you.
+            </p>
+            <div className="p-5 bg-cosmic-gold/5 border border-cosmic-gold/20 rounded-2xl animate-in fade-in slide-in-from-top-4 duration-700">
+              <p className="text-[10px] text-cosmic-gold uppercase tracking-[0.2em] font-bold mb-2">Sage's Requirement</p>
+              <p className="text-xs text-cosmic-silver leading-relaxed">
+                For a deeper and more precise analysis, we require additional coordinates. Please fill out the form with utmost accuracy. Note that the oracle requires a moment of celestial silence to weave your comprehensive decree.
+              </p>
+            </div>
+          </div>
         )}
       </div>
 
