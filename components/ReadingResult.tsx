@@ -43,7 +43,15 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
   };
 
   const handlePrint = () => {
-    window.print();
+    // Small delay to ensure any pending UI updates are settled
+    setTimeout(() => {
+      try {
+        window.print();
+      } catch (e) {
+        console.error("Print failed", e);
+        alert("To save as PDF, please use your browser's 'Print' or 'Share' menu directly.");
+      }
+    }, 250);
   };
 
   const handleShare = async () => {

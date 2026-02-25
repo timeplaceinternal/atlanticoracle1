@@ -44,6 +44,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
   const isUnion = service.id === ServiceType.LOVE_SYNASTRY;
   const isDream = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
+  const isFreeDream = service.id === ServiceType.FREE_DREAM_INTERPRETATION;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +52,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
     const isMainValid = name.trim() !== '' && birthPlace.trim() !== '';
     const isPartnerValid = !isUnion || partnerName.trim() !== '';
-    const isDreamValid = !isDream || (dreamDescription.trim() !== '' && dreamKeywords.trim() !== '');
+    const isDreamValid = !isDream || (dreamDescription.trim() !== '' && (isFreeDream || dreamKeywords.trim() !== ''));
 
     if (isMainValid && isPartnerValid && isDreamValid) {
       const birthDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
@@ -135,16 +136,18 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                 </select>
               </div>
 
-              <div className="flex gap-2 sm:gap-4 items-center">
-                <Clock className="w-4 h-4 text-cosmic-gold" />
-                <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
-                <select value={birthHour} onChange={e => setBirthHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
-                  {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
-                </select>
-                <select value={birthMin} onChange={e => setBirthMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
-                  {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
-                </select>
-              </div>
+              {(service.price > 0 && !service.isFree) && (
+                <div className="flex gap-2 sm:gap-4 items-center">
+                  <Clock className="w-4 h-4 text-cosmic-gold" />
+                  <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
+                  <select value={birthHour} onChange={e => setBirthHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
+                    {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
+                  </select>
+                  <select value={birthMin} onChange={e => setBirthMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
+                    {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
+                  </select>
+                </div>
+              )}
 
               <div className="space-y-1">
                 <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
@@ -175,44 +178,48 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                     {showErrors && !dreamDescription && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Dream description is required</p>}
                   </div>
 
-                  <div className="space-y-1">
-                    <input 
-                      placeholder="Key images or words (e.g., water, flight, old house)" 
-                      className="w-full bg-cosmic-900/50 border border-cosmic-700 rounded-2xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
-                      value={dreamKeywords} 
-                      onChange={e => setDreamKeywords(e.target.value)} 
-                    />
-                    {showErrors && !dreamKeywords && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Key images are helpful for the sage</p>}
-                  </div>
+                  {!isFreeDream && (
+                    <div className="space-y-1">
+                      <input 
+                        placeholder="Key images or words (e.g., water, flight, old house)" 
+                        className="w-full bg-cosmic-900/50 border border-cosmic-700 rounded-2xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
+                        value={dreamKeywords} 
+                        onChange={e => setDreamKeywords(e.target.value)} 
+                      />
+                      {showErrors && !dreamKeywords && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Key images are helpful for the sage</p>}
+                    </div>
+                  )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">When did it happen?</span>
-                      <div className="grid grid-cols-3 gap-2">
-                        <select value={dreamYear} onChange={e => setDreamYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
-                          {years.slice(0, 21).map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
-                        </select>
-                        <select value={dreamMonth} onChange={e => setDreamMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
-                          {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m.substring(0,3)}</option>)}
-                        </select>
-                        <select value={dreamDay} onChange={e => setDreamDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
-                          {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
-                        </select>
+                  {!isFreeDream && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">When did it happen?</span>
+                        <div className="grid grid-cols-3 gap-2">
+                          <select value={dreamYear} onChange={e => setDreamYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                            {years.slice(0, 21).map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
+                          </select>
+                          <select value={dreamMonth} onChange={e => setDreamMonth(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                            {MONTHS.map((m,i) => <option key={m} value={i+1} className="bg-cosmic-900">{m.substring(0,3)}</option>)}
+                          </select>
+                          <select value={dreamDay} onChange={e => setDreamDay(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                            {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-cosmic-900">{d}</option>)}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">Approximate Time:</span>
+                        <div className="flex gap-2 items-center">
+                          <select value={dreamHour} onChange={e => setDreamHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                            {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
+                          </select>
+                          <select value={dreamMin} onChange={e => setDreamMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
+                            {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
+                          </select>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">Approximate Time:</span>
-                      <div className="flex gap-2 items-center">
-                        <select value={dreamHour} onChange={e => setDreamHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
-                          {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
-                        </select>
-                        <select value={dreamMin} onChange={e => setDreamMin(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
-                          {minutes.map(m => <option key={m} value={m} className="bg-cosmic-900">{m}m</option>)}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
              </div>
            )}
