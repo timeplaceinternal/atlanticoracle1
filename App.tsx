@@ -272,51 +272,51 @@ const App: React.FC = () => {
               <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase sm:hidden">Oracle</span>
             </button>
 
-            <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-cosmic-800/50 border border-cosmic-gold/20 rounded-full mr-4">
-                <Globe className="w-3 h-3 text-cosmic-gold" />
+            <div className="hidden md:flex gap-6 items-center text-[10px] font-bold text-cosmic-silver uppercase tracking-[0.2em]">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-cosmic-800/80 border border-cosmic-gold/30 rounded-full mr-2 hover:border-cosmic-gold transition-colors">
+                <Globe className="w-3.5 h-3.5 text-cosmic-gold" />
                 <select 
                   value={language} 
                   onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
-                  className="bg-transparent text-cosmic-gold outline-none cursor-pointer text-[10px]"
+                  className="bg-transparent text-cosmic-gold outline-none cursor-pointer font-bold"
                 >
                   <option value="English" className="bg-cosmic-900">EN</option>
-                  <option value="Portuguese" className="bg-cosmic-900">PT-BR</option>
+                  <option value="Portuguese" className="bg-cosmic-900">PT</option>
                 </select>
               </div>
               <button 
                 onClick={() => setView('news')} 
-                className="hover:text-cosmic-gold transition-colors"
+                className="hover:text-cosmic-gold transition-colors uppercase"
                 aria-label="View Cosmic News"
               >
                 {t.navNews}
               </button>
               <button 
                 onClick={() => scrollToSection('philosophy')} 
-                className="hover:text-cosmic-gold transition-colors"
+                className="hover:text-cosmic-gold transition-colors uppercase"
                 aria-label="Read our Philosophy"
               >
                 {t.navPhilosophy}
               </button>
               <button 
                 onClick={() => scrollToSection('how-it-works')} 
-                className="hover:text-cosmic-gold transition-colors"
+                className="hover:text-cosmic-gold transition-colors uppercase"
                 aria-label="How it Works"
               >
                 {t.navHowItWorks}
               </button>
               <button 
                 onClick={() => scrollToSection('services')} 
-                className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all font-cinzel tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.1)] active:scale-95"
+                className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all font-cinzel tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.1)] active:scale-95 uppercase"
                 aria-label="Oracle Consult"
               >
                 {t.navConsult}
               </button>
             </div>
 
-            <div className="flex items-center gap-2 md:hidden">
-              <div className="flex items-center gap-1 px-2 py-1 bg-cosmic-800/50 border border-cosmic-gold/20 rounded-full mr-1">
-                <Globe className="w-3 h-3 text-cosmic-gold" />
+            <div className="flex items-center gap-3 md:hidden">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-cosmic-800/80 border border-cosmic-gold/30 rounded-full shadow-lg">
+                <Globe className="w-3.5 h-3.5 text-cosmic-gold" />
                 <select 
                   value={language} 
                   onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
@@ -328,7 +328,7 @@ const App: React.FC = () => {
               </div>
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-cosmic-gold p-2 hover:bg-cosmic-gold/10 rounded-lg transition-colors"
+                className="text-cosmic-gold p-2 hover:bg-cosmic-gold/10 rounded-lg transition-colors border border-cosmic-gold/10"
                 aria-label="Toggle menu"
               >
                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
