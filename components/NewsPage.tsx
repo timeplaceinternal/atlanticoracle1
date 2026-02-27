@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Markdown from 'react-markdown';
 import { NewsPost, PostFormat } from '../types';
 import { INITIAL_NEWS } from '../constants';
-import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube, Share2, Check, Send, MessageCircle, Facebook, Twitter, Link as LinkIcon, X } from 'lucide-react';
+import { Calendar, Tag, ChevronLeft, ChevronRight, Search, Filter, Youtube, Share2, Check, Send, MessageCircle, Facebook, Twitter, Link as LinkIcon, X, ArrowLeft, Sparkles } from 'lucide-react';
+import { generateNewsSchema } from '../utils/seo';
+import { ReportLanguage } from '../types';
 
 const getYouTubeId = (url: string) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -10,11 +12,19 @@ const getYouTubeId = (url: string) => {
   return (match && match[2].length === 11) ? match[2] : null;
 };
 
-const NewsPage: React.FC = () => {
+interface NewsPageProps {
+  onBack?: () => void;
+  language?: ReportLanguage;
+  initialSlug?: string | null;
+  onSlugChange?: (slug: string | null) => void;
+}
+
+const NewsPage: React.FC<NewsPageProps> = ({ onBack, language = 'English', initialSlug, onSlugChange }) => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [filter, setFilter] = useState<'all' | 'astrology' | 'numerology' | 'astronomy'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedPost, setSelectedPost] = useState<NewsPost | null>(null);
   const postsPerPage = 4;
 
   useEffect(() => {
@@ -74,8 +84,124 @@ const NewsPage: React.FC = () => {
     }
   }, [posts, filteredPosts]);
 
+  useEffect(() => {
+    if (initialSlug && posts.length > 0) {
+      const post = posts.find(p => p.slug === initialSlug);
+      if (post) {
+        setSelectedPost(post);
+        // Update SEO Meta
+        document.title = `${post.title} | Atlantic Oracle Gazette`;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', post.text.substring(0, 160));
+      }
+    } else if (!initialSlug) {
+      setSelectedPost(null);
+      document.title = `Cosmic News | Atlantic Oracle Gazette`;
+    }
+  }, [initialSlug, posts]);
+
+  const handlePostClick = (post: NewsPost) => {
+    if (onSlugChange) {
+      onSlugChange(post.slug);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setSelectedPost(post);
+    }
+  };
+
+  const handleBackToList = () => {
+    if (onSlugChange) {
+      onSlugChange(null);
+    } else {
+      setSelectedPost(null);
+    }
+  };
+
+  if (selectedPost) {
+    const schema = generateNewsSchema({
+      title: selectedPost.title,
+      description: selectedPost.text.substring(0, 160),
+      imageUrl: selectedPost.imageUrl,
+      datePublished: selectedPost.date,
+      authorName: "The Atlantic Sages",
+      url: `${window.location.origin}/news/${selectedPost.slug}`
+    });
+
+    return (
+      <div className="max-w-4xl mx-auto px-6 py-12 animate-in fade-in duration-700">
+        <script type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+        
+        <button 
+          onClick={handleBackToList}
+          className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors mb-12 group"
+        >
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
+          <span className="uppercase tracking-widest text-xs font-bold">Back to Gazette</span>
+        </button>
+
+        <article className="space-y-12">
+          <header className="space-y-6">
+            <div className="flex items-center gap-4 text-cosmic-silver/60 text-xs font-bold uppercase tracking-[0.3em]">
+              <Calendar className="w-4 h-4" />
+              {selectedPost.date}
+              <span className="w-1 h-1 bg-cosmic-gold rounded-full" />
+              {selectedPost.topic}
+            </div>
+            <h1 className="text-4xl md:text-7xl font-cinzel text-white leading-tight">
+              {selectedPost.title}
+            </h1>
+            <div className="h-px bg-gradient-to-r from-cosmic-gold via-transparent to-transparent w-full"></div>
+          </header>
+
+          <div className="aspect-video rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl">
+            <img src={selectedPost.imageUrl} alt={selectedPost.title} className="w-full h-full object-cover" />
+          </div>
+
+          <div className="prose prose-invert prose-xl max-w-none font-inter text-cosmic-silver leading-relaxed markdown-body">
+            <Markdown>{selectedPost.text}</Markdown>
+          </div>
+
+          <footer className="pt-12 border-t border-cosmic-gold/10 flex flex-col sm:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-cosmic-gold/20 flex items-center justify-center border border-cosmic-gold/30">
+                <Sparkles className="w-6 h-6 text-cosmic-gold" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm">The Atlantic Sages</p>
+                <p className="text-cosmic-silver/60 text-[10px] uppercase tracking-widest">Celestial Correspondents</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+               <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard');
+                }}
+                className="p-4 bg-white/5 border border-white/10 rounded-full text-cosmic-gold hover:bg-cosmic-gold hover:text-cosmic-900 transition-all"
+               >
+                 <Share2 className="w-5 h-5" />
+               </button>
+            </div>
+          </footer>
+        </article>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors mb-12 group"
+        >
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
+          <span className="uppercase tracking-widest text-xs font-bold">Return to Sanctuary</span>
+        </button>
+      )}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
         <div>
           <div className="flex items-center gap-4 mb-4">
@@ -130,7 +256,7 @@ const NewsPage: React.FC = () => {
           </div>
         ) : (
           currentPosts.map((post, index) => (
-            <PostCard key={post.id} post={post} index={index} />
+            <PostCard key={post.id} post={post} index={index} onClick={() => handlePostClick(post)} />
           ))
         )}
       </div>
@@ -176,7 +302,7 @@ const ShareMenu: React.FC<{
   onCopy: () => void;
   copied: boolean;
 }> = ({ post, onClose, onCopy, copied }) => {
-  const shareUrl = `${window.location.origin}/?view=news&post=${post.id}`;
+  const shareUrl = `${window.location.origin}/news/${post.slug}`;
   const shareText = `Check out this cosmic transmission from Atlantic Oracle: ${post.title}`;
   
   const socialLinks = [
@@ -260,7 +386,7 @@ const ShareMenu: React.FC<{
   );
 };
 
-const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
+const PostCard: React.FC<{ post: NewsPost; index: number; onClick: () => void }> = ({ post, index, onClick }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -272,7 +398,7 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
   };
 
   const handleCopy = async () => {
-    const shareUrl = `${window.location.origin}/?view=news&post=${post.id}`;
+    const shareUrl = `${window.location.origin}/news/${post.slug}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
@@ -295,7 +421,7 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
     return (
       <div 
         id={`post-${post.id}`}
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={onClick}
         className={`group flex flex-col gap-6 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-2xl p-6 hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} h-full relative overflow-hidden`}
       >
         {showShareMenu && (
@@ -348,8 +474,8 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
     return (
       <div 
         id={`post-${post.id}`}
-        onClick={() => !videoId && setIsExpanded(!isExpanded)}
-        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all ${!videoId ? 'cursor-pointer' : ''} ${gridClasses} flex flex-col relative`}
+        onClick={onClick}
+        className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} flex flex-col relative`}
       >
         {showShareMenu && (
           <ShareMenu 
@@ -407,13 +533,13 @@ const PostCard: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) 
   }
 
   if (post.format === 'series') {
-    return <SliderPost post={post} index={index} />;
+    return <SliderPost post={post} index={index} onClick={onClick} />;
   }
 
   return null;
 };
 
-const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }) => {
+const SliderPost: React.FC<{ post: NewsPost; index: number; onClick: () => void }> = ({ post, index, onClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
@@ -427,7 +553,7 @@ const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }
   };
 
   const handleCopy = async () => {
-    const shareUrl = `${window.location.origin}/?view=news&post=${post.id}`;
+    const shareUrl = `${window.location.origin}/news/${post.slug}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
@@ -454,7 +580,7 @@ const SliderPost: React.FC<{ post: NewsPost; index: number }> = ({ post, index }
   return (
     <div 
       id={`post-${post.id}`}
-      onClick={() => setIsExpanded(!isExpanded)}
+      onClick={onClick}
       className={`group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-3xl overflow-hidden hover:border-cosmic-gold/30 transition-all cursor-pointer ${gridClasses} flex flex-col relative`}
     >
       {showShareMenu && (

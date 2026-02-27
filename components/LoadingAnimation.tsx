@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 
-const LoadingAnimation: React.FC = () => {
-  const [loadingText, setLoadingText] = useState("Aligning the stars...");
+import { ReportLanguage } from '../types';
+import { translations } from '../translations';
+
+interface LoadingAnimationProps {
+  language?: ReportLanguage;
+}
+
+const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language = 'English' }) => {
+  const t = translations[language];
+  const [loadingText, setLoadingText] = useState(t.loadingPhase1);
   const texts = [
-    "Aligning the stars...",
-    "Consulting the Akashic records...",
-    "Calculating planetary degrees...",
-    "Mapping your soul's blueprint...",
-    "Your cosmic portrait is forming...",
-    "Wisdom of the ancients is descending..."
+    t.loadingPhase1,
+    t.loadingPhase2,
+    t.loadingPhase3,
+    t.loadingPhase4,
+    translations[language].loadingSubtitle
   ];
 
   useEffect(() => {
@@ -93,7 +100,7 @@ const LoadingAnimation: React.FC = () => {
       <div className="text-center relative z-20 space-y-8 px-6">
         <div className="space-y-2">
           <h2 className="text-2xl sm:text-3xl font-cinzel text-white tracking-[0.3em] uppercase animate-pulse">{loadingText}</h2>
-          <p className="text-cosmic-gold/60 text-[10px] uppercase tracking-[0.5em] font-bold">Establishing Celestial Connection</p>
+          <p className="text-cosmic-gold/60 text-[10px] uppercase tracking-[0.5em] font-bold">{t.loadingSubtitle}</p>
         </div>
         
         <div className="w-64 h-px bg-cosmic-gold/10 mx-auto relative overflow-hidden">

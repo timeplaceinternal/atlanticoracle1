@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { NewsPost } from '../types';
 import { INITIAL_NEWS } from '../constants';
 import { Calendar, ChevronRight, Newspaper, Sparkles } from 'lucide-react';
+import { translations } from '../translations';
+import { ReportLanguage } from '../types';
 
-const LatestNewsPreview: React.FC<{ onViewNews: () => void }> = ({ onViewNews }) => {
+const LatestNewsPreview: React.FC<{ onViewNews: () => void, onViewPost: (slug: string) => void, language: ReportLanguage }> = ({ onViewNews, onViewPost, language }) => {
+  const t = translations[language];
   const [latestPost, setLatestPost] = useState<NewsPost | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +47,7 @@ const LatestNewsPreview: React.FC<{ onViewNews: () => void }> = ({ onViewNews })
     <section className="px-6 max-w-7xl mx-auto py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       <div className="bg-cosmic-900/40 backdrop-blur-3xl border border-cosmic-gold/20 rounded-[3rem] overflow-hidden shadow-2xl shadow-cosmic-gold/5 flex flex-col lg:flex-row">
         {/* Visual Side */}
-        <div className="lg:w-1/2 h-[250px] lg:h-auto relative overflow-hidden group">
+        <div className="lg:w-1/2 h-[250px] lg:h-auto relative overflow-hidden group cursor-pointer" onClick={() => onViewPost(latestPost.slug)}>
           <img 
             src={latestPost.imageUrl} 
             alt={latestPost.title} 
@@ -56,7 +59,7 @@ const LatestNewsPreview: React.FC<{ onViewNews: () => void }> = ({ onViewNews })
           <div className="absolute top-6 left-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-cosmic-gold text-cosmic-900 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
               <Newspaper className="w-3 h-3" />
-              Latest Transmission
+              {t.latestTransmission}
             </div>
           </div>
         </div>
@@ -73,7 +76,7 @@ const LatestNewsPreview: React.FC<{ onViewNews: () => void }> = ({ onViewNews })
                 {latestPost.topic}
               </div>
             </div>
-            <h3 className="text-2xl lg:text-4xl font-cinzel text-white leading-tight">
+            <h3 className="text-2xl lg:text-4xl font-cinzel text-white leading-tight cursor-pointer hover:text-cosmic-gold transition-colors" onClick={() => onViewPost(latestPost.slug)}>
               {latestPost.title}
             </h3>
             <p className="text-cosmic-silver font-light text-base leading-relaxed italic opacity-80">
@@ -83,10 +86,10 @@ const LatestNewsPreview: React.FC<{ onViewNews: () => void }> = ({ onViewNews })
 
           <div className="pt-2">
             <button 
-              onClick={onViewNews}
+              onClick={() => onViewPost(latestPost.slug)}
               className="group inline-flex items-center gap-4 px-8 py-3 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all active:scale-95"
             >
-              <span className="uppercase tracking-[0.2em] text-[10px]">Read the Full Gazette</span>
+              <span className="uppercase tracking-[0.2em] text-[10px]">{t.readFullGazette}</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
             </button>
           </div>
@@ -100,7 +103,7 @@ const LatestNewsPreview: React.FC<{ onViewNews: () => void }> = ({ onViewNews })
               ))}
             </div>
             <span className="text-[10px] text-cosmic-silver/40 uppercase tracking-widest font-medium">
-              Joined by 1,200+ seekers this week
+              {t.joinedBySeekers}
             </span>
           </div>
         </div>

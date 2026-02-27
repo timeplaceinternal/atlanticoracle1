@@ -8,6 +8,7 @@ import {
   Edit3, Eye, Sparkles, Loader2, ChevronRight, ChevronLeft
 } from 'lucide-react';
 import { generateDailyForecast } from '../services/geminiService';
+import { generateSlug } from '../utils/seo';
 
 const AdminPanel: React.FC = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
@@ -162,6 +163,7 @@ const AdminPanel: React.FC = () => {
     if (editingId) {
       updatedPosts = posts.map(p => p.id === editingId ? {
         ...p,
+        slug: formData.slug || generateSlug(formData.title!),
         title: formData.title!,
         text: formData.text!,
         imageUrl: formData.imageUrl || '',
@@ -175,6 +177,7 @@ const AdminPanel: React.FC = () => {
     } else {
       const newPost: NewsPost = {
         id: Math.random().toString(36).substring(7),
+        slug: generateSlug(formData.title!),
         title: formData.title!,
         text: formData.text!,
         imageUrl: formData.imageUrl || '',

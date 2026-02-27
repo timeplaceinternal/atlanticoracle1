@@ -71,6 +71,56 @@ async function startServer() {
     }
   });
 
+  // Dynamic Sitemap
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      let posts: NewsPost[] = [];
+      if (process.env.BLOB_READ_WRITE_TOKEN) {
+        const { blobs } = await list();
+        const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
+        if (newsBlob) {
+          const response = await fetch(newsBlob.url);
+          posts = await response.json();
+        }
+      }
+      
+      const baseUrl = 'https://atlanticoracle.com';
+      const initialNewsSlugs = ['the-saturn-shift-navigating-the-great-restructuring'];
+      
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/news</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  ${initialNewsSlugs.map(slug => `
+  <url>
+    <loc>${baseUrl}/news/${slug}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`).join('')}
+  ${posts.map(post => `
+  <url>
+    <loc>${baseUrl}/news/${post.slug}</loc>
+    <lastmod>${post.date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`).join('')}
+</urlset>`;
+
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap.trim());
+    } catch (e) {
+      res.status(500).send("Error generating sitemap");
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

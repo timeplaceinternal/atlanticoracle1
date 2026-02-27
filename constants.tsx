@@ -9,6 +9,7 @@ import { ServiceType, Service, NewsPost } from './types';
 export const INITIAL_NEWS: NewsPost[] = [
   {
     id: 'init-1',
+    slug: 'the-saturn-shift-navigating-the-great-restructuring',
     title: 'The Saturn Shift: Navigating the Great Restructuring',
     date: '2026-02-22',
     topic: 'astrology',

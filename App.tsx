@@ -10,9 +10,10 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import NewsPage from './components/NewsPage';
 import AdminPanel from './components/AdminPanel';
 import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
-import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType } from './types';
+import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle } from 'lucide-react';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe } from 'lucide-react';
+import { translations } from './translations';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 const STORAGE_KEY = "atlantic_oracle_pending_request";
@@ -67,12 +68,16 @@ const App: React.FC = () => {
         url.searchParams.delete('view');
         window.history.pushState({}, '', '/' + url.search);
       } else if (view === 'admin') {
-        // Use the secret path for admin and add a query param as backup
         url.searchParams.set('view', 'admin');
         window.history.pushState({}, '', '/admin162463' + url.search);
-      } else if (['news', 'privacy'].includes(view)) {
-        url.searchParams.set('view', view);
-        window.history.pushState({}, '', url.pathname + url.search);
+      } else if (view === 'news') {
+        if (newsSlug) {
+          window.history.pushState({}, '', `/news/${newsSlug}`);
+        } else {
+          window.history.pushState({}, '', '/news');
+        }
+      } else if (view === 'privacy') {
+        window.history.pushState({}, '', '/privacy');
       }
     }
   }, [view]);
@@ -87,8 +92,10 @@ const App: React.FC = () => {
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
       } else if (cleanPath.includes('/news') || params.get('view') === 'news') {
+        const match = cleanPath.match(/\/news\/([^/]+)/);
+        setNewsSlug(match ? match[1] : null);
         setView('news');
-      } else if (params.get('view') === 'privacy') {
+      } else if (params.get('view') === 'privacy' || cleanPath === '/privacy') {
         setView('privacy');
       } else {
         setView('home');
@@ -107,7 +114,16 @@ const App: React.FC = () => {
     (window as any).setAppView = setView;
   }, []);
 
+  const [language, setLanguage] = useState<ReportLanguage>('English');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [newsSlug, setNewsSlug] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const match = path.match(/\/news\/([^/]+)/);
+      return match ? match[1] : null;
+    }
+    return null;
+  });
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
   const [result, setResult] = useState<ReadingResultType | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -133,6 +149,29 @@ const App: React.FC = () => {
       }
     }
   }, []);
+
+  const t = translations[language];
+
+  const TESTIMONIALS = [
+    {
+      quote: t.testimonial1Quote,
+      text: t.testimonial1Text,
+      author: "Jordan K.",
+      location: "NYC"
+    },
+    {
+      quote: t.testimonial2Quote,
+      text: t.testimonial2Text,
+      author: "Amelia W.",
+      location: "London"
+    },
+    {
+      quote: t.testimonial3Quote,
+      text: t.testimonial3Text,
+      author: "Ivan P.",
+      location: "Prague"
+    }
+  ];
 
   const resetToHome = () => {
     setView('home');
@@ -234,33 +273,44 @@ const App: React.FC = () => {
             </button>
 
             <div className="hidden md:flex gap-8 items-center text-xs font-bold text-cosmic-silver uppercase tracking-widest">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-cosmic-800/50 border border-cosmic-gold/20 rounded-full mr-4">
+                <Globe className="w-3 h-3 text-cosmic-gold" />
+                <select 
+                  value={language} 
+                  onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
+                  className="bg-transparent text-cosmic-gold outline-none cursor-pointer text-[10px]"
+                >
+                  <option value="English" className="bg-cosmic-900">EN</option>
+                  <option value="Portuguese" className="bg-cosmic-900">PT-BR</option>
+                </select>
+              </div>
               <button 
                 onClick={() => setView('news')} 
                 className="hover:text-cosmic-gold transition-colors"
                 aria-label="View Cosmic News"
               >
-                Cosmic News
+                {t.navNews}
               </button>
               <button 
                 onClick={() => scrollToSection('philosophy')} 
                 className="hover:text-cosmic-gold transition-colors"
                 aria-label="Read our Philosophy"
               >
-                Philosophy
+                {t.navPhilosophy}
               </button>
               <button 
                 onClick={() => scrollToSection('how-it-works')} 
                 className="hover:text-cosmic-gold transition-colors"
                 aria-label="How it Works"
               >
-                How it Works
+                {t.navHowItWorks}
               </button>
               <button 
                 onClick={() => scrollToSection('services')} 
                 className="px-6 py-2 border border-cosmic-gold text-cosmic-gold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all font-cinzel tracking-[0.2em] shadow-[0_0_15px_rgba(212,175,55,0.1)] active:scale-95"
                 aria-label="Oracle Consult"
               >
-                Oracle Consult
+                {t.navConsult}
               </button>
             </div>
 
@@ -273,18 +323,29 @@ const App: React.FC = () => {
             </button>
           </nav>
 
-          <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[400px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+          <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[500px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
             <div className="flex flex-col p-8 gap-6 text-center text-sm font-bold text-cosmic-silver uppercase tracking-[0.2em]">
-              <button onClick={() => { setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">Cosmic News</button>
-              <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">Philosophy</button>
-              <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">How it Works</button>
-              <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">Oracle Consult</button>
+              <div className="flex items-center justify-center gap-3 border-b border-cosmic-gold/10 pb-6 mb-2">
+                <Globe className="w-4 h-4 text-cosmic-gold" />
+                <select 
+                  value={language} 
+                  onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
+                  className="bg-transparent text-cosmic-gold outline-none cursor-pointer"
+                >
+                  <option value="English" className="bg-cosmic-900">English (EN)</option>
+                  <option value="Portuguese" className="bg-cosmic-900">Português (PT-BR)</option>
+                </select>
+              </div>
+              <button onClick={() => { setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navNews}</button>
+              <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navPhilosophy}</button>
+              <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navHowItWorks}</button>
+              <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">{t.navConsult}</button>
             </div>
           </div>
         </header>
 
         <main className="container mx-auto pt-20">
-          {view === 'loading' && <LoadingAnimation />}
+          {view === 'loading' && <LoadingAnimation language={language} />}
 
           {view === 'home' && (
             <div className="space-y-32 py-20">
@@ -292,13 +353,13 @@ const App: React.FC = () => {
               <section className="text-center max-w-5xl mx-auto px-6 space-y-8 animate-in fade-in slide-in-from-top-4 duration-1000 pt-20">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full mb-4">
                   <Sparkles className="w-4 h-4 text-cosmic-gold" />
-                  <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">The Synthesis of Stars and Numbers</span>
+                  <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">{t.heroBadge}</span>
                 </div>
-                <h1 className="text-5xl md:text-8xl font-cinzel text-white leading-[1.1]">The Secret Language of <span className="text-cosmic-gold">Space and Numbers</span></h1>
-                <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair text-lg md:text-2xl">"We merge the cosmic mechanics of Astrology with the mathematical fate of Numerology to decode your life's navigation map."</p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
-                  <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95">Consult the Oracle</button>
-                  <button onClick={() => scrollToSection('free-insights')} className="w-full sm:w-auto px-10 py-5 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/5 transition-all">Free Insights</button>
+                <h1 className="text-5xl md:text-8xl font-cinzel text-white leading-[1.1]">{t.heroTitle}</h1>
+                <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair text-lg md:text-2xl">"{t.heroSubtitle}"</p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
+                  <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95">{t.heroCTA}</button>
+                  <button onClick={() => scrollToSection('free-insights')} className="w-full sm:w-auto px-10 py-5 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/5 transition-all">{t.heroFreeCTA}</button>
                 </div>
               </section>
 
@@ -306,8 +367,8 @@ const App: React.FC = () => {
               <section id="free-insights" className="px-6 max-w-7xl mx-auto scroll-mt-32">
                 <div className="text-center mb-16 space-y-4">
                   <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[9px] uppercase tracking-[0.3em] rounded mb-2">Essential Access</div>
-                  <h3 className="text-3xl font-cinzel text-white uppercase tracking-[0.2em]">Free Oracle <span className="text-cosmic-gold">Services</span></h3>
-                  <p className="text-cosmic-silver italic font-playfair text-sm">Experience the precision of the Registry through these introductory studies.</p>
+                  <h3 className="text-3xl font-cinzel text-white uppercase tracking-[0.2em]">{t.freeInsightsTitle}</h3>
+                  <p className="text-cosmic-silver italic font-playfair text-sm">{t.freeInsightsSubtitle}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {FREE_SERVICES.map(s => (
@@ -328,26 +389,26 @@ const App: React.FC = () => {
               <section className="px-6 max-w-4xl mx-auto text-center space-y-12">
                 <div className="w-px h-24 bg-gradient-to-b from-cosmic-gold to-transparent mx-auto"></div>
                 <div className="space-y-6">
-                  <h2 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">A Unified Map of your <span className="text-cosmic-gold">Existence</span></h2>
+                  <h2 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">{t.philosophyTitle}</h2>
                   <p className="text-lg md:text-xl text-cosmic-silver leading-relaxed font-light">
-                    Atlantic Oracle represents a shift from general horoscopes to structured data analysis. We believe that <strong>Astrology</strong> provides the external context—the "weather" of your destiny—while <strong>Numerology</strong> reveals the internal engine: the vibrations hidden in your name and date of birth.
+                    {t.philosophyText}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="p-8 border border-cosmic-gold/10 rounded-3xl bg-cosmic-800/10">
                     <BookOpen className="w-6 h-6 text-cosmic-gold mx-auto mb-4" />
-                    <h4 className="text-white font-cinzel text-sm uppercase mb-2">3-5 Page Reports</h4>
-                    <p className="text-xs text-cosmic-silver/70">Substantial analysis ranging from 800 to 1500 words per reading.</p>
+                    <h4 className="text-white font-cinzel text-sm uppercase mb-2">{t.featureReports}</h4>
+                    <p className="text-xs text-cosmic-silver/70">{t.featureReportsDesc}</p>
                   </div>
                   <div className="p-8 border border-cosmic-gold/10 rounded-3xl bg-cosmic-800/10">
                     <Compass className="w-6 h-6 text-cosmic-gold mx-auto mb-4" />
-                    <h4 className="text-white font-cinzel text-sm uppercase mb-2">Dual Methodology</h4>
-                    <p className="text-xs text-cosmic-silver/70">The synthesis of celestial transits and the Pythagorean matrix.</p>
+                    <h4 className="text-white font-cinzel text-sm uppercase mb-2">{t.featureMethodology}</h4>
+                    <p className="text-xs text-cosmic-silver/70">{t.featureMethodologyDesc}</p>
                   </div>
                   <div className="p-8 border border-cosmic-gold/10 rounded-3xl bg-cosmic-800/10">
                     <ShieldCheck className="w-6 h-6 text-cosmic-gold mx-auto mb-4" />
-                    <h4 className="text-white font-cinzel text-sm uppercase mb-2">Ephemeral Privacy</h4>
-                    <p className="text-xs text-cosmic-silver/70">No personal accounts. Your data is deleted immediately after the report.</p>
+                    <h4 className="text-white font-cinzel text-sm uppercase mb-2">{t.featurePrivacy}</h4>
+                    <p className="text-xs text-cosmic-silver/70">{t.featurePrivacyDesc}</p>
                   </div>
                 </div>
               </section>
@@ -355,8 +416,8 @@ const App: React.FC = () => {
               {/* SERVICES SECTION */}
               <section id="services" className="px-6 max-w-7xl mx-auto scroll-mt-32">
                 <div className="text-center mb-16 space-y-4">
-                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">Cosmic Decrees</h3>
-                  <p className="text-cosmic-silver italic font-playfair">Select a focus area for your comprehensive study.</p>
+                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">{t.decreesTitle}</h3>
+                  <p className="text-cosmic-silver italic font-playfair">{t.decreesSubtitle}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {SERVICES.map(s => (
@@ -373,17 +434,24 @@ const App: React.FC = () => {
                 </div>
               </section>
               
-              <LatestNewsPreview onViewNews={() => setView('news')} />
+              <LatestNewsPreview 
+              onViewNews={() => setView('news')} 
+              onViewPost={(slug) => {
+                setNewsSlug(slug);
+                setView('news');
+              }}
+              language={language} 
+            />
               
-              <PhilosophySection />
-              <HowItWorksSection />
+              <PhilosophySection language={language} />
+              <HowItWorksSection language={language} />
 
               {/* TESTIMONIALS SECTION */}
               <section id="testimonials" className="px-6 max-w-7xl mx-auto py-20 relative">
                 <div className="text-center mb-20 space-y-4">
-                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">Echoes from the <span className="text-cosmic-gold">Souls</span></h3>
+                  <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">{t.testimonialsTitle}</h3>
                   <div className="w-24 h-px bg-gradient-to-r from-transparent via-cosmic-gold to-transparent mx-auto"></div>
-                  <p className="text-cosmic-silver italic font-playfair">Voices of those who walked the path before you.</p>
+                  <p className="text-cosmic-silver italic font-playfair">{t.testimonialsSubtitle}</p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -417,7 +485,12 @@ const App: React.FC = () => {
 
           {view === 'form' && selectedService && (
             <div className="py-20 px-6">
-              <ReadingForm service={selectedService} onBack={resetToHome} onSubmit={handleFormSubmit} />
+              <ReadingForm 
+                service={selectedService} 
+                language={language}
+                onBack={resetToHome} 
+                onSubmit={handleFormSubmit} 
+              />
             </div>
           )}
 
@@ -459,7 +532,7 @@ const App: React.FC = () => {
 
           {view === 'news' && (
             <div className="py-10 md:py-20">
-              <NewsPage />
+              <NewsPage onBack={resetToHome} language={language} initialSlug={newsSlug} onSlugChange={setNewsSlug} />
             </div>
           )}
 
@@ -481,6 +554,10 @@ const App: React.FC = () => {
                 <Star className="text-cosmic-gold w-8 h-8" />
                 <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
               </button>
+
+              <p className="text-cosmic-silver/60 text-xs italic max-w-xs">
+                {t.footerTagline}
+              </p>
 
               <div className="flex items-center gap-6 pt-2">
                 <a 
@@ -521,20 +598,20 @@ const App: React.FC = () => {
                    <span className="text-sm font-bold tracking-[0.2em] uppercase">oracle@atlanticoracle.com</span>
                  </a>
                  <div className="flex flex-col gap-2">
-                    <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.3em] font-medium">Contact • Suggestions • Support</p>
+                    <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.3em] font-medium">{t.contactSupport}</p>
                     <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.2em] font-medium">R. Dom Martinho Castelo Branco 12 14, 8500-782 Portimão, Portugal</p>
                     <button 
                       onClick={() => setView('privacy')} 
                       className="text-cosmic-silver/60 hover:text-cosmic-gold transition-colors text-[9px] uppercase tracking-[0.3em] underline underline-offset-4 decoration-cosmic-gold/30"
                     >
-                      Privacy Policy
+                      {t.privacyPolicy}
                     </button>
                  </div>
               </div>
             </div>
 
             <p className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 block">
-              ATLANTICORACLE.COM © 2026. THE SECRET LANGUAGE OF SPACE AND NUMBERS.
+              {t.footerCopyright}
             </p>
           </div>
         </footer>

@@ -3,16 +3,22 @@ import React, { useState } from 'react';
 import { Service, ServiceType, ReadingRequest, ReportLanguage } from '../types';
 import { ArrowLeft, MapPin, Clock, User, ShieldCheck, Sparkles } from 'lucide-react';
 
+import { translations } from '../translations';
+
 interface ReadingFormProps {
   service: Service;
+  language: ReportLanguage;
   onBack: () => void;
   onSubmit: (data: ReadingRequest) => void;
 }
 
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTHS_PT = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) => {
+const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, onSubmit }) => {
+  const t = translations[language];
   const currentYear = new Date().getFullYear();
+  const MONTHS = language === 'Portuguese' ? MONTHS_PT : MONTHS_EN;
 
   const [name, setName] = useState('');
   const [birthPlace, setBirthPlace] = useState('');
@@ -22,8 +28,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
   const [day, setDay] = useState('1');
   const [year, setYear] = useState('1990');
   
-  // Language selection is hidden, defaulting to English until full localization is complete.
-  const [language] = useState<ReportLanguage>('English');
+  // Language selection is hidden, using the one passed from App.
+  // const [language] = useState<ReportLanguage>('English');
 
   const [partnerName, setPartnerName] = useState('');
   const [pMonth, setPMonth] = useState('1');
@@ -90,24 +96,24 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
     <div className="max-w-4xl mx-auto p-6 sm:p-12 bg-cosmic-800/40 backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[3rem] border border-cosmic-gold/20 shadow-2xl relative z-10">
       <button onClick={onBack} className="mb-8 sm:mb-12 flex items-center text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-xs font-bold uppercase tracking-widest relative z-20">
         <ArrowLeft className="w-4 h-4 mr-2" />
-        Return to Sanctuary
+        {t.returnToSanctuary}
       </button>
 
       <div className="mb-8 sm:mb-12">
         <h2 className="text-3xl sm:text-4xl font-cinzel text-white mb-2">{service.title}</h2>
         {service.isFree ? (
           <p className="text-sm text-cosmic-silver italic leading-relaxed">
-            The oracle prepares a <strong className="text-cosmic-gold uppercase">brief insight</strong> for you. Full comprehensive Decrees are available as premium services.
+            {t.experienceDepth}
           </p>
         ) : (
           <div className="space-y-4">
             <p className="text-sm text-cosmic-silver italic leading-relaxed">
-              The oracle prepares a <strong className="text-cosmic-gold uppercase">detailed report</strong> for you.
+              {t.experienceDepth}
             </p>
             <div className="p-5 bg-cosmic-gold/5 border border-cosmic-gold/20 rounded-2xl animate-in fade-in slide-in-from-top-4 duration-700">
-              <p className="text-[10px] text-cosmic-gold uppercase tracking-[0.2em] font-bold mb-2">Sage's Requirement</p>
+              <p className="text-[10px] text-cosmic-gold uppercase tracking-[0.2em] font-bold mb-2">{t.sagesRequirement}</p>
               <p className="text-xs text-cosmic-silver leading-relaxed">
-                For a deeper and more precise analysis, we require additional coordinates. Please fill out the form with utmost accuracy. Note that the oracle requires a moment of celestial silence to weave your comprehensive decree.
+                {t.sagesRequirementDesc}
               </p>
             </div>
           </div>
@@ -117,19 +123,19 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
       <form onSubmit={handleSubmit} noValidate className="space-y-8 sm:space-y-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
            <div className="space-y-6">
-              <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Personal Celestial Coordinates</label>
+              <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">{language === 'Portuguese' ? "Coordenadas Celestiais Pessoais" : "Personal Celestial Coordinates"}</label>
               
               <div className="space-y-1">
                 <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
                   <User className="w-4 h-4 text-cosmic-gold" />
                   <input 
-                    placeholder="Full Name" 
+                    placeholder={language === 'Portuguese' ? "Nome Completo" : "Full Name"} 
                     className="w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                     value={name} 
                     onChange={e => setName(e.target.value)} 
                   />
                 </div>
-                {showErrors && !name && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Identity is required</p>}
+                {showErrors && !name && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">{t.identityRequired}</p>}
               </div>
               
               <div className="grid grid-cols-3 gap-2 sm:gap-4">
@@ -147,7 +153,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
               {(service.price > 0 && !service.isFree) && (
                 <div className="flex gap-2 sm:gap-4 items-center">
                   <Clock className="w-4 h-4 text-cosmic-gold" />
-                  <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
+                  <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">{t.timeLabel}</span>
                   <select value={birthHour} onChange={e => setBirthHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                     {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
                   </select>
@@ -161,47 +167,47 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                 <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
                   <MapPin className="w-4 h-4 text-cosmic-gold" />
                   <input 
-                    placeholder="Birth City & Country" 
+                    placeholder={language === 'Portuguese' ? "Cidade e País de Nascimento" : "Birth City & Country"} 
                     className="w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                     value={birthPlace} 
                     onChange={e => setBirthPlace(e.target.value)} 
                   />
                 </div>
-                {showErrors && !birthPlace && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Location is essential</p>}
+                {showErrors && !birthPlace && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">{t.locationEssential}</p>}
               </div>
            </div>
 
            {isDream && (
              <div className="space-y-6 md:col-span-2 border-t border-cosmic-700/50 pt-8 mt-4">
-                <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Dream Details</label>
+                <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">{language === 'Portuguese' ? "Detalhes do Sonho" : "Dream Details"}</label>
                 
                 <div className="space-y-4">
                   <div className="space-y-1">
                     <textarea 
-                      placeholder="Describe your dream in detail..." 
+                      placeholder={language === 'Portuguese' ? "Descreva seu sonho em detalhes..." : "Describe your dream in detail..."} 
                       className="w-full bg-cosmic-900/50 border border-cosmic-700 rounded-2xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors text-sm min-h-[150px] resize-none" 
                       value={dreamDescription} 
                       onChange={e => setDreamDescription(e.target.value)} 
                     />
-                    {showErrors && !dreamDescription && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Dream description is required</p>}
+                    {showErrors && !dreamDescription && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">{t.dreamDescriptionRequired}</p>}
                   </div>
 
                   {!isFreeDream && (
                     <div className="space-y-1">
                       <input 
-                        placeholder="Key images or words (e.g., water, flight, old house)" 
+                        placeholder={language === 'Portuguese' ? "Imagens ou palavras-chave (ex: água, voo, casa antiga)" : "Key images or words (e.g., water, flight, old house)"} 
                         className="w-full bg-cosmic-900/50 border border-cosmic-700 rounded-2xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                         value={dreamKeywords} 
                         onChange={e => setDreamKeywords(e.target.value)} 
                       />
-                      {showErrors && !dreamKeywords && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Key images are helpful for the sage</p>}
+                      {showErrors && !dreamKeywords && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">{t.dreamKeywordsHelpful}</p>}
                     </div>
                   )}
 
                   {!isFreeDream && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">When did it happen?</span>
+                        <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">{t.whenDidItHappen}</span>
                         <div className="grid grid-cols-3 gap-2">
                           <select value={dreamYear} onChange={e => setDreamYear(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
                             {years.slice(0, 21).map(y => <option key={y} value={y} className="bg-cosmic-900">{y}</option>)}
@@ -216,7 +222,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
                       </div>
 
                       <div className="space-y-2">
-                        <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">Approximate Time:</span>
+                        <span className="text-[10px] text-cosmic-silver uppercase tracking-widest block">{t.approximateTime}</span>
                         <div className="flex gap-2 items-center">
                           <select value={dreamHour} onChange={e => setDreamHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-2 text-white outline-none text-xs cursor-pointer">
                             {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
@@ -234,19 +240,19 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
            {isUnion && (
              <div className="space-y-6">
-                <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">Partner Celestial Coordinates</label>
+                <label className="block text-[10px] text-cosmic-gold uppercase tracking-[0.3em] font-bold">{language === 'Portuguese' ? "Coordenadas Celestiais do Parceiro" : "Partner Celestial Coordinates"}</label>
                 
                 <div className="space-y-1">
                   <div className="flex items-center gap-3 border-b border-cosmic-700 py-3">
                     <User className="w-4 h-4 text-cosmic-gold" />
                     <input 
-                      placeholder="Partner Name" 
+                      placeholder={language === 'Portuguese' ? "Nome do Parceiro" : "Partner Name"} 
                       className="w-full bg-transparent text-white focus:border-cosmic-gold outline-none transition-colors text-sm" 
                       value={partnerName} 
                       onChange={e => setPartnerName(e.target.value)} 
                     />
                   </div>
-                  {showErrors && !partnerName && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">Partner identity needed</p>}
+                  {showErrors && !partnerName && <p className="text-[10px] text-red-400 uppercase tracking-widest font-bold mt-1">{t.partnerIdentityNeeded}</p>}
                 </div>
                 
                 <div className="grid grid-cols-3 gap-2 sm:gap-4">
@@ -263,7 +269,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
                 <div className="flex gap-2 sm:gap-4 items-center">
                   <Clock className="w-4 h-4 text-cosmic-gold" />
-                  <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">Time:</span>
+                  <span className="text-[10px] text-cosmic-silver uppercase tracking-widest">{t.timeLabel}</span>
                   <select value={pHour} onChange={e => setPHour(e.target.value)} className="bg-transparent border-b border-cosmic-700 py-3 text-white outline-none text-xs sm:text-sm cursor-pointer">
                     {hours.map(h => <option key={h} value={h} className="bg-cosmic-900">{h}h</option>)}
                   </select>
@@ -277,14 +283,14 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, onBack, onSubmit }) 
 
         <div className="pt-8 sm:pt-12 flex flex-col sm:flex-row items-center justify-between border-t border-cosmic-700/50 gap-6 sm:gap-0">
            <div className="text-center sm:text-left">
-             <span className="text-[10px] text-cosmic-gold/50 block font-bold tracking-widest uppercase mb-1">Fee for Wisdom</span>
+             <span className="text-[10px] text-cosmic-gold/50 block font-bold tracking-widest uppercase mb-1">{t.feeForWisdom}</span>
              <span className="text-3xl sm:text-4xl font-cinzel text-white">{service.isFree ? "FREE" : "€10"}</span>
            </div>
            <button 
              type="submit" 
              className="w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-cosmic-gold/40 flex items-center justify-center gap-3 relative z-[100]"
            >
-             {service.isFree ? "START" : "PROCEED TO PAYMENT"}
+             {service.isFree ? t.start : t.proceedToPayment}
              {service.isFree ? <Sparkles className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5" />}
            </button>
         </div>

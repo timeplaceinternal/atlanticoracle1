@@ -1,8 +1,16 @@
 
 import React from 'react';
 import { Star, Moon, Sparkles } from 'lucide-react';
+import { translations } from '../translations';
+import { ReportLanguage } from '../types';
 
-const PhilosophySection: React.FC = () => {
+interface PhilosophySectionProps {
+  language: ReportLanguage;
+}
+
+const PhilosophySection: React.FC<PhilosophySectionProps> = ({ language }) => {
+  const t = translations[language];
+
   return (
     <section id="philosophy" className="relative py-32 px-6 overflow-hidden">
       {/* Decorative Background Elements */}
@@ -17,10 +25,10 @@ const PhilosophySection: React.FC = () => {
             <div className="h-[1px] w-12 bg-cosmic-gold/30"></div>
           </div>
           <h2 className="text-4xl md:text-6xl font-cinzel text-white tracking-widest uppercase">
-            Our <span className="text-cosmic-gold">Philosophy</span>
+            {language === 'Portuguese' ? "Nossa " : "Our "} <span className="text-cosmic-gold">{language === 'Portuguese' ? "Filosofia" : "Philosophy"}</span>
           </h2>
           <p className="text-xl md:text-2xl font-playfair italic text-cosmic-silver/80">
-            "Destiny is not a cage, but a set of coordinates."
+            "{t.philosophyQuote}"
           </p>
         </div>
 
@@ -30,38 +38,38 @@ const PhilosophySection: React.FC = () => {
           
           <div className="space-y-10 first-letter:text-5xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:mr-3 first-letter:float-left">
             <p>
-              We view life as a complex interplay of natural rhythms. Just as a navigator needs both a compass and a map of the stars, a person seeking harmony needs to understand both their internal frequency and the external environment.
+              {t.philosophyIntro}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-8">
               <div className="space-y-4 p-8 bg-cosmic-gold/5 border border-cosmic-gold/10 rounded-3xl backdrop-blur-sm">
                 <div className="flex items-center gap-3 text-white font-cinzel tracking-widest uppercase text-sm mb-2">
                   <Star className="w-5 h-5 text-cosmic-gold" />
-                  Astrology
+                  {t.astrologyTitle}
                 </div>
                 <p className="text-base leading-relaxed">
-                  Astrology is the study of cosmic cycles and planetary transits. It reveals the "climate" of your life—when to act, when to wait, and where the universal energy is flowing at any given moment.
+                  {t.astrologyDesc}
                 </p>
               </div>
 
               <div className="space-y-4 p-8 bg-cosmic-gold/5 border border-cosmic-gold/10 rounded-3xl backdrop-blur-sm">
                 <div className="flex items-center gap-3 text-white font-cinzel tracking-widest uppercase text-sm mb-2">
                   <Moon className="w-5 h-5 text-cosmic-gold" />
-                  Numerology
+                  {t.numerologyTitle}
                 </div>
                 <p className="text-base leading-relaxed">
-                  Numerology decodes the structural vibration of your name and birth date. It describes your "engine"—the innate qualities, strengths, and spiritual lessons that define your unique identity.
+                  {t.numerologyDesc}
                 </p>
               </div>
             </div>
 
             <p className="text-center max-w-3xl mx-auto italic font-playfair text-2xl text-white">
-              By combining these two ancient disciplines, we provide a high-resolution view of your path, allowing you to move in sync with the world rather than against it.
+              {t.philosophySynthesis}
             </p>
 
             <div className="bg-gradient-to-br from-cosmic-gold/10 to-transparent border-l-2 border-cosmic-gold p-10 rounded-r-3xl">
               <p className="text-xl md:text-2xl font-cinzel text-white leading-relaxed">
-                When the internal vibration (Numbers) aligns with the external rhythm (Stars), friction disappears. This is the state of natural flow we help our visitors achieve.
+                {t.philosophyAlignment}
               </p>
             </div>
           </div>
@@ -73,7 +81,7 @@ const PhilosophySection: React.FC = () => {
               <div className="absolute -bottom-4 left-0 right-0 h-px bg-cosmic-gold"></div>
             </div>
             <p className="mt-8 text-cosmic-silver/60 text-sm tracking-[0.3em] uppercase">
-              Deciphering the secret language of the stars.
+              {t.philosophySignature}
             </p>
           </div>
         </article>
