@@ -16,5 +16,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "*.tsx", "*.ts"]
+  "include": ["api", "components", "utils", "services", "*.tsx", "*.ts", "translations.ts", "types.ts", "constants.tsx"]
 }

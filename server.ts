@@ -35,8 +35,8 @@ async function startServer() {
       console.log(`Successfully fetched ${posts.length} posts`);
       res.json(posts);
     } catch (error) {
-      console.error("Failed to fetch news from Blob:", error);
-      res.status(500).json({ error: "Failed to fetch news: " + (error instanceof Error ? error.message : String(error)) });
+      console.warn("Failed to fetch news from Blob (check BLOB_READ_WRITE_TOKEN):", error instanceof Error ? error.message : String(error));
+      res.json([]); // Return empty array instead of 500 to keep app functional
     }
   });
 
@@ -117,7 +117,16 @@ async function startServer() {
       res.header('Content-Type', 'application/xml');
       res.send(sitemap.trim());
     } catch (e) {
-      res.status(500).send("Error generating sitemap");
+      console.warn("Sitemap: Could not fetch posts from Blob (likely missing/invalid token). Using defaults.");
+      // Fallback to a basic sitemap if fetch fails
+      const baseUrl = 'https://atlanticoracle.com';
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${baseUrl}/</loc><priority>1.0</priority></url>
+  <url><loc>${baseUrl}/news</loc><priority>0.8</priority></url>
+</urlset>`;
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap.trim());
     }
   });
 
