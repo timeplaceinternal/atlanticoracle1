@@ -314,13 +314,26 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden text-cosmic-gold p-2 hover:bg-cosmic-gold/10 rounded-lg transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              <div className="flex items-center gap-1 px-2 py-1 bg-cosmic-800/50 border border-cosmic-gold/20 rounded-full mr-1">
+                <Globe className="w-3 h-3 text-cosmic-gold" />
+                <select 
+                  value={language} 
+                  onChange={(e) => setLanguage(e.target.value as ReportLanguage)}
+                  className="bg-transparent text-cosmic-gold outline-none cursor-pointer text-[10px] font-bold"
+                >
+                  <option value="English" className="bg-cosmic-900">EN</option>
+                  <option value="Portuguese" className="bg-cosmic-900">PT</option>
+                </select>
+              </div>
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="text-cosmic-gold p-2 hover:bg-cosmic-gold/10 rounded-lg transition-colors"
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </nav>
 
           <div className={`md:hidden absolute top-20 left-0 right-0 bg-cosmic-900/95 backdrop-blur-2xl border-b border-cosmic-gold/10 transition-all duration-500 overflow-hidden ${isMenuOpen ? 'max-h-[500px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
