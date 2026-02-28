@@ -42,6 +42,7 @@ export interface ReadingRequest {
   dreamKeywords?: string;
   dreamDate?: string;
   dreamTime?: string;
+  timestamp: number;
 }
 
 export interface ReadingResult {

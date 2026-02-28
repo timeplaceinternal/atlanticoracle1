@@ -13,7 +13,7 @@ import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
 import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe } from 'lucide-react';
-import { translations } from './translations';
+import { translations } from '../translations';
 
 const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
 const STORAGE_KEY = "atlantic_oracle_pending_request";

@@ -1,4 +1,4 @@
-import { ReportLanguage } from './types';
+import { ReportLanguage } from './src/types';
 
 export interface Translations {
   navNews: string;
@@ -118,6 +118,13 @@ export interface Translations {
   latestTransmission: string;
   readFullGazette: string;
   joinedBySeekers: string;
+  newsSubtitle: string;
+  viewAllNews: string;
+  formName: string;
+  formBirthDate: string;
+  formBirthPlace: string;
+  formBack: string;
+  formSubmit: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -239,6 +246,13 @@ export const translations: Record<ReportLanguage, Translations> = {
     latestTransmission: "Latest Transmission",
     readFullGazette: "Read the Full Gazette",
     joinedBySeekers: "Joined by 1,200+ seekers this week",
+    newsSubtitle: "Celestial transmissions for the modern soul.",
+    viewAllNews: "View All News",
+    formName: "Full Name",
+    formBirthDate: "Birth Date",
+    formBirthPlace: "Birth Place",
+    formBack: "Back",
+    formSubmit: "Consult Oracle",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -358,6 +372,13 @@ export const translations: Record<ReportLanguage, Translations> = {
     latestTransmission: "Última Transmissão",
     readFullGazette: "Ler a Gazeta Completa",
     joinedBySeekers: "Acompanhado por mais de 1.200 buscadores esta semana",
+    newsSubtitle: "Transmissões celestiais para a alma moderna.",
+    viewAllNews: "Ver Todas as Notícias",
+    formName: "Nome Completo",
+    formBirthDate: "Data de Nascimento",
+    formBirthPlace: "Local de Nascimento",
+    formBack: "Voltar",
+    formSubmit: "Consultar Oráculo",
   },
   French: {} as any,
   German: {} as any,

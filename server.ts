@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import { put, head, list, del } from "@vercel/blob";
-import type { NewsPost } from "./types";
+import type { NewsPost } from "./src/types";
 
 async function startServer() {
   const app = express();
