@@ -39,8 +39,11 @@ const AdminPanel: React.FC = () => {
         text: editingPost.text,
         date: editingPost.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         imageUrl: editingPost.imageUrl || 'https://picsum.photos/seed/cosmic/800/600',
+        imageSize: editingPost.imageSize || 'large',
         format: editingPost.format || 'fact',
-        topic: editingPost.topic || 'astrology'
+        topic: editingPost.topic || 'astrology',
+        videoUrl: editingPost.videoUrl,
+        images: editingPost.images
       };
       await newsService.savePost(newPost);
       const updatedPosts = await newsService.getPosts();
@@ -167,7 +170,7 @@ const AdminPanel: React.FC = () => {
             <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">
               {editingPost.id ? 'Edit Transmission' : 'New Transmission'}
             </h3>
-            <form onSubmit={handleSavePost} className="space-y-6">
+            <form onSubmit={handleSavePost} className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
               <div className="space-y-2">
                 <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Title</label>
                 <input 
@@ -183,10 +186,56 @@ const AdminPanel: React.FC = () => {
                 <textarea 
                   value={editingPost.text || ''} 
                   onChange={(e) => setEditingPost({...editingPost, text: e.target.value})}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[200px]"
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[150px]"
                   required
                 />
               </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Main Image URL</label>
+                  <input 
+                    type="text" 
+                    value={editingPost.imageUrl || ''} 
+                    onChange={(e) => setEditingPost({...editingPost, imageUrl: e.target.value})}
+                    placeholder="https://..."
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Image Size</label>
+                  <select 
+                    value={editingPost.imageSize || 'large'} 
+                    onChange={(e) => setEditingPost({...editingPost, imageSize: e.target.value as any})}
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
+                  >
+                    <option value="large">Large (Full Width)</option>
+                    <option value="small">Small (Floated)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-cosmic-silver text-xs uppercase tracking-widest">YouTube Video URL</label>
+                <input 
+                  type="text" 
+                  value={editingPost.videoUrl || ''} 
+                  onChange={(e) => setEditingPost({...editingPost, videoUrl: e.target.value})}
+                  placeholder="https://youtube.com/watch?v=..."
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Slider Images (Comma separated URLs)</label>
+                <textarea 
+                  value={editingPost.images?.join(', ') || ''} 
+                  onChange={(e) => setEditingPost({...editingPost, images: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')})}
+                  placeholder="url1, url2, url3"
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[80px]"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Topic</label>
@@ -198,6 +247,7 @@ const AdminPanel: React.FC = () => {
                     <option value="astrology">Astrology</option>
                     <option value="numerology">Numerology</option>
                     <option value="astronomy">Astronomy</option>
+                    <option value="horoscope">Daily Horoscope</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -210,6 +260,7 @@ const AdminPanel: React.FC = () => {
                     <option value="fact">Fact</option>
                     <option value="forecast">Forecast</option>
                     <option value="series">Series</option>
+                    <option value="horoscope">Horoscope</option>
                   </select>
                 </div>
               </div>

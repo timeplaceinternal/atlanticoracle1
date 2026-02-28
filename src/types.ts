@@ -55,7 +55,7 @@ export interface ReadingResult {
   birthDate: string;
 }
 
-export type PostFormat = 'fact' | 'forecast' | 'series';
+export type PostFormat = 'fact' | 'forecast' | 'series' | 'horoscope';
 
 export interface NewsPost {
   id: string;
@@ -63,8 +63,9 @@ export interface NewsPost {
   title: string;
   text: string;
   imageUrl: string;
+  imageSize?: 'small' | 'large';
   format: PostFormat;
-  topic: 'astrology' | 'numerology' | 'astronomy';
+  topic: 'astrology' | 'numerology' | 'astronomy' | 'horoscope';
   date: string;
   images?: string[]; // For slider format
   videoUrl?: string; // YouTube URL
