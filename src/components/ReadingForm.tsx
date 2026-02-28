@@ -45,7 +45,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
           <div>
             <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
             <input 
-              type="date" 
+              type="text"
+              placeholder={t.formBirthDatePlaceholder}
               value={birthDate} 
               onChange={(e) => setBirthDate(e.target.value)} 
               className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
@@ -58,7 +59,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
               type="text" 
               value={birthPlace} 
               onChange={(e) => setBirthPlace(e.target.value)} 
-              placeholder="City, Country"
+              placeholder={t.formBirthPlacePlaceholder}
               className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
               required
             />
