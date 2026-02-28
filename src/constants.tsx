@@ -152,9 +152,8 @@ export const getServiceIcon = (iconName: string) => {
 
 const PROMPT_CORE = (lang: string) => {
   const langRules: Record<string, string> = {
-    'Russian': 'REPLY ONLY IN RUSSIAN. USE CYRILLIC.',
-    'Ukrainian': 'REPLY ONLY IN UKRAINIAN. USE CYRILLIC.',
-    'English': 'REPLY ONLY IN ENGLISH.'
+    'English': 'REPLY ONLY IN ENGLISH.',
+    'Portuguese': 'REPLY ONLY IN PORTUGUESE.'
   };
   
   const now = new Date();

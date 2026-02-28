@@ -17,7 +17,7 @@ export enum ServiceType {
   FREE_DREAM_INTERPRETATION = 'free-dream-interpretation'
 }
 
-export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Russian' | 'Ukrainian' | 'Portuguese';
+export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Portuguese';
 
 export interface Service {
   id: ServiceType;
