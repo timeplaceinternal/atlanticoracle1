@@ -13,7 +13,13 @@ const AdminPanel: React.FC = () => {
 
   const fetchAndSortPosts = async () => {
     const fetchedPosts = await newsService.getPosts();
-    const sortedPosts = [...fetchedPosts].sort((a, b) => Number(b.id) - Number(a.id));
+    // Sort by ID (timestamp) descending to show latest first
+    const sortedPosts = [...fetchedPosts].sort((a, b) => {
+      const idA = Number(a.id);
+      const idB = Number(b.id);
+      if (!isNaN(idA) && !isNaN(idB)) return idB - idA;
+      return b.id.localeCompare(a.id);
+    });
     setPosts(sortedPosts);
   };
 
@@ -27,10 +33,15 @@ const AdminPanel: React.FC = () => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    const MAX_SIZE = 3 * 1024 * 1024; // 3MB
+
     setIsUploading(true);
     try {
       const uploadedUrls: string[] = [];
       for (let i = 0; i < files.length; i++) {
+        if (files[i].size > MAX_SIZE) {
+          throw new Error(`File ${files[i].name} is too large. Max size is 3MB.`);
+        }
         const formData = new FormData();
         formData.append('file', files[i]);
         const response = await fetch('/api/upload', {
@@ -80,30 +91,44 @@ const AdminPanel: React.FC = () => {
 
   const handleSavePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingPost && editingPost.title && editingPost.text) {
-      try {
-        const newPost: NewsPost = {
-          id: editingPost.id || Date.now().toString(),
-          slug: editingPost.slug || editingPost.title.toLowerCase().replace(/ /g, '-'),
-          title: editingPost.title,
-          text: editingPost.text,
-          date: editingPost.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-          imageUrl: editingPost.imageUrl || '',
-          imageSize: editingPost.imageSize || 'large',
-          format: editingPost.format || 'fact',
-          topic: editingPost.topic || 'astrology',
-          videoUrl: editingPost.videoUrl,
-          images: editingPost.images,
-          metaTitle: editingPost.metaTitle,
-          metaDescription: editingPost.metaDescription
-        };
-        await newsService.savePost(newPost);
-        await fetchAndSortPosts();
-        setEditingPost(null);
-      } catch (error) {
-        console.error("Save failed:", error);
-        alert(`Failed to save transmission: ${error instanceof Error ? error.message : String(error)}`);
-      }
+    
+    const title = editingPost?.title?.trim();
+    const text = editingPost?.text?.trim();
+
+    if (!title || !text) {
+      alert("Please provide both a title and content for the transmission.");
+      return;
+    }
+
+    try {
+      if (!editingPost) return;
+      
+      // Auto-fill meta tags if empty
+      const metaTitle = editingPost.metaTitle?.trim() || title;
+      const metaDescription = editingPost.metaDescription?.trim() || 
+        (text.length > 160 ? text.substring(0, 157) + "..." : text);
+
+      const newPost: NewsPost = {
+        id: editingPost.id || Date.now().toString(),
+        slug: editingPost.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        title: title,
+        text: text,
+        date: editingPost.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        imageUrl: editingPost.imageUrl || '',
+        imageSize: editingPost.imageSize || 'large',
+        format: editingPost.format || 'fact',
+        topic: editingPost.topic || 'astrology',
+        videoUrl: editingPost.videoUrl,
+        images: editingPost.images,
+        metaTitle: metaTitle,
+        metaDescription: metaDescription
+      };
+      await newsService.savePost(newPost);
+      await fetchAndSortPosts();
+      setEditingPost(null);
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert(`Failed to save transmission: ${error instanceof Error ? error.message : String(error)}`);
     }
   };
 

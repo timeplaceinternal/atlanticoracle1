@@ -91,7 +91,12 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
     const fetchPosts = async () => {
       const fetchedPosts = await newsService.getPosts();
       // Sort by ID (timestamp) descending to show latest first
-      const sortedPosts = [...fetchedPosts].sort((a, b) => Number(b.id) - Number(a.id));
+      const sortedPosts = [...fetchedPosts].sort((a, b) => {
+        const idA = Number(a.id);
+        const idB = Number(b.id);
+        if (!isNaN(idA) && !isNaN(idB)) return idB - idA;
+        return b.id.localeCompare(a.id);
+      });
       setPosts(sortedPosts);
     };
     fetchPosts();

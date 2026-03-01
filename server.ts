@@ -21,7 +21,12 @@ async function startServer() {
   if (!fs.existsSync(LOCAL_DATA_DIR)) fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
   if (!fs.existsSync(LOCAL_UPLOADS_DIR)) fs.mkdirSync(LOCAL_UPLOADS_DIR, { recursive: true });
 
-  const upload = multer({ storage: multer.memoryStorage() });
+  const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 3 * 1024 * 1024 // 3MB limit
+    }
+  });
 
   app.use(express.json({ limit: '10mb' }));
   // Serve local uploads
