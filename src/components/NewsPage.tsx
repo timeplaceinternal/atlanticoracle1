@@ -96,6 +96,18 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
   }, []);
 
   const currentPost = posts.find(p => p.slug === selectedPost);
+
+  useEffect(() => {
+    const title = selectedPost 
+      ? (currentPost?.metaTitle || `${currentPost?.title} | Cosmic News`) 
+      : 'Cosmic News | The Atlantic Oracle Gazette';
+    const description = selectedPost 
+      ? (currentPost?.metaDescription || currentPost?.text?.substring(0, 160) || '') 
+      : 'Celestial transmissions for the modern soul. Read the latest astrology and numerology insights.';
+    document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', description);
+  }, [selectedPost, currentPost]);
   
   const horoscopePosts = posts.filter(p => p.topic === 'horoscope' || p.format === 'horoscope');
   const regularPosts = posts.filter(p => p.topic !== 'horoscope' && p.format !== 'horoscope');
@@ -103,7 +115,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
   return (
     <div className="max-w-7xl mx-auto px-6 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       {/* Navigation */}
-      <div className="flex items-center justify-between">
+      <nav className="flex items-center justify-between">
         <button 
           onClick={() => {
             if (selectedPost) {
@@ -118,10 +130,10 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
           {selectedPost ? 'Back to Gazette' : 'Back to Sanctuary'}
         </button>
-      </div>
+      </nav>
 
       {/* Newspaper Masthead - Smaller when article is open */}
-      <div className={`text-center space-y-6 transition-all duration-700 ${selectedPost ? 'opacity-40 scale-95' : 'opacity-100'}`}>
+      <header className={`text-center space-y-6 transition-all duration-700 ${selectedPost ? 'opacity-40 scale-95' : 'opacity-100'}`}>
         <div className="flex items-center justify-center gap-4">
           <div className="h-px bg-cosmic-gold/20 flex-1"></div>
           <span className="text-[10px] uppercase tracking-[0.4em] text-cosmic-gold/60 font-cinzel">The Atlantic Oracle Gazette</span>
@@ -134,7 +146,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
 
         <div className="border-y border-cosmic-gold/30 py-3 flex flex-wrap justify-between items-center text-[10px] uppercase tracking-[0.2em] text-cosmic-gold/80 font-bold px-4 gap-4">
           <span>Vol. I — No. 42</span>
-          <span className="text-white">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          <time className="text-white">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</time>
           <span>Price: One Soul</span>
         </div>
 
@@ -143,10 +155,10 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
             "As above, so below. The celestial rhythms captured in ink and light."
           </p>
         )}
-      </div>
+      </header>
 
       {!selectedPost ? (
-        <div className="space-y-24">
+        <main className="space-y-24">
           {/* Daily Horoscope Section */}
           {horoscopePosts.length > 0 && (
             <section className="space-y-12">
@@ -160,7 +172,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {horoscopePosts.map((post) => (
-                  <div 
+                  <article 
                     key={post.slug} 
                     onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
                     className="group cursor-pointer bg-cosmic-gold/5 border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold/40 transition-all space-y-6"
@@ -175,7 +187,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                         Read Decree <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
-                  </div>
+                  </article>
                 ))}
               </div>
             </section>
@@ -191,30 +203,34 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {regularPosts.map((post) => (
-                <div 
+                <article 
                   key={post.slug} 
                   onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
-                  className="group cursor-pointer space-y-6 flex flex-col h-full"
+                  className="group cursor-pointer space-y-6 flex flex-col h-full bg-cosmic-800/20 border border-cosmic-gold/5 p-6 rounded-3xl hover:border-cosmic-gold/30 transition-all"
                 >
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2">
+                    <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+                  </div>
+
                   <div className="flex items-center gap-2 text-cosmic-gold/40 text-[9px] uppercase tracking-widest">
                     <Calendar className="w-3 h-3" />
-                    <span>{post.date}</span>
+                    <time>{post.date}</time>
                   </div>
                   
-                  <h4 className="text-2xl md:text-3xl font-cinzel text-white group-hover:text-cosmic-gold transition-colors leading-tight decoration-cosmic-gold/20 decoration-1 underline-offset-8 group-hover:underline">
+                  <h3 className="text-2xl font-cinzel text-white group-hover:text-cosmic-gold transition-colors leading-tight decoration-cosmic-gold/20 decoration-1 underline-offset-8 group-hover:underline">
                     {post.title}
-                  </h4>
+                  </h3>
                   
                   <div className="w-16 h-px bg-cosmic-gold/30"></div>
                   
-                  <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed line-clamp-6 font-serif italic flex-grow">
+                  <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed line-clamp-4 font-serif italic flex-grow">
                     {post.text}
                   </p>
                   
                   <div className="pt-4 flex items-center gap-2 text-cosmic-gold text-[10px] font-bold uppercase tracking-widest border-t border-cosmic-gold/10">
                     Full Transmission <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </section>
@@ -224,13 +240,13 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
               The cosmic ink is currently dry. Check back when the stars align.
             </div>
           )}
-        </div>
+        </main>
       ) : (
-        <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 pb-32">
-          <div className="space-y-8 text-center mb-16">
+        <article className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 pb-32">
+          <header className="space-y-8 text-center mb-16">
             <div className="flex items-center justify-center gap-3 text-cosmic-gold/60 text-[10px] uppercase tracking-[0.3em]">
               <Calendar className="w-3 h-3" />
-              <span>{currentPost?.date}</span>
+              <time>{currentPost?.date}</time>
               <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
               <span>{currentPost?.topic}</span>
             </div>
@@ -240,7 +256,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
             <div className="flex justify-center">
               <div className="w-32 h-px bg-cosmic-gold/30"></div>
             </div>
-          </div>
+          </header>
           
           <div className="relative">
             {currentPost && <MediaRenderer post={currentPost} />}
@@ -250,7 +266,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-8 pt-20 border-t border-cosmic-gold/10">
+          <footer className="flex flex-col items-center gap-8 pt-20 border-t border-cosmic-gold/10">
             <button className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
               <Share2 className="w-4 h-4" /> Share this Wisdom
             </button>
@@ -261,8 +277,8 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
             >
               Return to the Archives
             </button>
-          </div>
-        </div>
+          </footer>
+        </article>
       )}
     </div>
   );

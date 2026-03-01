@@ -10,7 +10,7 @@ async function startServer() {
 
   const upload = multer({ storage: multer.memoryStorage() });
 
-  app.use(express.json({ limit: '2mb' }));
+  app.use(express.json({ limit: '10mb' }));
 
   const NEWS_FILE_PATH = 'data/news.json';
 
@@ -21,13 +21,15 @@ async function startServer() {
     console.log("POST /api/upload - Uploading file...");
     try {
       if (!process.env.BLOB_READ_WRITE_TOKEN) {
-        return res.status(500).json({ error: "Storage configuration missing" });
+        console.error("BLOB_READ_WRITE_TOKEN is missing");
+        return res.status(500).json({ error: "Storage configuration missing (BLOB_READ_WRITE_TOKEN)" });
       }
       if (!req.file) {
         return res.status(400).json({ error: "No file provided" });
       }
 
-      const filename = `uploads/${Date.now()}-${req.file.originalname}`;
+      console.log(`Uploading file: ${req.file.originalname} (${req.file.size} bytes)`);
+      const filename = `uploads/${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_')}`;
       const blob = await put(filename, req.file.buffer, {
         access: 'public',
       });
@@ -36,7 +38,7 @@ async function startServer() {
       res.json({ url: blob.url });
     } catch (error) {
       console.error("Upload failed:", error);
-      res.status(500).json({ error: "Upload failed" });
+      res.status(500).json({ error: "Upload failed: " + (error instanceof Error ? error.message : String(error)) });
     }
   });
 

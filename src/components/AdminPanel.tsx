@@ -87,7 +87,9 @@ const AdminPanel: React.FC = () => {
         format: editingPost.format || 'fact',
         topic: editingPost.topic || 'astrology',
         videoUrl: editingPost.videoUrl,
-        images: editingPost.images
+        images: editingPost.images,
+        metaTitle: editingPost.metaTitle,
+        metaDescription: editingPost.metaDescription
       };
       await newsService.savePost(newPost);
       const updatedPosts = await newsService.getPosts();
@@ -254,6 +256,18 @@ const AdminPanel: React.FC = () => {
                       {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
                     </label>
                   </div>
+                  {editingPost.imageUrl && (
+                    <div className="mt-2 relative w-full aspect-video rounded-xl overflow-hidden border border-cosmic-gold/10">
+                      <img src={editingPost.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      <button 
+                        type="button" 
+                        onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      >
+                        <CloseIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Image Size</label>
@@ -313,7 +327,7 @@ const AdminPanel: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Topic</label>
                   <select 
@@ -339,6 +353,29 @@ const AdminPanel: React.FC = () => {
                     <option value="series">Series</option>
                     <option value="horoscope">Horoscope</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="border-t border-cosmic-gold/10 pt-6 space-y-6">
+                <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">SEO Optimization</h4>
+                <div className="space-y-2">
+                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Meta Title</label>
+                  <input 
+                    type="text" 
+                    value={editingPost.metaTitle || ''} 
+                    onChange={(e) => setEditingPost({...editingPost, metaTitle: e.target.value})}
+                    placeholder="SEO Title (defaults to title)"
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Meta Description</label>
+                  <textarea 
+                    value={editingPost.metaDescription || ''} 
+                    onChange={(e) => setEditingPost({...editingPost, metaDescription: e.target.value})}
+                    placeholder="SEO Description (defaults to text snippet)"
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[80px]"
+                  />
                 </div>
               </div>
               <div className="flex gap-4 pt-4">

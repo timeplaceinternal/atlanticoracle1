@@ -69,4 +69,6 @@ export interface NewsPost {
   date: string;
   images?: string[]; // For slider format
   videoUrl?: string; // YouTube URL
+  metaTitle?: string;
+  metaDescription?: string;
 }
