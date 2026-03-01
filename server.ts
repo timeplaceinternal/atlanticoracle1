@@ -1,18 +1,34 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import { put, head, list, del } from "@vercel/blob";
+import { put, list } from "@vercel/blob";
 import multer from "multer";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import type { NewsPost } from "./src/types";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // Ensure local storage directories exist
+  const LOCAL_DATA_DIR = path.join(__dirname, 'data');
+  const LOCAL_UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
+  
+  if (!fs.existsSync(LOCAL_DATA_DIR)) fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+  if (!fs.existsSync(LOCAL_UPLOADS_DIR)) fs.mkdirSync(LOCAL_UPLOADS_DIR, { recursive: true });
+
   const upload = multer({ storage: multer.memoryStorage() });
 
   app.use(express.json({ limit: '10mb' }));
+  // Serve local uploads
+  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
   const NEWS_FILE_PATH = 'data/news.json';
+  const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
 
   // API Routes
   
@@ -20,30 +36,38 @@ async function startServer() {
   app.post("/api/upload", upload.single('file'), async (req, res) => {
     console.log(">>> POST /api/upload - Start");
     try {
-      const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (!token) {
-        console.error("CRITICAL: BLOB_READ_WRITE_TOKEN is missing in environment");
-        return res.status(500).json({ error: "Server storage token missing" });
-      }
-
       if (!req.file) {
         console.error("Upload error: No file in request");
         return res.status(400).json({ error: "No file provided" });
       }
 
-      console.log(`Processing file: ${req.file.originalname}, size: ${req.file.size}, mimetype: ${req.file.mimetype}`);
-      
       const safeName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-      const filename = `uploads/${Date.now()}-${safeName}`;
+      const filename = `${Date.now()}-${safeName}`;
       
-      console.log(`Attempting to put to Vercel Blob: ${filename}`);
-      const blob = await put(filename, req.file.buffer, {
-        access: 'public',
-        contentType: req.file.mimetype,
-      });
-
-      console.log("Upload successful! URL:", blob.url);
-      res.json({ url: blob.url });
+      // Try Vercel Blob first
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token) {
+        console.log(`Attempting to put to Vercel Blob: uploads/${filename}`);
+        const blob = await put(`uploads/${filename}`, req.file.buffer, {
+          access: 'public',
+          contentType: req.file.mimetype,
+        });
+        console.log("Vercel Blob upload successful! URL:", blob.url);
+        return res.json({ url: blob.url });
+      } 
+      
+      // Fallback to local filesystem
+      console.log(`Falling back to local upload: ${filename}`);
+      const localPath = path.join(LOCAL_UPLOADS_DIR, filename);
+      fs.writeFileSync(localPath, req.file.buffer);
+      
+      // Construct local URL
+      const protocol = req.headers['x-forwarded-proto'] || 'http';
+      const host = req.headers.host;
+      const url = `${protocol}://${host}/uploads/${filename}`;
+      
+      console.log("Local upload successful! URL:", url);
+      res.json({ url });
     } catch (error) {
       console.error("!!! Upload failed with error:", error);
       const message = error instanceof Error ? error.message : String(error);
@@ -52,59 +76,67 @@ async function startServer() {
   });
 
   // Get all news posts
-  app.get("/api/news", async (_req, res) => {
-    console.log("GET /api/news - Fetching news...");
+  app.get("/api/news", async (req, res) => {
+    console.log(">>> GET /api/news - Fetching news...");
     try {
-      if (!process.env.BLOB_READ_WRITE_TOKEN) {
-        console.warn("BLOB_READ_WRITE_TOKEN is missing");
-        return res.json([]); 
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token) {
+        // Try Vercel Blob
+        const { blobs } = await list({ prefix: NEWS_FILE_PATH });
+        const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
+
+        if (newsBlob) {
+          console.log(`Found news blob at: ${newsBlob.url}`);
+          const response = await fetch(newsBlob.url);
+          if (response.ok) {
+            const posts = await response.json();
+            return res.json(posts);
+          }
+        }
       }
 
-      const { blobs } = await list();
-      const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
-
-      if (!newsBlob) {
-        console.log("No news file found in blob storage");
-        return res.json([]);
+      // Fallback to local filesystem
+      if (fs.existsSync(LOCAL_NEWS_PATH)) {
+        console.log("Reading news from local filesystem...");
+        const data = fs.readFileSync(LOCAL_NEWS_PATH, 'utf-8');
+        return res.json(JSON.parse(data));
       }
 
-      const response = await fetch(newsBlob.url);
-      const posts = await response.json();
-      console.log(`Successfully fetched ${posts.length} posts`);
-      res.json(posts);
+      console.log("No news file found anywhere.");
+      res.json([]);
     } catch (error) {
-      console.warn("Failed to fetch news from Blob (check BLOB_READ_WRITE_TOKEN):", error instanceof Error ? error.message : String(error));
-      res.json([]); // Return empty array instead of 500 to keep app functional
+      console.error("!!! Failed to fetch news:", error);
+      res.json([]); 
     }
   });
 
   // Save news posts
   app.post("/api/news", async (req, res) => {
-    console.log("POST /api/news - Saving news...");
+    console.log(">>> POST /api/news - Saving news...");
     try {
-      if (!process.env.BLOB_READ_WRITE_TOKEN) {
-        console.error("BLOB_READ_WRITE_TOKEN is missing during POST");
-        return res.status(500).json({ 
-          error: "Storage configuration missing. Please set BLOB_READ_WRITE_TOKEN in Vercel environment variables." 
-        });
-      }
-
       const posts = req.body;
       if (!Array.isArray(posts)) {
         return res.status(400).json({ error: "Invalid data format: expected array" });
       }
 
-      console.log(`Uploading ${posts.length} posts to ${NEWS_FILE_PATH}`);
-      const blob = await put(NEWS_FILE_PATH, JSON.stringify(posts), {
-        access: 'public',
-        addRandomSuffix: false,
-        allowOverwrite: true,
-      });
+      // Try Vercel Blob
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token) {
+        console.log(`Syncing to Vercel Blob: ${NEWS_FILE_PATH}`);
+        await put(NEWS_FILE_PATH, JSON.stringify(posts), {
+          access: 'public',
+          addRandomSuffix: false,
+          allowOverwrite: true,
+        });
+      }
 
-      console.log("Upload successful:", blob.url);
+      // Always save locally as well (or as fallback)
+      console.log(`Saving to local filesystem: ${LOCAL_NEWS_PATH}`);
+      fs.writeFileSync(LOCAL_NEWS_PATH, JSON.stringify(posts, null, 2));
+
       res.json({ success: true });
     } catch (error) {
-      console.error("Failed to save news to Blob:", error);
+      console.error("!!! Failed to save news:", error);
       res.status(500).json({ error: "Failed to save news: " + (error instanceof Error ? error.message : String(error)) });
     }
   });

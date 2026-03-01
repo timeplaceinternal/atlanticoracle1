@@ -81,31 +81,41 @@ const AdminPanel: React.FC = () => {
   const handleSavePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingPost && editingPost.title && editingPost.text) {
-      const newPost: NewsPost = {
-        id: editingPost.id || Date.now().toString(),
-        slug: editingPost.slug || editingPost.title.toLowerCase().replace(/ /g, '-'),
-        title: editingPost.title,
-        text: editingPost.text,
-        date: editingPost.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        imageUrl: editingPost.imageUrl || 'https://picsum.photos/seed/cosmic/800/600',
-        imageSize: editingPost.imageSize || 'large',
-        format: editingPost.format || 'fact',
-        topic: editingPost.topic || 'astrology',
-        videoUrl: editingPost.videoUrl,
-        images: editingPost.images,
-        metaTitle: editingPost.metaTitle,
-        metaDescription: editingPost.metaDescription
-      };
-      await newsService.savePost(newPost);
-      await fetchAndSortPosts();
-      setEditingPost(null);
+      try {
+        const newPost: NewsPost = {
+          id: editingPost.id || Date.now().toString(),
+          slug: editingPost.slug || editingPost.title.toLowerCase().replace(/ /g, '-'),
+          title: editingPost.title,
+          text: editingPost.text,
+          date: editingPost.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          imageUrl: editingPost.imageUrl || '',
+          imageSize: editingPost.imageSize || 'large',
+          format: editingPost.format || 'fact',
+          topic: editingPost.topic || 'astrology',
+          videoUrl: editingPost.videoUrl,
+          images: editingPost.images,
+          metaTitle: editingPost.metaTitle,
+          metaDescription: editingPost.metaDescription
+        };
+        await newsService.savePost(newPost);
+        await fetchAndSortPosts();
+        setEditingPost(null);
+      } catch (error) {
+        console.error("Save failed:", error);
+        alert(`Failed to save transmission: ${error instanceof Error ? error.message : String(error)}`);
+      }
     }
   };
 
   const handleDeletePost = async (id: string) => {
     if (confirm('Are you sure you want to delete this transmission?')) {
-      await newsService.deletePost(id);
-      await fetchAndSortPosts();
+      try {
+        await newsService.deletePost(id);
+        await fetchAndSortPosts();
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert(`Failed to delete transmission: ${error instanceof Error ? error.message : String(error)}`);
+      }
     }
   };
 
