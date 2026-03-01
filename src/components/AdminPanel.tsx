@@ -11,13 +11,15 @@ const AdminPanel: React.FC = () => {
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  const fetchAndSortPosts = async () => {
+    const fetchedPosts = await newsService.getPosts();
+    const sortedPosts = [...fetchedPosts].sort((a, b) => Number(b.id) - Number(a.id));
+    setPosts(sortedPosts);
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
-      const fetchPosts = async () => {
-        const fetchedPosts = await newsService.getPosts();
-        setPosts(fetchedPosts);
-      };
-      fetchPosts();
+      fetchAndSortPosts();
     }
   }, [isLoggedIn]);
 
@@ -38,6 +40,9 @@ const AdminPanel: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           uploadedUrls.push(data.url);
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Upload failed with status ${response.status}`);
         }
       }
 
@@ -92,8 +97,7 @@ const AdminPanel: React.FC = () => {
         metaDescription: editingPost.metaDescription
       };
       await newsService.savePost(newPost);
-      const updatedPosts = await newsService.getPosts();
-      setPosts(updatedPosts);
+      await fetchAndSortPosts();
       setEditingPost(null);
     }
   };
@@ -101,8 +105,7 @@ const AdminPanel: React.FC = () => {
   const handleDeletePost = async (id: string) => {
     if (confirm('Are you sure you want to delete this transmission?')) {
       await newsService.deletePost(id);
-      const updatedPosts = await newsService.getPosts();
-      setPosts(updatedPosts);
+      await fetchAndSortPosts();
     }
   };
 
@@ -240,34 +243,34 @@ const AdminPanel: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Main Image</label>
-                  <div className="flex gap-4">
-                    <div className="flex-1 relative">
-                      <input 
-                        type="text" 
-                        value={editingPost.imageUrl || ''} 
-                        onChange={(e) => setEditingPost({...editingPost, imageUrl: e.target.value})}
-                        placeholder="https://..."
-                        className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none pr-12"
-                      />
-                      <ImageIcon className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cosmic-gold/40" />
-                    </div>
-                    <label className="cursor-pointer bg-cosmic-gold/10 border border-cosmic-gold/30 rounded-xl p-4 text-cosmic-gold hover:bg-cosmic-gold/20 transition-colors flex items-center justify-center min-w-[60px]">
+                  <div className="flex flex-col gap-4">
+                    <label className="cursor-pointer bg-cosmic-gold/10 border border-cosmic-gold/30 rounded-xl p-8 text-cosmic-gold hover:bg-cosmic-gold/20 transition-all flex flex-col items-center justify-center gap-4 group">
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'imageUrl')} />
-                      {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                      {isUploading ? (
+                        <Loader2 className="w-8 h-8 animate-spin" />
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 group-hover:-translate-y-1 transition-transform" />
+                          <span className="text-sm font-bold uppercase tracking-widest">Upload from Device</span>
+                        </>
+                      )}
                     </label>
+                    
+                    {editingPost.imageUrl && (
+                      <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-cosmic-gold/10 group">
+                        <img src={editingPost.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <button 
+                            type="button" 
+                            onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
+                            className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-xl"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  {editingPost.imageUrl && (
-                    <div className="mt-2 relative w-full aspect-video rounded-xl overflow-hidden border border-cosmic-gold/10">
-                      <img src={editingPost.imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                      <button 
-                        type="button" 
-                        onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
-                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                      >
-                        <CloseIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Image Size</label>
@@ -296,13 +299,13 @@ const AdminPanel: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Slider Images</label>
-                  <label className="cursor-pointer text-xs text-cosmic-gold hover:underline flex items-center gap-2">
+                  <label className="cursor-pointer text-xs text-cosmic-gold hover:underline flex items-center gap-2 font-bold uppercase tracking-widest">
                     <input type="file" className="hidden" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'images')} />
-                    <Plus className="w-3 h-3" /> Add from Device
+                    <Upload className="w-3 h-3" /> Add from Device
                   </label>
                 </div>
                 
-                {editingPost.images && editingPost.images.length > 0 && (
+                {editingPost.images && editingPost.images.length > 0 ? (
                   <div className="grid grid-cols-4 gap-4">
                     {editingPost.images.map((img, idx) => (
                       <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-cosmic-gold/20 group">
@@ -317,14 +320,11 @@ const AdminPanel: React.FC = () => {
                       </div>
                     ))}
                   </div>
+                ) : (
+                  <div className="border-2 border-dashed border-cosmic-gold/10 rounded-xl p-8 text-center">
+                    <p className="text-cosmic-silver/40 text-xs uppercase tracking-widest">No slider images uploaded</p>
+                  </div>
                 )}
-
-                <textarea 
-                  value={editingPost.images?.join(', ') || ''} 
-                  onChange={(e) => setEditingPost({...editingPost, images: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')})}
-                  placeholder="Or paste URLs separated by commas..."
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[60px] text-sm"
-                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

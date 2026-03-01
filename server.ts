@@ -18,27 +18,36 @@ async function startServer() {
   
   // File upload endpoint
   app.post("/api/upload", upload.single('file'), async (req, res) => {
-    console.log("POST /api/upload - Uploading file...");
+    console.log(">>> POST /api/upload - Start");
     try {
-      if (!process.env.BLOB_READ_WRITE_TOKEN) {
-        console.error("BLOB_READ_WRITE_TOKEN is missing");
-        return res.status(500).json({ error: "Storage configuration missing (BLOB_READ_WRITE_TOKEN)" });
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (!token) {
+        console.error("CRITICAL: BLOB_READ_WRITE_TOKEN is missing in environment");
+        return res.status(500).json({ error: "Server storage token missing" });
       }
+
       if (!req.file) {
+        console.error("Upload error: No file in request");
         return res.status(400).json({ error: "No file provided" });
       }
 
-      console.log(`Uploading file: ${req.file.originalname} (${req.file.size} bytes)`);
-      const filename = `uploads/${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+      console.log(`Processing file: ${req.file.originalname}, size: ${req.file.size}, mimetype: ${req.file.mimetype}`);
+      
+      const safeName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+      const filename = `uploads/${Date.now()}-${safeName}`;
+      
+      console.log(`Attempting to put to Vercel Blob: ${filename}`);
       const blob = await put(filename, req.file.buffer, {
         access: 'public',
+        contentType: req.file.mimetype,
       });
 
-      console.log("File uploaded successfully:", blob.url);
+      console.log("Upload successful! URL:", blob.url);
       res.json({ url: blob.url });
     } catch (error) {
-      console.error("Upload failed:", error);
-      res.status(500).json({ error: "Upload failed: " + (error instanceof Error ? error.message : String(error)) });
+      console.error("!!! Upload failed with error:", error);
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ error: "Upload failed: " + message });
     }
   });
 

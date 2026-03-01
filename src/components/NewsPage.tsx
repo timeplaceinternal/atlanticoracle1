@@ -90,7 +90,9 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
   useEffect(() => {
     const fetchPosts = async () => {
       const fetchedPosts = await newsService.getPosts();
-      setPosts(fetchedPosts);
+      // Sort by ID (timestamp) descending to show latest first
+      const sortedPosts = [...fetchedPosts].sort((a, b) => Number(b.id) - Number(a.id));
+      setPosts(sortedPosts);
     };
     fetchPosts();
   }, []);
