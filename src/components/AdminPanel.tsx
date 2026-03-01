@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { NewsPost } from '../types';
 
@@ -9,6 +9,7 @@ const AdminPanel: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -19,6 +20,49 @@ const AdminPanel: React.FC = () => {
       fetchPosts();
     }
   }, [isLoggedIn]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'imageUrl' | 'images') => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append('file', files[i]);
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        if (response.ok) {
+          const data = await response.json();
+          uploadedUrls.push(data.url);
+        }
+      }
+
+      if (field === 'imageUrl') {
+        setEditingPost(prev => ({ ...prev, imageUrl: uploadedUrls[0] }));
+      } else {
+        setEditingPost(prev => ({ 
+          ...prev, 
+          images: [...(prev?.images || []), ...uploadedUrls] 
+        }));
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload image. Please check your connection.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeSliderImage = (index: number) => {
+    if (!editingPost?.images) return;
+    const newImages = [...editingPost.images];
+    newImages.splice(index, 1);
+    setEditingPost({ ...editingPost, images: newImages });
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,14 +237,23 @@ const AdminPanel: React.FC = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Main Image URL</label>
-                  <input 
-                    type="text" 
-                    value={editingPost.imageUrl || ''} 
-                    onChange={(e) => setEditingPost({...editingPost, imageUrl: e.target.value})}
-                    placeholder="https://..."
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                  />
+                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Main Image</label>
+                  <div className="flex gap-4">
+                    <div className="flex-1 relative">
+                      <input 
+                        type="text" 
+                        value={editingPost.imageUrl || ''} 
+                        onChange={(e) => setEditingPost({...editingPost, imageUrl: e.target.value})}
+                        placeholder="https://..."
+                        className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none pr-12"
+                      />
+                      <ImageIcon className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cosmic-gold/40" />
+                    </div>
+                    <label className="cursor-pointer bg-cosmic-gold/10 border border-cosmic-gold/30 rounded-xl p-4 text-cosmic-gold hover:bg-cosmic-gold/20 transition-colors flex items-center justify-center min-w-[60px]">
+                      <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'imageUrl')} />
+                      {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                    </label>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Image Size</label>
@@ -226,13 +279,37 @@ const AdminPanel: React.FC = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Slider Images (Comma separated URLs)</label>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Slider Images</label>
+                  <label className="cursor-pointer text-xs text-cosmic-gold hover:underline flex items-center gap-2">
+                    <input type="file" className="hidden" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'images')} />
+                    <Plus className="w-3 h-3" /> Add from Device
+                  </label>
+                </div>
+                
+                {editingPost.images && editingPost.images.length > 0 && (
+                  <div className="grid grid-cols-4 gap-4">
+                    {editingPost.images.map((img, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-cosmic-gold/20 group">
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                        <button 
+                          type="button"
+                          onClick={() => removeSliderImage(idx)}
+                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <CloseIcon className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <textarea 
                   value={editingPost.images?.join(', ') || ''} 
                   onChange={(e) => setEditingPost({...editingPost, images: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')})}
-                  placeholder="url1, url2, url3"
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[80px]"
+                  placeholder="Or paste URLs separated by commas..."
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[60px] text-sm"
                 />
               </div>
 
@@ -265,7 +342,9 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
               <div className="flex gap-4 pt-4">
-                <button type="submit" className="flex-1 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform">Save Transmission</button>
+                <button type="submit" className="flex-1 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100" disabled={isUploading}>
+                  {isUploading ? 'Uploading...' : 'Save Transmission'}
+                </button>
                 <button type="button" onClick={() => setEditingPost(null)} className="flex-1 py-4 bg-cosmic-800 text-white font-bold rounded-xl border border-cosmic-gold/20 hover:bg-cosmic-700 transition-colors">Cancel</button>
               </div>
             </form>

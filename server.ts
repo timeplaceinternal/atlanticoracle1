@@ -1,11 +1,14 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import { put, head, list, del } from "@vercel/blob";
+import multer from "multer";
 import type { NewsPost } from "./src/types";
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
+
+  const upload = multer({ storage: multer.memoryStorage() });
 
   app.use(express.json({ limit: '2mb' }));
 
@@ -13,6 +16,30 @@ async function startServer() {
 
   // API Routes
   
+  // File upload endpoint
+  app.post("/api/upload", upload.single('file'), async (req, res) => {
+    console.log("POST /api/upload - Uploading file...");
+    try {
+      if (!process.env.BLOB_READ_WRITE_TOKEN) {
+        return res.status(500).json({ error: "Storage configuration missing" });
+      }
+      if (!req.file) {
+        return res.status(400).json({ error: "No file provided" });
+      }
+
+      const filename = `uploads/${Date.now()}-${req.file.originalname}`;
+      const blob = await put(filename, req.file.buffer, {
+        access: 'public',
+      });
+
+      console.log("File uploaded successfully:", blob.url);
+      res.json({ url: blob.url });
+    } catch (error) {
+      console.error("Upload failed:", error);
+      res.status(500).json({ error: "Upload failed" });
+    }
+  });
+
   // Get all news posts
   app.get("/api/news", async (_req, res) => {
     console.log("GET /api/news - Fetching news...");
