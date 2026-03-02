@@ -285,7 +285,10 @@ const App: React.FC = () => {
                 </select>
               </div>
               <button 
-                onClick={() => setView('news')} 
+                onClick={() => {
+                  setNewsSlug(null);
+                  setView('news');
+                }} 
                 className="hover:text-cosmic-gold transition-colors uppercase"
                 aria-label="View Cosmic News"
               >
@@ -349,7 +352,7 @@ const App: React.FC = () => {
                   <option value="Portuguese" className="bg-cosmic-900">Português (PT-BR)</option>
                 </select>
               </div>
-              <button onClick={() => { setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navNews}</button>
+              <button onClick={() => { setNewsSlug(null); setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navNews}</button>
               <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navPhilosophy}</button>
               <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navHowItWorks}</button>
               <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">{t.navConsult}</button>
@@ -454,7 +457,10 @@ const App: React.FC = () => {
               </section>
               
               <LatestNewsPreview 
-              onViewNews={() => setView('news')} 
+              onViewNews={() => {
+                setNewsSlug(null);
+                setView('news');
+              }} 
               onViewPost={(slug) => {
                 setNewsSlug(slug);
                 setView('news');
