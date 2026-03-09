@@ -27,11 +27,24 @@ async function startServer() {
       fileSize: 5 * 1024 * 1024 // Increased to 5MB
     },
     fileFilter: (_req, file, cb) => {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg', 'image/svg+xml', 'image/bmp', 'image/tiff'];
-      if (allowedTypes.includes(file.mimetype)) {
+      console.log(`>>> Multer filtering file: ${file.originalname}, mimetype: ${file.mimetype}`);
+      const allowedTypes = [
+        'image/jpeg', 
+        'image/png', 
+        'image/webp', 
+        'image/gif', 
+        'image/jpg', 
+        'image/pjpeg',
+        'image/x-citrix-pjpeg',
+        'image/svg+xml', 
+        'image/bmp', 
+        'image/tiff',
+        'image/x-png'
+      ];
+      if (allowedTypes.includes(file.mimetype.toLowerCase())) {
         cb(null, true);
       } else {
-        cb(new Error(`Invalid file type: ${file.mimetype}. Only JPG, PNG, WEBP, and GIF are allowed.`));
+        cb(new Error(`Invalid file type: ${file.mimetype}. Please use standard image formats (JPG, PNG, WEBP).`));
       }
     }
   });
