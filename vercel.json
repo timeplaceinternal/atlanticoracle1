@@ -7,6 +7,10 @@
       "destination": "/api/news.ts"
     },
     {
+      "source": "/api/upload",
+      "destination": "/api/upload.ts"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
