@@ -9,6 +9,8 @@ import LatestNewsPreview from './components/LatestNewsPreview';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import NewsPage from './components/NewsPage';
 import AdminPanel from './components/AdminPanel';
+import KnowledgeBasePage from './components/KnowledgeBasePage';
+import KBArticlePage from './components/KBArticlePage';
 import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
@@ -51,7 +53,25 @@ const App: React.FC = () => {
     return null;
   });
 
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin'>(() => {
+  const [kbCategory, setKbCategory] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const match = path.match(/\/database\/([^/]+)\/([^/]+)/);
+      return match ? match[1] : null;
+    }
+    return null;
+  });
+
+  const [kbSlug, setKbSlug] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const match = path.match(/\/database\/([^/]+)\/([^/]+)/);
+      return match ? match[2] : null;
+    }
+    return null;
+  });
+
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
@@ -63,6 +83,10 @@ const App: React.FC = () => {
       
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
+      if (cleanPath.includes('/database') || params.get('view') === 'database') {
+        const match = cleanPath.match(/\/database\/([^/]+)\/([^/]+)/);
+        return match ? 'kb-article' : 'database';
+      }
       
       if (params.get('payment_status') === 'success' && localStorage.getItem(STORAGE_KEY)) {
         return 'loading';
@@ -87,6 +111,14 @@ const App: React.FC = () => {
         } else {
           window.history.pushState({}, '', '/news');
         }
+      } else if (view === 'database') {
+        window.history.pushState({}, '', '/database');
+      } else if (view === 'kb-article') {
+        if (kbCategory && kbSlug) {
+          window.history.pushState({}, '', `/database/${kbCategory}/${kbSlug}`);
+        } else {
+          window.history.pushState({}, '', '/database');
+        }
       } else if (view === 'privacy') {
         window.history.pushState({}, '', '/privacy');
       }
@@ -106,6 +138,15 @@ const App: React.FC = () => {
         const match = cleanPath.match(/\/news\/([^/]+)/);
         setNewsSlug(match ? match[1] : null);
         setView('news');
+      } else if (cleanPath.includes('/database') || params.get('view') === 'database') {
+        const match = cleanPath.match(/\/database\/([^/]+)\/([^/]+)/);
+        if (match) {
+          setKbCategory(match[1]);
+          setKbSlug(match[2]);
+          setView('kb-article');
+        } else {
+          setView('database');
+        }
       } else if (params.get('view') === 'privacy' || cleanPath === '/privacy') {
         setView('privacy');
       } else {
@@ -180,6 +221,9 @@ const App: React.FC = () => {
     setCurrentRequest(null);
     setResult(null);
     setIsMenuOpen(false);
+    setNewsSlug(null);
+    setKbCategory(null);
+    setKbSlug(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Ensure we are at the root path
@@ -254,6 +298,21 @@ const App: React.FC = () => {
     }
   };
 
+  const handleNavigate = (newView: string, category?: string, slug?: string) => {
+    if (newView === 'kb-article' && category && slug) {
+      setKbCategory(category);
+      setKbSlug(slug);
+      setView('kb-article');
+    } else if (newView === 'database') {
+      setView('database');
+    } else if (newView === 'form' && slug) {
+      const service = SERVICES.find(s => s.id === slug) || FREE_SERVICES.find(s => s.id === slug);
+      if (service) handleStartService(service);
+    }
+    setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen font-inter selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden">
       <CosmicBackground />
@@ -294,6 +353,13 @@ const App: React.FC = () => {
                 aria-label="View Cosmic News"
               >
                 {t.navNews}
+              </button>
+              <button 
+                onClick={() => setView('database')} 
+                className="hover:text-cosmic-gold transition-colors uppercase"
+                aria-label="View Knowledge Base"
+              >
+                {t.navDatabase}
               </button>
               <button 
                 onClick={() => scrollToSection('philosophy')} 
@@ -354,6 +420,7 @@ const App: React.FC = () => {
                 </select>
               </div>
               <button onClick={() => { setNewsSlug(null); setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navNews}</button>
+              <button onClick={() => { setView('database'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navDatabase}</button>
               <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navPhilosophy}</button>
               <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navHowItWorks}</button>
               <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">{t.navConsult}</button>
@@ -560,6 +627,19 @@ const App: React.FC = () => {
             <div className="py-10 md:py-20">
               <NewsPage onBack={resetToHome} language={language} initialSlug={newsSlug} onSlugChange={setNewsSlug} />
             </div>
+          )}
+
+          {view === 'database' && (
+            <KnowledgeBasePage language={language} onNavigate={handleNavigate} />
+          )}
+
+          {view === 'kb-article' && kbCategory && kbSlug && (
+            <KBArticlePage 
+              category={kbCategory} 
+              slug={kbSlug} 
+              language={language} 
+              onNavigate={handleNavigate} 
+            />
           )}
 
           {view === 'admin' && (

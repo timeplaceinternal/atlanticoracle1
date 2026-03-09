@@ -55,7 +55,9 @@ async function startServer() {
   app.use('/uploads', express.static(uploadsPath));
 
   const NEWS_FILE_PATH = 'data/news.json';
+  const KB_FILE_PATH = 'data/kb.json';
   const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
+  const LOCAL_KB_PATH = path.join(LOCAL_DATA_DIR, 'kb.json');
 
   // API Routes
   
@@ -184,6 +186,8 @@ async function startServer() {
   app.get("/sitemap.xml", async (req, res) => {
     try {
       let posts: NewsPost[] = [];
+      let kbPosts: any[] = [];
+      
       if (process.env.BLOB_READ_WRITE_TOKEN) {
         const { blobs } = await list();
         const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
@@ -191,10 +195,22 @@ async function startServer() {
           const response = await fetch(newsBlob.url);
           posts = await response.json();
         }
+        const kbBlob = blobs.find(b => b.pathname === KB_FILE_PATH);
+        if (kbBlob) {
+          const response = await fetch(kbBlob.url);
+          kbPosts = await response.json();
+        }
+      } else {
+        // Local fallback for sitemap
+        if (fs.existsSync(LOCAL_NEWS_PATH)) {
+          posts = JSON.parse(fs.readFileSync(LOCAL_NEWS_PATH, 'utf-8'));
+        }
+        if (fs.existsSync(LOCAL_KB_PATH)) {
+          kbPosts = JSON.parse(fs.readFileSync(LOCAL_KB_PATH, 'utf-8'));
+        }
       }
       
       const baseUrl = 'https://atlanticoracle.com';
-      const initialNewsSlugs = ['the-saturn-shift-navigating-the-great-restructuring'];
       
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -208,18 +224,24 @@ async function startServer() {
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
-  ${initialNewsSlugs.map(slug => `
   <url>
-    <loc>${baseUrl}/news/${slug}</loc>
+    <loc>${baseUrl}/database</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>`).join('')}
+    <priority>0.8</priority>
+  </url>
   ${posts.map(post => `
   <url>
     <loc>${baseUrl}/news/${post.slug}</loc>
     <lastmod>${post.date}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>`).join('')}
+  ${kbPosts.map(post => `
+  <url>
+    <loc>${baseUrl}/database/${post.category}/${post.slug}</loc>
+    <lastmod>${post.dateModified}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>`).join('')}
 </urlset>`;
 
@@ -236,6 +258,62 @@ async function startServer() {
 </urlset>`;
       res.header('Content-Type', 'application/xml');
       res.send(sitemap.trim());
+    }
+  });
+
+  // Get all KB posts
+  app.get("/api/kb", async (req, res) => {
+    console.log(">>> GET /api/kb - Fetching KB...");
+    try {
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token) {
+        const { blobs } = await list({ prefix: KB_FILE_PATH });
+        const kbBlob = blobs.find(b => b.pathname === KB_FILE_PATH);
+
+        if (kbBlob) {
+          const response = await fetch(kbBlob.url);
+          if (response.ok) {
+            const posts = await response.json();
+            return res.json(posts);
+          }
+        }
+      }
+
+      if (fs.existsSync(LOCAL_KB_PATH)) {
+        const data = fs.readFileSync(LOCAL_KB_PATH, 'utf-8');
+        return res.json(JSON.parse(data));
+      }
+
+      res.json([]);
+    } catch (error) {
+      console.error("!!! Failed to fetch KB:", error);
+      res.json([]); 
+    }
+  });
+
+  // Save KB posts
+  app.post("/api/kb", async (req, res) => {
+    console.log(">>> POST /api/kb - Saving KB...");
+    try {
+      const posts = req.body;
+      if (!Array.isArray(posts)) {
+        return res.status(400).json({ error: "Invalid data format: expected array" });
+      }
+
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token) {
+        await put(KB_FILE_PATH, JSON.stringify(posts), {
+          access: 'public',
+          addRandomSuffix: false,
+          allowOverwrite: true,
+        });
+      }
+
+      fs.writeFileSync(LOCAL_KB_PATH, JSON.stringify(posts, null, 2));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("!!! Failed to save KB:", error);
+      res.status(500).json({ error: "Failed to save KB: " + (error instanceof Error ? error.message : String(error)) });
     }
   });
 

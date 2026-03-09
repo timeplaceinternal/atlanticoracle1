@@ -57,6 +57,34 @@ export interface ReadingResult {
 
 export type PostFormat = 'fact' | 'forecast' | 'series' | 'horoscope';
 
+export type KBCategory = 
+  | 'astrological-entities' 
+  | 'numerical-vibrations' 
+  | 'synthesis-methodology' 
+  | 'human-design-basics';
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface KnowledgeBasePost {
+  id: string;
+  slug: string;
+  category: KBCategory;
+  title: string;
+  shortDefinition: string;
+  mainContent: string;
+  dataTable?: string; // HTML string for table
+  synthesisNote?: string;
+  faq?: FAQItem[];
+  imageUrl?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  dateModified: string;
+  relatedProductId?: ServiceType;
+}
+
 export interface NewsPost {
   id: string;
   slug: string;

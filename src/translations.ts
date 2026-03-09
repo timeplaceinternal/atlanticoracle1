@@ -2,6 +2,7 @@ import { ReportLanguage } from './types';
 
 export interface Translations {
   navNews: string;
+  navDatabase: string;
   navPhilosophy: string;
   navHowItWorks: string;
   navConsult: string;
@@ -132,6 +133,7 @@ export interface Translations {
 export const translations: Record<ReportLanguage, Translations> = {
   English: {
     navNews: "Cosmic News",
+    navDatabase: "Database",
     navPhilosophy: "Philosophy",
     navHowItWorks: "How It Works",
     navConsult: "Oracle Consult",
@@ -260,6 +262,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
+    navDatabase: "Base de Dados",
     navPhilosophy: "Filosofia",
     navHowItWorks: "Como Funciona",
     navConsult: "Consultar Oráculo",

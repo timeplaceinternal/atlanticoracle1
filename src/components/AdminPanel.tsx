@@ -1,37 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon } from 'lucide-react';
 import { newsService } from '../services/newsService';
-import { NewsPost } from '../types';
+import { kbService } from '../services/kbService';
+import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
 
 const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState<'news' | 'kb'>('news');
   const [posts, setPosts] = useState<NewsPost[]>([]);
+  const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
+  const [editingKB, setEditingKB] = useState<Partial<KnowledgeBasePost> | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const fetchAndSortPosts = async () => {
-    const fetchedPosts = await newsService.getPosts();
-    // Sort by ID (timestamp) descending to show latest first
-    const sortedPosts = [...fetchedPosts].sort((a, b) => {
-      const idA = Number(a.id);
-      const idB = Number(b.id);
-      if (!isNaN(idA) && !isNaN(idB)) return idB - idA;
-      return b.id.localeCompare(a.id);
-    });
-    setPosts(sortedPosts);
+  const fetchAllData = async () => {
+    const [fetchedNews, fetchedKB] = await Promise.all([
+      newsService.getPosts(),
+      kbService.getPosts()
+    ]);
+    
+    setPosts([...fetchedNews].sort((a, b) => Number(b.id) - Number(a.id)));
+    setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
   };
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetchAndSortPosts();
+      fetchAllData();
     }
   }, [isLoggedIn]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'imageUrl' | 'images') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'imageUrl' | 'images', isKB: boolean = false) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -67,16 +69,21 @@ const AdminPanel: React.FC = () => {
         }
       }
 
-      if (field === 'imageUrl') {
-        setEditingPost(prev => ({ ...(prev || {}), imageUrl: uploadedUrls[0] }));
+      if (isKB) {
+        if (field === 'imageUrl') {
+          setEditingKB(prev => ({ ...(prev || {}), imageUrl: uploadedUrls[0] }));
+        }
       } else {
-        setEditingPost(prev => {
-          const currentImages = prev?.images || [];
-          const newImages = [...currentImages, ...uploadedUrls];
-          // If no main image yet, use the first one from gallery
-          const imageUrl = prev?.imageUrl || uploadedUrls[0];
-          return { ...(prev || {}), images: newImages, imageUrl };
-        });
+        if (field === 'imageUrl') {
+          setEditingPost(prev => ({ ...(prev || {}), imageUrl: uploadedUrls[0] }));
+        } else {
+          setEditingPost(prev => {
+            const currentImages = prev?.images || [];
+            const newImages = [...currentImages, ...uploadedUrls];
+            const imageUrl = prev?.imageUrl || uploadedUrls[0];
+            return { ...(prev || {}), images: newImages, imageUrl };
+          });
+        }
       }
       
       // Success feedback for upload
@@ -120,6 +127,58 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleSaveKB = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingKB?.title || !editingKB?.mainContent) {
+      alert("Title and content are required.");
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveSuccess(false);
+    try {
+      const title = editingKB.title.trim();
+      const newPost: KnowledgeBasePost = {
+        id: editingKB.id || Date.now().toString(),
+        slug: editingKB.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        category: editingKB.category || 'astrological-entities',
+        title: title,
+        shortDefinition: editingKB.shortDefinition || '',
+        mainContent: editingKB.mainContent || '',
+        dataTable: editingKB.dataTable,
+        synthesisNote: editingKB.synthesisNote,
+        faq: editingKB.faq,
+        imageUrl: editingKB.imageUrl,
+        metaTitle: editingKB.metaTitle || title,
+        metaDescription: editingKB.metaDescription || editingKB.shortDefinition || '',
+        dateModified: new Date().toISOString(),
+        relatedProductId: editingKB.relatedProductId
+      };
+      await kbService.savePost(newPost);
+      await fetchAllData();
+      setSaveSuccess(true);
+      setTimeout(() => {
+        setEditingKB(null);
+        setSaveSuccess(false);
+      }, 2000);
+    } catch (error) {
+      alert(`Failed to save KB article: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteKB = async (id: string) => {
+    if (confirm('Are you sure you want to delete this KB article?')) {
+      try {
+        await kbService.deletePost(id);
+        await fetchAllData();
+      } catch (error) {
+        alert(`Failed to delete KB article: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  };
+
   const handleSavePost = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -157,7 +216,7 @@ const AdminPanel: React.FC = () => {
         metaDescription: metaDescription
       };
       await newsService.savePost(newPost);
-      await fetchAndSortPosts();
+      await fetchAllData();
       setSaveSuccess(true);
       // Let the user see the "Published!" state for 2 seconds before closing
       setTimeout(() => {
@@ -176,7 +235,7 @@ const AdminPanel: React.FC = () => {
     if (confirm('Are you sure you want to delete this transmission?')) {
       try {
         await newsService.deletePost(id);
-        await fetchAndSortPosts();
+        await fetchAllData();
       } catch (error) {
         console.error("Delete failed:", error);
         alert(`Failed to delete transmission: ${error instanceof Error ? error.message : String(error)}`);
@@ -225,6 +284,211 @@ const AdminPanel: React.FC = () => {
             </div>
             <button type="submit" className="w-full py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform">Unlock Portal</button>
           </form>
+        </div>
+      </div>
+    );
+  }
+
+  if (editingKB) {
+    return (
+      <div className="min-h-screen bg-cosmic-900 pb-32">
+        <div className="sticky top-0 z-[250] bg-cosmic-900/80 backdrop-blur-xl border-b border-cosmic-gold/20 p-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setEditingKB(null)}
+                className="p-2 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-full transition-colors"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h2 className="text-xl font-cinzel text-white uppercase tracking-widest">
+                {editingKB.id ? 'Edit Article' : 'New KB Article'}
+              </h2>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="hidden lg:flex items-center gap-4 mr-4 border-r border-cosmic-gold/20 pr-4">
+                <div className="flex flex-col">
+                  <label className="text-[8px] uppercase tracking-widest text-cosmic-gold/60">Category</label>
+                  <select 
+                    value={editingKB.category || 'astrological-entities'} 
+                    onChange={(e) => setEditingKB({...editingKB, category: e.target.value as KBCategory})}
+                    className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer"
+                  >
+                    <option value="astrological-entities" className="bg-cosmic-900">Astrological Entities</option>
+                    <option value="numerical-vibrations" className="bg-cosmic-900">Numerical Vibrations</option>
+                    <option value="synthesis-methodology" className="bg-cosmic-900">Synthesis & Methodology</option>
+                    <option value="human-design-basics" className="bg-cosmic-900">Human Design Basics</option>
+                  </select>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleSaveKB}
+                disabled={isSaving || isUploading}
+                className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${
+                  saveSuccess ? 'bg-green-500 text-white' : 'bg-cosmic-gold text-cosmic-900'
+                }`}
+              >
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : saveSuccess ? <ShieldCheck className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                {isSaving ? 'Saving...' : saveSuccess ? 'Published!' : 'Publish'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-6 pt-20 space-y-12">
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">H1 Title</label>
+              <input 
+                type="text"
+                value={editingKB.title || ''} 
+                onChange={(e) => setEditingKB({...editingKB, title: e.target.value})}
+                placeholder="The [Term Name]"
+                className="w-full bg-transparent text-4xl font-cinzel text-white uppercase tracking-widest outline-none border-b border-cosmic-gold/20 focus:border-cosmic-gold"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Short Definition (Snippet)</label>
+              <textarea 
+                value={editingKB.shortDefinition || ''} 
+                onChange={(e) => setEditingKB({...editingKB, shortDefinition: e.target.value})}
+                placeholder="1-2 sentences for AI snippet..."
+                className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold/40 h-24 resize-none"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Main Content (Markdown supported)</label>
+              <textarea 
+                value={editingKB.mainContent || ''} 
+                onChange={(e) => setEditingKB({...editingKB, mainContent: e.target.value})}
+                placeholder="Use H2, H3 for structure..."
+                className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none border border-cosmic-gold/5 p-4 rounded-xl"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 flex items-center gap-2">
+                  <Table className="w-3 h-3" /> Data Table (HTML)
+                </label>
+                <textarea 
+                  value={editingKB.dataTable || ''} 
+                  onChange={(e) => setEditingKB({...editingKB, dataTable: e.target.value})}
+                  placeholder="<table>...</table>"
+                  className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-4 text-white font-mono text-xs h-32 resize-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 flex items-center gap-2">
+                  <BookOpen className="w-3 h-3" /> Synthesis Note
+                </label>
+                <textarea 
+                  value={editingKB.synthesisNote || ''} 
+                  onChange={(e) => setEditingKB({...editingKB, synthesisNote: e.target.value})}
+                  placeholder="Connection between systems..."
+                  className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-4 text-white italic h-32 resize-none"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 flex items-center gap-2">
+                <HelpCircle className="w-3 h-3" /> FAQ Block
+              </label>
+              {(editingKB.faq || []).map((item, idx) => (
+                <div key={idx} className="p-4 bg-cosmic-800/20 border border-cosmic-gold/10 rounded-2xl space-y-3">
+                  <input 
+                    type="text"
+                    value={item.question}
+                    onChange={(e) => {
+                      const newFaq = [...(editingKB.faq || [])];
+                      newFaq[idx].question = e.target.value;
+                      setEditingKB({...editingKB, faq: newFaq});
+                    }}
+                    placeholder="Question"
+                    className="w-full bg-transparent border-b border-cosmic-gold/10 text-white text-sm outline-none py-1"
+                  />
+                  <textarea 
+                    value={item.answer}
+                    onChange={(e) => {
+                      const newFaq = [...(editingKB.faq || [])];
+                      newFaq[idx].answer = e.target.value;
+                      setEditingKB({...editingKB, faq: newFaq});
+                    }}
+                    placeholder="Answer"
+                    className="w-full bg-transparent text-cosmic-silver text-sm outline-none resize-none"
+                  />
+                  <button 
+                    onClick={() => {
+                      const newFaq = (editingKB.faq || []).filter((_, i) => i !== idx);
+                      setEditingKB({...editingKB, faq: newFaq});
+                    }}
+                    className="text-red-400 text-[10px] uppercase tracking-widest"
+                  >
+                    Remove FAQ
+                  </button>
+                </div>
+              ))}
+              <button 
+                onClick={() => setEditingKB({...editingKB, faq: [...(editingKB.faq || []), { question: '', answer: '' }]})}
+                className="text-cosmic-gold text-[10px] uppercase tracking-widest flex items-center gap-2"
+              >
+                <Plus className="w-3 h-3" /> Add FAQ Item
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-cosmic-gold/10">
+              <div className="space-y-4">
+                <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">SEO & AI</h4>
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Title</label>
+                    <input 
+                      type="text" 
+                      value={editingKB.metaTitle || ''} 
+                      onChange={(e) => setEditingKB({...editingKB, metaTitle: e.target.value})}
+                      className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Description</label>
+                    <textarea 
+                      value={editingKB.metaDescription || ''} 
+                      onChange={(e) => setEditingKB({...editingKB, metaDescription: e.target.value})}
+                      className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none h-24 resize-none"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">Internal Linking</h4>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40 flex items-center gap-2">
+                    <LinkIcon className="w-3 h-3" /> Related Product
+                  </label>
+                  <select 
+                    value={editingKB.relatedProductId || ''} 
+                    onChange={(e) => setEditingKB({...editingKB, relatedProductId: e.target.value as ServiceType})}
+                    className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none"
+                  >
+                    <option value="">None</option>
+                    {Object.values(ServiceType).map(type => (
+                      <option key={type} value={type}>{type.replace(/-/g, ' ').toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="p-4 bg-cosmic-gold/5 rounded-2xl border border-cosmic-gold/10">
+                  <p className="text-[10px] text-cosmic-gold/60 leading-relaxed italic">
+                    Linking to a relevant product increases conversion and helps AI understand the value proposition.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -522,9 +786,25 @@ const AdminPanel: React.FC = () => {
     <div className="max-w-7xl mx-auto px-6 py-20 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       <div className="flex items-center justify-between mb-12">
         <h1 className="text-4xl font-cinzel text-white uppercase tracking-widest">Admin Dashboard</h1>
-        <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
-          <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
-        </button>
+        <div className="flex items-center gap-8">
+          <div className="flex bg-cosmic-800/40 rounded-xl p-1 border border-cosmic-gold/20">
+            <button 
+              onClick={() => setActiveTab('news')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'news' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              News
+            </button>
+            <button 
+              onClick={() => setActiveTab('kb')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'kb' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              Knowledge Base
+            </button>
+          </div>
+          <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
+            <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -545,51 +825,90 @@ const AdminPanel: React.FC = () => {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-cinzel text-white uppercase tracking-widest flex items-center gap-3">
-            <Newspaper className="w-6 h-6 text-cosmic-gold" /> Gazette Management
+            {activeTab === 'news' ? (
+              <><Newspaper className="w-6 h-6 text-cosmic-gold" /> Gazette Management</>
+            ) : (
+              <><BookOpen className="w-6 h-6 text-cosmic-gold" /> Knowledge Base</>
+            )}
           </h2>
           <button 
-            onClick={() => setEditingPost({})} 
+            onClick={() => activeTab === 'news' ? setEditingPost({}) : setEditingKB({})} 
             className="flex items-center gap-2 px-6 py-3 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-105 transition-transform"
           >
-            <Plus className="w-4 h-4" /> New Transmission
+            <Plus className="w-4 h-4" /> {activeTab === 'news' ? 'New Transmission' : 'New Article'}
           </button>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          {posts.map(post => (
-            <div key={post.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
-              <div className="flex items-center gap-6">
-                {getDisplayImage(post) && (
-                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-cosmic-gold/20 flex-shrink-0">
-                    <img src={getDisplayImage(post)!} alt="" className="w-full h-full object-cover" />
+          {activeTab === 'news' ? (
+            posts.map(post => (
+              <div key={post.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
+                <div className="flex items-center gap-6">
+                  {getDisplayImage(post) && (
+                    <div className="w-20 h-20 rounded-xl overflow-hidden border border-cosmic-gold/20 flex-shrink-0">
+                      <img src={getDisplayImage(post)!} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                      <span>{post.date}</span>
+                      <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
+                      <span>{post.topic}</span>
+                    </div>
+                    <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
+                    <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.text}</p>
                   </div>
-                )}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
-                    <span>{post.date}</span>
-                    <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
-                    <span>{post.topic}</span>
-                  </div>
-                  <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
-                  <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.text}</p>
+                </div>
+                <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => setEditingPost(post)}
+                    className="p-3 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-xl transition-colors"
+                  >
+                    <Edit2 className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeletePost(post.id)}
+                    className="p-3 text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button 
-                  onClick={() => setEditingPost(post)}
-                  className="p-3 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-xl transition-colors"
-                >
-                  <Edit2 className="w-5 h-5" />
-                </button>
-                <button 
-                  onClick={() => handleDeletePost(post.id)}
-                  className="p-3 text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+            ))
+          ) : (
+            kbPosts.map(post => (
+              <div key={post.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-cosmic-gold/10 flex items-center justify-center border border-cosmic-gold/20">
+                    <Hash className="w-6 h-6 text-cosmic-gold" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                      <span>{post.category.replace(/-/g, ' ')}</span>
+                      <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
+                      <span>{new Date(post.dateModified).toLocaleDateString()}</span>
+                    </div>
+                    <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
+                    <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.shortDefinition}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => setEditingKB(post)}
+                    className="p-3 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-xl transition-colors"
+                  >
+                    <Edit2 className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteKB(post.id)}
+                    className="p-3 text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
