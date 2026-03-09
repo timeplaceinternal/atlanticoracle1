@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
 import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
@@ -32,6 +32,77 @@ const AdminPanel: React.FC = () => {
       fetchAllData();
     }
   }, [isLoggedIn]);
+
+  const handleTextImport = (e: React.ChangeEvent<HTMLInputElement>, isKB: boolean = false) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (!content) return;
+
+      // Smart parsing:
+      // 1. Split by double newlines to find paragraphs
+      // 2. First non-empty line is Title
+      // 3. If KB: Next non-empty paragraph is Short Definition
+      // 4. Everything else is Main Content
+      
+      const paragraphs = content.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
+      if (paragraphs.length === 0) return;
+
+      const title = paragraphs[0].split('\n')[0].replace(/^#+\s*/, ''); // Remove markdown heading if present
+      
+      if (isKB) {
+        const shortDef = paragraphs.length > 1 ? paragraphs[1] : '';
+        const mainContent = paragraphs.slice(2).join('\n\n');
+        
+        setEditingKB(prev => ({
+          ...(prev || {}),
+          title,
+          shortDefinition: shortDef,
+          mainContent: mainContent || shortDef
+        }));
+      } else {
+        const mainContent = paragraphs.slice(1).join('\n\n');
+        setEditingPost(prev => ({
+          ...(prev || {}),
+          title,
+          text: mainContent
+        }));
+      }
+      
+      // Success feedback
+      const msg = document.createElement('div');
+      msg.className = 'fixed bottom-8 right-8 bg-cosmic-gold text-cosmic-900 px-6 py-3 rounded-xl shadow-2xl z-[300] animate-in slide-in-from-right-8 font-bold flex items-center gap-2';
+      msg.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Structure Imported!`;
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 3000);
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset
+  };
+
+  const smartFormat = (isKB: boolean) => {
+    const currentText = isKB ? editingKB?.mainContent : editingPost?.text;
+    if (!currentText) return;
+
+    // Detect lines that look like headings (short, no punctuation at end)
+    const lines = currentText.split('\n');
+    const formattedLines = lines.map(line => {
+      const trimmed = line.trim();
+      if (trimmed.length > 0 && trimmed.length < 70 && !/[.!?]$/.test(trimmed) && !trimmed.startsWith('#')) {
+        return `## ${trimmed}`;
+      }
+      return line;
+    });
+
+    if (isKB) {
+      setEditingKB(prev => ({ ...prev, mainContent: formattedLines.join('\n') }));
+    } else {
+      setEditingPost(prev => ({ ...prev, text: formattedLines.join('\n') }));
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'imageUrl' | 'images', isKB: boolean = false) => {
     const files = e.target.files;
@@ -340,7 +411,13 @@ const AdminPanel: React.FC = () => {
         <div className="max-w-4xl mx-auto px-6 pt-20 space-y-12">
           <div className="space-y-8">
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">H1 Title</label>
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">H1 Title</label>
+                <label className="cursor-pointer flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors text-[10px] uppercase tracking-widest">
+                  <input type="file" className="hidden" accept=".txt,.md" onChange={(e) => handleTextImport(e, true)} />
+                  <FileText className="w-3 h-3" /> Import from File
+                </label>
+              </div>
               <input 
                 type="text"
                 value={editingKB.title || ''} 
@@ -361,12 +438,26 @@ const AdminPanel: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Main Content (Markdown supported)</label>
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Main Content (Markdown supported)</label>
+                <button 
+                  onClick={() => smartFormat(true)}
+                  className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors text-[10px] uppercase tracking-widest"
+                  title="Auto-detect headings and format structure"
+                >
+                  <Sparkles className="w-3 h-3" /> Smart Format
+                </button>
+              </div>
               <textarea 
                 value={editingKB.mainContent || ''} 
                 onChange={(e) => setEditingKB({...editingKB, mainContent: e.target.value})}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = target.scrollHeight + 'px';
+                }}
                 placeholder="Use H2, H3 for structure..."
-                className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none border border-cosmic-gold/5 p-4 rounded-xl"
+                className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none border border-cosmic-gold/5 p-4 rounded-xl overflow-hidden"
               />
             </div>
 
@@ -569,6 +660,19 @@ const AdminPanel: React.FC = () => {
               <span className="text-cosmic-gold">{editingPost.topic || 'astrology'}</span>
             </div>
             
+            <div className="flex items-center justify-center gap-6 mb-4">
+              <label className="cursor-pointer flex items-center gap-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-[10px] uppercase tracking-widest">
+                <input type="file" className="hidden" accept=".txt,.md" onChange={(e) => handleTextImport(e, false)} />
+                <FileText className="w-3 h-3" /> Import Text File
+              </label>
+              <button 
+                onClick={() => smartFormat(false)}
+                className="flex items-center gap-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors text-[10px] uppercase tracking-widest"
+              >
+                <Sparkles className="w-3 h-3" /> Smart Format
+              </button>
+            </div>
+
             <textarea 
               value={editingPost.title || ''} 
               onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
@@ -702,8 +806,13 @@ const AdminPanel: React.FC = () => {
               <textarea 
                 value={editingPost.text || ''} 
                 onChange={(e) => setEditingPost({...editingPost, text: e.target.value})}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = target.scrollHeight + 'px';
+                }}
                 placeholder="Begin the cosmic transmission..."
-                className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none placeholder:text-white/5"
+                className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none placeholder:text-white/5 overflow-hidden"
               />
               {/* Drop Cap Preview (Visual only) */}
               {editingPost.text && (
