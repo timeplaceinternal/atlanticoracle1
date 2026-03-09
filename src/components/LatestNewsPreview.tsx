@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ReportLanguage, NewsPost } from '../types';
-import { translations } from '../../translations';
+import { translations } from '../translations';
 import { ChevronRight, Calendar } from 'lucide-react';
 import { newsService } from '../services/newsService';
 

@@ -1,4 +1,4 @@
-import { ReportLanguage } from './src/types';
+import { ReportLanguage } from './types';
 
 export interface Translations {
   navNews: string;

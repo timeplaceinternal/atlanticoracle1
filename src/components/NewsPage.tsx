@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReportLanguage, NewsPost } from '../types';
-import { translations } from '../../translations';
-import { ChevronLeft, Calendar, Share2, ArrowRight, Play, Star } from 'lucide-react';
+import { translations } from '../translations';
+import { ChevronLeft, Calendar, Share2, ArrowRight, Play, Star, Newspaper } from 'lucide-react';
 import { newsService } from '../services/newsService';
 
 interface NewsPageProps {
@@ -97,7 +97,7 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
 };
 
 const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSlugChange }) => {
-  const t = translations[language];
+  const t = translations[language] || translations['English'];
   const [selectedPost, setSelectedPost] = useState<string | null>(initialSlug);
   const [posts, setPosts] = useState<NewsPost[]>([]);
 

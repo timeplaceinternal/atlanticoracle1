@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReportLanguage } from '../types';
-import { translations } from '../../translations';
+import { translations } from '../translations';
 import { Sparkles, Star, ShieldCheck } from 'lucide-react';
 
 interface HowItWorksSectionProps {

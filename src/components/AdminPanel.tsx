@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { NewsPost } from '../types';
 
@@ -490,6 +490,20 @@ const AdminPanel: React.FC = () => {
                   <span className="text-xs text-cosmic-silver/60 uppercase tracking-widest">Date</span>
                   <span className="text-xs text-white">{editingPost.date || 'Today'}</span>
                 </div>
+                
+                <button 
+                  onClick={handleSavePost}
+                  disabled={isSaving || isUploading}
+                  className={`w-full py-5 rounded-xl font-bold transition-all flex items-center justify-center gap-3 shadow-2xl ${
+                    saveSuccess 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-cosmic-gold text-cosmic-900 hover:scale-[1.02] active:scale-95 shadow-cosmic-gold/20'
+                  }`}
+                >
+                  {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : saveSuccess ? <ShieldCheck className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  {isSaving ? 'Saving Transmission...' : saveSuccess ? 'Published Successfully!' : 'Publish Transmission'}
+                </button>
+
                 <button 
                   onClick={() => setEditingPost(null)}
                   className="w-full py-4 border border-red-500/20 text-red-400/60 hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all text-xs font-bold uppercase tracking-widest"

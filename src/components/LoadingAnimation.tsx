@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReportLanguage } from '../types';
-import { translations } from '../../translations';
+import { translations } from '../translations';
 
 interface LoadingAnimationProps {
   language: ReportLanguage;

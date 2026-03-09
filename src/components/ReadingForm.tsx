@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Service, ReadingRequest, ReportLanguage } from '../types';
-import { translations } from '../../translations';
+import { translations } from '../translations';
 
 interface ReadingFormProps {
   service: Service;
