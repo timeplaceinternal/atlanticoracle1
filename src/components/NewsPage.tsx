@@ -209,36 +209,43 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {regularPosts.map((post) => (
-                <article 
-                  key={post.slug} 
-                  onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
-                  className="group cursor-pointer space-y-6 flex flex-col h-full bg-cosmic-800/20 border border-cosmic-gold/5 p-6 rounded-3xl hover:border-cosmic-gold/30 transition-all"
-                >
-                  <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2">
-                    <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
-                  </div>
+              {regularPosts.map((post, index) => {
+                const isFeatured = index === 0;
+                return (
+                  <article 
+                    key={post.slug} 
+                    onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
+                    className={`group cursor-pointer space-y-6 flex flex-col h-full border rounded-[2.5rem] transition-all duration-500 ${
+                      isFeatured 
+                        ? 'md:col-span-2 lg:col-span-2 bg-cosmic-gold/5 border-cosmic-gold/20 p-10 hover:bg-cosmic-gold/10' 
+                        : 'bg-cosmic-800/20 border-cosmic-gold/5 p-6 hover:border-cosmic-gold/30'
+                    }`}
+                  >
+                    <div className={`${isFeatured ? 'aspect-video' : 'aspect-[4/3]'} rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2`}>
+                      <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" referrerPolicy="no-referrer" />
+                    </div>
 
-                  <div className="flex items-center gap-2 text-cosmic-gold/40 text-[9px] uppercase tracking-widest">
-                    <Calendar className="w-3 h-3" />
-                    <time>{post.date}</time>
-                  </div>
-                  
-                  <h3 className="text-2xl font-cinzel text-white group-hover:text-cosmic-gold transition-colors leading-tight decoration-cosmic-gold/20 decoration-1 underline-offset-8 group-hover:underline">
-                    {post.title}
-                  </h3>
-                  
-                  <div className="w-16 h-px bg-cosmic-gold/30"></div>
-                  
-                  <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed line-clamp-4 font-serif italic flex-grow">
-                    {post.text}
-                  </p>
-                  
-                  <div className="pt-4 flex items-center gap-2 text-cosmic-gold text-[10px] font-bold uppercase tracking-widest border-t border-cosmic-gold/10">
-                    Full Transmission <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </article>
-              ))}
+                    <div className="flex items-center gap-2 text-cosmic-gold/40 text-[9px] uppercase tracking-widest">
+                      <Calendar className="w-3 h-3" />
+                      <time>{post.date}</time>
+                    </div>
+                    
+                    <h3 className={`${isFeatured ? 'text-4xl md:text-6xl' : 'text-2xl'} font-cinzel text-white group-hover:text-cosmic-gold transition-colors leading-tight decoration-cosmic-gold/20 decoration-1 underline-offset-8 group-hover:underline`}>
+                      {post.title}
+                    </h3>
+                    
+                    <div className="w-16 h-px bg-cosmic-gold/30"></div>
+                    
+                    <p className={`text-cosmic-silver/70 font-light ${isFeatured ? 'text-lg md:text-xl first-letter:text-6xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:mr-3 first-letter:float-left first-letter:mt-1' : 'text-sm'} leading-relaxed line-clamp-4 font-serif italic flex-grow`}>
+                      {post.text}
+                    </p>
+                    
+                    <div className="pt-4 flex items-center gap-2 text-cosmic-gold text-[10px] font-bold uppercase tracking-widest border-t border-cosmic-gold/10">
+                      Full Transmission <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
 

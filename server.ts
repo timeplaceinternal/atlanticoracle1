@@ -38,46 +38,57 @@ async function startServer() {
   // API Routes
   
   // File upload endpoint
-  app.post("/api/upload", upload.single('file'), async (req, res) => {
-    console.log(">>> POST /api/upload - Start");
-    try {
-      if (!req.file) {
-        console.error("Upload error: No file in request");
-        return res.status(400).json({ error: "No file provided" });
+  app.post("/api/upload", (req, res) => {
+    upload.single('file')(req, res, async (err) => {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ error: "File too large. Max size is 3MB." });
+        }
+        return res.status(400).json({ error: "Upload error: " + err.message });
+      } else if (err) {
+        return res.status(500).json({ error: "Server error: " + err.message });
       }
 
-      const safeName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-      const filename = `${Date.now()}-${safeName}`;
-      
-      // Try Vercel Blob first
-      const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token) {
-        console.log(`Attempting to put to Vercel Blob: uploads/${filename}`);
-        const blob = await put(`uploads/${filename}`, req.file.buffer, {
-          access: 'public',
-          contentType: req.file.mimetype,
-        });
-        console.log("Vercel Blob upload successful! URL:", blob.url);
-        return res.json({ url: blob.url });
-      } 
-      
-      // Fallback to local filesystem
-      console.log(`Falling back to local upload: ${filename}`);
-      const localPath = path.join(LOCAL_UPLOADS_DIR, filename);
-      fs.writeFileSync(localPath, req.file.buffer);
-      
-      // Construct local URL
-      const protocol = req.headers['x-forwarded-proto'] || 'http';
-      const host = req.headers.host;
-      const url = `${protocol}://${host}/uploads/${filename}`;
-      
-      console.log("Local upload successful! URL:", url);
-      res.json({ url });
-    } catch (error) {
-      console.error("!!! Upload failed with error:", error);
-      const message = error instanceof Error ? error.message : String(error);
-      res.status(500).json({ error: "Upload failed: " + message });
-    }
+      console.log(">>> POST /api/upload - Start");
+      try {
+        if (!req.file) {
+          console.error("Upload error: No file in request");
+          return res.status(400).json({ error: "No file provided" });
+        }
+
+        const safeName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+        const filename = `${Date.now()}-${safeName}`;
+        
+        // Try Vercel Blob first
+        const token = process.env.BLOB_READ_WRITE_TOKEN;
+        if (token) {
+          console.log(`Attempting to put to Vercel Blob: uploads/${filename}`);
+          const blob = await put(`uploads/${filename}`, req.file.buffer, {
+            access: 'public',
+            contentType: req.file.mimetype,
+          });
+          console.log("Vercel Blob upload successful! URL:", blob.url);
+          return res.json({ url: blob.url });
+        } 
+        
+        // Fallback to local filesystem
+        console.log(`Falling back to local upload: ${filename}`);
+        const localPath = path.join(LOCAL_UPLOADS_DIR, filename);
+        fs.writeFileSync(localPath, req.file.buffer);
+        
+        // Construct local URL
+        const protocol = req.headers['x-forwarded-proto'] || 'http';
+        const host = req.headers.host;
+        const url = `${protocol}://${host}/uploads/${filename}`;
+        
+        console.log("Local upload successful! URL:", url);
+        res.json({ url });
+      } catch (error) {
+        console.error("!!! Upload failed with error:", error);
+        const message = error instanceof Error ? error.message : String(error);
+        res.status(500).json({ error: "Upload failed: " + message });
+      }
+    });
   });
 
   // Get all news posts

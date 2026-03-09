@@ -10,6 +10,8 @@ const AdminPanel: React.FC = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const fetchAndSortPosts = async () => {
     const fetchedPosts = await newsService.getPosts();
@@ -58,16 +60,24 @@ const AdminPanel: React.FC = () => {
       }
 
       if (field === 'imageUrl') {
-        setEditingPost(prev => ({ ...prev, imageUrl: uploadedUrls[0] }));
+        setEditingPost(prev => ({ ...(prev || {}), imageUrl: uploadedUrls[0] }));
       } else {
         setEditingPost(prev => ({ 
-          ...prev, 
+          ...(prev || {}), 
           images: [...(prev?.images || []), ...uploadedUrls] 
         }));
       }
+      
+      // Success feedback for upload
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed bottom-8 right-8 bg-green-500 text-white px-6 py-3 rounded-xl shadow-2xl z-[300] animate-in slide-in-from-right-8';
+      successMsg.textContent = 'Image uploaded successfully!';
+      document.body.appendChild(successMsg);
+      setTimeout(() => successMsg.remove(), 3000);
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Failed to upload image. Please check your connection.");
+      const message = error instanceof Error ? error.message : "Failed to upload image. Please check your connection.";
+      alert(message);
     } finally {
       setIsUploading(false);
     }
@@ -100,6 +110,8 @@ const AdminPanel: React.FC = () => {
       return;
     }
 
+    setIsSaving(true);
+    setSaveSuccess(false);
     try {
       if (!editingPost) return;
       
@@ -125,10 +137,16 @@ const AdminPanel: React.FC = () => {
       };
       await newsService.savePost(newPost);
       await fetchAndSortPosts();
-      setEditingPost(null);
+      setSaveSuccess(true);
+      setTimeout(() => {
+        setEditingPost(null);
+        setSaveSuccess(false);
+      }, 1500);
     } catch (error) {
       console.error("Save failed:", error);
       alert(`Failed to save transmission: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -414,10 +432,30 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
               <div className="flex gap-4 pt-4">
-                <button type="submit" className="flex-1 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100" disabled={isUploading}>
-                  {isUploading ? 'Uploading...' : 'Save Transmission'}
+                <button 
+                  type="submit" 
+                  className={`flex-1 py-4 font-bold rounded-xl transition-all flex items-center justify-center gap-2 ${
+                    saveSuccess 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-cosmic-gold text-cosmic-900 hover:scale-105'
+                  } disabled:opacity-50 disabled:hover:scale-100`} 
+                  disabled={isUploading || isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : saveSuccess ? (
+                    <>
+                      <ShieldCheck className="w-5 h-5" />
+                      Published!
+                    </>
+                  ) : (
+                    'Save Transmission'
+                  )}
                 </button>
-                <button type="button" onClick={() => setEditingPost(null)} className="flex-1 py-4 bg-cosmic-800 text-white font-bold rounded-xl border border-cosmic-gold/20 hover:bg-cosmic-700 transition-colors">Cancel</button>
+                <button type="button" onClick={() => setEditingPost(null)} className="flex-1 py-4 bg-cosmic-800 text-white font-bold rounded-xl border border-cosmic-gold/20 hover:bg-cosmic-700 transition-colors" disabled={isSaving}>Cancel</button>
               </div>
             </form>
           </div>
