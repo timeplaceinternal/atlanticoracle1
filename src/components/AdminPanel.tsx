@@ -96,6 +96,14 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const setAsMainImage = (url: string) => {
+    setEditingPost(prev => ({ ...(prev || {}), imageUrl: url }));
+  };
+
+  const clearMainImage = () => {
+    setEditingPost(prev => ({ ...(prev || {}), imageUrl: '' }));
+  };
+
   const removeSliderImage = (index: number) => {
     if (!editingPost?.images) return;
     const newImages = [...editingPost.images];
@@ -334,21 +342,28 @@ const AdminPanel: React.FC = () => {
               ) : editingPost.imageUrl ? (
                 <div className="relative rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl group">
                   <img src={editingPost.imageUrl} alt="Preview" className="w-full h-auto object-cover" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                    <button 
-                      onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
-                      className="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-                    >
-                      <Trash2 className="w-6 h-6" />
-                    </button>
-                    <select 
-                      value={editingPost.imageSize || 'large'} 
-                      onChange={(e) => setEditingPost({...editingPost, imageSize: e.target.value as any})}
-                      className="bg-cosmic-900 border border-cosmic-gold/30 text-white px-4 py-2 rounded-xl outline-none"
-                    >
-                      <option value="large">Large</option>
-                      <option value="small">Small</option>
-                    </select>
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-6">
+                    <div className="flex items-center gap-4">
+                      <button 
+                        onClick={clearMainImage}
+                        className="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors flex items-center gap-2"
+                        title="Remove Main Image"
+                      >
+                        <Trash2 className="w-6 h-6" />
+                      </button>
+                      <div className="bg-cosmic-900/90 p-4 rounded-2xl border border-cosmic-gold/30 flex flex-col gap-2">
+                        <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Display Size</label>
+                        <select 
+                          value={editingPost.imageSize || 'large'} 
+                          onChange={(e) => setEditingPost({...editingPost, imageSize: e.target.value as any})}
+                          className="bg-transparent text-white px-2 py-1 rounded outline-none font-bold"
+                        >
+                          <option value="large">Full Width</option>
+                          <option value="small">Float Right</option>
+                        </select>
+                      </div>
+                    </div>
+                    <p className="text-white text-xs font-bold uppercase tracking-widest bg-cosmic-gold/20 px-4 py-2 rounded-full border border-cosmic-gold/30">Main Image Active</p>
                   </div>
                 </div>
               ) : (
@@ -356,7 +371,10 @@ const AdminPanel: React.FC = () => {
                   <label className="cursor-pointer aspect-video bg-cosmic-800/40 border-2 border-dashed border-cosmic-gold/20 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-cosmic-gold/40 transition-all group">
                     <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'imageUrl')} />
                     {isUploading ? <Loader2 className="w-8 h-8 animate-spin text-cosmic-gold" /> : <ImageIcon className="w-12 h-12 text-cosmic-gold/40 group-hover:text-cosmic-gold transition-colors" />}
-                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-cosmic-gold/60">Add Main Image</span>
+                    <div className="text-center">
+                      <span className="block text-xs font-bold uppercase tracking-[0.2em] text-cosmic-gold/60">Upload Main Image</span>
+                      <span className="text-[10px] text-cosmic-silver/40 mt-1 block">This will be the primary visual</span>
+                    </div>
                   </label>
                   <div className="aspect-video bg-cosmic-800/40 border-2 border-dashed border-cosmic-gold/20 rounded-3xl flex flex-col items-center justify-center gap-4 p-6">
                     <div className="flex items-center gap-2 w-full">
@@ -389,12 +407,25 @@ const AdminPanel: React.FC = () => {
                     {editingPost.images.map((img, idx) => (
                       <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-cosmic-gold/10 group">
                         <img src={img} alt="" className="w-full h-full object-cover" />
-                        <button 
-                          onClick={() => removeSliderImage(idx)}
-                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                          <button 
+                            onClick={() => setAsMainImage(img)}
+                            className="px-3 py-1.5 bg-cosmic-gold text-cosmic-900 text-[8px] font-bold rounded-lg hover:scale-105 transition-transform uppercase tracking-widest"
+                          >
+                            Set as Main
+                          </button>
+                          <button 
+                            onClick={() => removeSliderImage(idx)}
+                            className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                        {editingPost.imageUrl === img && (
+                          <div className="absolute top-2 left-2 bg-cosmic-gold text-cosmic-900 p-1 rounded-md">
+                            <Star className="w-3 h-3 fill-current" />
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

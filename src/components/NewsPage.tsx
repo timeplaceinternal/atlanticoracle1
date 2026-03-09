@@ -18,11 +18,12 @@ const getDisplayImage = (post: NewsPost) => {
     const videoId = post.videoUrl.split('v=')[1]?.split('&')[0] || post.videoUrl.split('/').pop();
     return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   }
-  return 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?auto=format&fit=crop&q=80'; // Cosmic fallback
+  return null;
 };
 
 const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const displayImage = getDisplayImage(post);
 
   // Handle YouTube Video
   if (post.videoUrl) {
@@ -70,7 +71,6 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   }
 
   // Handle Single Image (Small or Large)
-  const displayImage = getDisplayImage(post);
   if (displayImage) {
     const isSmall = post.imageSize === 'small';
     return (
@@ -84,7 +84,16 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
     );
   }
 
-  return null;
+  // Fallback if no media at all
+  return (
+    <div className="w-full aspect-video mb-8 rounded-3xl overflow-hidden border border-cosmic-gold/10 bg-cosmic-gold/5 flex items-center justify-center">
+       <img 
+         src="https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?auto=format&fit=crop&q=80" 
+         alt="Cosmic Fallback" 
+         className="w-full h-full object-cover opacity-20 grayscale"
+       />
+    </div>
+  );
 };
 
 const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSlugChange }) => {
@@ -201,8 +210,14 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                     onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
                     className="group cursor-pointer bg-cosmic-gold/5 border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold/40 transition-all space-y-6"
                   >
-                    <div className="aspect-video rounded-2xl overflow-hidden border border-cosmic-gold/20">
-                      <img src={getDisplayImage(post)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div className="aspect-video rounded-2xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-gold/5">
+                      {getDisplayImage(post) ? (
+                        <img src={getDisplayImage(post)!} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center opacity-20">
+                          <Star className="w-12 h-12 text-cosmic-gold" />
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-4">
                       <h3 className="text-2xl font-cinzel text-white group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
@@ -238,8 +253,14 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                         : 'bg-cosmic-800/20 border-cosmic-gold/5 p-6 hover:border-cosmic-gold/30'
                     }`}
                   >
-                    <div className={`${isFeatured ? 'aspect-video' : 'aspect-[4/3]'} rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2`}>
-                      <img src={getDisplayImage(post)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                    <div className={`${isFeatured ? 'aspect-video' : 'aspect-[4/3]'} rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2 bg-cosmic-gold/5`}>
+                      {getDisplayImage(post) ? (
+                        <img src={getDisplayImage(post)!} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center opacity-10">
+                          <Newspaper className="w-16 h-16 text-cosmic-gold" />
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 text-cosmic-gold/40 text-[9px] uppercase tracking-widest">

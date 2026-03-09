@@ -17,7 +17,7 @@ const getDisplayImage = (post: NewsPost) => {
     const videoId = post.videoUrl.split('v=')[1]?.split('&')[0] || post.videoUrl.split('/').pop();
     return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
   }
-  return 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?auto=format&fit=crop&q=80';
+  return null; // Return null instead of fallback to allow conditional rendering
 };
 
 const LatestNewsPreview: React.FC<LatestNewsPreviewProps> = ({ onViewNews, onViewPost, language }) => {
@@ -44,22 +44,27 @@ const LatestNewsPreview: React.FC<LatestNewsPreviewProps> = ({ onViewNews, onVie
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {posts.map(post => (
-          <div key={post.id} onClick={() => onViewPost(post.slug)} className="group bg-cosmic-800/10 border border-cosmic-gold/10 p-10 rounded-[3rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
-              <img src={getDisplayImage(post)} alt="" className="w-full h-full object-cover" />
-            </div>
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 text-cosmic-gold/60 text-[10px] uppercase tracking-[0.3em] mb-6">
-                <Calendar className="w-3 h-3" />
-                <span>{post.date}</span>
+        {posts.map(post => {
+          const displayImage = getDisplayImage(post);
+          return (
+            <div key={post.id} onClick={() => onViewPost(post.slug)} className="group bg-cosmic-800/10 border border-cosmic-gold/10 p-10 rounded-[3rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden">
+              {displayImage && (
+                <div className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity">
+                  <img src={displayImage} alt="" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 text-cosmic-gold/60 text-[10px] uppercase tracking-[0.3em] mb-6">
+                  <Calendar className="w-3 h-3" />
+                  <span>{post.date}</span>
+                </div>
+                <h4 className="text-2xl font-cinzel text-white mb-4 group-hover:text-cosmic-gold transition-colors">{post.title}</h4>
+                <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed mb-8 line-clamp-3">{post.text}</p>
+                <div className="flex items-center gap-2 text-cosmic-gold text-xs font-bold uppercase tracking-widest">Read More <ChevronRight className="w-4 h-4" /></div>
               </div>
-              <h4 className="text-2xl font-cinzel text-white mb-4 group-hover:text-cosmic-gold transition-colors">{post.title}</h4>
-              <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed mb-8 line-clamp-3">{post.text}</p>
-              <div className="flex items-center gap-2 text-cosmic-gold text-xs font-bold uppercase tracking-widest">Read More <ChevronRight className="w-4 h-4" /></div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
