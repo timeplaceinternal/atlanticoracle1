@@ -70,10 +70,13 @@ const AdminPanel: React.FC = () => {
       if (field === 'imageUrl') {
         setEditingPost(prev => ({ ...(prev || {}), imageUrl: uploadedUrls[0] }));
       } else {
-        setEditingPost(prev => ({ 
-          ...(prev || {}), 
-          images: [...(prev?.images || []), ...uploadedUrls] 
-        }));
+        setEditingPost(prev => {
+          const currentImages = prev?.images || [];
+          const newImages = [...currentImages, ...uploadedUrls];
+          // If no main image yet, use the first one from gallery
+          const imageUrl = prev?.imageUrl || uploadedUrls[0];
+          return { ...(prev || {}), images: newImages, imageUrl };
+        });
       }
       
       // Success feedback for upload
@@ -171,6 +174,16 @@ const AdminPanel: React.FC = () => {
         alert(`Failed to delete transmission: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
+  };
+
+  const getDisplayImage = (post: NewsPost) => {
+    if (post.imageUrl) return post.imageUrl;
+    if (post.images && post.images.length > 0) return post.images[0];
+    if (post.videoUrl) {
+      const videoId = post.videoUrl.split('v=')[1]?.split('&')[0] || post.videoUrl.split('/').pop();
+      return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    }
+    return null;
   };
 
   if (!isLoggedIn) {
@@ -319,8 +332,8 @@ const AdminPanel: React.FC = () => {
                   </button>
                 </div>
               ) : editingPost.imageUrl ? (
-                <div className={`relative rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl group ${editingPost.imageSize === 'small' ? 'md:w-1/2 md:float-right md:ml-8 md:mb-8' : 'w-full'}`}>
-                  <img src={editingPost.imageUrl} alt="Preview" className="w-full h-auto object-cover" referrerPolicy="no-referrer" />
+                <div className="relative rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl group">
+                  <img src={editingPost.imageUrl} alt="Preview" className="w-full h-auto object-cover" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                     <button 
                       onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
@@ -500,14 +513,21 @@ const AdminPanel: React.FC = () => {
         <div className="grid grid-cols-1 gap-6">
           {posts.map(post => (
             <div key={post.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
-                  <span>{post.date}</span>
-                  <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
-                  <span>{post.topic}</span>
+              <div className="flex items-center gap-6">
+                {getDisplayImage(post) && (
+                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-cosmic-gold/20 flex-shrink-0">
+                    <img src={getDisplayImage(post)!} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                    <span>{post.date}</span>
+                    <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
+                    <span>{post.topic}</span>
+                  </div>
+                  <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
+                  <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.text}</p>
                 </div>
-                <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
-                <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.text}</p>
               </div>
               <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button 

@@ -11,6 +11,16 @@ interface NewsPageProps {
   onSlugChange: (slug: string | null) => void;
 }
 
+const getDisplayImage = (post: NewsPost) => {
+  if (post.imageUrl) return post.imageUrl;
+  if (post.images && post.images.length > 0) return post.images[0];
+  if (post.videoUrl) {
+    const videoId = post.videoUrl.split('v=')[1]?.split('&')[0] || post.videoUrl.split('/').pop();
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  }
+  return 'https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?auto=format&fit=crop&q=80'; // Cosmic fallback
+};
+
 const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -43,7 +53,6 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
               src={img}
               alt={`${post.title} slide ${idx}`}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${idx === activeSlide ? 'opacity-100' : 'opacity-0'}`}
-              referrerPolicy="no-referrer"
             />
           ))}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
@@ -61,15 +70,15 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   }
 
   // Handle Single Image (Small or Large)
-  if (post.imageUrl) {
+  const displayImage = getDisplayImage(post);
+  if (displayImage) {
     const isSmall = post.imageSize === 'small';
     return (
       <div className={`${isSmall ? 'md:float-right md:ml-8 md:mb-8 md:w-1/2' : 'w-full mb-8'} rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl`}>
         <img
-          src={post.imageUrl}
+          src={displayImage}
           alt={post.title}
           className="w-full h-auto object-cover"
-          referrerPolicy="no-referrer"
         />
       </div>
     );
@@ -193,7 +202,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                     className="group cursor-pointer bg-cosmic-gold/5 border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold/40 transition-all space-y-6"
                   >
                     <div className="aspect-video rounded-2xl overflow-hidden border border-cosmic-gold/20">
-                      <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+                      <img src={getDisplayImage(post)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                     </div>
                     <div className="space-y-4">
                       <h3 className="text-2xl font-cinzel text-white group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
@@ -230,7 +239,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                     }`}
                   >
                     <div className={`${isFeatured ? 'aspect-video' : 'aspect-[4/3]'} rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2`}>
-                      <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" referrerPolicy="no-referrer" />
+                      <img src={getDisplayImage(post)} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                     </div>
 
                     <div className="flex items-center gap-2 text-cosmic-gold/40 text-[9px] uppercase tracking-widest">
