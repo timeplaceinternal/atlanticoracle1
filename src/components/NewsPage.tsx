@@ -147,7 +147,15 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
           <div className="h-px bg-cosmic-gold/20 flex-1"></div>
         </div>
         
-        <h1 className={`font-cinzel text-white uppercase tracking-tighter leading-none transition-all duration-700 ${selectedPost ? 'text-4xl md:text-6xl' : 'text-7xl md:text-9xl'}`}>
+        <h1 
+          onClick={() => {
+            if (selectedPost) {
+              setSelectedPost(null);
+              onSlugChange(null);
+            }
+          }}
+          className={`font-cinzel text-white uppercase tracking-tighter leading-none transition-all duration-700 cursor-pointer hover:opacity-80 ${selectedPost ? 'text-4xl md:text-6xl' : 'text-7xl md:text-9xl'}`}
+        >
           <span className="text-cosmic-gold">Cosmic</span> News
         </h1>
 

@@ -40,6 +40,17 @@ const TESTIMONIALS = [
 ];
 
 const App: React.FC = () => {
+  const [language, setLanguage] = useState<ReportLanguage>('English');
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [newsSlug, setNewsSlug] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const match = path.match(/\/news\/([^/]+)/);
+      return match ? match[1] : null;
+    }
+    return null;
+  });
+
   const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -80,7 +91,7 @@ const App: React.FC = () => {
         window.history.pushState({}, '', '/privacy');
       }
     }
-  }, [view]);
+  }, [view, newsSlug]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -114,16 +125,6 @@ const App: React.FC = () => {
     (window as any).setAppView = setView;
   }, []);
 
-  const [language, setLanguage] = useState<ReportLanguage>('English');
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [newsSlug, setNewsSlug] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      const path = window.location.pathname;
-      const match = path.match(/\/news\/([^/]+)/);
-      return match ? match[1] : null;
-    }
-    return null;
-  });
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
   const [result, setResult] = useState<ReadingResultType | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);

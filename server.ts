@@ -24,13 +24,22 @@ async function startServer() {
   const upload = multer({ 
     storage: multer.memoryStorage(),
     limits: {
-      fileSize: 3 * 1024 * 1024 // 3MB limit
+      fileSize: 5 * 1024 * 1024 // Increased to 5MB
+    },
+    fileFilter: (_req, file, cb) => {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg', 'image/svg+xml', 'image/bmp', 'image/tiff'];
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error(`Invalid file type: ${file.mimetype}. Only JPG, PNG, WEBP, and GIF are allowed.`));
+      }
     }
   });
 
   app.use(express.json({ limit: '10mb' }));
-  // Serve local uploads
-  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+  // Serve local uploads - Ensure public/uploads is served at /uploads
+  const uploadsPath = path.join(__dirname, 'public', 'uploads');
+  app.use('/uploads', express.static(uploadsPath));
 
   const NEWS_FILE_PATH = 'data/news.json';
   const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
@@ -40,24 +49,27 @@ async function startServer() {
   // File upload endpoint
   app.post("/api/upload", (req, res) => {
     upload.single('file')(req, res, async (err) => {
-      if (err instanceof multer.MulterError) {
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return res.status(400).json({ error: "File too large. Max size is 3MB." });
+      if (err) {
+        console.error("Multer error:", err);
+        if (err instanceof multer.MulterError) {
+          if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: "File too large. Max size is 5MB." });
+          }
+          return res.status(400).json({ error: "Upload error: " + err.message });
         }
-        return res.status(400).json({ error: "Upload error: " + err.message });
-      } else if (err) {
-        return res.status(500).json({ error: "Server error: " + err.message });
+        return res.status(400).json({ error: err.message });
       }
 
-      console.log(">>> POST /api/upload - Start");
+      console.log(">>> POST /api/upload - File received:", req.file?.originalname);
       try {
         if (!req.file) {
           console.error("Upload error: No file in request");
           return res.status(400).json({ error: "No file provided" });
         }
 
-        const safeName = req.file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-        const filename = `${Date.now()}-${safeName}`;
+        const ext = path.extname(req.file.originalname) || '.jpg';
+        const safeName = req.file.originalname.replace(/[^a-zA-Z0-9]/g, '_');
+        const filename = `${Date.now()}-${safeName}${ext}`;
         
         // Try Vercel Blob first
         const token = process.env.BLOB_READ_WRITE_TOKEN;
@@ -76,10 +88,8 @@ async function startServer() {
         const localPath = path.join(LOCAL_UPLOADS_DIR, filename);
         fs.writeFileSync(localPath, req.file.buffer);
         
-        // Construct local URL
-        const protocol = req.headers['x-forwarded-proto'] || 'http';
-        const host = req.headers.host;
-        const url = `${protocol}://${host}/uploads/${filename}`;
+        // Construct local URL - Use relative path for better compatibility
+        const url = `/uploads/${filename}`;
         
         console.log("Local upload successful! URL:", url);
         res.json({ url });

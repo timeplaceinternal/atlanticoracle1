@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { NewsPost } from '../types';
 
@@ -35,14 +35,14 @@ const AdminPanel: React.FC = () => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const MAX_SIZE = 3 * 1024 * 1024; // 3MB
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
     setIsUploading(true);
     try {
       const uploadedUrls: string[] = [];
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > MAX_SIZE) {
-          throw new Error(`File ${files[i].name} is too large. Max size is 3MB.`);
+          throw new Error(`File ${files[i].name} is too large. Max size is 5MB.`);
         }
         const formData = new FormData();
         formData.append('file', files[i]);
@@ -50,12 +50,12 @@ const AdminPanel: React.FC = () => {
           method: 'POST',
           body: formData
         });
+        
+        const data = await response.json();
         if (response.ok) {
-          const data = await response.json();
           uploadedUrls.push(data.url);
         } else {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `Upload failed with status ${response.status}`);
+          throw new Error(data.error || `Upload failed with status ${response.status}`);
         }
       }
 
@@ -80,6 +80,8 @@ const AdminPanel: React.FC = () => {
       alert(message);
     } finally {
       setIsUploading(false);
+      // Reset input
+      e.target.value = '';
     }
   };
 
@@ -138,10 +140,11 @@ const AdminPanel: React.FC = () => {
       await newsService.savePost(newPost);
       await fetchAndSortPosts();
       setSaveSuccess(true);
+      // Let the user see the "Published!" state for 2 seconds before closing
       setTimeout(() => {
         setEditingPost(null);
         setSaveSuccess(false);
-      }, 1500);
+      }, 2000);
     } catch (error) {
       console.error("Save failed:", error);
       alert(`Failed to save transmission: ${error instanceof Error ? error.message : String(error)}`);
@@ -193,6 +196,257 @@ const AdminPanel: React.FC = () => {
             </div>
             <button type="submit" className="w-full py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform">Unlock Portal</button>
           </form>
+        </div>
+      </div>
+    );
+  }
+
+  if (editingPost) {
+    return (
+      <div className="min-h-screen bg-cosmic-900 pb-32">
+        {/* Editor Header / Toolbar */}
+        <div className="sticky top-0 z-[250] bg-cosmic-900/80 backdrop-blur-xl border-b border-cosmic-gold/20 p-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setEditingPost(null)}
+                className="p-2 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-full transition-colors"
+                title="Back to Dashboard"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h2 className="text-xl font-cinzel text-white uppercase tracking-widest hidden md:block">
+                {editingPost.id ? 'Edit Transmission' : 'New Transmission'}
+              </h2>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="hidden lg:flex items-center gap-4 mr-4 border-r border-cosmic-gold/20 pr-4">
+                <div className="flex flex-col">
+                  <label className="text-[8px] uppercase tracking-widest text-cosmic-gold/60">Topic</label>
+                  <select 
+                    value={editingPost.topic || 'astrology'} 
+                    onChange={(e) => setEditingPost({...editingPost, topic: e.target.value as any})}
+                    className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer"
+                  >
+                    <option value="astrology" className="bg-cosmic-900">Astrology</option>
+                    <option value="numerology" className="bg-cosmic-900">Numerology</option>
+                    <option value="astronomy" className="bg-cosmic-900">Astronomy</option>
+                    <option value="horoscope" className="bg-cosmic-900">Daily Horoscope</option>
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <label className="text-[8px] uppercase tracking-widest text-cosmic-gold/60">Format</label>
+                  <select 
+                    value={editingPost.format || 'fact'} 
+                    onChange={(e) => setEditingPost({...editingPost, format: e.target.value as any})}
+                    className="bg-transparent text-white text-xs font-bold outline-none cursor-pointer"
+                  >
+                    <option value="fact" className="bg-cosmic-900">Fact</option>
+                    <option value="forecast" className="bg-cosmic-900">Forecast</option>
+                    <option value="series" className="bg-cosmic-900">Series</option>
+                    <option value="horoscope" className="bg-cosmic-900">Horoscope</option>
+                  </select>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleSavePost}
+                disabled={isSaving || isUploading}
+                className={`px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${
+                  saveSuccess 
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-cosmic-gold text-cosmic-900 hover:scale-105 shadow-[0_0_20px_rgba(212,175,55,0.3)]'
+                }`}
+              >
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : saveSuccess ? <ShieldCheck className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                {isSaving ? 'Saving...' : saveSuccess ? 'Published!' : 'Publish'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Live Preview Editor Content */}
+        <div className="max-w-4xl mx-auto px-6 pt-20 space-y-12 animate-in fade-in duration-700">
+          <header className="space-y-8 text-center mb-16">
+            <div className="flex items-center justify-center gap-3 text-cosmic-gold/60 text-[10px] uppercase tracking-[0.3em]">
+              <Calendar className="w-3 h-3" />
+              <time>{editingPost.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+              <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
+              <span className="text-cosmic-gold">{editingPost.topic || 'astrology'}</span>
+            </div>
+            
+            <textarea 
+              value={editingPost.title || ''} 
+              onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
+              placeholder="ENTER SACRED TITLE..."
+              rows={2}
+              className="w-full bg-transparent text-4xl md:text-7xl font-cinzel text-white uppercase tracking-widest leading-tight text-center outline-none border-b border-transparent focus:border-cosmic-gold/20 resize-none placeholder:text-white/10"
+            />
+            
+            <div className="flex justify-center">
+              <div className="w-32 h-px bg-cosmic-gold/30"></div>
+            </div>
+          </header>
+
+          <div className="space-y-12">
+            {/* Media Section */}
+            <div className="space-y-6">
+              {/* Main Image / Video Preview */}
+              {editingPost.videoUrl ? (
+                <div className="relative aspect-video w-full rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl group">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${editingPost.videoUrl.split('v=')[1]?.split('&')[0] || editingPost.videoUrl.split('/').pop()}`}
+                    title="Preview"
+                    frameBorder="0"
+                    allowFullScreen
+                  ></iframe>
+                  <button 
+                    onClick={() => setEditingPost({...editingPost, videoUrl: ''})}
+                    className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : editingPost.imageUrl ? (
+                <div className={`relative rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl group ${editingPost.imageSize === 'small' ? 'md:w-1/2 md:float-right md:ml-8 md:mb-8' : 'w-full'}`}>
+                  <img src={editingPost.imageUrl} alt="Preview" className="w-full h-auto object-cover" referrerPolicy="no-referrer" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                    <button 
+                      onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
+                      className="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <Trash2 className="w-6 h-6" />
+                    </button>
+                    <select 
+                      value={editingPost.imageSize || 'large'} 
+                      onChange={(e) => setEditingPost({...editingPost, imageSize: e.target.value as any})}
+                      className="bg-cosmic-900 border border-cosmic-gold/30 text-white px-4 py-2 rounded-xl outline-none"
+                    >
+                      <option value="large">Large</option>
+                      <option value="small">Small</option>
+                    </select>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <label className="cursor-pointer aspect-video bg-cosmic-800/40 border-2 border-dashed border-cosmic-gold/20 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-cosmic-gold/40 transition-all group">
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'imageUrl')} />
+                    {isUploading ? <Loader2 className="w-8 h-8 animate-spin text-cosmic-gold" /> : <ImageIcon className="w-12 h-12 text-cosmic-gold/40 group-hover:text-cosmic-gold transition-colors" />}
+                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-cosmic-gold/60">Add Main Image</span>
+                  </label>
+                  <div className="aspect-video bg-cosmic-800/40 border-2 border-dashed border-cosmic-gold/20 rounded-3xl flex flex-col items-center justify-center gap-4 p-6">
+                    <div className="flex items-center gap-2 w-full">
+                      <Play className="w-5 h-5 text-cosmic-gold/40" />
+                      <input 
+                        type="text" 
+                        placeholder="YouTube URL..."
+                        value={editingPost.videoUrl || ''}
+                        onChange={(e) => setEditingPost({...editingPost, videoUrl: e.target.value})}
+                        className="flex-1 bg-transparent border-b border-cosmic-gold/20 text-white text-sm outline-none focus:border-cosmic-gold transition-colors py-2"
+                      />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic-gold/40">Or embed a video</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Slider Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h5 className="text-[10px] font-bold uppercase tracking-[0.3em] text-cosmic-gold/40">Image Gallery / Slider</h5>
+                  <label className="cursor-pointer text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic-gold hover:text-white transition-colors flex items-center gap-2">
+                    <input type="file" className="hidden" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'images')} />
+                    <Plus className="w-3 h-3" /> Add Gallery Images
+                  </label>
+                </div>
+                
+                {editingPost.images && editingPost.images.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {editingPost.images.map((img, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-cosmic-gold/10 group">
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                        <button 
+                          onClick={() => removeSliderImage(idx)}
+                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Text Content Editor */}
+            <div className="relative">
+              <textarea 
+                value={editingPost.text || ''} 
+                onChange={(e) => setEditingPost({...editingPost, text: e.target.value})}
+                placeholder="Begin the cosmic transmission..."
+                className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none placeholder:text-white/5"
+              />
+              {/* Drop Cap Preview (Visual only) */}
+              {editingPost.text && (
+                <div className="absolute top-0 left-0 pointer-events-none opacity-10">
+                  <span className="text-7xl font-cinzel text-cosmic-gold mr-4 float-left mt-2">
+                    {editingPost.text.charAt(0)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* SEO Sidebar / Footer */}
+          <div className="pt-20 border-t border-cosmic-gold/10 grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-6">
+              <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">SEO Metadata</h4>
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Title</label>
+                  <input 
+                    type="text" 
+                    value={editingPost.metaTitle || ''} 
+                    onChange={(e) => setEditingPost({...editingPost, metaTitle: e.target.value})}
+                    placeholder={editingPost.title || "SEO Title"}
+                    className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none focus:border-cosmic-gold/40"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Description</label>
+                  <textarea 
+                    value={editingPost.metaDescription || ''} 
+                    onChange={(e) => setEditingPost({...editingPost, metaDescription: e.target.value})}
+                    placeholder="Brief summary for search engines..."
+                    className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none focus:border-cosmic-gold/40 h-24 resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-6">
+              <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">Publishing Info</h4>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-4 bg-cosmic-800/20 rounded-2xl border border-cosmic-gold/5">
+                  <span className="text-xs text-cosmic-silver/60 uppercase tracking-widest">Slug</span>
+                  <span className="text-xs text-cosmic-gold font-mono">{editingPost.slug || 'auto-generated'}</span>
+                </div>
+                <div className="flex justify-between items-center p-4 bg-cosmic-800/20 rounded-2xl border border-cosmic-gold/5">
+                  <span className="text-xs text-cosmic-silver/60 uppercase tracking-widest">Date</span>
+                  <span className="text-xs text-white">{editingPost.date || 'Today'}</span>
+                </div>
+                <button 
+                  onClick={() => setEditingPost(null)}
+                  className="w-full py-4 border border-red-500/20 text-red-400/60 hover:text-red-400 hover:bg-red-400/5 rounded-xl transition-all text-xs font-bold uppercase tracking-widest"
+                >
+                  Discard Changes
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -265,202 +519,6 @@ const AdminPanel: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {editingPost && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-cosmic-900/80 backdrop-blur-xl">
-          <div className="bg-cosmic-800 border border-cosmic-gold/30 p-10 rounded-[3rem] max-w-2xl w-full space-y-8 shadow-2xl">
-            <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">
-              {editingPost.id ? 'Edit Transmission' : 'New Transmission'}
-            </h3>
-            <form onSubmit={handleSavePost} className="space-y-6 max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
-              <div className="space-y-2">
-                <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Title</label>
-                <input 
-                  type="text" 
-                  value={editingPost.title || ''} 
-                  onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Content</label>
-                <textarea 
-                  value={editingPost.text || ''} 
-                  onChange={(e) => setEditingPost({...editingPost, text: e.target.value})}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[150px]"
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Main Image</label>
-                  <div className="flex flex-col gap-4">
-                    <label className="cursor-pointer bg-cosmic-gold/10 border border-cosmic-gold/30 rounded-xl p-8 text-cosmic-gold hover:bg-cosmic-gold/20 transition-all flex flex-col items-center justify-center gap-4 group">
-                      <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'imageUrl')} />
-                      {isUploading ? (
-                        <Loader2 className="w-8 h-8 animate-spin" />
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 group-hover:-translate-y-1 transition-transform" />
-                          <span className="text-sm font-bold uppercase tracking-widest">Upload from Device</span>
-                        </>
-                      )}
-                    </label>
-                    
-                    {editingPost.imageUrl && (
-                      <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-cosmic-gold/10 group">
-                        <img src={editingPost.imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button 
-                            type="button" 
-                            onClick={() => setEditingPost({...editingPost, imageUrl: ''})}
-                            className="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-xl"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Image Size</label>
-                  <select 
-                    value={editingPost.imageSize || 'large'} 
-                    onChange={(e) => setEditingPost({...editingPost, imageSize: e.target.value as any})}
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                  >
-                    <option value="large">Large (Full Width)</option>
-                    <option value="small">Small (Floated)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-cosmic-silver text-xs uppercase tracking-widest">YouTube Video URL</label>
-                <input 
-                  type="text" 
-                  value={editingPost.videoUrl || ''} 
-                  onChange={(e) => setEditingPost({...editingPost, videoUrl: e.target.value})}
-                  placeholder="https://youtube.com/watch?v=..."
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                />
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Slider Images</label>
-                  <label className="cursor-pointer text-xs text-cosmic-gold hover:underline flex items-center gap-2 font-bold uppercase tracking-widest">
-                    <input type="file" className="hidden" accept="image/*" multiple onChange={(e) => handleFileUpload(e, 'images')} />
-                    <Upload className="w-3 h-3" /> Add from Device
-                  </label>
-                </div>
-                
-                {editingPost.images && editingPost.images.length > 0 ? (
-                  <div className="grid grid-cols-4 gap-4">
-                    {editingPost.images.map((img, idx) => (
-                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-cosmic-gold/20 group">
-                        <img src={img} alt="" className="w-full h-full object-cover" />
-                        <button 
-                          type="button"
-                          onClick={() => removeSliderImage(idx)}
-                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <CloseIcon className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-cosmic-gold/10 rounded-xl p-8 text-center">
-                    <p className="text-cosmic-silver/40 text-xs uppercase tracking-widest">No slider images uploaded</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Topic</label>
-                  <select 
-                    value={editingPost.topic || 'astrology'} 
-                    onChange={(e) => setEditingPost({...editingPost, topic: e.target.value as any})}
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                  >
-                    <option value="astrology">Astrology</option>
-                    <option value="numerology">Numerology</option>
-                    <option value="astronomy">Astronomy</option>
-                    <option value="horoscope">Daily Horoscope</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Format</label>
-                  <select 
-                    value={editingPost.format || 'fact'} 
-                    onChange={(e) => setEditingPost({...editingPost, format: e.target.value as any})}
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                  >
-                    <option value="fact">Fact</option>
-                    <option value="forecast">Forecast</option>
-                    <option value="series">Series</option>
-                    <option value="horoscope">Horoscope</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="border-t border-cosmic-gold/10 pt-6 space-y-6">
-                <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">SEO Optimization</h4>
-                <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Meta Title</label>
-                  <input 
-                    type="text" 
-                    value={editingPost.metaTitle || ''} 
-                    onChange={(e) => setEditingPost({...editingPost, metaTitle: e.target.value})}
-                    placeholder="SEO Title (defaults to title)"
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-cosmic-silver text-xs uppercase tracking-widest">Meta Description</label>
-                  <textarea 
-                    value={editingPost.metaDescription || ''} 
-                    onChange={(e) => setEditingPost({...editingPost, metaDescription: e.target.value})}
-                    placeholder="SEO Description (defaults to text snippet)"
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none min-h-[80px]"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button 
-                  type="submit" 
-                  className={`flex-1 py-4 font-bold rounded-xl transition-all flex items-center justify-center gap-2 ${
-                    saveSuccess 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-cosmic-gold text-cosmic-900 hover:scale-105'
-                  } disabled:opacity-50 disabled:hover:scale-100`} 
-                  disabled={isUploading || isSaving}
-                >
-                  {isSaving ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Saving...
-                    </>
-                  ) : saveSuccess ? (
-                    <>
-                      <ShieldCheck className="w-5 h-5" />
-                      Published!
-                    </>
-                  ) : (
-                    'Save Transmission'
-                  )}
-                </button>
-                <button type="button" onClick={() => setEditingPost(null)} className="flex-1 py-4 bg-cosmic-800 text-white font-bold rounded-xl border border-cosmic-gold/20 hover:bg-cosmic-700 transition-colors" disabled={isSaving}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
