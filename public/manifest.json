@@ -1,0 +1,17 @@
+{
+  "name": "Atlantic Oracle",
+  "short_name": "AtlanticOracle",
+  "description": "Premium soul horoscopes, natal charts & Human Design reports.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050510",
+  "theme_color": "#d4af37",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
