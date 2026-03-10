@@ -44,6 +44,16 @@ const TESTIMONIALS = [
 const App: React.FC = () => {
   const [language, setLanguage] = useState<ReportLanguage>('English');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+
+  // Update document language for native elements like date pickers
+  useEffect(() => {
+    const langMap: Record<string, string> = {
+      'English': 'en',
+      'Portuguese': 'pt-BR'
+    };
+    document.documentElement.lang = langMap[language] || 'en';
+  }, [language]);
+
   const [newsSlug, setNewsSlug] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;

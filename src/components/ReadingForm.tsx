@@ -73,6 +73,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
               <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
               <input 
                 type="date"
+                lang={language === 'Portuguese' ? 'pt-BR' : 'en'}
                 value={birthDate} 
                 onChange={(e) => setBirthDate(e.target.value)} 
                 className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
@@ -123,6 +124,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                 <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formPartnerBirthDate}</label>
                 <input 
                   type="date"
+                  lang={language === 'Portuguese' ? 'pt-BR' : 'en'}
                   value={partnerBirthDate} 
                   onChange={(e) => setPartnerBirthDate(e.target.value)} 
                   className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
@@ -173,6 +175,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                     <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamDate}</label>
                     <input 
                       type="date"
+                      lang={language === 'Portuguese' ? 'pt-BR' : 'en'}
                       value={dreamDate} 
                       onChange={(e) => setDreamDate(e.target.value)} 
                       className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
