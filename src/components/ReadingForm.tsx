@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { ptBR } from 'date-fns/locale/pt-BR';
+import { enUS } from 'date-fns/locale/en-US';
 import { Service, ReadingRequest, ReportLanguage, ServiceType } from '../types';
 import { translations } from '../translations';
+
+registerLocale('pt-BR', ptBR);
+registerLocale('en', enUS);
 
 interface ReadingFormProps {
   service: Service;
@@ -11,38 +17,43 @@ interface ReadingFormProps {
 
 const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, onSubmit }) => {
   const [name, setName] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [birthTime, setBirthTime] = useState('');
   const [birthPlace, setBirthPlace] = useState('');
   
   // Partner fields
   const [partnerName, setPartnerName] = useState('');
-  const [partnerBirthDate, setPartnerBirthDate] = useState('');
+  const [partnerBirthDate, setPartnerBirthDate] = useState<Date | null>(null);
   const [partnerBirthTime, setPartnerBirthTime] = useState('');
   
   // Dream fields
   const [dreamDescription, setDreamDescription] = useState('');
   const [dreamKeywords, setDreamKeywords] = useState('');
-  const [dreamDate, setDreamDate] = useState('');
+  const [dreamDate, setDreamDate] = useState<Date | null>(null);
   const [dreamTime, setDreamTime] = useState('');
 
   const t = translations[language];
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return '';
+    return date.toISOString().split('T')[0];
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
       name,
-      birthDate,
+      birthDate: formatDate(birthDate),
       birthTime,
       birthPlace,
       language,
       serviceId: service.id,
       partnerName: service.id === ServiceType.LOVE_SYNASTRY ? partnerName : undefined,
-      partnerBirthDate: service.id === ServiceType.LOVE_SYNASTRY ? partnerBirthDate : undefined,
+      partnerBirthDate: service.id === ServiceType.LOVE_SYNASTRY ? formatDate(partnerBirthDate) : undefined,
       partnerBirthTime: service.id === ServiceType.LOVE_SYNASTRY ? partnerBirthTime : undefined,
       dreamDescription: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamDescription : undefined,
       dreamKeywords: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamKeywords : undefined,
-      dreamDate: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamDate : undefined,
+      dreamDate: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? formatDate(dreamDate) : undefined,
       dreamTime: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamTime : undefined,
       timestamp: Date.now()
     });
@@ -71,12 +82,16 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
-              <input 
-                type="date"
-                lang={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                value={birthDate} 
-                onChange={(e) => setBirthDate(e.target.value)} 
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
+              <DatePicker
+                selected={birthDate}
+                onChange={(date: Date | null) => setBirthDate(date)}
+                locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
+                dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                placeholderText={t.formBirthDatePlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                showYearDropdown
+                scrollableYearDropdown
+                yearDropdownItemNumber={100}
                 required
               />
             </div>
@@ -122,12 +137,16 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formPartnerBirthDate}</label>
-                <input 
-                  type="date"
-                  lang={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                  value={partnerBirthDate} 
-                  onChange={(e) => setPartnerBirthDate(e.target.value)} 
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
+                <DatePicker
+                  selected={partnerBirthDate}
+                  onChange={(date: Date | null) => setPartnerBirthDate(date)}
+                  locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
+                  dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                  placeholderText={t.formBirthDatePlaceholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={100}
                   required
                 />
               </div>
@@ -173,12 +192,16 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamDate}</label>
-                    <input 
-                      type="date"
-                      lang={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                      value={dreamDate} 
-                      onChange={(e) => setDreamDate(e.target.value)} 
-                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
+                    <DatePicker
+                      selected={dreamDate}
+                      onChange={(date: Date | null) => setDreamDate(date)}
+                      locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
+                      dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                      placeholderText={t.formBirthDatePlaceholder}
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                      showYearDropdown
+                      scrollableYearDropdown
+                      yearDropdownItemNumber={100}
                     />
                   </div>
                   <div>

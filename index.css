@@ -145,3 +145,74 @@
 ::-webkit-scrollbar-track { background: #050510; }
 ::-webkit-scrollbar-thumb { background: #d4af3733; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #d4af3766; }
+
+/* React Datepicker Cosmic Theme */
+.react-datepicker {
+  background-color: #0c0c1d !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  color: white !important;
+  font-family: 'Inter', sans-serif !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-datepicker__header {
+  background-color: #050510 !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
+  padding-top: 1rem !important;
+}
+
+.react-datepicker__current-month, 
+.react-datepicker__day-name, 
+.react-datepicker-time__header {
+  color: #d4af37 !important;
+  font-family: 'Cinzel', serif !important;
+}
+
+.react-datepicker__day {
+  color: #c0c0c0 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #d4af37 !important;
+  color: #050510 !important;
+}
+
+.react-datepicker__day--selected, 
+.react-datepicker__day--keyboard-selected {
+  background-color: #d4af37 !important;
+  color: #050510 !important;
+  font-weight: bold !important;
+}
+
+.react-datepicker__day--outside-month {
+  color: rgba(192, 192, 192, 0.2) !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #d4af37 !important;
+}
+
+.react-datepicker__year-read-view--down-arrow,
+.react-datepicker__month-read-view--down-arrow {
+  border-color: #d4af37 !important;
+}
+
+.react-datepicker__year-dropdown,
+.react-datepicker__month-dropdown {
+  background-color: #0c0c1d !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+}
+
+.react-datepicker__year-option:hover,
+.react-datepicker__month-option:hover {
+  background-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+.react-datepicker__input-container input {
+  cursor: pointer;
+}
+

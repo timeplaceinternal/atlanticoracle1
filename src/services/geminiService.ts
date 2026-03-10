@@ -3,7 +3,14 @@ import { ReadingRequest, ServiceType } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  
+  if (!apiKey) {
+    console.error("!!! GEMINI_API_KEY is missing from environment variables.");
+    throw new Error("The Oracle is currently disconnected from the cosmic source (API Key missing). Please contact support.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   
   let prompt = "";
   const { serviceId, name, birthDate, birthTime, birthPlace, language, partnerName, partnerBirthDate, partnerBirthTime, dreamDescription, dreamKeywords, dreamDate, dreamTime } = request;
