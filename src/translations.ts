@@ -126,8 +126,16 @@ export interface Translations {
   formBirthDatePlaceholder: string;
   formBirthPlace: string;
   formBirthPlacePlaceholder: string;
+  formBirthTime: string;
+  formBirthTimePlaceholder: string;
   formBack: string;
   formSubmit: string;
+  formPartnerName: string;
+  formPartnerBirthDate: string;
+  formDreamDescription: string;
+  formDreamKeywords: string;
+  formDreamDate: string;
+  formDreamTime: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -257,8 +265,16 @@ export const translations: Record<ReportLanguage, Translations> = {
     formBirthDatePlaceholder: "MM/DD/YYYY",
     formBirthPlace: "Birth Place",
     formBirthPlacePlaceholder: "City, Country",
+    formBirthTime: "Birth Time",
+    formBirthTimePlaceholder: "e.g. 14:30 or Unknown",
     formBack: "Back",
     formSubmit: "Consult Oracle",
+    formPartnerName: "Partner's Full Name",
+    formPartnerBirthDate: "Partner's Birth Date",
+    formDreamDescription: "Describe your dream in detail",
+    formDreamKeywords: "Key symbols or images (comma separated)",
+    formDreamDate: "Date of the dream",
+    formDreamTime: "Approximate time of the dream",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -386,8 +402,16 @@ export const translations: Record<ReportLanguage, Translations> = {
     formBirthDatePlaceholder: "DD/MM/AAAA",
     formBirthPlace: "Local de Nascimento",
     formBirthPlacePlaceholder: "Cidade, País",
+    formBirthTime: "Hora de Nascimento",
+    formBirthTimePlaceholder: "ex: 14:30 ou Desconhecido",
     formBack: "Voltar",
     formSubmit: "Consultar Oráculo",
+    formPartnerName: "Nome Completo do Parceiro",
+    formPartnerBirthDate: "Data de Nascimento do Parceiro",
+    formDreamDescription: "Descreva seu sonho em detalhes",
+    formDreamKeywords: "Símbolos ou imagens principais (separados por vírgula)",
+    formDreamDate: "Data do sonho",
+    formDreamTime: "Hora aproximada do sonho",
   },
   French: {} as any,
   German: {} as any,
