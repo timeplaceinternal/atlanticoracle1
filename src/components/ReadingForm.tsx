@@ -50,6 +50,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
   const isDreamService = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
   const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY;
+  const isFree = service.isFree;
 
   return (
     <div className="max-w-2xl mx-auto bg-cosmic-800/40 backdrop-blur-xl p-8 rounded-[2rem] border border-cosmic-gold/20">
@@ -71,25 +72,26 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
             <div>
               <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
               <input 
-                type="text"
-                placeholder={t.formBirthDatePlaceholder}
+                type="date"
                 value={birthDate} 
                 onChange={(e) => setBirthDate(e.target.value)} 
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
                 required
               />
             </div>
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthTime}</label>
-              <input 
-                type="text" 
-                value={birthTime} 
-                onChange={(e) => setBirthTime(e.target.value)} 
-                placeholder={t.formBirthTimePlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-              />
-            </div>
-            <div className="md:col-span-2">
+            {!isFree && (
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthTime}</label>
+                <input 
+                  type="text" 
+                  value={birthTime} 
+                  onChange={(e) => setBirthTime(e.target.value)} 
+                  placeholder={t.formBirthTimePlaceholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                />
+              </div>
+            )}
+            <div className={isFree ? "md:col-span-1" : "md:col-span-2"}>
               <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthPlace}</label>
               <input 
                 type="text" 
@@ -120,24 +122,25 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
               <div>
                 <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formPartnerBirthDate}</label>
                 <input 
-                  type="text"
-                  placeholder={t.formBirthDatePlaceholder}
+                  type="date"
                   value={partnerBirthDate} 
                   onChange={(e) => setPartnerBirthDate(e.target.value)} 
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
                   required
                 />
               </div>
-              <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthTime}</label>
-                <input 
-                  type="text" 
-                  value={partnerBirthTime} 
-                  onChange={(e) => setPartnerBirthTime(e.target.value)} 
-                  placeholder={t.formBirthTimePlaceholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                />
-              </div>
+              {!isFree && (
+                <div>
+                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthTime}</label>
+                  <input 
+                    type="text" 
+                    value={partnerBirthTime} 
+                    onChange={(e) => setPartnerBirthTime(e.target.value)} 
+                    placeholder={t.formBirthTimePlaceholder}
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -154,37 +157,40 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                 required
               />
             </div>
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamKeywords}</label>
-              <input 
-                type="text" 
-                value={dreamKeywords} 
-                onChange={(e) => setDreamKeywords(e.target.value)} 
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamDate}</label>
-                <input 
-                  type="text"
-                  placeholder={t.formBirthDatePlaceholder}
-                  value={dreamDate} 
-                  onChange={(e) => setDreamDate(e.target.value)} 
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamTime}</label>
-                <input 
-                  type="text" 
-                  value={dreamTime} 
-                  onChange={(e) => setDreamTime(e.target.value)} 
-                  placeholder="e.g. 3:00 AM"
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                />
-              </div>
-            </div>
+            {!isFree && (
+              <>
+                <div>
+                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamKeywords}</label>
+                  <input 
+                    type="text" 
+                    value={dreamKeywords} 
+                    onChange={(e) => setDreamKeywords(e.target.value)} 
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamDate}</label>
+                    <input 
+                      type="date"
+                      value={dreamDate} 
+                      onChange={(e) => setDreamDate(e.target.value)} 
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors [color-scheme:dark]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamTime}</label>
+                    <input 
+                      type="text" 
+                      value={dreamTime} 
+                      onChange={(e) => setDreamTime(e.target.value)} 
+                      placeholder="e.g. 3:00 AM"
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
 
