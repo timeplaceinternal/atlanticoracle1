@@ -17,7 +17,14 @@ import { generateCosmicReading } from './services/geminiService';
 import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe } from 'lucide-react';
 import { translations } from './translations';
 
-const STRIPE_URL = "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04";
+const STRIPE_URLS: Record<ReportLanguage, string> = {
+  English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+  Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+  French: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+  German: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+  Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+  Italian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+};
 const STORAGE_KEY = "atlantic_oracle_pending_request";
 
 const TESTIMONIALS = [
@@ -280,7 +287,8 @@ const App: React.FC = () => {
   };
 
   const handleProceedToStripe = () => {
-    const stripeUrl = new URL(STRIPE_URL);
+    const baseUrl = selectedService?.stripeUrls?.[language] || STRIPE_URLS[language];
+    const stripeUrl = new URL(baseUrl);
     if (language === 'Portuguese') {
       stripeUrl.searchParams.set('locale', 'pt');
     }
@@ -646,7 +654,11 @@ const App: React.FC = () => {
           
           {view === 'result' && result && (
             <div className="py-20 px-6">
-              <ReadingResult result={result} onReset={resetToHome} />
+              <ReadingResult 
+                result={result} 
+                onReset={resetToHome} 
+                onSelectService={handleStartService}
+              />
             </div>
           )}
 

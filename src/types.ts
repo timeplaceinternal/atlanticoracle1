@@ -26,6 +26,9 @@ export interface Service {
   icon: string;
   price: number;
   isFree?: boolean;
+  stripeUrls?: {
+    [key in ReportLanguage]?: string;
+  };
 }
 
 export interface ReadingRequest {

@@ -60,7 +60,11 @@ export const SERVICES: Service[] = [
     title: "The Natal Matrix (Natal Chart Report)",
     description: "Your cosmic blueprint. A deep psychological portrait based on planetary positions at birth. Discover your innate strengths, core weaknesses, and the unique architecture of your personality.",
     icon: "sparkles",
-    price: 10
+    price: 10,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04" // Replace with actual PT link
+    }
   },
   {
     id: ServiceType.LOVE_SYNASTRY,
@@ -170,6 +174,7 @@ const PROMPT_CORE = (lang: string) => {
     FORMAT: No stars (*). Use headers # and ##.
     DEPTH: Professional, analytical.
     STRICTION: DO NOT use Markdown tables. Use plain text or sequential lists.
+    STRICTION: NEVER generate URLs, links, or calls to action with fake links.
   `;
 };
 
@@ -226,7 +231,6 @@ export const COSMIC_PROMPTS = {
     1. Weekly Chart: List 7 days sequentially. Format: "Day 1 - [Details], Day 2 - [Details]...". Include Luck Index (1-10), Power Window, and Risk Level for each day. DO NOT USE TABLES.
     2. Numerology: Calculate 3 'Golden Numbers' for the subject this week.
     3. Player Advice: Define the emotional state in which they MUST NOT make risky decisions.
-    End with a call to see their full Natal Decree.
   `,
   [ServiceType.CAPITAL_ALIGNMENT]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
@@ -235,7 +239,6 @@ export const COSMIC_PROMPTS = {
     2. Loss Zone: Where are they leaking resources internally?
     3. Investment in SELF: Advice on why knowing their mechanics provides the highest ROI.
     4. Weekly Plan: List 3 specific financial actions sequentially (Action 1, Action 2, Action 3). DO NOT USE TABLES.
-    End with a link to the full Career & Wealth Decree.
   `,
   [ServiceType.ENERGY_PULSE]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
@@ -244,7 +247,6 @@ export const COSMIC_PROMPTS = {
     2. Bio-rhythms: Sleep/activity advice based on birth date.
     3. Reset Technique: One 1-minute mental reset practice (breathing/visualization).
     4. Focus Mode: Where to direct energy (Health, Relations, Career).
-    End with a call to unlock their full energetic cycles in a Natal Decree.
   `,
   [ServiceType.FREE_DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
     ${PROMPT_CORE(lang)}

@@ -88,14 +88,19 @@ async function startServer() {
         
         // Try Vercel Blob first
         const token = process.env.BLOB_READ_WRITE_TOKEN;
-        if (token) {
-          console.log(`Attempting to put to Vercel Blob: uploads/${filename}`);
-          const blob = await put(`uploads/${filename}`, req.file.buffer, {
-            access: 'public',
-            contentType: req.file.mimetype,
-          });
-          console.log("Vercel Blob upload successful! URL:", blob.url);
-          return res.json({ url: blob.url });
+        if (token && token.trim() !== "") {
+          try {
+            console.log(`Attempting to put to Vercel Blob: uploads/${filename}`);
+            const blob = await put(`uploads/${filename}`, req.file.buffer, {
+              access: 'public',
+              contentType: req.file.mimetype,
+            });
+            console.log("Vercel Blob upload successful! URL:", blob.url);
+            return res.json({ url: blob.url });
+          } catch (blobError) {
+            console.warn("Vercel Blob upload failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+            // Continue to local fallback
+          }
         } 
         
         // Fallback to local filesystem
@@ -121,18 +126,23 @@ async function startServer() {
     console.log(">>> GET /api/news - Fetching news...");
     try {
       const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token) {
-        // Try Vercel Blob
-        const { blobs } = await list({ prefix: NEWS_FILE_PATH });
-        const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
+      if (token && token.trim() !== "") {
+        try {
+          // Try Vercel Blob
+          const { blobs } = await list({ prefix: NEWS_FILE_PATH });
+          const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
 
-        if (newsBlob) {
-          console.log(`Found news blob at: ${newsBlob.url}`);
-          const response = await fetch(newsBlob.url);
-          if (response.ok) {
-            const posts = await response.json();
-            return res.json(posts);
+          if (newsBlob) {
+            console.log(`Found news blob at: ${newsBlob.url}`);
+            const response = await fetch(newsBlob.url);
+            if (response.ok) {
+              const posts = await response.json();
+              return res.json(posts);
+            }
           }
+        } catch (blobError) {
+          console.warn("Vercel Blob list/fetch failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          // Continue to local fallback
         }
       }
 
@@ -162,13 +172,18 @@ async function startServer() {
 
       // Try Vercel Blob
       const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token) {
-        console.log(`Syncing to Vercel Blob: ${NEWS_FILE_PATH}`);
-        await put(NEWS_FILE_PATH, JSON.stringify(posts), {
-          access: 'public',
-          addRandomSuffix: false,
-          allowOverwrite: true,
-        });
+      if (token && token.trim() !== "") {
+        try {
+          console.log(`Syncing to Vercel Blob: ${NEWS_FILE_PATH}`);
+          await put(NEWS_FILE_PATH, JSON.stringify(posts), {
+            access: 'public',
+            addRandomSuffix: false,
+            allowOverwrite: true,
+          });
+        } catch (blobError) {
+          console.warn("Vercel Blob put failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          // Continue to local save
+        }
       }
 
       // Always save locally as well (or as fallback)
@@ -188,17 +203,29 @@ async function startServer() {
       let posts: NewsPost[] = [];
       let kbPosts: any[] = [];
       
-      if (process.env.BLOB_READ_WRITE_TOKEN) {
-        const { blobs } = await list();
-        const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
-        if (newsBlob) {
-          const response = await fetch(newsBlob.url);
-          posts = await response.json();
-        }
-        const kbBlob = blobs.find(b => b.pathname === KB_FILE_PATH);
-        if (kbBlob) {
-          const response = await fetch(kbBlob.url);
-          kbPosts = await response.json();
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token && token.trim() !== "") {
+        try {
+          const { blobs } = await list();
+          const newsBlob = blobs.find(b => b.pathname === NEWS_FILE_PATH);
+          if (newsBlob) {
+            const response = await fetch(newsBlob.url);
+            posts = await response.json();
+          }
+          const kbBlob = blobs.find(b => b.pathname === KB_FILE_PATH);
+          if (kbBlob) {
+            const response = await fetch(kbBlob.url);
+            kbPosts = await response.json();
+          }
+        } catch (blobError) {
+          console.warn("Sitemap: Vercel Blob access failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          // Fallback to local
+          if (fs.existsSync(LOCAL_NEWS_PATH)) {
+            posts = JSON.parse(fs.readFileSync(LOCAL_NEWS_PATH, 'utf-8'));
+          }
+          if (fs.existsSync(LOCAL_KB_PATH)) {
+            kbPosts = JSON.parse(fs.readFileSync(LOCAL_KB_PATH, 'utf-8'));
+          }
         }
       } else {
         // Local fallback for sitemap
@@ -266,16 +293,21 @@ async function startServer() {
     console.log(">>> GET /api/kb - Fetching KB...");
     try {
       const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token) {
-        const { blobs } = await list({ prefix: KB_FILE_PATH });
-        const kbBlob = blobs.find(b => b.pathname === KB_FILE_PATH);
+      if (token && token.trim() !== "") {
+        try {
+          const { blobs } = await list({ prefix: KB_FILE_PATH });
+          const kbBlob = blobs.find(b => b.pathname === KB_FILE_PATH);
 
-        if (kbBlob) {
-          const response = await fetch(kbBlob.url);
-          if (response.ok) {
-            const posts = await response.json();
-            return res.json(posts);
+          if (kbBlob) {
+            const response = await fetch(kbBlob.url);
+            if (response.ok) {
+              const posts = await response.json();
+              return res.json(posts);
+            }
           }
+        } catch (blobError) {
+          console.warn("Vercel Blob list/fetch failed for KB (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          // Continue to local fallback
         }
       }
 
@@ -301,12 +333,17 @@ async function startServer() {
       }
 
       const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token) {
-        await put(KB_FILE_PATH, JSON.stringify(posts), {
-          access: 'public',
-          addRandomSuffix: false,
-          allowOverwrite: true,
-        });
+      if (token && token.trim() !== "") {
+        try {
+          await put(KB_FILE_PATH, JSON.stringify(posts), {
+            access: 'public',
+            addRandomSuffix: false,
+            allowOverwrite: true,
+          });
+        } catch (blobError) {
+          console.warn("Vercel Blob put failed for KB (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          // Continue to local save
+        }
       }
 
       fs.writeFileSync(LOCAL_KB_PATH, JSON.stringify(posts, null, 2));
