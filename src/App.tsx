@@ -42,8 +42,29 @@ const TESTIMONIALS = [
 ];
 
 const App: React.FC = () => {
-  const [language, setLanguage] = useState<ReportLanguage>('English');
+  const [language, setLanguage] = useState<ReportLanguage>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang');
+      if (lang === 'pt') return 'Portuguese';
+      if (lang === 'en') return 'English';
+    }
+    return 'English';
+  });
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+
+  // Sync URL with language state
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (language === 'Portuguese') {
+        url.searchParams.set('lang', 'pt');
+      } else if (language === 'English') {
+        url.searchParams.delete('lang');
+      }
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [language]);
 
   // Update document language for native elements like date pickers
   useEffect(() => {
@@ -116,21 +137,15 @@ const App: React.FC = () => {
         url.searchParams.set('view', 'admin');
         window.history.pushState({}, '', '/admin162463' + url.search);
       } else if (view === 'news') {
-        if (newsSlug) {
-          window.history.pushState({}, '', `/news/${newsSlug}`);
-        } else {
-          window.history.pushState({}, '', '/news');
-        }
+        const path = newsSlug ? `/news/${newsSlug}` : '/news';
+        window.history.pushState({}, '', path + url.search);
       } else if (view === 'database') {
-        window.history.pushState({}, '', '/database');
+        window.history.pushState({}, '', '/database' + url.search);
       } else if (view === 'kb-article') {
-        if (kbCategory && kbSlug) {
-          window.history.pushState({}, '', `/database/${kbCategory}/${kbSlug}`);
-        } else {
-          window.history.pushState({}, '', '/database');
-        }
+        const path = (kbCategory && kbSlug) ? `/database/${kbCategory}/${kbSlug}` : '/database';
+        window.history.pushState({}, '', path + url.search);
       } else if (view === 'privacy') {
-        window.history.pushState({}, '', '/privacy');
+        window.history.pushState({}, '', '/privacy' + url.search);
       }
     }
   }, [view, newsSlug]);
@@ -142,6 +157,10 @@ const App: React.FC = () => {
       const hash = window.location.hash;
       const cleanPath = path.toLowerCase().replace(/\/$/, '');
       
+      const lang = params.get('lang');
+      if (lang === 'pt') setLanguage('Portuguese');
+      else if (lang === 'en') setLanguage('English');
+
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
       } else if (cleanPath.includes('/news') || params.get('view') === 'news') {
@@ -261,7 +280,11 @@ const App: React.FC = () => {
   };
 
   const handleProceedToStripe = () => {
-    window.location.href = STRIPE_URL;
+    const stripeUrl = new URL(STRIPE_URL);
+    if (language === 'Portuguese') {
+      stripeUrl.searchParams.set('locale', 'pt');
+    }
+    window.location.href = stripeUrl.toString();
   };
 
   const startGeneration = async (request: ReadingRequest) => {
