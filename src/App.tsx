@@ -335,11 +335,11 @@ const App: React.FC = () => {
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               aria-label="Atlantic Oracle Home"
             >
-              <div className="w-10 h-10 bg-cosmic-gold rounded-lg flex items-center justify-center shadow-lg">
-                <Star className="text-cosmic-900 w-6 h-6" />
+              <div className="w-10 h-10 bg-cosmic-gold rounded-full flex items-center justify-center shadow-lg">
+                <Star className="text-cosmic-900 fill-current w-6 h-6" />
               </div>
-              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase hidden sm:inline">Atlantic Oracle</span>
-              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase sm:hidden">Oracle</span>
+              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase hidden sm:inline">Atlantic Oracle™</span>
+              <span className="text-xl font-cinzel font-bold text-white tracking-widest uppercase sm:hidden">Oracle™</span>
             </button>
 
             <div className="hidden md:flex gap-6 items-center text-[10px] font-bold text-cosmic-silver uppercase tracking-[0.2em]">
@@ -667,8 +667,10 @@ const App: React.FC = () => {
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                 aria-label="Atlantic Oracle Home"
               >
-                <Star className="text-cosmic-gold w-8 h-8" />
-                <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle</span>
+              <div className="w-14 h-14 bg-cosmic-gold rounded-full flex items-center justify-center shadow-lg">
+                <Star className="text-cosmic-900 fill-current w-8 h-8" />
+              </div>
+                <span className="text-3xl font-cinzel text-white uppercase tracking-widest">Atlantic Oracle™</span>
               </button>
 
               <p className="text-cosmic-silver/60 text-xs italic max-w-xs">

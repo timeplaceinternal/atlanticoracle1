@@ -108,12 +108,19 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
   useEffect(() => {
     const fetchPosts = async () => {
       const fetchedPosts = await newsService.getPosts();
-      // Sort by ID (timestamp) descending to show latest first
+      // Sort by date: nearest to now first
       const sortedPosts = [...fetchedPosts].sort((a, b) => {
-        const idA = Number(a.id);
-        const idB = Number(b.id);
-        if (!isNaN(idA) && !isNaN(idB)) return idB - idA;
-        return b.id.localeCompare(a.id);
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        const now = Date.now();
+        
+        const diffA = isNaN(dateA) ? Infinity : Math.abs(dateA - now);
+        const diffB = isNaN(dateB) ? Infinity : Math.abs(dateB - now);
+        
+        if (diffA !== diffB) return diffA - diffB;
+        
+        // Fallback to ID descending if dates are same distance
+        return Number(b.id) - Number(a.id);
       });
       setPosts(sortedPosts);
     };
@@ -125,7 +132,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
   useEffect(() => {
     const title = selectedPost 
       ? (currentPost?.metaTitle || `${currentPost?.title} | Cosmic News`) 
-      : 'Cosmic News | The Atlantic Oracle Gazette';
+      : 'Cosmic News | The Atlantic Oracle™ Gazette';
     const description = selectedPost 
       ? (currentPost?.metaDescription || currentPost?.text?.substring(0, 160) || '') 
       : 'Celestial transmissions for the modern soul. Read the latest astrology and numerology insights.';
@@ -161,7 +168,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
       <header className={`text-center space-y-6 transition-all duration-700 ${selectedPost ? 'opacity-40 scale-95' : 'opacity-100'}`}>
         <div className="flex items-center justify-center gap-4">
           <div className="h-px bg-cosmic-gold/20 flex-1"></div>
-          <span className="text-[10px] uppercase tracking-[0.4em] text-cosmic-gold/60 font-cinzel">The Atlantic Oracle Gazette</span>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-cosmic-gold/60 font-cinzel">The Atlantic Oracle™ Gazette</span>
           <div className="h-px bg-cosmic-gold/20 flex-1"></div>
         </div>
         

@@ -27,7 +27,21 @@ const LatestNewsPreview: React.FC<LatestNewsPreviewProps> = ({ onViewNews, onVie
   useEffect(() => {
     const fetchPosts = async () => {
       const fetchedPosts = await newsService.getPosts();
-      setPosts(fetchedPosts.slice(0, 2));
+      // Sort by date: nearest to now first
+      const sortedPosts = [...fetchedPosts].sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        const now = Date.now();
+        
+        const diffA = isNaN(dateA) ? Infinity : Math.abs(dateA - now);
+        const diffB = isNaN(dateB) ? Infinity : Math.abs(dateB - now);
+        
+        if (diffA !== diffB) return diffA - diffB;
+        
+        // Fallback to ID descending if dates are same distance
+        return Number(b.id) - Number(a.id);
+      });
+      setPosts(sortedPosts.slice(0, 2));
     };
     fetchPosts();
   }, []);

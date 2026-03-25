@@ -23,7 +23,15 @@ const AdminPanel: React.FC = () => {
       kbService.getPosts()
     ]);
     
-    setPosts([...fetchedNews].sort((a, b) => Number(b.id) - Number(a.id)));
+    setPosts([...fetchedNews].sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      const now = Date.now();
+      const diffA = isNaN(dateA) ? Infinity : Math.abs(dateA - now);
+      const diffB = isNaN(dateB) ? Infinity : Math.abs(dateB - now);
+      if (diffA !== diffB) return diffA - diffB;
+      return Number(b.id) - Number(a.id);
+    }));
     setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
   };
 

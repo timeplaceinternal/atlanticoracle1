@@ -14,8 +14,8 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset }) => {
       <div className="bg-cosmic-800/40 backdrop-blur-3xl border border-cosmic-gold/20 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cosmic-gold to-transparent opacity-50" />
         <div className="flex flex-col items-center text-center space-y-6 mb-12">
-          <div className="w-16 h-16 bg-cosmic-gold rounded-2xl flex items-center justify-center shadow-2xl shadow-cosmic-gold/20">
-            <Star className="text-cosmic-900 w-8 h-8" />
+          <div className="w-16 h-16 bg-cosmic-gold rounded-full flex items-center justify-center shadow-2xl shadow-cosmic-gold/20">
+            <Star className="text-cosmic-900 fill-current w-8 h-8" />
           </div>
           <h2 className="text-4xl font-cinzel text-white uppercase tracking-widest">{result.userName}'s Cosmic Decree</h2>
           <div className="flex items-center gap-4 text-cosmic-silver/60 text-xs uppercase tracking-[0.3em]">
