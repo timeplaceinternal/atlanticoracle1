@@ -136,6 +136,12 @@ export interface Translations {
   formDreamKeywords: string;
   formDreamDate: string;
   formDreamTime: string;
+  promoCodeLabel: string;
+  promoCodePlaceholder: string;
+  promoCodeApply: string;
+  promoCodeValid: string;
+  promoCodeInvalid: string;
+  discountApplied: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -275,6 +281,12 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamKeywords: "Key symbols or images (comma separated)",
     formDreamDate: "Date of the dream",
     formDreamTime: "Approximate time of the dream",
+    promoCodeLabel: "Promo Code",
+    promoCodePlaceholder: "Enter code",
+    promoCodeApply: "Apply",
+    promoCodeValid: "Code applied successfully!",
+    promoCodeInvalid: "Invalid or expired code",
+    discountApplied: "50% Discount Applied",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -354,7 +366,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     step1Title: "Coordenadas Celestiais",
     step1Desc: "Coletamos seus dados de nascimento e nome, as coordenadas fundamentais da entrada de sua alma no plano físico.",
     step2Title: "Síntese Matemática",
-    step2Desc: "Nosso motor calcula a matriz pitagórica do seu nome e os trânsitos planetários precisos no momento do seu nascimento.",
+    step2Desc: "Nosso motor calcula a matriz pitagórica do seu nome e los trânsitos planetários precisos no momento do seu nascimento.",
     step3Title: "Geração do Decreto",
     step3Desc: "O Oráculo sintetiza estes pontos de dados em um relatório abrangente de 3-5 páginas mapeando seu caminho cármico.",
     howItWorksSummary: "Seus dados são efêmeros. Não armazenamos informações pessoais após a geração do relatório.",
@@ -412,6 +424,12 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamKeywords: "Símbolos ou imagens principais (separados por vírgula)",
     formDreamDate: "Data do sonho",
     formDreamTime: "Hora aproximada do sonho",
+    promoCodeLabel: "Código Promocional",
+    promoCodePlaceholder: "Inserir código",
+    promoCodeApply: "Aplicar",
+    promoCodeValid: "Código aplicado com sucesso!",
+    promoCodeInvalid: "Código inválido ou expirado",
+    discountApplied: "Desconto de 50% Aplicado",
   },
   French: {} as any,
   German: {} as any,

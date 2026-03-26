@@ -56,10 +56,53 @@ async function startServer() {
 
   const NEWS_FILE_PATH = 'data/news.json';
   const KB_FILE_PATH = 'data/kb.json';
+  const PROMO_FILE_PATH = 'data/promocodes.json';
   const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
   const LOCAL_KB_PATH = path.join(LOCAL_DATA_DIR, 'kb.json');
+  const LOCAL_PROMO_PATH = path.join(LOCAL_DATA_DIR, 'promocodes.json');
 
   // API Routes
+  
+  // Promo Codes API
+  app.get("/api/promocodes", async (req, res) => {
+    try {
+      if (fs.existsSync(LOCAL_PROMO_PATH)) {
+        const data = fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8');
+        return res.json(JSON.parse(data));
+      }
+      res.json([]);
+    } catch (error) {
+      res.json([]);
+    }
+  });
+
+  app.post("/api/promocodes", async (req, res) => {
+    try {
+      const codes = req.body;
+      fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to save promo codes" });
+    }
+  });
+
+  app.post("/api/promocodes/validate", async (req, res) => {
+    try {
+      const { code } = req.body;
+      if (!fs.existsSync(LOCAL_PROMO_PATH)) return res.json({ valid: false });
+      
+      const codes = JSON.parse(fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8'));
+      const promo = codes.find((p: any) => p.code.toUpperCase() === code.toUpperCase() && p.active);
+      
+      if (promo) {
+        res.json({ valid: true, discount: promo.discount || 50 });
+      } else {
+        res.json({ valid: false });
+      }
+    } catch (error) {
+      res.json({ valid: false });
+    }
+  });
   
   // File upload endpoint
   app.post("/api/upload", (req, res) => {

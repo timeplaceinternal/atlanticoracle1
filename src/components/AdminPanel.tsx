@@ -2,25 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
-import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
+import { promoService } from '../services/promoService';
+import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType, PromoCode } from '../types';
 
 const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'kb'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos'>('news');
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [editingKB, setEditingKB] = useState<Partial<KnowledgeBasePost> | null>(null);
+  const [editingPromo, setEditingPromo] = useState<Partial<PromoCode> | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const fetchAllData = async () => {
-    const [fetchedNews, fetchedKB] = await Promise.all([
+    const [fetchedNews, fetchedKB, fetchedPromos] = await Promise.all([
       newsService.getPosts(),
-      kbService.getPosts()
+      kbService.getPosts(),
+      promoService.getPromoCodes()
     ]);
     
     setPosts([...fetchedNews].sort((a, b) => {
@@ -33,6 +37,7 @@ const AdminPanel: React.FC = () => {
       return Number(b.id) - Number(a.id);
     }));
     setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
+    setPromoCodes(fetchedPromos);
   };
 
   useEffect(() => {
@@ -318,6 +323,55 @@ const AdminPanel: React.FC = () => {
       } catch (error) {
         console.error("Delete failed:", error);
         alert(`Failed to delete transmission: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  };
+
+  const handleSavePromo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPromo?.code || !editingPromo?.discount) {
+      alert("Code and discount are required.");
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveSuccess(false);
+    try {
+      const newPromo: PromoCode = {
+        id: editingPromo.id || Date.now().toString(),
+        code: editingPromo.code.toUpperCase().trim(),
+        discount: Number(editingPromo.discount),
+        isActive: editingPromo.isActive !== undefined ? editingPromo.isActive : true,
+        usageCount: editingPromo.usageCount || 0,
+        createdAt: editingPromo.createdAt || new Date().toISOString()
+      };
+
+      const updatedPromos = editingPromo.id 
+        ? promoCodes.map(p => p.id === editingPromo.id ? newPromo : p)
+        : [...promoCodes, newPromo];
+
+      await promoService.savePromoCode(updatedPromos as any); // The API expects the full array
+      await fetchAllData();
+      setSaveSuccess(true);
+      setTimeout(() => {
+        setEditingPromo(null);
+        setSaveSuccess(false);
+      }, 2000);
+    } catch (error) {
+      alert(`Failed to save promo code: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeletePromo = async (id: string) => {
+    if (confirm('Are you sure you want to delete this promo code?')) {
+      try {
+        const updatedPromos = promoCodes.filter(p => p.id !== id);
+        await promoService.savePromoCode(updatedPromos as any);
+        await fetchAllData();
+      } catch (error) {
+        alert(`Failed to delete promo code: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   };
@@ -917,6 +971,12 @@ const AdminPanel: React.FC = () => {
             >
               Knowledge Base
             </button>
+            <button 
+              onClick={() => setActiveTab('promos')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'promos' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              Promo Codes
+            </button>
           </div>
           <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
             <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
@@ -944,15 +1004,22 @@ const AdminPanel: React.FC = () => {
           <h2 className="text-2xl font-cinzel text-white uppercase tracking-widest flex items-center gap-3">
             {activeTab === 'news' ? (
               <><Newspaper className="w-6 h-6 text-cosmic-gold" /> Gazette Management</>
-            ) : (
+            ) : activeTab === 'kb' ? (
               <><BookOpen className="w-6 h-6 text-cosmic-gold" /> Knowledge Base</>
+            ) : (
+              <><Sparkles className="w-6 h-6 text-cosmic-gold" /> Promo Codes</>
             )}
           </h2>
           <button 
-            onClick={() => activeTab === 'news' ? setEditingPost({}) : setEditingKB({})} 
+            onClick={() => {
+              if (activeTab === 'news') setEditingPost({});
+              else if (activeTab === 'kb') setEditingKB({});
+              else setEditingPromo({ code: '', discount: 50, isActive: true });
+            }} 
             className="flex items-center gap-2 px-6 py-3 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-105 transition-transform"
           >
-            <Plus className="w-4 h-4" /> {activeTab === 'news' ? 'New Transmission' : 'New Article'}
+            <Plus className="w-4 h-4" /> 
+            {activeTab === 'news' ? 'New Transmission' : activeTab === 'kb' ? 'New Article' : 'New Promo Code'}
           </button>
         </div>
 
@@ -992,7 +1059,7 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
             ))
-          ) : (
+          ) : activeTab === 'kb' ? (
             kbPosts.map(post => (
               <div key={post.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
                 <div className="flex items-center gap-6">
@@ -1025,9 +1092,111 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
             ))
+          ) : (
+            promoCodes.map(promo => (
+              <div key={promo.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 rounded-xl bg-cosmic-gold/10 flex items-center justify-center border border-cosmic-gold/20">
+                    <Sparkles className="w-6 h-6 text-cosmic-gold" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                      <span>Created: {new Date(promo.createdAt).toLocaleDateString()}</span>
+                      <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
+                      <span className={promo.isActive ? 'text-green-400' : 'text-red-400'}>
+                        {promo.isActive ? 'ACTIVE' : 'INACTIVE'}
+                      </span>
+                    </div>
+                    <h4 className="text-xl font-cinzel text-white">{promo.code}</h4>
+                    <p className="text-cosmic-silver/60 text-sm">
+                      Discount: {promo.discount}% • Used: {promo.usageCount} times
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => setEditingPromo(promo)}
+                    className="p-3 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-xl transition-colors"
+                  >
+                    <Edit2 className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeletePromo(promo.id)}
+                    className="p-3 text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            ))
           )}
         </div>
       </div>
+
+      {/* Promo Code Editor Modal */}
+      {editingPromo && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-cosmic-950/90 backdrop-blur-sm" onClick={() => setEditingPromo(null)}></div>
+          <div className="bg-cosmic-800 border border-cosmic-gold/20 p-8 rounded-[2rem] shadow-2xl relative w-full max-w-md space-y-8 animate-in zoom-in-95 duration-300">
+            <div className="flex items-center justify-between">
+              <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">
+                {editingPromo.id ? 'Edit Promo Code' : 'New Promo Code'}
+              </h3>
+              <button onClick={() => setEditingPromo(null)} className="text-cosmic-gold/40 hover:text-cosmic-gold transition-colors">
+                <CloseIcon className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSavePromo} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Code</label>
+                <input 
+                  type="text"
+                  value={editingPromo.code || ''}
+                  onChange={(e) => setEditingPromo({...editingPromo, code: e.target.value.toUpperCase()})}
+                  placeholder="COSMIC50"
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Discount (%)</label>
+                <input 
+                  type="number"
+                  value={editingPromo.discount || ''}
+                  onChange={(e) => setEditingPromo({...editingPromo, discount: Number(e.target.value)})}
+                  placeholder="50"
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox"
+                  id="promo-active"
+                  checked={editingPromo.isActive !== false}
+                  onChange={(e) => setEditingPromo({...editingPromo, isActive: e.target.checked})}
+                  className="w-5 h-5 rounded border-cosmic-gold/20 bg-cosmic-900 text-cosmic-gold focus:ring-cosmic-gold"
+                />
+                <label htmlFor="promo-active" className="text-sm text-cosmic-silver uppercase tracking-widest">Active</label>
+              </div>
+
+              <button 
+                type="submit"
+                disabled={isSaving}
+                className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${
+                  saveSuccess ? 'bg-green-500 text-white' : 'bg-cosmic-gold text-cosmic-900'
+                }`}
+              >
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : saveSuccess ? <ShieldCheck className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Promo Code'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

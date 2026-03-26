@@ -29,6 +29,9 @@ export interface Service {
   stripeUrls?: {
     [key in ReportLanguage]?: string;
   };
+  stripeUrlsDiscounted?: {
+    [key in ReportLanguage]?: string;
+  };
 }
 
 export interface ReadingRequest {
@@ -102,4 +105,13 @@ export interface NewsPost {
   videoUrl?: string; // YouTube URL
   metaTitle?: string;
   metaDescription?: string;
+}
+
+export interface PromoCode {
+  id: string;
+  code: string;
+  discount: number;
+  isActive: boolean;
+  usageCount: number;
+  createdAt: string;
 }

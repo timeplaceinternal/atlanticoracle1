@@ -14,7 +14,8 @@ import KBArticlePage from './components/KBArticlePage';
 import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe } from 'lucide-react';
+import { promoService } from './services/promoService';
+import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2 } from 'lucide-react';
 import { translations } from './translations';
 
 const STRIPE_URLS: Record<ReportLanguage, string> = {
@@ -108,6 +109,12 @@ const App: React.FC = () => {
     }
     return null;
   });
+
+  // Promo Code State
+  const [promoCode, setPromoCode] = useState('');
+  const [isPromoValid, setIsPromoValid] = useState(false);
+  const [promoError, setPromoError] = useState('');
+  const [isValidatingPromo, setIsValidatingPromo] = useState(false);
 
   const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article'>(() => {
     if (typeof window !== 'undefined') {
@@ -287,12 +294,41 @@ const App: React.FC = () => {
   };
 
   const handleProceedToStripe = () => {
-    const baseUrl = selectedService?.stripeUrls?.[language] || STRIPE_URLS[language];
+    if (!selectedService) return;
+    
+    let baseUrl = '';
+    if (isPromoValid && selectedService.stripeUrlsDiscounted?.[language]) {
+      baseUrl = selectedService.stripeUrlsDiscounted[language]!;
+    } else {
+      baseUrl = selectedService.stripeUrls?.[language] || STRIPE_URLS[language];
+    }
+    
     const stripeUrl = new URL(baseUrl);
     if (language === 'Portuguese') {
       stripeUrl.searchParams.set('locale', 'pt');
     }
     window.location.href = stripeUrl.toString();
+  };
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    
+    setIsValidatingPromo(true);
+    setPromoError('');
+    try {
+      const result = await promoService.validatePromoCode(promoCode);
+      if (result.valid) {
+        setIsPromoValid(true);
+        setPromoError('');
+      } else {
+        setIsPromoValid(false);
+        setPromoError(t.promoCodeInvalid);
+      }
+    } catch (error) {
+      setPromoError('Validation error');
+    } finally {
+      setIsValidatingPromo(false);
+    }
   };
 
   const startGeneration = async (request: ReadingRequest) => {
@@ -494,30 +530,8 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* FREE INSIGHTS SECTION */}
-              <section id="free-insights" className="px-6 max-w-7xl mx-auto scroll-mt-32">
-                <div className="text-center mb-16 space-y-4">
-                  <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[9px] uppercase tracking-[0.3em] rounded mb-2">Essential Access</div>
-                  <h3 className="text-3xl font-cinzel text-white uppercase tracking-[0.2em]">{t.freeInsightsTitle}</h3>
-                  <p className="text-cosmic-silver italic font-playfair text-sm">{t.freeInsightsSubtitle}</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {FREE_SERVICES.map(s => (
-                    <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
-                      <div className="absolute top-4 right-4 text-[9px] font-black text-cosmic-900 px-3 py-1 rounded-full tracking-[0.2em] uppercase bg-cosmic-gold shadow-[0_0_20px_rgba(212,175,55,0.6)] animate-pulse">FREE</div>
-                      <div className="mb-6">{getServiceIcon(s.icon)}</div>
-                      <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
-                      <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
-                      <div className="flex justify-end">
-                        <ChevronRight className="text-cosmic-gold group-hover:translate-x-1 transition-transform w-4 h-4" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
               {/* INTRODUCTORY PRELUDE */}
-              <section className="px-6 max-w-4xl mx-auto text-center space-y-12">
+              <section className="px-6 max-w-4xl mx-auto text-center space-y-12 py-20">
                 <div className="w-px h-24 bg-gradient-to-b from-cosmic-gold to-transparent mx-auto"></div>
                 <div className="space-y-6">
                   <h2 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">{t.philosophyTitle}</h2>
@@ -559,6 +573,28 @@ const App: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-cosmic-gold font-cinzel text-xl">€{s.price}</span>
                         <ChevronRight className="text-white group-hover:translate-x-2 transition-transform" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* FREE INSIGHTS SECTION */}
+              <section id="free-insights" className="px-6 max-w-7xl mx-auto scroll-mt-32 py-20">
+                <div className="text-center mb-16 space-y-4">
+                  <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[9px] uppercase tracking-[0.3em] rounded mb-2">Essential Access</div>
+                  <h3 className="text-3xl font-cinzel text-white uppercase tracking-[0.2em]">{t.freeInsightsTitle}</h3>
+                  <p className="text-cosmic-silver italic font-playfair text-sm">{t.freeInsightsSubtitle}</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {FREE_SERVICES.map(s => (
+                    <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
+                      <div className="absolute top-4 right-4 text-[9px] font-black text-cosmic-900 px-3 py-1 rounded-full tracking-[0.2em] uppercase bg-cosmic-gold shadow-[0_0_20px_rgba(212,175,55,0.6)] animate-pulse">FREE</div>
+                      <div className="mb-6">{getServiceIcon(s.icon)}</div>
+                      <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
+                      <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
+                      <div className="flex justify-end">
+                        <ChevronRight className="text-cosmic-gold group-hover:translate-x-1 transition-transform w-4 h-4" />
                       </div>
                     </div>
                   ))}
@@ -636,9 +672,42 @@ const App: React.FC = () => {
                   className="w-16 h-16 text-cosmic-gold mx-auto mb-6 cursor-pointer hover:scale-110 active:scale-95 transition-all" 
                 />
                 <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>
-                <p className="text-cosmic-silver mb-8 italic">Your study in {currentRequest?.language} is formatted and ready for the matrix. Fee: €10.</p>
+                <p className="text-cosmic-silver mb-8 italic">
+                  Your study in {currentRequest?.language} is formatted and ready for the matrix. 
+                  Fee: €{isPromoValid ? (selectedService?.price ? selectedService.price / 2 : 15) : (selectedService?.price || 30)}.
+                </p>
                 
-                <div className="space-y-4">
+                <div className="space-y-6">
+                  {/* Promo Code Input */}
+                  <div className="space-y-2 text-left">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 ml-2">{t.promoCodeLabel}</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                        placeholder={t.promoCodePlaceholder}
+                        disabled={isPromoValid || isValidatingPromo}
+                        className="flex-1 bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cosmic-gold disabled:opacity-50"
+                      />
+                      <button 
+                        onClick={handleApplyPromo}
+                        disabled={isPromoValid || isValidatingPromo || !promoCode.trim()}
+                        className="px-6 py-3 bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-cosmic-gold hover:text-cosmic-900 transition-all disabled:opacity-50"
+                      >
+                        {isValidatingPromo ? <Loader2 className="w-4 h-4 animate-spin" /> : t.promoCodeApply}
+                      </button>
+                    </div>
+                    {isPromoValid && (
+                      <p className="text-green-400 text-[10px] uppercase tracking-widest ml-2 flex items-center gap-1">
+                        <ShieldCheck className="w-3 h-3" /> {t.promoCodeValid}
+                      </p>
+                    )}
+                    {promoError && (
+                      <p className="text-red-400 text-[10px] uppercase tracking-widest ml-2">{promoError}</p>
+                    )}
+                  </div>
+
                   <button 
                     onClick={handleProceedToStripe} 
                     className="w-full py-5 bg-white text-cosmic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
@@ -646,6 +715,12 @@ const App: React.FC = () => {
                     Pay via Stripe <ExternalLink className="w-5 h-5" />
                   </button>
                   
+                  {isPromoValid && (
+                    <div className="bg-cosmic-gold/10 border border-cosmic-gold/20 p-4 rounded-2xl">
+                      <p className="text-cosmic-gold text-xs font-bold uppercase tracking-widest">{t.discountApplied}</p>
+                    </div>
+                  )}
+
                   <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Return to Sanctuary</button>
                 </div>
               </div>

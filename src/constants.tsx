@@ -60,10 +60,14 @@ export const SERVICES: Service[] = [
     title: "The Natal Matrix (Natal Chart Report)",
     description: "Your cosmic blueprint. A deep psychological portrait based on planetary positions at birth. Discover your innate strengths, core weaknesses, and the unique architecture of your personality.",
     icon: "sparkles",
-    price: 10,
+    price: 30,
     stripeUrls: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04" // Replace with actual PT link
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 15 EUR link
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04" // Replace with 15 EUR link
     }
   },
   {
@@ -71,63 +75,135 @@ export const SERVICES: Service[] = [
     title: "Synastry & Love Compatibility",
     description: "Our most requested guide. Why are you drawn to each other? Explore relationship dynamics, domestic harmony, and sexual chemistry between two souls.",
     icon: "heart",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.YEARLY_SOLAR,
     title: "The 12-Month Solar Return (Yearly Forecast)",
     description: "\"Your Year Ahead.\" A comprehensive roadmap for the next 12 months. Identify key dates of fortune, periods of luck, and celestial warnings from birthday to birthday.",
     icon: "calendar",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.KARMIC_DESTINY,
     title: "Karmic Destiny & Past Lives",
     description: "Identify the lessons you've brought from past incarnations. Understand your Nodes of Fate (North/South Node) and your soul's current mission in this life.",
     icon: "history",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.CAREER_WEALTH,
     title: "Career & Wealth Alignment",
     description: "A niche guide for professionals and seekers. Discover where your abundance lies, which sectors offer the highest returns, and the best timing for career shifts.",
     icon: "briefcase",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.PYTHAGOREAN_CODE,
     title: "The Pythagorean Code (Numerology)",
     description: "Mathematical precision for the modern mind. Calculation of your Life Path Number and core vibrations hidden within your birth date and name.",
     icon: "hash",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.HUMAN_DESIGN,
     title: "Human Design: The Strategy of Life",
     description: "Identify your energetic type (Manifestor, Generator, etc.). Learn how to make decisions without resistance and align with your natural flow.",
     icon: "fingerprint",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.ASTRO_CARTOGRAPHY,
     title: "Astro-Cartography (Relocation Map)",
     description: "\"Where is your city of power?\" Find specific coordinates on Earth where you'll encounter love, career breakthroughs, or spiritual peace.",
     icon: "globe",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.SATURN_RETURN,
     title: "Saturn Return Survival Guide",
     description: "Navigate the critical crisis of age 29-30. Learn how to survive this cosmic 'coming of age' and emerge as a mature, victorious version of yourself.",
     icon: "zap",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.DREAM_INTERPRETATION,
     title: "The Sage's Dream Decree",
     description: "A comprehensive interpretation of your dream. Discover the psychological roots, symbolic meanings, and how it aligns with your cosmic path.",
     icon: "moonstar",
-    price: 10
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   }
 ];
 
