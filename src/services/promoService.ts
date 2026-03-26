@@ -7,13 +7,18 @@ export const promoService = {
     return response.json();
   },
 
-  async savePromoCode(promo: PromoCode): Promise<void> {
+  async savePromoCodes(codes: PromoCode[]): Promise<void> {
+    console.log(">>> promoService.savePromoCodes - Sending codes:", codes);
     const response = await fetch('/api/promocodes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(promo),
+      body: JSON.stringify(codes),
     });
-    if (!response.ok) throw new Error('Failed to save promo code');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error(">>> promoService.savePromoCodes - Failed:", response.status, errorData);
+      throw new Error(errorData.error || 'Failed to save promo codes');
+    }
   },
 
   async deletePromoCode(id: string): Promise<void> {

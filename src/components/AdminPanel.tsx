@@ -9,7 +9,7 @@ const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos' | 'dealers'>('news');
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
@@ -338,6 +338,7 @@ const AdminPanel: React.FC = () => {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
+      console.log(">>> AdminPanel.handleSavePromo - Saving promo:", editingPromo);
       const newPromo: PromoCode = {
         id: editingPromo.id || Date.now().toString(),
         code: editingPromo.code.toUpperCase().trim(),
@@ -358,7 +359,7 @@ const AdminPanel: React.FC = () => {
         ? promoCodes.map(p => p.id === editingPromo.id ? newPromo : p)
         : [...promoCodes, newPromo];
 
-      await promoService.savePromoCode(updatedPromos as any);
+      await promoService.savePromoCodes(updatedPromos);
       await fetchAllData();
       setSaveSuccess(true);
       setTimeout(() => {
@@ -376,7 +377,7 @@ const AdminPanel: React.FC = () => {
     if (confirm('Are you sure you want to delete this promo code?')) {
       try {
         const updatedPromos = promoCodes.filter(p => p.id !== id);
-        await promoService.savePromoCode(updatedPromos as any);
+        await promoService.savePromoCodes(updatedPromos);
         await fetchAllData();
       } catch (error) {
         alert(`Failed to delete promo code: ${error instanceof Error ? error.message : String(error)}`);
@@ -985,6 +986,12 @@ const AdminPanel: React.FC = () => {
             >
               Promo Codes
             </button>
+            <button 
+              onClick={() => setActiveTab('dealers')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'dealers' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              Dealers
+            </button>
           </div>
           <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
             <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
@@ -1014,20 +1021,31 @@ const AdminPanel: React.FC = () => {
               <><Newspaper className="w-6 h-6 text-cosmic-gold" /> Gazette Management</>
             ) : activeTab === 'kb' ? (
               <><BookOpen className="w-6 h-6 text-cosmic-gold" /> Knowledge Base</>
-            ) : (
+            ) : activeTab === 'promos' ? (
               <><Sparkles className="w-6 h-6 text-cosmic-gold" /> Promo Codes</>
+            ) : (
+              <><FileText className="w-6 h-6 text-cosmic-gold" /> Dealer Network</>
             )}
           </h2>
           <button 
             onClick={() => {
               if (activeTab === 'news') setEditingPost({});
               else if (activeTab === 'kb') setEditingKB({});
-              else setEditingPromo({ code: '', discount: 50, isActive: true });
+              else setEditingPromo({ 
+                code: '', 
+                discount: 50, 
+                isActive: true, 
+                dealerName: '', 
+                dealerRequisites: '', 
+                channels: [], 
+                audienceSize: 0, 
+                commissionRate: 0 
+              });
             }} 
             className="flex items-center gap-2 px-6 py-3 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-105 transition-transform"
           >
             <Plus className="w-4 h-4" /> 
-            {activeTab === 'news' ? 'New Transmission' : activeTab === 'kb' ? 'New Article' : 'New Promo Code'}
+            {activeTab === 'news' ? 'New Transmission' : activeTab === 'kb' ? 'New Article' : activeTab === 'promos' ? 'New Promo Code' : 'New Dealer'}
           </button>
         </div>
 
@@ -1100,7 +1118,7 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
             ))
-          ) : (
+          ) : activeTab === 'promos' ? (
             promoCodes.map(promo => (
               <div key={promo.id} className="bg-cosmic-800/20 border border-cosmic-gold/10 p-8 rounded-3xl flex items-center justify-between group hover:border-cosmic-gold/30 transition-all">
                 <div className="flex items-center gap-6">
@@ -1145,6 +1163,63 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
             ))
+          ) : (
+            <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                  <tr>
+                    <th className="px-8 py-6">Dealer Name</th>
+                    <th className="px-8 py-6">Promo Code</th>
+                    <th className="px-8 py-6">Channels</th>
+                    <th className="px-8 py-6">Audience</th>
+                    <th className="px-8 py-6">Sales</th>
+                    <th className="px-8 py-6">Revenue</th>
+                    <th className="px-8 py-6 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-cosmic-gold/10">
+                  {promoCodes.filter(p => p.dealerName || p.dealerRequisites || (p.channels && p.channels.length > 0)).map(promo => (
+                    <tr key={promo.id} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
+                      <td className="px-8 py-6">
+                        <p className="text-white font-medium">{promo.dealerName || 'Unnamed Dealer'}</p>
+                        <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">Added {new Date(promo.createdAt).toLocaleDateString()}</p>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className="px-3 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-lg text-xs text-cosmic-gold font-bold">{promo.code}</span>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="flex flex-wrap gap-1">
+                          {promo.channels?.map(c => (
+                            <span key={c} className="px-2 py-0.5 bg-cosmic-silver/10 rounded-md text-[9px] uppercase tracking-tighter">{c}</span>
+                          )) || <span className="text-cosmic-silver/20 italic">None</span>}
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">{(promo.audienceSize || 0).toLocaleString()}</td>
+                      <td className="px-8 py-6 font-cinzel text-white">{promo.usageCount}</td>
+                      <td className="px-8 py-6 font-cinzel text-cosmic-gold">
+                        ${(promo.usageHistory?.reduce((acc, u) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
+                      </td>
+                      <td className="px-8 py-6 text-right">
+                        <button 
+                          onClick={() => setViewingPromo(promo)}
+                          className="p-2 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-lg transition-colors"
+                          title="View Dealer Report"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {promoCodes.filter(p => p.dealerName || p.dealerRequisites || (p.channels && p.channels.length > 0)).length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
+                        No dealers found. Add dealer information to a promo code to see it here.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

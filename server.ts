@@ -65,23 +65,73 @@ async function startServer() {
   
   // Promo Codes API
   app.get("/api/promocodes", async (req, res) => {
+    console.log(">>> GET /api/promocodes - Fetching promo codes...");
     try {
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token && token.trim() !== "") {
+        try {
+          const { blobs } = await list({ prefix: PROMO_FILE_PATH });
+          const promoBlob = blobs.find(b => b.pathname === PROMO_FILE_PATH);
+
+          if (promoBlob) {
+            const response = await fetch(promoBlob.url);
+            if (response.ok) {
+              const codes = await response.json();
+              return res.json(codes);
+            }
+          }
+        } catch (blobError) {
+          console.warn("Vercel Blob fetch failed for promos:", blobError);
+        }
+      }
+
       if (fs.existsSync(LOCAL_PROMO_PATH)) {
         const data = fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8');
         return res.json(JSON.parse(data));
       }
       res.json([]);
     } catch (error) {
+      console.error("Failed to fetch promos:", error);
       res.json([]);
     }
   });
 
   app.post("/api/promocodes", async (req, res) => {
+    console.log(">>> POST /api/promocodes - Saving promo codes...");
     try {
       const codes = req.body;
+      if (!Array.isArray(codes)) {
+        console.error(">>> POST /api/promocodes - Invalid data format:", typeof codes);
+        return res.status(400).json({ error: "Invalid data format: expected array" });
+      }
+
+      console.log(`>>> POST /api/promocodes - Saving ${codes.length} codes`);
+
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      if (token && token.trim() !== "") {
+        try {
+          await put(PROMO_FILE_PATH, JSON.stringify(codes), {
+            access: 'public',
+            addRandomSuffix: false,
+            allowOverwrite: true,
+          });
+          console.log(">>> POST /api/promocodes - Saved to Vercel Blob");
+        } catch (blobError) {
+          console.warn("Vercel Blob put failed for promos:", blobError);
+        }
+      }
+
+      // Ensure directory exists
+      const dir = path.dirname(LOCAL_PROMO_PATH);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
       fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
+      console.log(">>> POST /api/promocodes - Saved to local storage");
       res.json({ success: true });
     } catch (error) {
+      console.error("Failed to save promos:", error);
       res.status(500).json({ error: "Failed to save promo codes" });
     }
   });
