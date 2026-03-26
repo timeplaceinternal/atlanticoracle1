@@ -45,6 +45,7 @@ export interface ReadingRequest {
   birthTime?: string;
   partnerBirthTime?: string;
   birthPlace: string;
+  email: string;
   language: ReportLanguage;
   dreamDescription?: string;
   dreamKeywords?: string;

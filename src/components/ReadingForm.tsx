@@ -20,6 +20,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [birthTime, setBirthTime] = useState('');
   const [birthPlace, setBirthPlace] = useState('');
+  const [email, setEmail] = useState('');
   
   // Partner fields
   const [partnerName, setPartnerName] = useState('');
@@ -46,6 +47,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       birthDate: formatDate(birthDate),
       birthTime,
       birthPlace,
+      email,
       language,
       serviceId: service.id,
       partnerName: service.id === ServiceType.LOVE_SYNASTRY ? partnerName : undefined,
@@ -117,6 +119,18 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                 className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
                 required
               />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formEmail}</label>
+              <input 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                placeholder={t.formEmailPlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                required
+              />
+              <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formEmailHelp}</p>
             </div>
           </div>
         </div>

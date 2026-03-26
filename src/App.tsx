@@ -11,7 +11,7 @@ import NewsPage from './components/NewsPage';
 import AdminPanel from './components/AdminPanel';
 import KnowledgeBasePage from './components/KnowledgeBasePage';
 import KBArticlePage from './components/KBArticlePage';
-import { SERVICES, FREE_SERVICES, getServiceIcon } from './constants';
+import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
 import { promoService } from './services/promoService';
@@ -59,6 +59,7 @@ const App: React.FC = () => {
     }
     return 'English';
   });
+  const t = translations[language];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   // Sync URL with language state
@@ -164,8 +165,28 @@ const App: React.FC = () => {
     }
   }, [view, newsSlug]);
 
+  // Protection for the loading view
+  useEffect(() => {
+    if (view === 'loading') {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = t.unloadWarning;
+        return t.unloadWarning;
+      };
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [view, t.unloadWarning]);
+
   useEffect(() => {
     const handlePopState = () => {
+      if (view === 'loading') {
+        if (!window.confirm(t.unloadWarning)) {
+          window.history.pushState({ loading: true }, '', window.location.href);
+          return;
+        }
+      }
+
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
       const hash = window.location.hash;
@@ -203,7 +224,7 @@ const App: React.FC = () => {
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('hashchange', handlePopState);
     };
-  }, []);
+  }, [view, t.unloadWarning]);
 
   useEffect(() => {
     (window as any).setAppView = setView;
@@ -234,8 +255,6 @@ const App: React.FC = () => {
       }
     }
   }, []);
-
-  const t = translations[language];
 
   const TESTIMONIALS = [
     {
@@ -383,7 +402,7 @@ const App: React.FC = () => {
     } else if (newView === 'database') {
       setView('database');
     } else if (newView === 'form' && slug) {
-      const service = SERVICES.find(s => s.id === slug) || FREE_SERVICES.find(s => s.id === slug);
+      const service = SERVICES.find(s => s.id === slug) || LIGHT_DROPS.find(s => s.id === slug);
       if (service) handleStartService(service);
     }
     setIsMenuOpen(false);
@@ -579,21 +598,21 @@ const App: React.FC = () => {
                 </div>
               </section>
 
-              {/* FREE INSIGHTS SECTION */}
+              {/* LIGHT DROPS SECTION */}
               <section id="free-insights" className="px-6 max-w-7xl mx-auto scroll-mt-32 py-20">
                 <div className="text-center mb-16 space-y-4">
-                  <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[9px] uppercase tracking-[0.3em] rounded mb-2">Essential Access</div>
+                  <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[9px] uppercase tracking-[0.3em] rounded mb-2">Light Drops</div>
                   <h3 className="text-3xl font-cinzel text-white uppercase tracking-[0.2em]">{t.freeInsightsTitle}</h3>
                   <p className="text-cosmic-silver italic font-playfair text-sm">{t.freeInsightsSubtitle}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {FREE_SERVICES.map(s => (
+                  {LIGHT_DROPS.map(s => (
                     <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
-                      <div className="absolute top-4 right-4 text-[9px] font-black text-cosmic-900 px-3 py-1 rounded-full tracking-[0.2em] uppercase bg-cosmic-gold shadow-[0_0_20px_rgba(212,175,55,0.6)] animate-pulse">FREE</div>
                       <div className="mb-6">{getServiceIcon(s.icon)}</div>
                       <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
                       <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
-                      <div className="flex justify-end">
+                      <div className="flex justify-between items-center">
+                        <span className="text-cosmic-gold font-cinzel text-sm">€{s.price}</span>
                         <ChevronRight className="text-cosmic-gold group-hover:translate-x-1 transition-transform w-4 h-4" />
                       </div>
                     </div>
@@ -674,7 +693,7 @@ const App: React.FC = () => {
                 <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>
                 <p className="text-cosmic-silver mb-8 italic">
                   Your study in {currentRequest?.language} is formatted and ready for the matrix. 
-                  Fee: €{isPromoValid ? (selectedService?.price ? selectedService.price / 2 : 15) : (selectedService?.price || 30)}.
+                  Fee: €{isPromoValid ? (selectedService?.price ? selectedService.price / 2 : 0) : (selectedService?.price || 0)}.
                 </p>
                 
                 <div className="space-y-6">

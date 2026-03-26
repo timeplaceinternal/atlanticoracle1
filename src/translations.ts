@@ -142,6 +142,11 @@ export interface Translations {
   promoCodeValid: string;
   promoCodeInvalid: string;
   discountApplied: string;
+  unloadWarning: string;
+  formEmail: string;
+  formEmailPlaceholder: string;
+  formEmailHelp: string;
+  emailRequired: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -155,9 +160,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     heroBadge: "Celestial Mechanics & Numerical Vibrations",
     heroSubtitle: "A synthesis of celestial mechanics and numerical vibrations. Discover your architectural blueprint.",
     heroCTA: "Consult the Oracle",
-    heroFreeCTA: "Free Insights",
-    freeInsightsTitle: "Free Oracle Services",
-    freeInsightsSubtitle: "Experience the precision of the Registry through these introductory studies.",
+    heroFreeCTA: "The Light Drops",
+    freeInsightsTitle: "The Light Drops",
+    freeInsightsSubtitle: "Quick, concentrated AI insights for instant clarity.",
     decreesTitle: "Cosmic Decrees",
     decreesSubtitle: "Select a focus area for your comprehensive study.",
     philosophyTitle: "A Unified Map of your Existence",
@@ -287,6 +292,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoCodeValid: "Code applied successfully!",
     promoCodeInvalid: "Invalid or expired code",
     discountApplied: "50% Discount Applied",
+    unloadWarning: "Your report is being generated! If you close the page, you will be able to find it in your email in 5 minutes. Leave?",
+    formEmail: "Email Address",
+    formEmailPlaceholder: "your@email.com",
+    formEmailHelp: "Required only to send your Oracle report and ensure you don't lose it.",
+    emailRequired: "Email is required for report delivery",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -298,9 +308,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     heroBadge: "Mecânica Celestial e Vibrações Numéricas",
     heroSubtitle: "Uma síntese de mecânica celestial e vibrações numéricas. Descubra seu projeto arquitetônico.",
     heroCTA: "Consultar o Oráculo",
-    heroFreeCTA: "Insights Gratuitos",
-    freeInsightsTitle: "Serviços Gratuitos do Oráculo",
-    freeInsightsSubtitle: "Experimente a precisão do Registro através destes estudos introdutórios.",
+    heroFreeCTA: "The Light Drops",
+    freeInsightsTitle: "The Light Drops",
+    freeInsightsSubtitle: "Quick, concentrated AI insights for instant clarity.",
     decreesTitle: "Decretos Cósmicos",
     decreesSubtitle: "Selecione uma área de foco para seu estudo abrangente.",
     philosophyTitle: "Um Mapa Unificado da sua Existência",
@@ -430,6 +440,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoCodeValid: "Código aplicado com sucesso!",
     promoCodeInvalid: "Código inválido ou expirado",
     discountApplied: "Desconto de 50% Aplicado",
+    unloadWarning: "Seu relatório está sendo gerado! Se você fechar a página, poderá encontrá-lo em seu e-mail em 5 minutos. Sair?",
+    formEmail: "Endereço de E-mail",
+    formEmailPlaceholder: "seu@email.com",
+    formEmailHelp: "Necessário apenas para enviar seu relatório do Oráculo e garantir que você não o perca.",
+    emailRequired: "O e-mail é necessário para a entrega do relatório",
   },
   French: {} as any,
   German: {} as any,

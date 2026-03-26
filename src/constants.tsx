@@ -19,38 +19,70 @@ export const INITIAL_NEWS: NewsPost[] = [
   }
 ];
 
-export const FREE_SERVICES: Service[] = [
+export const LIGHT_DROPS: Service[] = [
   {
     id: ServiceType.FORTUNE_MAP,
     title: "The Fortune Map (Weekly Forecast)",
     description: "Your personalized weekly luck index, power windows, and numerical vibrations for the next 7 days.",
     icon: "trending",
-    price: 0,
-    isFree: true
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 10 EUR link
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 5 EUR link
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.CAPITAL_ALIGNMENT,
     title: "Capital Alignment",
     description: "Identify your leading income energy and financial resource leaks.",
     icon: "coins",
-    price: 0,
-    isFree: true
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.ENERGY_PULSE,
     title: "The Energy Pulse",
     description: "Biological rhythm guide and a 1-minute mental reset technique.",
     icon: "battery",
-    price: 0,
-    isFree: true
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   },
   {
     id: ServiceType.FREE_DREAM_INTERPRETATION,
-    title: "The Dream Whisper (FREE)",
+    title: "The Dream Whisper",
     description: "A brief psychological insight into your dream. Soft advice from a wise sage to help you find clarity.",
     icon: "moonstar",
-    price: 0,
-    isFree: true
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   }
 ];
 
@@ -281,6 +313,8 @@ const PROMPT_CORE = (lang: string) => {
     CURRENT DATE: ${dateStr}.
     FORMAT: No stars (*). Use headers # and ##.
     DEPTH: Professional, analytical.
+    LENGTH: As specified in the service task below.
+    STRUCTURE: Use a structured approach with clear chapters or sections where appropriate.
     STRICTION: DO NOT use Markdown tables. Use plain text or sequential lists.
     STRICTION: NEVER generate URLs, links, or calls to action with fake links.
   `;
@@ -290,82 +324,140 @@ export const COSMIC_PROMPTS = {
   [ServiceType.NATAL_CHART]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Natal Chart Report (Cosmic Blueprint). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Generate a deep psychological portrait. Analyze the Ascendant, Sun, and Moon placements. Focus on internal architecture, strengths, and shadow aspects.
+    Generate an extremely deep, professional psychological and astrological portrait. 
+    This is a premium 15-page report. Structure it into detailed chapters:
+    1. The Ascendant & First Impression.
+    2. The Sun: Core Identity & Purpose.
+    3. The Moon: Emotional Architecture & Subconscious.
+    4. Planetary Clusters & Major Aspects.
+    5. Internal Architecture: Strengths, Challenges, and Shadow Aspects.
+    6. Life Path & Evolutionary Mandate.
+    Provide professional, nuanced analysis for each section.
   `,
   [ServiceType.LOVE_SYNASTRY]: (n1: string, d1: string, t1: string, n2: string, d2: string, t2: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Synastry & Love Compatibility (Relationship Analysis). Partners: ${n1} (${d1} ${t1}) and ${n2} (${d2} ${t2}).
-    Analyze the energetic pull between them. Discuss compatibility in domestic life, emotional support, and physical intimacy. Explain the 'why' behind their connection.
+    Generate a comprehensive, professional 15-page relationship analysis.
+    Analyze the complex energetic pull between them using multi-layered astrological techniques:
+    1. Individual Relationship Needs (Venus/Mars/7th House).
+    2. Synastry Overlays: How planets activate each other's houses.
+    3. Major Aspects: Harmony vs. Friction.
+    4. Composite Energy: The 'Third Entity' of the relationship.
+    5. Long-term Compatibility: Domestic life, emotional support, and intimacy.
+    6. Karmic Lessons & Growth Potential.
   `,
   [ServiceType.YEARLY_SOLAR]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: 12-Month Solar Return (Yearly Forecast). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Map out the year ahead starting from the current date. Identify lucky transits, critical windows for action, and celestial warnings.
+    Generate a professional, highly detailed 15-page yearly forecast.
+    Map out the year ahead with precision:
+    1. The Solar Return Chart: The theme of the year.
+    2. Quarterly Breakdowns: Detailed analysis of each 3-month period.
+    3. Major Transits: Lucky windows, critical action points, and warnings.
+    4. Monthly Focus: Specific celestial guidance for each month.
+    5. Key Life Areas: Career, Love, Health, and Personal Growth.
   `,
   [ServiceType.KARMIC_DESTINY]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Karmic Destiny & Past Lives. Subject: ${name}, born ${date} at ${time} in ${place}.
-    Explore the Lunar Nodes (North/South). What lessons are brought from previous lives? What is the current life's spiritual mandate?
+    Generate a profound, professional 15-page karmic analysis.
+    Explore the soul's journey:
+    1. The South Node: Past life residues and comfort zones.
+    2. The North Node: The current life's spiritual mandate and growth direction.
+    3. Saturn & Pluto: Karmic debts and transformative blocks.
+    4. Retrograde Planets: Internalized lessons from the past.
+    5. The Evolutionary Path: How to align with the soul's purpose.
   `,
   [ServiceType.CAREER_WEALTH]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Career & Wealth Alignment. Subject: ${name}, born ${date} at ${time} in ${place}.
-    Focus on the 2nd, 6th, and 10th houses. Identify sectors of abundance, professional timing for shifts, and financial hurdles to overcome.
+    Generate a professional, strategic 15-page financial and career guide.
+    Focus on abundance and professional trajectory:
+    1. The 2nd House: Personal resources and value systems.
+    2. The 6th House: Daily work, service, and environment.
+    3. The 10th House: Public status, career, and legacy.
+    4. Midheaven (MC): The professional peak and sectors of highest return.
+    5. Financial Timing: Best windows for shifts, investments, and expansion.
+    6. Overcoming Hurdles: Identifying and clearing wealth blocks.
   `,
   [ServiceType.PYTHAGOREAN_CODE]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: The Pythagorean Code (Numerology). Subject: ${name}, born ${date}.
-    Calculate the Life Path Number with mathematical precision. Explain its vibration and the destined trajectory it sets for the subject.
+    Generate a mathematically precise, professional 15-page numerological report.
+    1. The Life Path Number: The destined trajectory.
+    2. Expression & Soul Urge Numbers: Hidden desires and talents.
+    3. Birthday Number: Specific tools for the journey.
+    4. Personal Year Cycle: Current vibrations and timing.
+    5. The Core Matrix: How numbers interact to form the personality.
   `,
   [ServiceType.HUMAN_DESIGN]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Human Design Strategy. Subject: ${name}, born ${date} at ${time} in ${place}.
-    Identify Type, Authority, and Profile. Explain how to make decisions correctly to avoid resistance and live authentically.
+    Generate an in-depth, professional 15-page Human Design manual.
+    1. Type & Strategy: How to move through the world without resistance.
+    2. Inner Authority: The correct way to make decisions.
+    3. Profile: The costume of your purpose.
+    4. Defined vs. Undefined Centers: Where you are consistent vs. where you are conditioned.
+    5. Channels & Gates: Specific energetic strengths.
+    6. Living Your Design: Practical integration for daily life.
   `,
   [ServiceType.ASTRO_CARTOGRAPHY]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Astro-Cartography (Power Locations). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Suggest global locations based on planetary lines. Where will they find love? Where is the career rise? Where is the sanctuary?
+    Generate a professional, comprehensive 15-page global relocation guide.
+    1. Planetary Lines: Detailed analysis of Sun, Moon, Venus, Jupiter, and Mars lines.
+    2. City of Power: Identifying coordinates for career breakthroughs.
+    3. Love & Sanctuary: Best locations for relationships and peace.
+    4. Local Space Astrology: How specific directions impact the subject.
+    5. Timing for Travel/Relocation: When to move for maximum benefit.
   `,
   [ServiceType.SATURN_RETURN]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: Saturn Return Survival Guide (Age 29-30 Crisis). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Analyze Saturn's placement. Explain the significance of the 29.5-year cycle. Provide advice for maturity and mastering life's heavy lessons.
+    Generate a professional, transformative 15-page guide for this critical life stage.
+    1. Saturn's Natal Placement: The foundation of your responsibility.
+    2. The 29.5-Year Cycle: Understanding the 'Cosmic Coming of Age'.
+    3. The Return Transit: Specific phases and challenges of the return.
+    4. Mastering Lessons: Career, relationships, and self-authority.
+    5. Emerging Victorious: How to build a solid foundation for the next 30 years.
   `,
   // FREE SERVICES PROMPTS
   [ServiceType.FORTUNE_MAP]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    SERVICE: [FREE] THE FORTUNE MAP. Subject: ${name}, born ${date}.
+    SERVICE: THE FORTUNE MAP. Subject: ${name}, born ${date}.
+    Generate a professional, structured weekly forecast.
     1. Weekly Chart: List 7 days sequentially. Format: "Day 1 - [Details], Day 2 - [Details]...". Include Luck Index (1-10), Power Window, and Risk Level for each day. DO NOT USE TABLES.
     2. Numerology: Calculate 3 'Golden Numbers' for the subject this week.
-    3. Player Advice: Define the emotional state in which they MUST NOT make risky decisions.
+    3. Strategic Advice: Define the emotional state in which they MUST NOT make risky decisions.
   `,
   [ServiceType.CAPITAL_ALIGNMENT]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    SERVICE: [FREE] CAPITAL ALIGNMENT. Subject: ${name}, born ${date}.
+    SERVICE: CAPITAL ALIGNMENT. Subject: ${name}, born ${date}.
+    Generate a professional financial energy analysis.
     1. Capital Analysis: Define leading income energy (structure, charisma, or intuition).
     2. Loss Zone: Where are they leaking resources internally?
-    3. Investment in SELF: Advice on why knowing their mechanics provides the highest ROI.
+    3. Investment in SELF: Professional advice on why knowing their mechanics provides the highest ROI.
     4. Weekly Plan: List 3 specific financial actions sequentially (Action 1, Action 2, Action 3). DO NOT USE TABLES.
   `,
   [ServiceType.ENERGY_PULSE]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    SERVICE: [FREE] THE ENERGY PULSE. Subject: ${name}, born ${date}.
+    SERVICE: THE ENERGY PULSE. Subject: ${name}, born ${date}.
+    Generate a professional energetic rhythm guide.
     1. Force Dynamics: List weekly energy peak and silence days sequentially. DO NOT USE TABLES.
-    2. Bio-rhythms: Sleep/activity advice based on birth date.
+    2. Bio-rhythms: Professional sleep/activity advice based on birth date.
     3. Reset Technique: One 1-minute mental reset practice (breathing/visualization).
-    4. Focus Mode: Where to direct energy (Health, Relations, Career).
+    4. Focus Mode: Strategic direction for energy (Health, Relations, Career).
   `,
   [ServiceType.FREE_DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    SERVICE: [FREE] THE DREAM WHISPER. Subject: ${name}. 
+    SERVICE: THE DREAM WHISPER. Subject: ${name}. 
     DREAM DATE/TIME: ${dDate} ${dTime}.
     DREAM DESCRIPTION: ${description}
     KEYWORDS: ${keywords}
     
-    TASK: Provide a brief psychological interpretation (~0.5 A4 page). 
-    STYLE: Trusting, positive, problem-solving, soft advice from a "wise sage". 
-    Avoid complex psychological terms. Focus on clarity and a gentle path forward.
+    TASK: Provide a professional psychological interpretation (~1-2 pages). 
+    STYLE: Professional, analytical yet empathetic, soft advice from a "wise sage". 
+    Focus on clarity and a strategic path forward.
   `,
   [ServiceType.DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
     ${PROMPT_CORE(lang)}
@@ -374,23 +466,33 @@ export const COSMIC_PROMPTS = {
     DREAM DESCRIPTION: ${description}
     KEYWORDS: ${keywords}
     
-    TASK: Provide a comprehensive interpretation. 
-    1. The Interpretation: Deep psychological and symbolic analysis.
-    2. The "Why": Explain the logic behind this interpretation (symbols, archetypes).
-    3. Cosmic Alignment: How this dream relates to the subject's current astrological and numerical vibrations (based on their birth data and the dream's timing).
-    4. The Sage's Summary: A gentle, wise summary and advice.
+    TASK: Provide a professional, comprehensive 15-page dream analysis.
+    1. Symbolic & Archetypal Analysis: Deep psychological dive.
+    2. The "Why": Detailed logic behind symbols based on collective unconscious.
+    3. Cosmic Alignment: How this dream interacts with the subject's natal chart and current transits.
+    4. The Sage's Path: Professional advice and a gentle, wise path forward.
     
     STYLE: Simple, understandable language of a "wise sage". Trusting and positive.
   `,
   [ServiceType.GOLDEN_SEED]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: The Golden Seed (Child’s Cosmic Blueprint). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Generate a detailed child's horoscope and talent guide. Focus on the child's energetic potential, learning style, emotional expression, and areas for natural development. Provide advice for parents on how to support the child's unique path without resistance.
+    Generate a professional, highly detailed 15-page child's cosmic manual.
+    1. Energetic Potential: The core essence of the child.
+    2. Learning & Cognitive Style: How they process information.
+    3. Emotional Expression: Understanding their internal world.
+    4. Talents & Flourishing: Activities that align with their nature.
+    5. Conscious Parenting: Practical advice for supporting their unique path.
   `,
   [ServiceType.SHADOW_WORK]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     Service: The Shadow Work Ritual (Lilith & Pluto Deep Dive). Subject: ${name}, born ${date} at ${time} in ${place}.
-    Generate a deep psychological analysis of the subject's "Shadow" side. Focus on Lilith, Pluto, and any retrograde planets in the natal chart. Explore repressed desires, subconscious fears, and irrational blocks. Provide a ritualistic or therapeutic approach to reclaiming the energy locked in these shadow aspects. The tone should be radically honest, deep, and transformative.
+    Generate a profound, professional 15-page shadow analysis.
+    1. Lilith & Pluto: The primary shadow archetypes in the chart.
+    2. Retrograde Planets: Internalized karmic blocks.
+    3. Repressed Desires & Fears: Identifying the hidden self.
+    4. The Reclaiming Ritual: A professional therapeutic/ritualistic approach to integration.
+    5. Transformative Integration: Turning shadow into power.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
