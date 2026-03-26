@@ -20,25 +20,33 @@ const AdminPanel: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const fetchAllData = async () => {
-    const [fetchedNews, fetchedKB, fetchedPromos] = await Promise.all([
-      newsService.getPosts(),
-      kbService.getPosts(),
-      promoService.getPromoCodes()
-    ]);
-    
-    setPosts([...fetchedNews].sort((a, b) => {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
-      const now = Date.now();
-      const diffA = isNaN(dateA) ? Infinity : Math.abs(dateA - now);
-      const diffB = isNaN(dateB) ? Infinity : Math.abs(dateB - now);
-      if (diffA !== diffB) return diffA - diffB;
-      return Number(b.id) - Number(a.id);
-    }));
-    setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
-    setPromoCodes(fetchedPromos);
+    try {
+      console.log(">>> AdminPanel.fetchAllData - Fetching all data...");
+      const [fetchedNews, fetchedKB, fetchedPromos] = await Promise.all([
+        newsService.getPosts(),
+        kbService.getPosts(),
+        promoService.getPromoCodes()
+      ]);
+      
+      console.log(`>>> AdminPanel.fetchAllData - Fetched ${fetchedNews.length} news, ${fetchedKB.length} KB, ${fetchedPromos.length} promos`);
+      
+      setPosts([...fetchedNews].sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        const now = Date.now();
+        const diffA = isNaN(dateA) ? Infinity : Math.abs(dateA - now);
+        const diffB = isNaN(dateB) ? Infinity : Math.abs(dateB - now);
+        if (diffA !== diffB) return diffA - diffB;
+        return Number(b.id) - Number(a.id);
+      }));
+      setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
+      setPromoCodes(Array.isArray(fetchedPromos) ? fetchedPromos : []);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
   };
 
   useEffect(() => {
@@ -330,8 +338,15 @@ const AdminPanel: React.FC = () => {
 
   const handleSavePromo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingPromo?.code || !editingPromo?.discount) {
-      alert("Code and discount are required.");
+    setSaveError(null);
+    
+    if (!editingPromo?.code?.trim()) {
+      setSaveError("Promo code is required.");
+      return;
+    }
+
+    if (editingPromo.discount === undefined || editingPromo.discount === null || isNaN(Number(editingPromo.discount))) {
+      setSaveError("Valid discount percentage is required.");
       return;
     }
 
@@ -346,18 +361,19 @@ const AdminPanel: React.FC = () => {
         isActive: editingPromo.isActive !== undefined ? editingPromo.isActive : true,
         usageCount: editingPromo.usageCount || 0,
         createdAt: editingPromo.createdAt || new Date().toISOString(),
-        dealerName: editingPromo.dealerName,
-        dealerRequisites: editingPromo.dealerRequisites,
-        channels: editingPromo.channels,
-        audienceSize: editingPromo.audienceSize,
-        commissionRate: editingPromo.commissionRate,
-        expiresAt: editingPromo.expiresAt,
+        dealerName: editingPromo.dealerName || '',
+        dealerRequisites: editingPromo.dealerRequisites || '',
+        channels: editingPromo.channels || [],
+        audienceSize: Number(editingPromo.audienceSize) || 0,
+        commissionRate: Number(editingPromo.commissionRate) || 0,
+        expiresAt: editingPromo.expiresAt || '',
         usageHistory: editingPromo.usageHistory || []
       };
 
+      const currentPromos = Array.isArray(promoCodes) ? promoCodes : [];
       const updatedPromos = editingPromo.id 
-        ? promoCodes.map(p => p.id === editingPromo.id ? newPromo : p)
-        : [...promoCodes, newPromo];
+        ? currentPromos.map(p => p.id === editingPromo.id ? newPromo : p)
+        : [...currentPromos, newPromo];
 
       await promoService.savePromoCodes(updatedPromos);
       await fetchAllData();
@@ -365,9 +381,11 @@ const AdminPanel: React.FC = () => {
       setTimeout(() => {
         setEditingPromo(null);
         setSaveSuccess(false);
+        setSaveError(null);
       }, 2000);
     } catch (error) {
-      alert(`Failed to save promo code: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(">>> AdminPanel.handleSavePromo - Error:", error);
+      setSaveError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsSaving(false);
     }
@@ -1178,7 +1196,13 @@ const AdminPanel: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-cosmic-gold/10">
-                  {promoCodes.filter(p => p.dealerName || p.dealerRequisites || (p.channels && p.channels.length > 0)).map(promo => (
+                  {promoCodes.filter(p => 
+                    p.dealerName?.trim() || 
+                    p.dealerRequisites?.trim() || 
+                    (p.channels && p.channels.length > 0) || 
+                    (p.audienceSize && p.audienceSize > 0) || 
+                    (p.commissionRate && p.commissionRate > 0)
+                  ).map(promo => (
                     <tr key={promo.id} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
                       <td className="px-8 py-6">
                         <p className="text-white font-medium">{promo.dealerName || 'Unnamed Dealer'}</p>
@@ -1210,7 +1234,13 @@ const AdminPanel: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  {promoCodes.filter(p => p.dealerName || p.dealerRequisites || (p.channels && p.channels.length > 0)).length === 0 && (
+                  {promoCodes.filter(p => 
+                    p.dealerName?.trim() || 
+                    p.dealerRequisites?.trim() || 
+                    (p.channels && p.channels.length > 0) || 
+                    (p.audienceSize && p.audienceSize > 0) || 
+                    (p.commissionRate && p.commissionRate > 0)
+                  ).length === 0 && (
                     <tr>
                       <td colSpan={7} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
                         No dealers found. Add dealer information to a promo code to see it here.
@@ -1231,14 +1261,21 @@ const AdminPanel: React.FC = () => {
           <div className="bg-cosmic-800 border border-cosmic-gold/20 p-8 rounded-[2rem] shadow-2xl relative w-full max-w-md space-y-8 animate-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between">
               <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">
-                {editingPromo.id ? 'Edit Promo Code' : 'New Promo Code'}
+                {editingPromo.id 
+                  ? (activeTab === 'dealers' ? 'Edit Dealer' : 'Edit Promo Code') 
+                  : (activeTab === 'dealers' ? 'New Dealer' : 'New Promo Code')}
               </h3>
-              <button onClick={() => setEditingPromo(null)} className="text-cosmic-gold/40 hover:text-cosmic-gold transition-colors">
+              <button onClick={() => { setEditingPromo(null); setSaveError(null); }} className="text-cosmic-gold/40 hover:text-cosmic-gold transition-colors">
                 <CloseIcon className="w-6 h-6" />
               </button>
             </div>
 
             <form onSubmit={handleSavePromo} className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+              {saveError && (
+                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-xs text-center animate-in fade-in zoom-in-95">
+                  {saveError}
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Code</label>
@@ -1248,7 +1285,6 @@ const AdminPanel: React.FC = () => {
                     onChange={(e) => setEditingPromo({...editingPromo, code: e.target.value.toUpperCase()})}
                     placeholder="COSMIC50"
                     className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
-                    required
                   />
                 </div>
 
@@ -1260,7 +1296,6 @@ const AdminPanel: React.FC = () => {
                     onChange={(e) => setEditingPromo({...editingPromo, discount: Number(e.target.value)})}
                     placeholder="50"
                     className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
-                    required
                   />
                 </div>
               </div>
