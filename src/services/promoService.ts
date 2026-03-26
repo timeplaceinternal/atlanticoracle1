@@ -31,5 +31,14 @@ export const promoService = {
     });
     if (!response.ok) throw new Error('Validation failed');
     return response.json();
+  },
+
+  async recordUsage(code: string, serviceId: string, amount: number): Promise<void> {
+    const response = await fetch('/api/promocodes/use', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, serviceId, amount }),
+    });
+    if (!response.ok) throw new Error('Failed to record usage');
   }
 };

@@ -86,6 +86,34 @@ async function startServer() {
     }
   });
 
+  app.post("/api/promocodes/use", async (req, res) => {
+    try {
+      const { code, serviceId, amount } = req.body;
+      if (!fs.existsSync(LOCAL_PROMO_PATH)) return res.status(404).json({ error: "No promo codes found" });
+      
+      const codes = JSON.parse(fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8'));
+      const promoIndex = codes.findIndex((p: any) => p.code.toUpperCase() === code.toUpperCase());
+      
+      if (promoIndex !== -1) {
+        const promo = codes[promoIndex];
+        promo.usageCount = (promo.usageCount || 0) + 1;
+        if (!promo.usageHistory) promo.usageHistory = [];
+        promo.usageHistory.push({
+          timestamp: Date.now(),
+          serviceId,
+          amount
+        });
+        
+        fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ error: "Promo code not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to record usage" });
+    }
+  });
+  
   app.post("/api/promocodes/validate", async (req, res) => {
     try {
       const { code } = req.body;

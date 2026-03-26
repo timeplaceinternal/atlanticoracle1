@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
 import { promoService } from '../services/promoService';
@@ -16,6 +16,7 @@ const AdminPanel: React.FC = () => {
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [editingKB, setEditingKB] = useState<Partial<KnowledgeBasePost> | null>(null);
   const [editingPromo, setEditingPromo] = useState<Partial<PromoCode> | null>(null);
+  const [viewingPromo, setViewingPromo] = useState<PromoCode | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -343,14 +344,21 @@ const AdminPanel: React.FC = () => {
         discount: Number(editingPromo.discount),
         isActive: editingPromo.isActive !== undefined ? editingPromo.isActive : true,
         usageCount: editingPromo.usageCount || 0,
-        createdAt: editingPromo.createdAt || new Date().toISOString()
+        createdAt: editingPromo.createdAt || new Date().toISOString(),
+        dealerName: editingPromo.dealerName,
+        dealerRequisites: editingPromo.dealerRequisites,
+        channels: editingPromo.channels,
+        audienceSize: editingPromo.audienceSize,
+        commissionRate: editingPromo.commissionRate,
+        expiresAt: editingPromo.expiresAt,
+        usageHistory: editingPromo.usageHistory || []
       };
 
       const updatedPromos = editingPromo.id 
         ? promoCodes.map(p => p.id === editingPromo.id ? newPromo : p)
         : [...promoCodes, newPromo];
 
-      await promoService.savePromoCode(updatedPromos as any); // The API expects the full array
+      await promoService.savePromoCode(updatedPromos as any);
       await fetchAllData();
       setSaveSuccess(true);
       setTimeout(() => {
@@ -1109,11 +1117,19 @@ const AdminPanel: React.FC = () => {
                     </div>
                     <h4 className="text-xl font-cinzel text-white">{promo.code}</h4>
                     <p className="text-cosmic-silver/60 text-sm">
+                      {promo.dealerName ? `Dealer: ${promo.dealerName} • ` : ''}
                       Discount: {promo.discount}% • Used: {promo.usageCount} times
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => setViewingPromo(promo)}
+                    className="p-3 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-xl transition-colors"
+                    title="View Report"
+                  >
+                    <FileText className="w-5 h-5" />
+                  </button>
                   <button 
                     onClick={() => setEditingPromo(promo)}
                     className="p-3 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-xl transition-colors"
@@ -1147,29 +1163,101 @@ const AdminPanel: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSavePromo} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Code</label>
-                <input 
-                  type="text"
-                  value={editingPromo.code || ''}
-                  onChange={(e) => setEditingPromo({...editingPromo, code: e.target.value.toUpperCase()})}
-                  placeholder="COSMIC50"
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
-                  required
-                />
+            <form onSubmit={handleSavePromo} className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Code</label>
+                  <input 
+                    type="text"
+                    value={editingPromo.code || ''}
+                    onChange={(e) => setEditingPromo({...editingPromo, code: e.target.value.toUpperCase()})}
+                    placeholder="COSMIC50"
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Discount (%)</label>
+                  <input 
+                    type="number"
+                    value={editingPromo.discount || ''}
+                    onChange={(e) => setEditingPromo({...editingPromo, discount: Number(e.target.value)})}
+                    placeholder="50"
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                    required
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Discount (%)</label>
-                <input 
-                  type="number"
-                  value={editingPromo.discount || ''}
-                  onChange={(e) => setEditingPromo({...editingPromo, discount: Number(e.target.value)})}
-                  placeholder="50"
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
-                  required
-                />
+              <div className="space-y-4 pt-4 border-t border-cosmic-gold/10">
+                <h4 className="text-xs font-cinzel text-cosmic-gold uppercase tracking-widest">Dealer Information</h4>
+                
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Dealer Name (FIO)</label>
+                  <input 
+                    type="text"
+                    value={editingPromo.dealerName || ''}
+                    onChange={(e) => setEditingPromo({...editingPromo, dealerName: e.target.value})}
+                    placeholder="John Doe"
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Requisites / Bank Details</label>
+                  <textarea 
+                    value={editingPromo.dealerRequisites || ''}
+                    onChange={(e) => setEditingPromo({...editingPromo, dealerRequisites: e.target.value})}
+                    placeholder="IBAN, Bank, etc."
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold h-20 resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Channels (comma separated)</label>
+                    <input 
+                      type="text"
+                      value={editingPromo.channels?.join(', ') || ''}
+                      onChange={(e) => setEditingPromo({...editingPromo, channels: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')})}
+                      placeholder="FB, Instagram, TikTok"
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Audience Size</label>
+                    <input 
+                      type="number"
+                      value={editingPromo.audienceSize || ''}
+                      onChange={(e) => setEditingPromo({...editingPromo, audienceSize: Number(e.target.value)})}
+                      placeholder="10000"
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Commission Rate (%)</label>
+                    <input 
+                      type="number"
+                      value={editingPromo.commissionRate || ''}
+                      onChange={(e) => setEditingPromo({...editingPromo, commissionRate: Number(e.target.value)})}
+                      placeholder="20"
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Expiration Date</label>
+                    <input 
+                      type="date"
+                      value={editingPromo.expiresAt || ''}
+                      onChange={(e) => setEditingPromo({...editingPromo, expiresAt: e.target.value})}
+                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -1194,6 +1282,176 @@ const AdminPanel: React.FC = () => {
                 {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Promo Code'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Promo Code Report Modal (Dealer Page) */}
+      {viewingPromo && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-cosmic-950/90 backdrop-blur-sm" onClick={() => setViewingPromo(null)}></div>
+          <div className="bg-cosmic-800 border border-cosmic-gold/20 p-10 rounded-[2.5rem] shadow-2xl relative w-full max-w-4xl space-y-10 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar print:bg-white print:text-black print:p-0 print:border-0 print:shadow-none print:max-h-none">
+            <div className="flex items-center justify-between print:hidden">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-cosmic-gold/10 flex items-center justify-center border border-cosmic-gold/20">
+                  <FileText className="w-6 h-6 text-cosmic-gold" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-cinzel text-white uppercase tracking-widest">Dealer Performance Report</h3>
+                  <p className="text-cosmic-gold/60 text-[10px] uppercase tracking-widest">Code: {viewingPromo.code}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-6 py-3 bg-cosmic-gold/10 text-cosmic-gold border border-cosmic-gold/20 rounded-xl font-bold hover:bg-cosmic-gold/20 transition-all"
+                >
+                  <Download className="w-4 h-4" /> Export PDF
+                </button>
+                <button onClick={() => setViewingPromo(null)} className="text-cosmic-gold/40 hover:text-cosmic-gold transition-colors">
+                  <CloseIcon className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2 space-y-8">
+                <div className="bg-cosmic-900/40 p-8 rounded-3xl border border-cosmic-gold/10 space-y-6">
+                  <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest border-b border-cosmic-gold/10 pb-4">Dealer Details</h4>
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Full Name</p>
+                      <p className="text-white font-medium">{viewingPromo.dealerName || 'Not specified'}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Created At</p>
+                      <p className="text-white font-medium">{new Date(viewingPromo.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Expires At</p>
+                      <p className="text-white font-medium">{viewingPromo.expiresAt ? new Date(viewingPromo.expiresAt).toLocaleDateString() : 'Never'}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Commission Rate</p>
+                      <p className="text-white font-medium">{viewingPromo.commissionRate || 0}%</p>
+                    </div>
+                    <div className="col-span-2 space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Requisites</p>
+                      <p className="text-cosmic-silver text-sm whitespace-pre-wrap">{viewingPromo.dealerRequisites || 'Not specified'}</p>
+                    </div>
+                    <div className="col-span-2 space-y-1 pt-4 border-t border-cosmic-gold/10">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Tracking Link</p>
+                      <div className="flex items-center gap-2">
+                        <input 
+                          readOnly
+                          value={`${window.location.origin}/?promo=${viewingPromo.code}`}
+                          className="flex-1 bg-cosmic-900/50 border border-cosmic-gold/20 rounded-lg p-2 text-xs text-cosmic-gold outline-none"
+                        />
+                        <button 
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/?promo=${viewingPromo.code}`);
+                            alert('Link copied to clipboard!');
+                          }}
+                          className="p-2 bg-cosmic-gold/10 text-cosmic-gold rounded-lg border border-cosmic-gold/20 hover:bg-cosmic-gold/20"
+                        >
+                          <LinkIcon className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-cosmic-900/40 p-8 rounded-3xl border border-cosmic-gold/10 space-y-6">
+                  <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest border-b border-cosmic-gold/10 pb-4">Channel Analysis</h4>
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Active Channels</p>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {viewingPromo.channels?.map(c => (
+                          <span key={c} className="px-3 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full text-[10px] text-cosmic-gold font-bold uppercase tracking-widest">{c}</span>
+                        )) || <span className="text-cosmic-silver/40 italic">None</span>}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Total Audience</p>
+                      <p className="text-white font-medium">{(viewingPromo.audienceSize || 0).toLocaleString()} people</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <div className="bg-cosmic-gold/5 p-8 rounded-3xl border border-cosmic-gold/20 space-y-6">
+                  <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest border-b border-cosmic-gold/10 pb-4">Sales Statistics</h4>
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Total Uses</p>
+                      <p className="text-2xl font-cinzel text-white">{viewingPromo.usageCount}</p>
+                    </div>
+                    
+                    <div className="space-y-4 pt-4 border-t border-cosmic-gold/10">
+                      <div className="flex justify-between items-center">
+                        <p className="text-[10px] uppercase tracking-widest text-cosmic-silver/60">Last 7 Days</p>
+                        <p className="text-lg font-cinzel text-white">
+                          {viewingPromo.usageHistory?.filter(u => u.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000).length || 0}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <p className="text-[10px] uppercase tracking-widest text-cosmic-silver/60">Last 30 Days</p>
+                        <p className="text-lg font-cinzel text-white">
+                          {viewingPromo.usageHistory?.filter(u => u.timestamp > Date.now() - 30 * 24 * 60 * 60 * 1000).length || 0}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-cosmic-gold/20">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 mb-2">Total Revenue Generated</p>
+                      <p className="text-3xl font-cinzel text-cosmic-gold">
+                        ${(viewingPromo.usageHistory?.reduce((acc, u) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-cosmic-gold/10">
+                      <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 mb-2">Estimated Commission</p>
+                      <p className="text-2xl font-cinzel text-green-400">
+                        ${((viewingPromo.usageHistory?.reduce((acc, u) => acc + (u.amount || 0), 0) || 0) * (viewingPromo.commissionRate || 0) / 100).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-cosmic-900/40 p-6 rounded-3xl border border-cosmic-gold/10">
+                  <p className="text-[10px] text-cosmic-gold/60 leading-relaxed italic text-center">
+                    "Success is written in the stars, but measured in numbers."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {viewingPromo.usageHistory && viewingPromo.usageHistory.length > 0 && (
+              <div className="space-y-6">
+                <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-widest">Recent Activity</h4>
+                <div className="bg-cosmic-900/40 rounded-3xl border border-cosmic-gold/10 overflow-hidden">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                      <tr>
+                        <th className="px-6 py-4">Date</th>
+                        <th className="px-6 py-4">Service</th>
+                        <th className="px-6 py-4">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-cosmic-gold/10">
+                      {viewingPromo.usageHistory.slice(-10).reverse().map((u, i) => (
+                        <tr key={i} className="text-cosmic-silver">
+                          <td className="px-6 py-4">{new Date(u.timestamp).toLocaleString()}</td>
+                          <td className="px-6 py-4 uppercase tracking-tighter text-xs">{u.serviceId.replace(/-/g, ' ')}</td>
+                          <td className="px-6 py-4 text-white font-medium">${u.amount}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

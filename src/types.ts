@@ -110,6 +110,12 @@ export interface NewsPost {
   metaDescription?: string;
 }
 
+export interface PromoUsage {
+  timestamp: number;
+  serviceId: ServiceType;
+  amount: number;
+}
+
 export interface PromoCode {
   id: string;
   code: string;
@@ -117,4 +123,12 @@ export interface PromoCode {
   isActive: boolean;
   usageCount: number;
   createdAt: string;
+  // Dealer Information
+  dealerName?: string;
+  dealerRequisites?: string;
+  channels?: string[]; // e.g. ['FB', 'Instagram', 'TikTok']
+  audienceSize?: number;
+  commissionRate?: number; // percentage
+  expiresAt?: string;
+  usageHistory?: PromoUsage[];
 }

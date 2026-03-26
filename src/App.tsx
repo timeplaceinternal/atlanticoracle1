@@ -362,6 +362,17 @@ const App: React.FC = () => {
     setView('loading');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
+    // Record promo usage if valid
+    if (isPromoValid && promoCode) {
+      try {
+        const service = SERVICES.find(s => s.id === request.serviceId);
+        const amount = service ? service.price * 0.5 : 0; // Assuming 50% discount for now, or use result.discount
+        await promoService.recordUsage(promoCode, request.serviceId, amount);
+      } catch (e) {
+        console.warn('Failed to record promo usage:', e);
+      }
+    }
+    
     try {
       const content = await generateCosmicReading(request);
       const newResult: ReadingResultType = {
