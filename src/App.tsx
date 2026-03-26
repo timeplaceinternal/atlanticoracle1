@@ -11,6 +11,8 @@ import NewsPage from './components/NewsPage';
 import AdminPanel from './components/AdminPanel';
 import KnowledgeBasePage from './components/KnowledgeBasePage';
 import KBArticlePage from './components/KBArticlePage';
+import CookieConsent from './components/CookieConsent';
+import PrivacySettings from './components/PrivacySettings';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
@@ -116,6 +118,12 @@ const App: React.FC = () => {
   const [isPromoValid, setIsPromoValid] = useState(false);
   const [promoError, setPromoError] = useState('');
   const [isValidatingPromo, setIsValidatingPromo] = useState(false);
+  const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
+
+  useEffect(() => {
+    (window as any).openPrivacySettings = () => setIsPrivacySettingsOpen(true);
+    return () => { delete (window as any).openPrivacySettings; };
+  }, []);
 
   const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article'>(() => {
     if (typeof window !== 'undefined') {
@@ -853,6 +861,12 @@ const App: React.FC = () => {
                     >
                       {t.privacyPolicy}
                     </button>
+                    <button 
+                      onClick={() => setIsPrivacySettingsOpen(true)} 
+                      className="text-cosmic-silver/60 hover:text-cosmic-gold transition-colors text-[9px] uppercase tracking-[0.3em] underline underline-offset-4 decoration-cosmic-gold/30"
+                    >
+                      {t.privacySettingsTitle}
+                    </button>
                  </div>
               </div>
             </div>
@@ -863,6 +877,8 @@ const App: React.FC = () => {
           </div>
         </footer>
       </div>
+      <CookieConsent language={language} onOpenSettings={() => setIsPrivacySettingsOpen(true)} />
+      <PrivacySettings language={language} isOpen={isPrivacySettingsOpen} onClose={() => setIsPrivacySettingsOpen(false)} />
     </div>
   );
 };

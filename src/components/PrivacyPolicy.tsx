@@ -48,7 +48,17 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
           <h3>2. How We Use Your Data</h3>
           <p>Your data is used by our AI models to calculate planetary positions and numerical vibrations. We do not use your data for marketing purposes without your explicit consent.</p>
           <h3>3. Cookies</h3>
-          <p>We use essential cookies to maintain your session and ensure the security of our platform.</p>
+          <p>We use essential cookies to maintain your session and ensure the security of our platform. You can manage your cookie preferences in the Privacy Settings.</p>
+          <div className="mt-4">
+            <button 
+              onClick={() => (window as any).openPrivacySettings?.()}
+              className="px-6 py-3 bg-cosmic-gold/10 border border-cosmic-gold/20 text-cosmic-gold text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-cosmic-gold/20 transition-colors"
+            >
+              Manage Cookie Preferences
+            </button>
+          </div>
+          <h3>4. GDPR Compliance</h3>
+          <p>Under the General Data Protection Regulation (GDPR), European residents have the right to access, export, and delete their personal data. Our "Ephemeral Privacy" model ensures that most data is deleted automatically after your report is generated.</p>
         </div>
       </div>
     </div>

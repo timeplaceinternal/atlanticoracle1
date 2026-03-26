@@ -147,6 +147,24 @@ export interface Translations {
   formEmailPlaceholder: string;
   formEmailHelp: string;
   emailRequired: string;
+  cookieConsentTitle: string;
+  cookieConsentText: string;
+  cookieAcceptAll: string;
+  cookieRejectAll: string;
+  cookieSettings: string;
+  privacySettingsTitle: string;
+  privacySettingsDesc: string;
+  privacyEssentialCookies: string;
+  privacyEssentialDesc: string;
+  privacyAnalyticsCookies: string;
+  privacyAnalyticsDesc: string;
+  privacyMarketingCookies: string;
+  privacyMarketingDesc: string;
+  saveSettings: string;
+  dataRightsTitle: string;
+  dataRightsDesc: string;
+  requestDataExport: string;
+  requestDataDeletion: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -297,6 +315,24 @@ export const translations: Record<ReportLanguage, Translations> = {
     formEmailPlaceholder: "your@email.com",
     formEmailHelp: "Required only to send your Oracle report and ensure you don't lose it.",
     emailRequired: "Email is required for report delivery",
+    cookieConsentTitle: "Celestial Consent",
+    cookieConsentText: "We use cookies to enhance your cosmic journey. Essential cookies are required for the Oracle to function, while others help us understand the stars better.",
+    cookieAcceptAll: "Accept All",
+    cookieRejectAll: "Essential Only",
+    cookieSettings: "Settings",
+    privacySettingsTitle: "Privacy Settings",
+    privacySettingsDesc: "Manage how your data interacts with the cosmic web.",
+    privacyEssentialCookies: "Essential Cookies",
+    privacyEssentialDesc: "Required for basic functionality and security. Cannot be disabled.",
+    privacyAnalyticsCookies: "Analytics",
+    privacyAnalyticsDesc: "Helps us understand how seekers interact with the Oracle.",
+    privacyMarketingCookies: "Marketing",
+    privacyMarketingDesc: "Used to share cosmic news and updates with relevant seekers.",
+    saveSettings: "Save Preferences",
+    dataRightsTitle: "Your Data Rights",
+    dataRightsDesc: "Under GDPR, you have the right to access, export, or delete your sacred data.",
+    requestDataExport: "Request Data Export",
+    requestDataDeletion: "Request Data Deletion",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -445,6 +481,24 @@ export const translations: Record<ReportLanguage, Translations> = {
     formEmailPlaceholder: "seu@email.com",
     formEmailHelp: "Necessário apenas para enviar seu relatório do Oráculo e garantir que você não o perca.",
     emailRequired: "O e-mail é necessário para a entrega do relatório",
+    cookieConsentTitle: "Consentimento Celestial",
+    cookieConsentText: "Usamos cookies para aprimorar sua jornada cósmica. Cookies essenciais são necessários para o funcionamento do Oráculo, enquanto outros nos ajudam a entender melhor as estrelas.",
+    cookieAcceptAll: "Aceitar Todos",
+    cookieRejectAll: "Apenas Essenciais",
+    cookieSettings: "Configurações",
+    privacySettingsTitle: "Configurações de Privacidade",
+    privacySettingsDesc: "Gerencie como seus dados interagem com a teia cósmica.",
+    privacyEssentialCookies: "Cookies Essenciais",
+    privacyEssentialDesc: "Necessários para funcionalidade básica e segurança. Não podem ser desativados.",
+    privacyAnalyticsCookies: "Análise",
+    privacyAnalyticsDesc: "Ajuda-nos a entender como os buscadores interagem com o Oráculo.",
+    privacyMarketingCookies: "Marketing",
+    privacyMarketingDesc: "Usado para compartilhar notícias e atualizações cósmicas com buscadores relevantes.",
+    saveSettings: "Salvar Preferências",
+    dataRightsTitle: "Seus Direitos de Dados",
+    dataRightsDesc: "Sob o GDPR, você tem o direito de acessar, exportar ou excluir seus dados sagrados.",
+    requestDataExport: "Solicitar Exportação de Dados",
+    requestDataDeletion: "Solicitar Exclusão de Dados",
   },
   French: {} as any,
   German: {} as any,
