@@ -2,7 +2,7 @@
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon
 } from 'lucide-react';
 import { ServiceType, Service, NewsPost } from './types';
 
@@ -204,6 +204,36 @@ export const SERVICES: Service[] = [
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
+  },
+  {
+    id: ServiceType.GOLDEN_SEED,
+    title: "The Golden Seed (Child’s Cosmic Blueprint)",
+    description: "\"The ultimate manual for conscious parents.\" Understand your child's energy from birth. This report is not about \"fate,\" but about potential: how they learn, how they express emotions, and in which activities they will flourish most brightly. Help the \"golden seed\" sprout without resistance.",
+    icon: "baby",
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
+  },
+  {
+    id: ServiceType.SHADOW_WORK,
+    title: "The Shadow Work Ritual (Lilith & Pluto Deep Dive)",
+    description: "\"Meet your dark side and turn it into your greatest ally.\" A deep analysis of Lilith, Pluto, and retrograde planets in your chart. Explore your repressed desires, fears, and irrational blocks. This report is for those ready for radical honesty and wanting to reclaim energy locked in the \"Shadow\" aspects of their personality.",
+    icon: "moon",
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   }
 ];
 
@@ -226,6 +256,8 @@ export const getServiceIcon = (iconName: string) => {
     case 'trending': return <TrendingUp {...props} className="text-cosmic-gold" />;
     case 'coins': return <Coins {...props} className="text-cosmic-gold" />;
     case 'battery': return <Battery {...props} className="text-cosmic-gold" />;
+    case 'baby': return <Baby {...props} className="text-cosmic-gold" />;
+    case 'moon': return <Moon {...props} className="text-cosmic-purple" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -349,6 +381,16 @@ export const COSMIC_PROMPTS = {
     4. The Sage's Summary: A gentle, wise summary and advice.
     
     STYLE: Simple, understandable language of a "wise sage". Trusting and positive.
+  `,
+  [ServiceType.GOLDEN_SEED]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: The Golden Seed (Child’s Cosmic Blueprint). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Generate a detailed child's horoscope and talent guide. Focus on the child's energetic potential, learning style, emotional expression, and areas for natural development. Provide advice for parents on how to support the child's unique path without resistance.
+  `,
+  [ServiceType.SHADOW_WORK]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: The Shadow Work Ritual (Lilith & Pluto Deep Dive). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Generate a deep psychological analysis of the subject's "Shadow" side. Focus on Lilith, Pluto, and any retrograde planets in the natal chart. Explore repressed desires, subconscious fears, and irrational blocks. Provide a ritualistic or therapeutic approach to reclaiming the energy locked in these shadow aspects. The tone should be radically honest, deep, and transformative.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}

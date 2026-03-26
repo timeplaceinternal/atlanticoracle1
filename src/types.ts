@@ -10,6 +10,8 @@ export enum ServiceType {
   ASTRO_CARTOGRAPHY = 'astro-cartography',
   SATURN_RETURN = 'saturn-return',
   DREAM_INTERPRETATION = 'dream-interpretation',
+  GOLDEN_SEED = 'golden-seed',
+  SHADOW_WORK = 'shadow-work',
   // Free Services
   FORTUNE_MAP = 'free-fortune-map',
   CAPITAL_ALIGNMENT = 'free-capital-alignment',
