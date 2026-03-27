@@ -69,6 +69,9 @@ async function startServer() {
     try {
       const token = process.env.BLOB_READ_WRITE_TOKEN;
       if (token && token.trim() !== "") {
+        if (!token.startsWith('vercel_blob_rw_')) {
+          console.warn(">>> Vercel Blob token format looks invalid. It should start with 'vercel_blob_rw_'. Check your AI Studio Secrets.");
+        }
         try {
           const { blobs } = await list({ prefix: PROMO_FILE_PATH });
           const promoBlob = blobs.find(b => b.pathname === PROMO_FILE_PATH);
@@ -81,7 +84,8 @@ async function startServer() {
             }
           }
         } catch (blobError) {
-          console.warn("Vercel Blob fetch failed for promos:", blobError);
+          console.warn(">>> Vercel Blob list/fetch failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          console.warn(">>> Please check your BLOB_READ_WRITE_TOKEN in the AI Studio 'Secrets' menu.");
         }
       }
 
@@ -107,8 +111,12 @@ async function startServer() {
 
       console.log(`>>> POST /api/promocodes - Saving ${codes.length} codes`);
 
+      let savedToBlob = false;
       const token = process.env.BLOB_READ_WRITE_TOKEN;
       if (token && token.trim() !== "") {
+        if (!token.startsWith('vercel_blob_rw_')) {
+          console.warn(">>> Vercel Blob token format looks invalid. It should start with 'vercel_blob_rw_'. Check your AI Studio Secrets.");
+        }
         try {
           await put(PROMO_FILE_PATH, JSON.stringify(codes), {
             access: 'public',
@@ -116,23 +124,32 @@ async function startServer() {
             allowOverwrite: true,
           });
           console.log(">>> POST /api/promocodes - Saved to Vercel Blob");
+          savedToBlob = true;
         } catch (blobError) {
-          console.warn("Vercel Blob put failed for promos:", blobError);
+          console.warn(">>> Vercel Blob put failed for promos (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
+          console.warn(">>> Please check your BLOB_READ_WRITE_TOKEN in the AI Studio 'Secrets' menu.");
         }
       }
 
-      // Ensure directory exists
-      const dir = path.dirname(LOCAL_PROMO_PATH);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+      // Try local storage but don't fail the whole request if it's read-only
+      try {
+        const dir = path.dirname(LOCAL_PROMO_PATH);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
+        console.log(">>> POST /api/promocodes - Saved to local storage");
+      } catch (localError) {
+        console.warn(">>> POST /api/promocodes - Local storage save failed:", localError instanceof Error ? localError.message : localError);
+        if (!savedToBlob) {
+          throw new Error("Failed to save to both Vercel Blob and local storage");
+        }
       }
 
-      fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
-      console.log(">>> POST /api/promocodes - Saved to local storage");
-      res.json({ success: true });
+      res.json({ success: true, savedToBlob });
     } catch (error) {
       console.error("Failed to save promos:", error);
-      res.status(500).json({ error: "Failed to save promo codes" });
+      res.status(500).json({ error: "Failed to save promo codes: " + (error instanceof Error ? error.message : String(error)) });
     }
   });
 
@@ -291,6 +308,7 @@ async function startServer() {
         return res.status(400).json({ error: "Invalid data format: expected array" });
       }
 
+      let savedToBlob = false;
       // Try Vercel Blob
       const token = process.env.BLOB_READ_WRITE_TOKEN;
       if (token && token.trim() !== "") {
@@ -301,17 +319,26 @@ async function startServer() {
             addRandomSuffix: false,
             allowOverwrite: true,
           });
+          savedToBlob = true;
         } catch (blobError) {
           console.warn("Vercel Blob put failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
-          // Continue to local save
         }
       }
 
-      // Always save locally as well (or as fallback)
-      console.log(`Saving to local filesystem: ${LOCAL_NEWS_PATH}`);
-      fs.writeFileSync(LOCAL_NEWS_PATH, JSON.stringify(posts, null, 2));
+      // Try local storage but don't fail the whole request if it's read-only
+      try {
+        console.log(`Saving to local filesystem: ${LOCAL_NEWS_PATH}`);
+        const dir = path.dirname(LOCAL_NEWS_PATH);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(LOCAL_NEWS_PATH, JSON.stringify(posts, null, 2));
+      } catch (localError) {
+        console.warn(">>> POST /api/news - Local storage save failed:", localError instanceof Error ? localError.message : localError);
+        if (!savedToBlob) {
+          throw new Error("Failed to save to both Vercel Blob and local storage");
+        }
+      }
 
-      res.json({ success: true });
+      res.json({ success: true, savedToBlob });
     } catch (error) {
       console.error("!!! Failed to save news:", error);
       res.status(500).json({ error: "Failed to save news: " + (error instanceof Error ? error.message : String(error)) });
@@ -453,6 +480,7 @@ async function startServer() {
         return res.status(400).json({ error: "Invalid data format: expected array" });
       }
 
+      let savedToBlob = false;
       const token = process.env.BLOB_READ_WRITE_TOKEN;
       if (token && token.trim() !== "") {
         try {
@@ -461,14 +489,25 @@ async function startServer() {
             addRandomSuffix: false,
             allowOverwrite: true,
           });
+          savedToBlob = true;
         } catch (blobError) {
           console.warn("Vercel Blob put failed for KB (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
-          // Continue to local save
         }
       }
 
-      fs.writeFileSync(LOCAL_KB_PATH, JSON.stringify(posts, null, 2));
-      res.json({ success: true });
+      // Try local storage but don't fail the whole request if it's read-only
+      try {
+        const dir = path.dirname(LOCAL_KB_PATH);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(LOCAL_KB_PATH, JSON.stringify(posts, null, 2));
+      } catch (localError) {
+        console.warn(">>> POST /api/kb - Local storage save failed:", localError instanceof Error ? localError.message : localError);
+        if (!savedToBlob) {
+          throw new Error("Failed to save to both Vercel Blob and local storage");
+        }
+      }
+
+      res.json({ success: true, savedToBlob });
     } catch (error) {
       console.error("!!! Failed to save KB:", error);
       res.status(500).json({ error: "Failed to save KB: " + (error instanceof Error ? error.message : String(error)) });
