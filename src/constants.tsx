@@ -60,12 +60,12 @@ export const LIGHT_DROPS: Service[] = [
     price: 10,
     isFree: false,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      Portuguese: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06"
     },
     stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      Portuguese: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06"
     }
   },
   {
