@@ -28,7 +28,7 @@ export const LIGHT_DROPS: Service[] = [
     price: 10,
     isFree: false,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 10 EUR link
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     },
     stripeUrlsDiscounted: {
@@ -94,8 +94,8 @@ export const SERVICES: Service[] = [
     icon: "sparkles",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 15 EUR link
@@ -109,8 +109,8 @@ export const SERVICES: Service[] = [
     icon: "heart",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -124,8 +124,8 @@ export const SERVICES: Service[] = [
     icon: "calendar",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -139,8 +139,8 @@ export const SERVICES: Service[] = [
     icon: "history",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -154,8 +154,8 @@ export const SERVICES: Service[] = [
     icon: "briefcase",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -169,8 +169,8 @@ export const SERVICES: Service[] = [
     icon: "hash",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -184,8 +184,8 @@ export const SERVICES: Service[] = [
     icon: "fingerprint",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -199,8 +199,8 @@ export const SERVICES: Service[] = [
     icon: "globe",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -214,8 +214,8 @@ export const SERVICES: Service[] = [
     icon: "zap",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -229,8 +229,8 @@ export const SERVICES: Service[] = [
     icon: "moonstar",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -244,8 +244,8 @@ export const SERVICES: Service[] = [
     icon: "baby",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -259,8 +259,8 @@ export const SERVICES: Service[] = [
     icon: "moon",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",

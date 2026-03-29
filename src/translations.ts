@@ -136,11 +136,6 @@ export interface Translations {
   formDreamKeywords: string;
   formDreamDate: string;
   formDreamTime: string;
-  promoCodeLabel: string;
-  promoCodePlaceholder: string;
-  promoCodeApply: string;
-  promoCodeValid: string;
-  promoCodeInvalid: string;
   discountApplied: string;
   unloadWarning: string;
   formEmail: string;
@@ -304,11 +299,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamKeywords: "Key symbols or images (comma separated)",
     formDreamDate: "Date of the dream",
     formDreamTime: "Approximate time of the dream",
-    promoCodeLabel: "Promo Code",
-    promoCodePlaceholder: "Enter code",
-    promoCodeApply: "Apply",
-    promoCodeValid: "Code applied successfully!",
-    promoCodeInvalid: "Invalid or expired code",
     discountApplied: "50% Discount Applied",
     unloadWarning: "Your report is being generated! If you close the page, you will be able to find it in your email in 5 minutes. Leave?",
     formEmail: "Email Address",
@@ -470,11 +460,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamKeywords: "Símbolos ou imagens principais (separados por vírgula)",
     formDreamDate: "Data do sonho",
     formDreamTime: "Hora aproximada do sonho",
-    promoCodeLabel: "Código Promocional",
-    promoCodePlaceholder: "Inserir código",
-    promoCodeApply: "Aplicar",
-    promoCodeValid: "Código aplicado com sucesso!",
-    promoCodeInvalid: "Código inválido ou expirado",
     discountApplied: "Desconto de 50% Aplicado",
     unloadWarning: "Seu relatório está sendo gerado! Se você fechar a página, poderá encontrá-lo em seu e-mail em 5 minutos. Sair?",
     formEmail: "Endereço de E-mail",

@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import type { NewsPost } from "./src/types";
+import Stripe from "stripe";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +21,42 @@ async function startServer() {
   
   if (!fs.existsSync(LOCAL_DATA_DIR)) fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
   if (!fs.existsSync(LOCAL_UPLOADS_DIR)) fs.mkdirSync(LOCAL_UPLOADS_DIR, { recursive: true });
+
+  // Stripe Webhook Endpoint
+  // Note: Stripe needs the raw body for signature verification.
+  // We MUST place this BEFORE express.json() middleware.
+  app.post("/api/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!sig || !webhookSecret) {
+      console.error("Missing stripe-signature or STRIPE_WEBHOOK_SECRET");
+      return res.status(400).send("Webhook Error: Missing signature or secret");
+    }
+
+    let event;
+
+    try {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } catch (err) {
+      console.error(`Webhook Error: ${err instanceof Error ? err.message : String(err)}`);
+      return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : String(err)}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log(`Payment successful for session: ${session.id}`);
+        // TODO: Implement fulfillment logic here (e.g., update database, send email)
+        break;
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.json({ received: true });
+  });
 
   const upload = multer({ 
     storage: multer.memoryStorage(),
@@ -50,154 +87,19 @@ async function startServer() {
   });
 
   app.use(express.json({ limit: '10mb' }));
+
   // Serve local uploads - Ensure public/uploads is served at /uploads
   const uploadsPath = path.join(__dirname, 'public', 'uploads');
   app.use('/uploads', express.static(uploadsPath));
 
   const NEWS_FILE_PATH = 'data/news.json';
   const KB_FILE_PATH = 'data/kb.json';
-  const PROMO_FILE_PATH = 'data/promocodes.json';
+  const SETTINGS_FILE_PATH = 'data/settings.json';
   const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
   const LOCAL_KB_PATH = path.join(LOCAL_DATA_DIR, 'kb.json');
-  const LOCAL_PROMO_PATH = path.join(LOCAL_DATA_DIR, 'promocodes.json');
+  const LOCAL_SETTINGS_PATH = path.join(LOCAL_DATA_DIR, 'settings.json');
 
   // API Routes
-  
-  // Promo Codes API
-  app.get("/api/promocodes", async (req, res) => {
-    console.log(">>> GET /api/promocodes - Fetching promo codes...");
-    try {
-      const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token && token.trim() !== "") {
-        if (!token.startsWith('vercel_blob_rw_')) {
-          console.warn(">>> Vercel Blob token format looks invalid. It should start with 'vercel_blob_rw_'. Check your AI Studio Secrets.");
-        }
-        try {
-          const { blobs } = await list({ prefix: PROMO_FILE_PATH });
-          const promoBlob = blobs.find(b => b.pathname === PROMO_FILE_PATH);
-
-          if (promoBlob) {
-            const response = await fetch(promoBlob.url);
-            if (response.ok) {
-              const codes = await response.json();
-              return res.json(codes);
-            }
-          }
-        } catch (blobError) {
-          console.warn(">>> Vercel Blob list/fetch failed (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
-          console.warn(">>> Please check your BLOB_READ_WRITE_TOKEN in the AI Studio 'Secrets' menu.");
-        }
-      }
-
-      if (fs.existsSync(LOCAL_PROMO_PATH)) {
-        const data = fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8');
-        return res.json(JSON.parse(data));
-      }
-      res.json([]);
-    } catch (error) {
-      console.error("Failed to fetch promos:", error);
-      res.json([]);
-    }
-  });
-
-  app.post("/api/promocodes", async (req, res) => {
-    console.log(">>> POST /api/promocodes - Saving promo codes...");
-    try {
-      const codes = req.body;
-      if (!Array.isArray(codes)) {
-        console.error(">>> POST /api/promocodes - Invalid data format:", typeof codes);
-        return res.status(400).json({ error: "Invalid data format: expected array" });
-      }
-
-      console.log(`>>> POST /api/promocodes - Saving ${codes.length} codes`);
-
-      let savedToBlob = false;
-      const token = process.env.BLOB_READ_WRITE_TOKEN;
-      if (token && token.trim() !== "") {
-        if (!token.startsWith('vercel_blob_rw_')) {
-          console.warn(">>> Vercel Blob token format looks invalid. It should start with 'vercel_blob_rw_'. Check your AI Studio Secrets.");
-        }
-        try {
-          await put(PROMO_FILE_PATH, JSON.stringify(codes), {
-            access: 'public',
-            addRandomSuffix: false,
-            allowOverwrite: true,
-          });
-          console.log(">>> POST /api/promocodes - Saved to Vercel Blob");
-          savedToBlob = true;
-        } catch (blobError) {
-          console.warn(">>> Vercel Blob put failed for promos (likely invalid token):", blobError instanceof Error ? blobError.message : blobError);
-          console.warn(">>> Please check your BLOB_READ_WRITE_TOKEN in the AI Studio 'Secrets' menu.");
-        }
-      }
-
-      // Try local storage but don't fail the whole request if it's read-only
-      try {
-        const dir = path.dirname(LOCAL_PROMO_PATH);
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir, { recursive: true });
-        }
-        fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
-        console.log(">>> POST /api/promocodes - Saved to local storage");
-      } catch (localError) {
-        console.warn(">>> POST /api/promocodes - Local storage save failed:", localError instanceof Error ? localError.message : localError);
-        if (!savedToBlob) {
-          throw new Error("Failed to save to both Vercel Blob and local storage");
-        }
-      }
-
-      res.json({ success: true, savedToBlob });
-    } catch (error) {
-      console.error("Failed to save promos:", error);
-      res.status(500).json({ error: "Failed to save promo codes: " + (error instanceof Error ? error.message : String(error)) });
-    }
-  });
-
-  app.post("/api/promocodes/use", async (req, res) => {
-    try {
-      const { code, serviceId, amount } = req.body;
-      if (!fs.existsSync(LOCAL_PROMO_PATH)) return res.status(404).json({ error: "No promo codes found" });
-      
-      const codes = JSON.parse(fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8'));
-      const promoIndex = codes.findIndex((p: any) => p.code.toUpperCase() === code.toUpperCase());
-      
-      if (promoIndex !== -1) {
-        const promo = codes[promoIndex];
-        promo.usageCount = (promo.usageCount || 0) + 1;
-        if (!promo.usageHistory) promo.usageHistory = [];
-        promo.usageHistory.push({
-          timestamp: Date.now(),
-          serviceId,
-          amount
-        });
-        
-        fs.writeFileSync(LOCAL_PROMO_PATH, JSON.stringify(codes, null, 2));
-        res.json({ success: true });
-      } else {
-        res.status(404).json({ error: "Promo code not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to record usage" });
-    }
-  });
-  
-  app.post("/api/promocodes/validate", async (req, res) => {
-    try {
-      const { code } = req.body;
-      if (!fs.existsSync(LOCAL_PROMO_PATH)) return res.json({ valid: false });
-      
-      const codes = JSON.parse(fs.readFileSync(LOCAL_PROMO_PATH, 'utf-8'));
-      const promo = codes.find((p: any) => p.code.toUpperCase() === code.toUpperCase() && p.active);
-      
-      if (promo) {
-        res.json({ valid: true, discount: promo.discount || 50 });
-      } else {
-        res.json({ valid: false });
-      }
-    } catch (error) {
-      res.json({ valid: false });
-    }
-  });
   
   // File upload endpoint
   app.post("/api/upload", (req, res) => {
@@ -511,6 +413,35 @@ async function startServer() {
     } catch (error) {
       console.error("!!! Failed to save KB:", error);
       res.status(500).json({ error: "Failed to save KB: " + (error instanceof Error ? error.message : String(error)) });
+    }
+  });
+
+  // Get Settings (Stripe keys)
+  app.get("/api/settings", async (req, res) => {
+    try {
+      if (fs.existsSync(LOCAL_SETTINGS_PATH)) {
+        const data = fs.readFileSync(LOCAL_SETTINGS_PATH, 'utf-8');
+        return res.json(JSON.parse(data));
+      }
+      res.json({ stripeSecretKey: '', stripeWebhookSecret: '' });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch settings" });
+    }
+  });
+
+  // Save Settings
+  app.post("/api/settings", async (req, res) => {
+    try {
+      const settings = req.body;
+      fs.writeFileSync(LOCAL_SETTINGS_PATH, JSON.stringify(settings, null, 2));
+      
+      // Update environment variables in memory for the current process
+      if (settings.stripeSecretKey) process.env.STRIPE_SECRET_KEY = settings.stripeSecretKey;
+      if (settings.stripeWebhookSecret) process.env.STRIPE_WEBHOOK_SECRET = settings.stripeWebhookSecret;
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to save settings" });
     }
   });
 

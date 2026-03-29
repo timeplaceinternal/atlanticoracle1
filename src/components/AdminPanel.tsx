@@ -1,37 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download, Settings, Save } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
-import { promoService } from '../services/promoService';
-import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType, PromoCode } from '../types';
+import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
 
 const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos' | 'dealers'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'settings' | 'promos' | 'dealers'>('news');
+  const [stripeSettings, setStripeSettings] = useState({ stripeSecretKey: '', stripeWebhookSecret: '' });
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
-  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [promoCodes, setPromoCodes] = useState<any[]>([]);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [editingKB, setEditingKB] = useState<Partial<KnowledgeBasePost> | null>(null);
-  const [editingPromo, setEditingPromo] = useState<Partial<PromoCode> | null>(null);
-  const [viewingPromo, setViewingPromo] = useState<PromoCode | null>(null);
+  const [editingPromo, setEditingPromo] = useState<any | null>(null);
+  const [viewingPromo, setViewingPromo] = useState<any | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  const handleDeletePromo = async (code: string) => {
+    if (!window.confirm(`Are you sure you want to delete promo code ${code}?`)) return;
+    setPromoCodes(prev => prev.filter(p => p.code !== code));
+  };
+
+  const handleSavePromo = async () => {
+    if (!editingPromo) return;
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      // Logic to save promo code would go here
+      setPromoCodes(prev => {
+        const index = prev.findIndex(p => p.code === editingPromo.code);
+        if (index >= 0) {
+          const newPromos = [...prev];
+          newPromos[index] = editingPromo;
+          return newPromos;
+        }
+        return [...prev, editingPromo];
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+      setEditingPromo(null);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Failed to save promo');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const fetchAllData = async () => {
     try {
       console.log(">>> AdminPanel.fetchAllData - Fetching all data...");
-      const [fetchedNews, fetchedKB, fetchedPromos] = await Promise.all([
+      const [fetchedNews, fetchedKB] = await Promise.all([
         newsService.getPosts(),
-        kbService.getPosts(),
-        promoService.getPromoCodes()
+        kbService.getPosts()
       ]);
       
-      console.log(`>>> AdminPanel.fetchAllData - Fetched ${fetchedNews.length} news, ${fetchedKB.length} KB, ${fetchedPromos.length} promos`);
+      console.log(`>>> AdminPanel.fetchAllData - Fetched ${fetchedNews.length} news, ${fetchedKB.length} KB`);
       
       setPosts([...fetchedNews].sort((a, b) => {
         const dateA = new Date(a.date).getTime();
@@ -43,15 +72,27 @@ const AdminPanel: React.FC = () => {
         return Number(b.id) - Number(a.id);
       }));
       setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
-      setPromoCodes(Array.isArray(fetchedPromos) ? fetchedPromos : []);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+    }
+  };
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/settings');
+      if (response.ok) {
+        const data = await response.json();
+        setStripeSettings(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch settings:", error);
     }
   };
 
   useEffect(() => {
     if (isLoggedIn) {
       fetchAllData();
+      fetchSettings();
     }
   }, [isLoggedIn]);
 
@@ -332,73 +373,6 @@ const AdminPanel: React.FC = () => {
       } catch (error) {
         console.error("Delete failed:", error);
         alert(`Failed to delete transmission: ${error instanceof Error ? error.message : String(error)}`);
-      }
-    }
-  };
-
-  const handleSavePromo = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaveError(null);
-    
-    if (!editingPromo?.code?.trim()) {
-      setSaveError("Promo code is required.");
-      return;
-    }
-
-    if (editingPromo.discount === undefined || editingPromo.discount === null || isNaN(Number(editingPromo.discount))) {
-      setSaveError("Valid discount percentage is required.");
-      return;
-    }
-
-    setIsSaving(true);
-    setSaveSuccess(false);
-    try {
-      console.log(">>> AdminPanel.handleSavePromo - Saving promo:", editingPromo);
-      const newPromo: PromoCode = {
-        id: editingPromo.id || Date.now().toString(),
-        code: editingPromo.code.toUpperCase().trim(),
-        discount: Number(editingPromo.discount),
-        isActive: editingPromo.isActive !== undefined ? editingPromo.isActive : true,
-        usageCount: editingPromo.usageCount || 0,
-        createdAt: editingPromo.createdAt || new Date().toISOString(),
-        dealerName: editingPromo.dealerName || '',
-        dealerRequisites: editingPromo.dealerRequisites || '',
-        channels: editingPromo.channels || [],
-        audienceSize: Number(editingPromo.audienceSize) || 0,
-        commissionRate: Number(editingPromo.commissionRate) || 0,
-        expiresAt: editingPromo.expiresAt || '',
-        usageHistory: editingPromo.usageHistory || []
-      };
-
-      const currentPromos = Array.isArray(promoCodes) ? promoCodes : [];
-      const updatedPromos = editingPromo.id 
-        ? currentPromos.map(p => p.id === editingPromo.id ? newPromo : p)
-        : [...currentPromos, newPromo];
-
-      await promoService.savePromoCodes(updatedPromos);
-      await fetchAllData();
-      setSaveSuccess(true);
-      setTimeout(() => {
-        setEditingPromo(null);
-        setSaveSuccess(false);
-        setSaveError(null);
-      }, 2000);
-    } catch (error) {
-      console.error(">>> AdminPanel.handleSavePromo - Error:", error);
-      setSaveError(error instanceof Error ? error.message : String(error));
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDeletePromo = async (id: string) => {
-    if (confirm('Are you sure you want to delete this promo code?')) {
-      try {
-        const updatedPromos = promoCodes.filter(p => p.id !== id);
-        await promoService.savePromoCodes(updatedPromos);
-        await fetchAllData();
-      } catch (error) {
-        alert(`Failed to delete promo code: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   };
@@ -1213,7 +1187,7 @@ const AdminPanel: React.FC = () => {
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex flex-wrap gap-1">
-                          {promo.channels?.map(c => (
+                          {promo.channels?.map((c: any) => (
                             <span key={c} className="px-2 py-0.5 bg-cosmic-silver/10 rounded-md text-[9px] uppercase tracking-tighter">{c}</span>
                           )) || <span className="text-cosmic-silver/20 italic">None</span>}
                         </div>
@@ -1221,7 +1195,7 @@ const AdminPanel: React.FC = () => {
                       <td className="px-8 py-6">{(promo.audienceSize || 0).toLocaleString()}</td>
                       <td className="px-8 py-6 font-cinzel text-white">{promo.usageCount}</td>
                       <td className="px-8 py-6 font-cinzel text-cosmic-gold">
-                        ${(promo.usageHistory?.reduce((acc, u) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
+                        ${(promo.usageHistory?.reduce((acc: any, u: any) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
                       </td>
                       <td className="px-8 py-6 text-right">
                         <button 
@@ -1476,7 +1450,7 @@ const AdminPanel: React.FC = () => {
                     <div className="space-y-1">
                       <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Active Channels</p>
                       <div className="flex flex-wrap gap-2 pt-1">
-                        {viewingPromo.channels?.map(c => (
+                        {viewingPromo.channels?.map((c: any) => (
                           <span key={c} className="px-3 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full text-[10px] text-cosmic-gold font-bold uppercase tracking-widest">{c}</span>
                         )) || <span className="text-cosmic-silver/40 italic">None</span>}
                       </div>
@@ -1502,13 +1476,13 @@ const AdminPanel: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <p className="text-[10px] uppercase tracking-widest text-cosmic-silver/60">Last 7 Days</p>
                         <p className="text-lg font-cinzel text-white">
-                          {viewingPromo.usageHistory?.filter(u => u.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000).length || 0}
+                          {viewingPromo.usageHistory?.filter((u: any) => u.timestamp > Date.now() - 7 * 24 * 60 * 60 * 1000).length || 0}
                         </p>
                       </div>
                       <div className="flex justify-between items-center">
                         <p className="text-[10px] uppercase tracking-widest text-cosmic-silver/60">Last 30 Days</p>
                         <p className="text-lg font-cinzel text-white">
-                          {viewingPromo.usageHistory?.filter(u => u.timestamp > Date.now() - 30 * 24 * 60 * 60 * 1000).length || 0}
+                          {viewingPromo.usageHistory?.filter((u: any) => u.timestamp > Date.now() - 30 * 24 * 60 * 60 * 1000).length || 0}
                         </p>
                       </div>
                     </div>
@@ -1516,14 +1490,14 @@ const AdminPanel: React.FC = () => {
                     <div className="pt-6 border-t border-cosmic-gold/20">
                       <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 mb-2">Total Revenue Generated</p>
                       <p className="text-3xl font-cinzel text-cosmic-gold">
-                        ${(viewingPromo.usageHistory?.reduce((acc, u) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
+                        ${(viewingPromo.usageHistory?.reduce((acc: any, u: any) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
                       </p>
                     </div>
 
                     <div className="pt-4 border-t border-cosmic-gold/10">
                       <p className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 mb-2">Estimated Commission</p>
                       <p className="text-2xl font-cinzel text-green-400">
-                        ${((viewingPromo.usageHistory?.reduce((acc, u) => acc + (u.amount || 0), 0) || 0) * (viewingPromo.commissionRate || 0) / 100).toLocaleString()}
+                        ${((viewingPromo.usageHistory?.reduce((acc: any, u: any) => acc + (u.amount || 0), 0) || 0) * (viewingPromo.commissionRate || 0) / 100).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -1550,7 +1524,7 @@ const AdminPanel: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-cosmic-gold/10">
-                      {viewingPromo.usageHistory.slice(-10).reverse().map((u, i) => (
+                      {viewingPromo.usageHistory.slice(-10).reverse().map((u: any, i: number) => (
                         <tr key={i} className="text-cosmic-silver">
                           <td className="px-6 py-4">{new Date(u.timestamp).toLocaleString()}</td>
                           <td className="px-6 py-4 uppercase tracking-tighter text-xs">{u.serviceId.replace(/-/g, ' ')}</td>

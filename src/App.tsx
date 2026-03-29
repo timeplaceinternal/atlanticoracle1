@@ -16,11 +16,19 @@ import PrivacySettings from './components/PrivacySettings';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { promoService } from './services/promoService';
 import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2 } from 'lucide-react';
 import { translations } from './translations';
 
-const STRIPE_URLS: Record<ReportLanguage, string> = {
+const STRIPE_URLS_30: Record<ReportLanguage, string> = {
+  English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+  Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+  French: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+  German: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+  Spanish: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+  Italian: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+};
+
+const STRIPE_URLS_10: Record<ReportLanguage, string> = {
   English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
   Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
   French: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
@@ -113,11 +121,6 @@ const App: React.FC = () => {
     return null;
   });
 
-  // Promo Code State
-  const [promoCode, setPromoCode] = useState('');
-  const [isPromoValid, setIsPromoValid] = useState(false);
-  const [promoError, setPromoError] = useState('');
-  const [isValidatingPromo, setIsValidatingPromo] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
 
   useEffect(() => {
@@ -323,12 +326,8 @@ const App: React.FC = () => {
   const handleProceedToStripe = () => {
     if (!selectedService) return;
     
-    let baseUrl = '';
-    if (isPromoValid && selectedService.stripeUrlsDiscounted?.[language]) {
-      baseUrl = selectedService.stripeUrlsDiscounted[language]!;
-    } else {
-      baseUrl = selectedService.stripeUrls?.[language] || STRIPE_URLS[language];
-    }
+    const fallbackUrls = selectedService.price === 10 ? STRIPE_URLS_10 : STRIPE_URLS_30;
+    const baseUrl = selectedService.stripeUrls?.[language] || fallbackUrls[language];
     
     const stripeUrl = new URL(baseUrl);
     if (language === 'Portuguese') {
@@ -337,41 +336,9 @@ const App: React.FC = () => {
     window.location.href = stripeUrl.toString();
   };
 
-  const handleApplyPromo = async () => {
-    if (!promoCode.trim()) return;
-    
-    setIsValidatingPromo(true);
-    setPromoError('');
-    try {
-      const result = await promoService.validatePromoCode(promoCode);
-      if (result.valid) {
-        setIsPromoValid(true);
-        setPromoError('');
-      } else {
-        setIsPromoValid(false);
-        setPromoError(t.promoCodeInvalid);
-      }
-    } catch (error) {
-      setPromoError('Validation error');
-    } finally {
-      setIsValidatingPromo(false);
-    }
-  };
-
   const startGeneration = async (request: ReadingRequest) => {
     setView('loading');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Record promo usage if valid
-    if (isPromoValid && promoCode) {
-      try {
-        const service = SERVICES.find(s => s.id === request.serviceId);
-        const amount = service ? service.price * 0.5 : 0; // Assuming 50% discount for now, or use result.discount
-        await promoService.recordUsage(promoCode, request.serviceId, amount);
-      } catch (e) {
-        console.warn('Failed to record promo usage:', e);
-      }
-    }
     
     try {
       const content = await generateCosmicReading(request);
@@ -712,40 +679,10 @@ const App: React.FC = () => {
                 <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>
                 <p className="text-cosmic-silver mb-8 italic">
                   Your study in {currentRequest?.language} is formatted and ready for the matrix. 
-                  Fee: €{isPromoValid ? (selectedService?.price ? selectedService.price / 2 : 0) : (selectedService?.price || 0)}.
+                  Fee: €{selectedService?.price || 0}.
                 </p>
                 
                 <div className="space-y-6">
-                  {/* Promo Code Input */}
-                  <div className="space-y-2 text-left">
-                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 ml-2">{t.promoCodeLabel}</label>
-                    <div className="flex gap-2">
-                      <input 
-                        type="text"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                        placeholder={t.promoCodePlaceholder}
-                        disabled={isPromoValid || isValidatingPromo}
-                        className="flex-1 bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cosmic-gold disabled:opacity-50"
-                      />
-                      <button 
-                        onClick={handleApplyPromo}
-                        disabled={isPromoValid || isValidatingPromo || !promoCode.trim()}
-                        className="px-6 py-3 bg-cosmic-gold/10 border border-cosmic-gold/30 text-cosmic-gold rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-cosmic-gold hover:text-cosmic-900 transition-all disabled:opacity-50"
-                      >
-                        {isValidatingPromo ? <Loader2 className="w-4 h-4 animate-spin" /> : t.promoCodeApply}
-                      </button>
-                    </div>
-                    {isPromoValid && (
-                      <p className="text-green-400 text-[10px] uppercase tracking-widest ml-2 flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3" /> {t.promoCodeValid}
-                      </p>
-                    )}
-                    {promoError && (
-                      <p className="text-red-400 text-[10px] uppercase tracking-widest ml-2">{promoError}</p>
-                    )}
-                  </div>
-
                   <button 
                     onClick={handleProceedToStripe} 
                     className="w-full py-5 bg-white text-cosmic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
@@ -753,12 +690,6 @@ const App: React.FC = () => {
                     Pay via Stripe <ExternalLink className="w-5 h-5" />
                   </button>
                   
-                  {isPromoValid && (
-                    <div className="bg-cosmic-gold/10 border border-cosmic-gold/20 p-4 rounded-2xl">
-                      <p className="text-cosmic-gold text-xs font-bold uppercase tracking-widest">{t.discountApplied}</p>
-                    </div>
-                  )}
-
                   <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Return to Sanctuary</button>
                 </div>
               </div>
