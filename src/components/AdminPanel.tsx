@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download, Settings, Save } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
 import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
@@ -8,9 +8,8 @@ const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'settings' | 'promos' | 'dealers' | 'webhooks'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos' | 'dealers' | 'webhooks'>('news');
   const [webhookLogs, setWebhookLogs] = useState<any[]>([]);
-  const [stripeSettings, setStripeSettings] = useState({ stripeSecretKey: '', stripeWebhookSecret: '' });
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
   const [promoCodes, setPromoCodes] = useState<any[]>([]);
@@ -78,40 +77,6 @@ const AdminPanel: React.FC = () => {
     }
   };
 
-  const fetchSettings = async () => {
-    try {
-      const response = await fetch('/api/settings');
-      if (response.ok) {
-        const data = await response.json();
-        setStripeSettings(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch settings:", error);
-    }
-  };
-
-  const handleSaveSettings = async () => {
-    setIsSaving(true);
-    try {
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(stripeSettings)
-      });
-      if (response.ok) {
-        setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 2000);
-      } else {
-        throw new Error("Failed to save settings");
-      }
-    } catch (error) {
-      console.error("Save settings failed:", error);
-      alert("Failed to save Stripe configuration.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const fetchWebhooks = async () => {
     try {
       const response = await fetch('/api/webhooks');
@@ -127,7 +92,6 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     if (isLoggedIn) {
       fetchAllData();
-      fetchSettings();
       fetchWebhooks();
     }
   }, [isLoggedIn]);
@@ -1026,12 +990,6 @@ const AdminPanel: React.FC = () => {
             >
               Webhooks
             </button>
-            <button 
-              onClick={() => setActiveTab('settings')}
-              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'settings' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
-            >
-              Settings
-            </button>
           </div>
           <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
             <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
@@ -1326,52 +1284,6 @@ const AdminPanel: React.FC = () => {
                     )}
                   </tbody>
                 </table>
-              </div>
-            </div>
-          ) : activeTab === 'settings' ? (
-            <div className="max-w-2xl mx-auto space-y-8">
-              <div className="bg-cosmic-900/60 p-8 rounded-3xl border border-cosmic-gold/20 space-y-6">
-                <div className="flex items-center gap-4 text-cosmic-gold">
-                  <Settings className="w-6 h-6" />
-                  <h3 className="text-xl font-cinzel uppercase tracking-widest">Stripe Configuration</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Stripe Secret Key (sk_test_...)</label>
-                    <input 
-                      type="password"
-                      value={stripeSettings.stripeSecretKey}
-                      onChange={(e) => setStripeSettings({ ...stripeSettings, stripeSecretKey: e.target.value })}
-                      className="w-full bg-cosmic-950/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold font-mono text-sm"
-                      placeholder="sk_test_..."
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Stripe Webhook Secret (whsec_...)</label>
-                    <input 
-                      type="password"
-                      value={stripeSettings.stripeWebhookSecret}
-                      onChange={(e) => setStripeSettings({ ...stripeSettings, stripeWebhookSecret: e.target.value })}
-                      className="w-full bg-cosmic-950/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold font-mono text-sm"
-                      placeholder="whsec_..."
-                    />
-                  </div>
-                </div>
-
-                <button 
-                  onClick={handleSaveSettings}
-                  disabled={isSaving}
-                  className="w-full py-4 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
-                >
-                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  {isSaving ? 'Saving...' : 'Save Configuration'}
-                </button>
-                
-                <p className="text-[10px] text-cosmic-silver/40 text-center uppercase tracking-widest">
-                  These keys are stored securely on the server and used for payment processing.
-                </p>
               </div>
             </div>
           ) : null}

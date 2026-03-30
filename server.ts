@@ -116,10 +116,8 @@ async function startServer() {
 
   const NEWS_FILE_PATH = 'data/news.json';
   const KB_FILE_PATH = 'data/kb.json';
-  const SETTINGS_FILE_PATH = 'data/settings.json';
   const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
   const LOCAL_KB_PATH = path.join(LOCAL_DATA_DIR, 'kb.json');
-  const LOCAL_SETTINGS_PATH = path.join(LOCAL_DATA_DIR, 'settings.json');
 
   // API Routes
   
@@ -449,35 +447,6 @@ async function startServer() {
       res.json([]);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch webhook logs" });
-    }
-  });
-
-  // Get Settings (Stripe keys)
-  app.get("/api/settings", async (req, res) => {
-    try {
-      if (fs.existsSync(LOCAL_SETTINGS_PATH)) {
-        const data = fs.readFileSync(LOCAL_SETTINGS_PATH, 'utf-8');
-        return res.json(JSON.parse(data));
-      }
-      res.json({ stripeSecretKey: '', stripeWebhookSecret: '' });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch settings" });
-    }
-  });
-
-  // Save Settings
-  app.post("/api/settings", async (req, res) => {
-    try {
-      const settings = req.body;
-      fs.writeFileSync(LOCAL_SETTINGS_PATH, JSON.stringify(settings, null, 2));
-      
-      // Update environment variables in memory for the current process
-      if (settings.stripeSecretKey) process.env.STRIPE_SECRET_KEY = settings.stripeSecretKey;
-      if (settings.stripeWebhookSecret) process.env.STRIPE_WEBHOOK_SECRET = settings.stripeWebhookSecret;
-      
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to save settings" });
     }
   });
 
