@@ -45,11 +45,33 @@ async function startServer() {
     }
 
     // Handle the event
+    const WEBHOOK_LOG_PATH = path.join(LOCAL_DATA_DIR, 'webhook_events.json');
+    
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
         console.log(`Payment successful for session: ${session.id}`);
-        // TODO: Implement fulfillment logic here (e.g., update database, send email)
+        
+        // Log the event to a file
+        try {
+          let events = [];
+          if (fs.existsSync(WEBHOOK_LOG_PATH)) {
+            events = JSON.parse(fs.readFileSync(WEBHOOK_LOG_PATH, 'utf-8'));
+          }
+          events.push({
+            id: event.id,
+            type: event.type,
+            sessionId: session.id,
+            customerEmail: session.customer_details?.email,
+            amount: session.amount_total,
+            currency: session.currency,
+            timestamp: new Date().toISOString(),
+            metadata: session.metadata
+          });
+          fs.writeFileSync(WEBHOOK_LOG_PATH, JSON.stringify(events, null, 2));
+        } catch (err) {
+          console.error("Failed to log webhook event:", err);
+        }
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);
@@ -413,6 +435,20 @@ async function startServer() {
     } catch (error) {
       console.error("!!! Failed to save KB:", error);
       res.status(500).json({ error: "Failed to save KB: " + (error instanceof Error ? error.message : String(error)) });
+    }
+  });
+
+  // Get Webhook Logs
+  app.get("/api/webhooks", async (req, res) => {
+    try {
+      const WEBHOOK_LOG_PATH = path.join(LOCAL_DATA_DIR, 'webhook_events.json');
+      if (fs.existsSync(WEBHOOK_LOG_PATH)) {
+        const data = fs.readFileSync(WEBHOOK_LOG_PATH, 'utf-8');
+        return res.json(JSON.parse(data));
+      }
+      res.json([]);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch webhook logs" });
     }
   });
 

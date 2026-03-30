@@ -8,7 +8,8 @@ const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'settings' | 'promos' | 'dealers'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'settings' | 'promos' | 'dealers' | 'webhooks'>('news');
+  const [webhookLogs, setWebhookLogs] = useState<any[]>([]);
   const [stripeSettings, setStripeSettings] = useState({ stripeSecretKey: '', stripeWebhookSecret: '' });
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
@@ -89,10 +90,45 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(stripeSettings)
+      });
+      if (response.ok) {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+      } else {
+        throw new Error("Failed to save settings");
+      }
+    } catch (error) {
+      console.error("Save settings failed:", error);
+      alert("Failed to save Stripe configuration.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const fetchWebhooks = async () => {
+    try {
+      const response = await fetch('/api/webhooks');
+      if (response.ok) {
+        const data = await response.json();
+        setWebhookLogs(data.reverse());
+      }
+    } catch (error) {
+      console.error("Failed to fetch webhooks:", error);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchAllData();
       fetchSettings();
+      fetchWebhooks();
     }
   }, [isLoggedIn]);
 
@@ -984,6 +1020,18 @@ const AdminPanel: React.FC = () => {
             >
               Dealers
             </button>
+            <button 
+              onClick={() => setActiveTab('webhooks')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'webhooks' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              Webhooks
+            </button>
+            <button 
+              onClick={() => setActiveTab('settings')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'settings' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              Settings
+            </button>
           </div>
           <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
             <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
@@ -1155,7 +1203,7 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
             ))
-          ) : (
+          ) : activeTab === 'dealers' ? (
             <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden">
               <table className="w-full text-left text-sm">
                 <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
@@ -1224,7 +1272,109 @@ const AdminPanel: React.FC = () => {
                 </tbody>
               </table>
             </div>
-          )}
+          ) : activeTab === 'webhooks' ? (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-cinzel text-cosmic-gold uppercase tracking-widest">Webhook Logs</h3>
+                <button 
+                  onClick={fetchWebhooks}
+                  className="p-2 bg-cosmic-gold/10 text-cosmic-gold rounded-lg hover:bg-cosmic-gold/20 transition-all"
+                  title="Refresh Logs"
+                >
+                  <Loader2 className={`w-5 h-5 ${isSaving ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+
+              <div className="bg-cosmic-900/60 rounded-3xl border border-cosmic-gold/20 overflow-hidden">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-cosmic-gold/10 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                    <tr>
+                      <th className="px-8 py-4">Timestamp</th>
+                      <th className="px-8 py-4">Event Type</th>
+                      <th className="px-8 py-4">Customer</th>
+                      <th className="px-8 py-4">Amount</th>
+                      <th className="px-8 py-4">Session ID</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-cosmic-gold/10">
+                    {webhookLogs.length > 0 ? (
+                      webhookLogs.map((log, i) => (
+                        <tr key={i} className="hover:bg-cosmic-gold/5 transition-colors">
+                          <td className="px-8 py-6 text-cosmic-silver/80 font-mono text-[10px]">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className="px-2 py-1 bg-green-500/10 text-green-400 rounded-md text-[10px] font-bold uppercase tracking-tighter border border-green-500/20">
+                              {log.type}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6 text-white font-medium">{log.customerEmail || 'N/A'}</td>
+                          <td className="px-8 py-6 text-cosmic-gold font-cinzel">
+                            {log.amount ? (log.amount / 100).toFixed(2) : '0.00'} {log.currency?.toUpperCase()}
+                          </td>
+                          <td className="px-8 py-6 text-cosmic-silver/40 font-mono text-[9px] truncate max-w-[150px]" title={log.sessionId}>
+                            {log.sessionId}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
+                          No webhook events recorded yet.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : activeTab === 'settings' ? (
+            <div className="max-w-2xl mx-auto space-y-8">
+              <div className="bg-cosmic-900/60 p-8 rounded-3xl border border-cosmic-gold/20 space-y-6">
+                <div className="flex items-center gap-4 text-cosmic-gold">
+                  <Settings className="w-6 h-6" />
+                  <h3 className="text-xl font-cinzel uppercase tracking-widest">Stripe Configuration</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Stripe Secret Key (sk_test_...)</label>
+                    <input 
+                      type="password"
+                      value={stripeSettings.stripeSecretKey}
+                      onChange={(e) => setStripeSettings({ ...stripeSettings, stripeSecretKey: e.target.value })}
+                      className="w-full bg-cosmic-950/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold font-mono text-sm"
+                      placeholder="sk_test_..."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Stripe Webhook Secret (whsec_...)</label>
+                    <input 
+                      type="password"
+                      value={stripeSettings.stripeWebhookSecret}
+                      onChange={(e) => setStripeSettings({ ...stripeSettings, stripeWebhookSecret: e.target.value })}
+                      className="w-full bg-cosmic-950/50 border border-cosmic-gold/20 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold font-mono text-sm"
+                      placeholder="whsec_..."
+                    />
+                  </div>
+                </div>
+
+                <button 
+                  onClick={handleSaveSettings}
+                  disabled={isSaving}
+                  className="w-full py-4 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                >
+                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {isSaving ? 'Saving...' : 'Save Configuration'}
+                </button>
+                
+                <p className="text-[10px] text-cosmic-silver/40 text-center uppercase tracking-widest">
+                  These keys are stored securely on the server and used for payment processing.
+                </p>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
