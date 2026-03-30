@@ -13,6 +13,7 @@ import KnowledgeBasePage from './components/KnowledgeBasePage';
 import KBArticlePage from './components/KBArticlePage';
 import CookieConsent from './components/CookieConsent';
 import PrivacySettings from './components/PrivacySettings';
+import DealerProgram from './components/DealerProgram';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
@@ -128,7 +129,7 @@ const App: React.FC = () => {
     return () => { delete (window as any).openPrivacySettings; };
   }, []);
 
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article'>(() => {
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
@@ -140,6 +141,7 @@ const App: React.FC = () => {
       
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
+      if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
       if (cleanPath.includes('/database') || params.get('view') === 'database') {
         const match = cleanPath.match(/\/database\/([^/]+)\/([^/]+)/);
         return match ? 'kb-article' : 'database';
@@ -172,6 +174,8 @@ const App: React.FC = () => {
         window.history.pushState({}, '', path + url.search);
       } else if (view === 'privacy') {
         window.history.pushState({}, '', '/privacy' + url.search);
+      } else if (view === 'dealer') {
+        window.history.pushState({}, '', '/dealer' + url.search);
       }
     }
   }, [view, newsSlug]);
@@ -224,6 +228,8 @@ const App: React.FC = () => {
         }
       } else if (params.get('view') === 'privacy' || cleanPath === '/privacy') {
         setView('privacy');
+      } else if (params.get('view') === 'dealer' || cleanPath === '/dealer') {
+        setView('dealer');
       } else {
         setView('home');
       }
@@ -746,6 +752,12 @@ const App: React.FC = () => {
               <AdminPanel />
             </div>
           )}
+
+          {view === 'dealer' && (
+            <div className="py-20 px-6">
+              <DealerProgram language={language} onBack={resetToHome} />
+            </div>
+          )}
         </main>
 
         <footer className="border-t border-cosmic-700/50 py-20 bg-cosmic-900 px-6 text-center no-print">
@@ -805,6 +817,12 @@ const App: React.FC = () => {
                    <span className="text-sm font-bold tracking-[0.2em] uppercase">oracle@atlanticoracle.com</span>
                  </a>
                  <div className="flex flex-col gap-2">
+                    <button 
+                      onClick={() => setView('dealer')} 
+                      className="text-cosmic-gold hover:text-white transition-colors text-[10px] font-bold uppercase tracking-[0.3em] py-2"
+                    >
+                      {t.navDealer}
+                    </button>
                     <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.3em] font-medium">{t.contactSupport}</p>
                     <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.2em] font-medium">R. Dom Martinho Castelo Branco 12 14, 8500-782 Portimão, Portugal</p>
                     <button 

@@ -450,6 +450,38 @@ async function startServer() {
     }
   });
 
+  // Dealer Registration Endpoint
+  app.post("/api/dealer-registration", async (req, res) => {
+    console.log(">>> POST /api/dealer-registration - New application received...");
+    try {
+      const registration = req.body;
+      const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+      
+      // Log to console as requested
+      console.log("Dealer Registration Details:", JSON.stringify(registration, null, 2));
+      console.log("Email to: astrologforme@gmail.com");
+
+      // Save to local file as fallback/log
+      let registrations = [];
+      if (fs.existsSync(DEALER_REG_PATH)) {
+        registrations = JSON.parse(fs.readFileSync(DEALER_REG_PATH, 'utf-8'));
+      }
+      registrations.push({
+        ...registration,
+        timestamp: new Date().toISOString()
+      });
+      fs.writeFileSync(DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
+
+      // Note: In a real production environment, you would use Nodemailer or an API like SendGrid
+      // to send the actual email to astrologforme@gmail.com.
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("!!! Failed to process dealer registration:", error);
+      res.status(500).json({ error: "Failed to process application" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

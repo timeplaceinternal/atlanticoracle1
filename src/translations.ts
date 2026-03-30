@@ -167,6 +167,7 @@ export interface Translations {
   dataRightsDesc: string;
   requestDataExport: string;
   requestDataDeletion: string;
+  navDealer: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -337,6 +338,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     dataRightsDesc: "Under GDPR, you have the right to access, export, or delete your sacred data.",
     requestDataExport: "Request Data Export",
     requestDataDeletion: "Request Data Deletion",
+    navDealer: "Become a Dealer",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -505,6 +507,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     dataRightsDesc: "Sob o GDPR, você tem o direito de acessar, exportar ou excluir seus dados sagrados.",
     requestDataExport: "Solicitar Exportação de Dados",
     requestDataDeletion: "Solicitar Exclusão de Dados",
+    navDealer: "Seja um Revendedor",
   },
   French: {} as any,
   German: {} as any,
