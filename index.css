@@ -83,21 +83,31 @@
     width: 100% !important;
     height: auto !important;
     overflow: visible !important;
+    position: static !important;
   }
 
-  #root {
+  #root, .main-ui-wrapper, main {
     display: block !important;
     padding: 0 !important;
     margin: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
   }
 
   /* Target the ReadingResult container and its wrappers */
   .max-w-4xl,
-  .py-20.px-6 {
+  .py-20.px-6,
+  .animate-in {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    animation: none !important;
+    transform: none !important;
   }
 
   /* The main "Decree" card */
@@ -109,11 +119,35 @@
     padding: 1.5cm !important;
     margin: 0 !important;
     box-shadow: none !important;
-    min-height: 297mm; /* A4 height */
+    min-height: 100% !important;
     display: block !important;
     position: relative !important;
     width: 100% !important;
     left: 0 !important;
+    overflow: visible !important; /* CRITICAL: Remove overflow-hidden */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .prose {
+    max-width: none !important;
+    color: #1a1a1a !important;
+    overflow: visible !important;
+  }
+
+  .prose p, .prose li, .prose h1, .prose h2, .prose h3, .prose h4 {
+    color: #1a1a1a !important;
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .prose h1, .prose h2, .prose h3 {
+    page-break-after: avoid !important;
+    break-after: avoid-page !important;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.5em !important;
   }
 
   /* Force text colors for print */

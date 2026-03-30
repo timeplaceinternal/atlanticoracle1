@@ -425,28 +425,31 @@ export const COSMIC_PROMPTS = {
   [ServiceType.FORTUNE_MAP]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     SERVICE: THE FORTUNE MAP. Subject: ${name}, born ${date}.
-    Generate a professional, structured weekly forecast.
+    Generate a professional, highly detailed 4-page weekly forecast.
     1. Weekly Chart: List 7 days sequentially. Format: "Day 1 - [Details], Day 2 - [Details]...". Include Luck Index (1-10), Power Window, and Risk Level for each day. DO NOT USE TABLES.
     2. Numerology: Calculate 3 'Golden Numbers' for the subject this week.
     3. Strategic Advice: Define the emotional state in which they MUST NOT make risky decisions.
+    4. Detailed Daily Breakdown: Provide a paragraph of analysis for each day of the week to ensure the report reaches at least 4 pages of depth.
   `,
   [ServiceType.CAPITAL_ALIGNMENT]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     SERVICE: CAPITAL ALIGNMENT. Subject: ${name}, born ${date}.
-    Generate a professional financial energy analysis.
+    Generate a professional, comprehensive 4-page financial energy analysis.
     1. Capital Analysis: Define leading income energy (structure, charisma, or intuition).
     2. Loss Zone: Where are they leaking resources internally?
     3. Investment in SELF: Professional advice on why knowing their mechanics provides the highest ROI.
     4. Weekly Plan: List 3 specific financial actions sequentially (Action 1, Action 2, Action 3). DO NOT USE TABLES.
+    5. Deep Financial Strategy: Expand on each point with professional depth to ensure a 4-page comprehensive report.
   `,
   [ServiceType.ENERGY_PULSE]: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     SERVICE: THE ENERGY PULSE. Subject: ${name}, born ${date}.
-    Generate a professional energetic rhythm guide.
+    Generate a professional, detailed 4-page energetic rhythm guide.
     1. Force Dynamics: List weekly energy peak and silence days sequentially. DO NOT USE TABLES.
     2. Bio-rhythms: Professional sleep/activity advice based on birth date.
     3. Reset Technique: One 1-minute mental reset practice (breathing/visualization).
     4. Focus Mode: Strategic direction for energy (Health, Relations, Career).
+    5. Extended Energetic Analysis: Provide deep insights into the subject's biological rhythms to ensure the report reaches at least 4 pages.
   `,
   [ServiceType.FREE_DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
     ${PROMPT_CORE(lang)}
@@ -455,9 +458,9 @@ export const COSMIC_PROMPTS = {
     DREAM DESCRIPTION: ${description}
     KEYWORDS: ${keywords}
     
-    TASK: Provide a professional psychological interpretation (~1-2 pages). 
+    TASK: Provide a professional, deep psychological interpretation (~4 pages). 
     STYLE: Professional, analytical yet empathetic, soft advice from a "wise sage". 
-    Focus on clarity and a strategic path forward.
+    Focus on clarity and a strategic path forward. Expand on the symbols and archetypes to provide a comprehensive 4-page decree.
   `,
   [ServiceType.DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
     ${PROMPT_CORE(lang)}

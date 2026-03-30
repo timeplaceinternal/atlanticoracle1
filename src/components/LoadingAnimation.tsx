@@ -157,7 +157,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-cosmic-gold to-transparent mx-auto" />
         </div>
         
-        <div className="h-20 flex flex-col items-center justify-center">
+        <div className="h-24 flex flex-col items-center justify-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={phase}
@@ -170,11 +170,15 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
               <p className="text-cosmic-gold font-cinzel text-sm uppercase tracking-widest">
                 {phases[phase]}
               </p>
-              <p className="text-cosmic-silver italic font-playfair text-lg opacity-60 mt-2">
-                {t.loadingSubtitle}
-              </p>
             </motion.div>
           </AnimatePresence>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            className="text-cosmic-silver italic font-playfair text-lg mt-4"
+          >
+            {t.loadingSubtitle}
+          </motion.p>
         </div>
         
         {/* Progress Bar */}
