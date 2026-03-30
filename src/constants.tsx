@@ -317,6 +317,7 @@ const PROMPT_CORE = (lang: string) => {
     STRUCTURE: Use a structured approach with clear chapters or sections where appropriate.
     STRICTION: DO NOT use Markdown tables. Use plain text or sequential lists.
     STRICTION: NEVER generate URLs, links, or calls to action with fake links.
+    ENVIRONMENTAL INFLUENCE: Include a few interesting sentences about the subject's birth place (city/country/region). Explain how the specific environment and culture of their origin have helped shape their unique personality and energetic signature.
   `;
 };
 

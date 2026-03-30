@@ -128,6 +128,13 @@ export interface Translations {
   formBirthPlacePlaceholder: string;
   formBirthTime: string;
   formBirthTimePlaceholder: string;
+  formBirthTimeHelp: string;
+  formHours: string;
+  formMinutes: string;
+  formAM: string;
+  formPM: string;
+  form24h: string;
+  form12h: string;
   formBack: string;
   formSubmit: string;
   formPartnerName: string;
@@ -290,7 +297,14 @@ export const translations: Record<ReportLanguage, Translations> = {
     formBirthPlace: "Birth Place",
     formBirthPlacePlaceholder: "City, Country",
     formBirthTime: "Birth Time",
-    formBirthTimePlaceholder: "e.g. 14:30 or Unknown",
+    formBirthTimePlaceholder: "e.g. 14:30 or 2:30 PM",
+    formBirthTimeHelp: "Use 24h format (14:30) or 12h format with AM/PM (2:30 PM).",
+    formHours: "Hours",
+    formMinutes: "Minutes",
+    formAM: "AM",
+    formPM: "PM",
+    form24h: "24h",
+    form12h: "12h",
     formBack: "Back",
     formSubmit: "Consult Oracle",
     formPartnerName: "Partner's Full Name",
@@ -451,7 +465,14 @@ export const translations: Record<ReportLanguage, Translations> = {
     formBirthPlace: "Local de Nascimento",
     formBirthPlacePlaceholder: "Cidade, País",
     formBirthTime: "Hora de Nascimento",
-    formBirthTimePlaceholder: "ex: 14:30 ou Desconhecido",
+    formBirthTimePlaceholder: "ex: 14:30 ou 02:30 PM",
+    formBirthTimeHelp: "Use o formato 24h (14:30) ou 12h com AM/PM (02:30 PM).",
+    formHours: "Horas",
+    formMinutes: "Minutos",
+    formAM: "AM",
+    formPM: "PM",
+    form24h: "24h",
+    form12h: "12h",
     formBack: "Voltar",
     formSubmit: "Consultar Oráculo",
     formPartnerName: "Nome Completo do Parceiro",
