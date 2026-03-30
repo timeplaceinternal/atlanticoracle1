@@ -18,8 +18,30 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
     legalName: '',
     channelName: '',
     audience: '',
-    email: ''
+    email: '',
+    messenger: ''
   });
+
+  const [testStatus, setTestStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [isTesting, setIsTesting] = useState(false);
+
+  const handleTestTelegram = async () => {
+    setIsTesting(true);
+    setTestStatus(null);
+    try {
+      const response = await fetch('/api/test-telegram', { method: 'POST' });
+      if (response.ok) {
+        setTestStatus({ type: 'success', message: 'Test message sent! Check your Telegram.' });
+      } else {
+        const err = await response.json();
+        setTestStatus({ type: 'error', message: err.error || 'Failed to send test message.' });
+      }
+    } catch (err) {
+      setTestStatus({ type: 'error', message: 'Connection error.' });
+    } finally {
+      setIsTesting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,6 +189,20 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
 
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.2em] ml-4">
+              {language === 'Portuguese' ? 'WhatsApp / Telegram' : 'WhatsApp / Telegram'}
+            </label>
+            <input
+              required
+              type="text"
+              value={formData.messenger}
+              onChange={(e) => setFormData({ ...formData, messenger: e.target.value })}
+              className="w-full bg-cosmic-800/50 border border-cosmic-gold/20 rounded-2xl px-6 py-4 text-white outline-none focus:border-cosmic-gold transition-colors"
+              placeholder="+351 926 160 750"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.2em] ml-4">
               {language === 'Portuguese' ? 'Nome do Canal / Plataforma' : 'Channel Name / Platform'}
             </label>
             <input
@@ -213,6 +249,23 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
             )}
           </button>
         </form>
+
+        <div className="mt-12 pt-8 border-t border-cosmic-gold/10 flex flex-col items-center gap-4">
+          <p className="text-[10px] font-bold text-cosmic-silver/40 uppercase tracking-[0.3em]">Admin Tools</p>
+          <button
+            onClick={handleTestTelegram}
+            disabled={isTesting}
+            className="flex items-center gap-2 px-6 py-3 bg-cosmic-800/30 border border-cosmic-gold/20 rounded-full text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.2em] hover:bg-cosmic-gold/10 transition-all disabled:opacity-50"
+          >
+            {isTesting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+            {isTesting ? 'Sending...' : 'Test Telegram Connection'}
+          </button>
+          {testStatus && (
+            <p className={`text-[10px] font-bold uppercase tracking-widest ${testStatus.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+              {testStatus.message}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="text-center text-[10px] text-cosmic-silver/40 uppercase tracking-[0.2em] max-w-lg mx-auto">

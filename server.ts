@@ -436,6 +436,52 @@ async function startServer() {
     }
   });
 
+  // Send Telegram notification
+  async function sendTelegramMessage(message: string) {
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!token || !chatId) {
+      console.warn("Telegram notification skipped: Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID");
+      return false;
+    }
+
+    try {
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML'
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        console.error("Telegram API error:", error);
+        return false;
+      } else {
+        console.log("Telegram notification sent successfully.");
+        return true;
+      }
+    } catch (err) {
+      console.error("Failed to send Telegram notification:", err);
+      return false;
+    }
+  }
+
+  // Test Telegram Endpoint
+  app.post("/api/test-telegram", async (req, res) => {
+    const success = await sendTelegramMessage("🔔 <b>Тестовое уведомление</b>\nВаш бот TimePlace.me успешно подключен!");
+    if (success) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: "Failed to send message. Check your Token and Chat ID in Settings." });
+    }
+  });
+
   // Get Webhook Logs
   app.get("/api/webhooks", async (req, res) => {
     try {
@@ -471,6 +517,17 @@ async function startServer() {
         timestamp: new Date().toISOString()
       });
       fs.writeFileSync(DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
+
+      // Send Telegram notification
+      const telegramMessage = `
+<b>New Dealer Application</b>
+<b>Name:</b> ${registration.legalName}
+<b>Email:</b> ${registration.email}
+<b>Messenger:</b> ${registration.messenger}
+<b>Channel:</b> ${registration.channelName}
+<b>Audience:</b> ${registration.audience}
+`;
+      await sendTelegramMessage(telegramMessage);
 
       // Note: In a real production environment, you would use Nodemailer or an API like SendGrid
       // to send the actual email to astrologforme@gmail.com.
