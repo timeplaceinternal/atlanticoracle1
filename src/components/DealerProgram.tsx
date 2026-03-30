@@ -197,7 +197,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
               value={formData.messenger}
               onChange={(e) => setFormData({ ...formData, messenger: e.target.value })}
               className="w-full bg-cosmic-800/50 border border-cosmic-gold/20 rounded-2xl px-6 py-4 text-white outline-none focus:border-cosmic-gold transition-colors"
-              placeholder="+351 926 160 750"
+              placeholder={language === 'Portuguese' ? 'Ex: +55 11 99999-9999 или @usuario' : 'e.g. +1 234 567 8900 or @username'}
             />
           </div>
 
