@@ -60,84 +60,122 @@
     print-color-adjust: exact !important;
     animation: none !important;
     transition: none !important;
-    opacity: 1 !important;
+    box-shadow: none !important;
   }
 
-  .no-print, header, footer, button, .constellation-overlay, canvas, select, nav, .fixed {
+  .no-print, 
+  header, 
+  footer, 
+  button, 
+  .constellation-overlay, 
+  canvas, 
+  nav, 
+  .fixed,
+  .absolute.top-0.left-0.w-full.h-1 {
     display: none !important;
   }
   
   html, body {
-    height: auto !important;
-    overflow: visible !important;
     background: white !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  html:not([data-print-mode="scroll"]) #root {
-    display: block !important;
-    height: auto !important;
-  }
-
-  html[data-print-mode="scroll"] #root,
-  html[data-print-mode="scroll"] .main-ui-wrapper {
-    display: none !important;
-  }
-
-  html[data-print-mode="scroll"] .scroll-container {
-    position: relative !important;
-    display: block !important;
-    height: auto !important;
-    width: 100% !important;
-    background: #fcf5e5 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    z-index: 9999 !important;
-  }
-
-  #printable-scroll {
-    position: relative !important;
-    display: block !important;
-    margin: 0 auto !important;
-    width: 210mm !important;
-    border: 1px solid #d4af37 !important;
-    box-shadow: none !important;
-    background-color: #fcf5e5 !important;
-    background-image: url("https://www.transparenttextures.com/patterns/old-map.png") !important;
-  }
-
-  .printable-area {
-    background-color: #fcf5e5 !important;
-    background-image: url("https://www.transparenttextures.com/patterns/old-map.png") !important;
     color: #1a1a1a !important;
-    border: 1px solid #d4af37 !important;
-    padding: 2cm !important;
     margin: 0 !important;
-    display: block !important;
+    padding: 0 !important;
     width: 100% !important;
-    box-shadow: none !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
-  .bg-print-visible {
+  #root {
     display: block !important;
-    opacity: 0.2 !important;
-    filter: grayscale(100%) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Target the ReadingResult container and its wrappers */
+  .max-w-4xl,
+  .py-20.px-6 {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* The main "Decree" card */
+  .bg-cosmic-800\/40 {
+    background: #fdfaf3 !important; /* Light paper-like background */
+    background-image: url("https://www.transparenttextures.com/patterns/old-map.png") !important;
+    border: 1px solid #d4af37 !important;
+    border-radius: 0 !important;
+    padding: 1.5cm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    min-height: 297mm; /* A4 height */
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    left: 0 !important;
+  }
+
+  /* Force text colors for print */
+  .text-white, 
+  .text-cosmic-silver,
+  .prose-invert,
+  [class*="prose-p:text-"],
+  [class*="prose-headings:text-"],
+  [class*="prose-li:text-"] {
+    color: #1a1a1a !important;
+  }
+
+  .text-cosmic-gold,
+  .prose-gold,
+  [class*="prose-strong:text-"] {
+    color: #856404 !important; /* Darker gold for better contrast on white */
+  }
+
+  h2, h3, .font-cinzel {
+    color: #1a1a1a !important;
+    text-shadow: none !important;
   }
 
   .prose {
-    color: #1a1a1a !important;
+    max-width: 100% !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
   }
 
-  h1, h2, h3, p, span {
-    color: #1a1a1a !important;
-    font-family: 'Cinzel', serif !important;
+  .prose p, .prose li {
+    color: #333 !important;
+    margin-bottom: 1em !important;
+  }
+
+  .prose strong {
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+
+  /* Ensure the star icon looks good */
+  .bg-cosmic-gold {
+    background-color: #d4af37 !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  .text-cosmic-900 {
+    color: #000 !important;
   }
 
   @page {
-    margin: 0;
+    margin: 1.5cm;
     size: A4 portrait;
+  }
+
+  /* Prevent page breaks inside sections if possible */
+  .prose h2, .prose h3 {
+    page-break-after: avoid;
+  }
+  
+  p {
+    orphans: 3;
+    widows: 3;
   }
 }
 
