@@ -20,6 +20,14 @@ async function startServer() {
   const LOCAL_UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
   
   if (!fs.existsSync(LOCAL_DATA_DIR)) fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+  try {
+    const testFile = path.join(LOCAL_DATA_DIR, '.write_test');
+    fs.writeFileSync(testFile, 'test');
+    fs.unlinkSync(testFile);
+    console.log("Data directory is writable.");
+  } catch (err) {
+    console.error("!!! Data directory is NOT writable:", err);
+  }
   if (!fs.existsSync(LOCAL_UPLOADS_DIR)) fs.mkdirSync(LOCAL_UPLOADS_DIR, { recursive: true });
 
   // Stripe Webhook Endpoint
@@ -472,16 +480,6 @@ async function startServer() {
     }
   }
 
-  // Test Telegram Endpoint
-  app.post("/api/test-telegram", async (req, res) => {
-    const success = await sendTelegramMessage("🔔 <b>Тестовое уведомление</b>\nВаш бот TimePlace.me успешно подключен!");
-    if (success) {
-      res.json({ success: true });
-    } else {
-      res.status(500).json({ error: "Failed to send message. Check your Token and Chat ID in Settings." });
-    }
-  });
-
   // Get Webhook Logs
   app.get("/api/webhooks", async (req, res) => {
     try {
@@ -501,6 +499,11 @@ async function startServer() {
     console.log(">>> POST /api/dealer-registration - New application received...");
     try {
       const registration = req.body;
+      if (!registration || !registration.email) {
+        console.error("Invalid registration data received:", registration);
+        return res.status(400).json({ error: "Invalid registration data" });
+      }
+
       const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
       
       // Log to console as requested

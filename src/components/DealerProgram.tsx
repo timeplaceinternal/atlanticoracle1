@@ -22,27 +22,6 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
     messenger: ''
   });
 
-  const [testStatus, setTestStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
-  const [isTesting, setIsTesting] = useState(false);
-
-  const handleTestTelegram = async () => {
-    setIsTesting(true);
-    setTestStatus(null);
-    try {
-      const response = await fetch('/api/test-telegram', { method: 'POST' });
-      if (response.ok) {
-        setTestStatus({ type: 'success', message: 'Test message sent! Check your Telegram.' });
-      } else {
-        const err = await response.json();
-        setTestStatus({ type: 'error', message: err.error || 'Failed to send test message.' });
-      }
-    } catch (err) {
-      setTestStatus({ type: 'error', message: 'Connection error.' });
-    } finally {
-      setIsTesting(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -63,6 +42,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
 
       setIsSuccess(true);
     } catch (err) {
+      console.error('Dealer registration error:', err);
       setError('Something went wrong. Please try again later.');
     } finally {
       setIsSubmitting(false);
@@ -139,8 +119,8 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
           </h3>
           <p className="text-xs text-cosmic-silver/70 leading-relaxed">
             {language === 'Portuguese' 
-              ? 'Nossos relatórios de 3-5 páginas oferecem valor real, resultando em altas taxas de conversão.' 
-              : 'Our 3-5 page reports offer real value, resulting in high conversion rates.'}
+              ? 'Nossos relatórios de 3 a 15 páginas oferecem valor real, resultando em altas taxas de conversão.' 
+              : 'Our 3-15 page reports offer real value, resulting in high conversion rates.'}
           </p>
         </div>
         <div className="p-8 bg-cosmic-800/20 border border-cosmic-gold/10 rounded-[2rem] space-y-4">
@@ -249,23 +229,6 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
             )}
           </button>
         </form>
-
-        <div className="mt-12 pt-8 border-t border-cosmic-gold/10 flex flex-col items-center gap-4">
-          <p className="text-[10px] font-bold text-cosmic-silver/40 uppercase tracking-[0.3em]">Admin Tools</p>
-          <button
-            onClick={handleTestTelegram}
-            disabled={isTesting}
-            className="flex items-center gap-2 px-6 py-3 bg-cosmic-800/30 border border-cosmic-gold/20 rounded-full text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.2em] hover:bg-cosmic-gold/10 transition-all disabled:opacity-50"
-          >
-            {isTesting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
-            {isTesting ? 'Sending...' : 'Test Telegram Connection'}
-          </button>
-          {testStatus && (
-            <p className={`text-[10px] font-bold uppercase tracking-widest ${testStatus.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
-              {testStatus.message}
-            </p>
-          )}
-        </div>
       </div>
 
       <div className="text-center text-[10px] text-cosmic-silver/40 uppercase tracking-[0.2em] max-w-lg mx-auto">
