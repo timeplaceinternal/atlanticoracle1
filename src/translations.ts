@@ -173,6 +173,7 @@ export interface Translations {
   horoscopeLoading: string;
   horoscopeCTA: string;
   horoscopeInvite: string;
+  horoscopeForecastLabel: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -349,6 +350,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeLoading: "Consulting the stars for tomorrow...",
     horoscopeCTA: "Explore Other Services",
     horoscopeInvite: "The stars have more to tell you. Explore our comprehensive cosmic decrees.",
+    horoscopeForecastLabel: "Tomorrow's Forecast",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -523,6 +525,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeLoading: "Consultando as estrelas para amanhã...",
     horoscopeCTA: "Explorar Outros Serviços",
     horoscopeInvite: "As estrelas têm mais a lhe dizer. Explore nossos decretos cósmicos abrangentes.",
+    horoscopeForecastLabel: "Previsão para Amanhã",
   },
   French: {} as any,
   German: {} as any,

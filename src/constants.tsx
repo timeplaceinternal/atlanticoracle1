@@ -311,8 +311,8 @@ export const getServiceIcon = (iconName: string) => {
 
 const PROMPT_CORE = (lang: string) => {
   const langRules: Record<string, string> = {
-    'English': 'REPLY ONLY IN ENGLISH.',
-    'Portuguese': 'REPLY ONLY IN PORTUGUESE.'
+    'English': 'REPLY ONLY IN AMERICAN ENGLISH (EN-US).',
+    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).'
   };
   
   const now = new Date();

@@ -168,7 +168,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                     <h3 className="text-3xl font-cinzel text-white uppercase tracking-widest">
                       {ZODIAC_SIGNS.find(s => s.id === selectedSign)?.name[language === 'Portuguese' ? 'Portuguese' : 'English']}
                     </h3>
-                    <p className="text-cosmic-gold text-xs font-bold uppercase tracking-[0.3em] mt-1">Tomorrow's Forecast</p>
+                    <p className="text-cosmic-gold text-xs font-bold uppercase tracking-[0.3em] mt-1">{t.horoscopeForecastLabel}</p>
                   </div>
                 </div>
                 <button 
