@@ -508,6 +508,35 @@ async function startServer() {
     }
   });
 
+  app.get("/api/debug-paths", (req, res) => {
+    const dataDir = LOCAL_DATA_DIR;
+    let writeTest = "Not tested";
+    try {
+      const testFile = path.join(dataDir, '.debug_write_test');
+      fs.writeFileSync(testFile, 'test-' + Date.now());
+      const readBack = fs.readFileSync(testFile, 'utf-8');
+      fs.unlinkSync(testFile);
+      writeTest = `Success (read back: ${readBack})`;
+    } catch (err) {
+      writeTest = `Failed: ${err instanceof Error ? err.message : String(err)}`;
+    }
+
+    res.json({
+      __filename,
+      __dirname,
+      process_cwd: process.cwd(),
+      LOCAL_DATA_DIR: dataDir,
+      exists: fs.existsSync(dataDir),
+      writable: writeTest,
+      env: {
+        TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN ? "SET (length: " + process.env.TELEGRAM_BOT_TOKEN.length + ")" : "NOT SET",
+        TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID ? "SET" : "NOT SET",
+        NODE_ENV: process.env.NODE_ENV
+      },
+      contents: fs.existsSync(dataDir) ? fs.readdirSync(dataDir) : null
+    });
+  });
+
   app.post("/api/test-telegram", async (req, res) => {
     try {
       const success = await sendTelegramMessage("🔔 Test notification from TimePlace.me Admin Panel");
@@ -526,16 +555,15 @@ async function startServer() {
     console.log(">>> POST /api/dealer-registration - New application received...");
     try {
       const registration = req.body;
+      console.log(">>> Received data:", JSON.stringify(registration));
+
       if (!registration || !registration.email) {
-        console.error("!!! Invalid registration data received:", registration);
-        return res.status(400).json({ error: "Invalid registration data" });
+        console.error("!!! Invalid registration data received - missing email or body:", registration);
+        return res.status(400).json({ error: "Invalid registration data: email is required" });
       }
 
       const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
       
-      // Log to console for immediate visibility
-      console.log(">>> Dealer Application:", JSON.stringify(registration, null, 2));
-
       // Save to local file
       let registrations = [];
       try {
@@ -547,44 +575,50 @@ async function startServer() {
         }
       } catch (readError) {
         console.error("!!! Error reading dealer registrations file:", readError);
-        // If file is corrupted, we'll start fresh to avoid blocking the new application
         registrations = [];
       }
 
-      registrations.push({
+      const newEntry = {
         ...registration,
         timestamp: new Date().toISOString()
-      });
+      };
+      registrations.push(newEntry);
 
       try {
         fs.writeFileSync(DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
-        console.log(">>> Application saved to local storage.");
+        console.log(">>> Application saved to local storage successfully.");
       } catch (writeError) {
         console.error("!!! Error writing dealer registrations file:", writeError);
         // We continue even if file write fails, as long as we can try Telegram
+        // But we should probably log this as a major issue
       }
 
       // Send Telegram notification
       const telegramMessage = `
-<b>New Dealer Application</b>
-<b>Name:</b> ${registration.legalName || 'N/A'}
-<b>Email:</b> ${registration.email}
-<b>Messenger:</b> ${registration.messenger || 'N/A'}
-<b>Channel:</b> ${registration.channelName || 'N/A'}
-<b>Audience:</b> ${registration.audience || 'N/A'}
+🔔 <b>New Dealer Application</b>
+━━━━━━━━━━━━━━━━━━━━
+👤 <b>Name:</b> ${registration.legalName || 'N/A'}
+📧 <b>Email:</b> ${registration.email}
+📱 <b>Messenger:</b> ${registration.messenger || 'N/A'}
+📺 <b>Channel:</b> ${registration.channelName || 'N/A'}
+👥 <b>Audience:</b> ${registration.audience || 'N/A'}
+📅 <b>Date:</b> ${new Date().toLocaleString()}
 `;
       
-      // We don't await this strictly to prevent Telegram API delays from timing out the user request
-      // but we still want to know if it worked in the logs
       sendTelegramMessage(telegramMessage).then(success => {
-        if (success) console.log(">>> Telegram notification sent.");
-        else console.warn(">>> Telegram notification failed.");
+        if (success) console.log(">>> Telegram notification sent successfully.");
+        else console.warn(">>> Telegram notification failed to send.");
+      }).catch(err => {
+        console.error(">>> Telegram notification promise error:", err);
       });
 
-      res.json({ success: true });
+      return res.json({ success: true });
     } catch (error) {
       console.error("!!! Critical failure in dealer registration:", error);
-      res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ 
+        error: "Internal server error", 
+        details: error instanceof Error ? error.message : String(error) 
+      });
     }
   });
 

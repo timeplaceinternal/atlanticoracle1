@@ -37,13 +37,14 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit application');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.details || 'Failed to submit application');
       }
 
       setIsSuccess(true);
     } catch (err) {
       console.error('Dealer registration error:', err);
-      setError('Something went wrong. Please try again later.');
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }

@@ -1229,9 +1229,8 @@ const AdminPanel: React.FC = () => {
                   <table className="w-full text-left text-sm">
                     <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
                       <tr>
-                        <th className="px-8 py-6">Company / Name</th>
-                        <th className="px-8 py-6">Contact</th>
-                        <th className="px-8 py-6">Channels</th>
+                        <th className="px-8 py-6">Company / Channel</th>
+                        <th className="px-8 py-6">Contact / Messenger</th>
                         <th className="px-8 py-6">Audience</th>
                         <th className="px-8 py-6">Date</th>
                       </tr>
@@ -1241,20 +1240,17 @@ const AdminPanel: React.FC = () => {
                         <tr key={idx} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
                           <td className="px-8 py-6">
                             <p className="text-white font-medium">{app.legalName}</p>
-                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.country}</p>
+                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.channelName}</p>
                           </td>
                           <td className="px-8 py-6">
                             <p className="text-white">{app.email}</p>
-                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.phone}</p>
+                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.messenger}</p>
                           </td>
                           <td className="px-8 py-6">
-                            <div className="flex flex-wrap gap-1">
-                              {app.channels?.split(',').map((c: string, cIdx: number) => (
-                                <span key={cIdx} className="px-2 py-0.5 bg-cosmic-silver/10 rounded-md text-[9px] uppercase tracking-tighter">{c.trim()}</span>
-                              ))}
+                            <div className="max-w-xs truncate" title={app.audience}>
+                              {app.audience}
                             </div>
                           </td>
-                          <td className="px-8 py-6">{app.audienceSize}</td>
                           <td className="px-8 py-6 text-[10px] uppercase tracking-widest">
                             {new Date(app.timestamp).toLocaleString()}
                           </td>
@@ -1262,7 +1258,7 @@ const AdminPanel: React.FC = () => {
                       ))}
                       {dealerApplications.length === 0 && (
                         <tr>
-                          <td colSpan={5} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
+                          <td colSpan={4} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
                             No applications received yet.
                           </td>
                         </tr>
