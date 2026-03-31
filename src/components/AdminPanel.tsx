@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download, Send, RefreshCw } from 'lucide-react';
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
 import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
@@ -14,6 +14,7 @@ const AdminPanel: React.FC = () => {
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
   const [promoCodes, setPromoCodes] = useState<any[]>([]);
   const [dealerApplications, setDealerApplications] = useState<any[]>([]);
+  const [testTelegramStatus, setTestTelegramStatus] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [editingKB, setEditingKB] = useState<Partial<KnowledgeBasePost> | null>(null);
   const [editingPromo, setEditingPromo] = useState<any | null>(null);
@@ -91,6 +92,7 @@ const AdminPanel: React.FC = () => {
   };
 
   const fetchDealerApplications = async () => {
+    setIsSaving(true);
     try {
       const response = await fetch('/api/dealer-registrations');
       if (response.ok) {
@@ -99,7 +101,25 @@ const AdminPanel: React.FC = () => {
       }
     } catch (error) {
       console.error("Failed to fetch dealer applications:", error);
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const testTelegram = async () => {
+    setTestTelegramStatus('Sending test notification...');
+    try {
+      const response = await fetch('/api/test-telegram', { method: 'POST' });
+      if (response.ok) {
+        setTestTelegramStatus('Test notification sent successfully!');
+      } else {
+        const err = await response.json();
+        setTestTelegramStatus(`Failed: ${err.error}`);
+      }
+    } catch (error) {
+      setTestTelegramStatus('Error sending test notification');
+    }
+    setTimeout(() => setTestTelegramStatus(null), 5000);
   };
 
   useEffect(() => {
@@ -1181,13 +1201,28 @@ const AdminPanel: React.FC = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h3 className="text-xl font-cinzel text-cosmic-gold uppercase tracking-widest">Dealer Applications</h3>
-                  <button 
-                    onClick={fetchDealerApplications}
-                    className="p-2 bg-cosmic-gold/10 text-cosmic-gold rounded-lg hover:bg-cosmic-gold/20 transition-all"
-                    title="Refresh Applications"
-                  >
-                    <Loader2 className={`w-5 h-5 ${isSaving ? 'animate-spin' : ''}`} />
-                  </button>
+                  <div className="flex items-center gap-4">
+                    {testTelegramStatus && (
+                      <span className={`text-[10px] font-bold uppercase tracking-widest ${testTelegramStatus.includes('Failed') || testTelegramStatus.includes('Error') ? 'text-red-400' : 'text-green-400'}`}>
+                        {testTelegramStatus}
+                      </span>
+                    )}
+                    <button 
+                      onClick={testTelegram}
+                      className="flex items-center gap-2 px-4 py-2 bg-cosmic-gold/10 text-cosmic-gold border border-cosmic-gold/20 rounded-xl hover:bg-cosmic-gold/20 transition-all text-[10px] font-bold uppercase tracking-widest"
+                      title="Test Telegram Notification"
+                    >
+                      <Send className="w-4 h-4" />
+                      Test Telegram
+                    </button>
+                    <button 
+                      onClick={fetchDealerApplications}
+                      className="p-2 bg-cosmic-gold/10 text-cosmic-gold rounded-lg hover:bg-cosmic-gold/20 transition-all"
+                      title="Refresh Applications"
+                    >
+                      <Loader2 className={`w-5 h-5 ${isSaving ? 'animate-spin' : ''}`} />
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden">
