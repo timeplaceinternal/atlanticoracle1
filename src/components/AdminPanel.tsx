@@ -13,6 +13,7 @@ const AdminPanel: React.FC = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
   const [promoCodes, setPromoCodes] = useState<any[]>([]);
+  const [dealerApplications, setDealerApplications] = useState<any[]>([]);
   const [editingPost, setEditingPost] = useState<Partial<NewsPost> | null>(null);
   const [editingKB, setEditingKB] = useState<Partial<KnowledgeBasePost> | null>(null);
   const [editingPromo, setEditingPromo] = useState<any | null>(null);
@@ -89,10 +90,23 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const fetchDealerApplications = async () => {
+    try {
+      const response = await fetch('/api/dealer-registrations');
+      if (response.ok) {
+        const data = await response.json();
+        setDealerApplications(data.reverse());
+      }
+    } catch (error) {
+      console.error("Failed to fetch dealer applications:", error);
+    }
+  };
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchAllData();
       fetchWebhooks();
+      fetchDealerApplications();
     }
   }, [isLoggedIn]);
 
@@ -1162,73 +1176,139 @@ const AdminPanel: React.FC = () => {
               </div>
             ))
           ) : activeTab === 'dealers' ? (
-            <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
-                  <tr>
-                    <th className="px-8 py-6">Dealer Name</th>
-                    <th className="px-8 py-6">Promo Code</th>
-                    <th className="px-8 py-6">Channels</th>
-                    <th className="px-8 py-6">Audience</th>
-                    <th className="px-8 py-6">Sales</th>
-                    <th className="px-8 py-6">Revenue</th>
-                    <th className="px-8 py-6 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-cosmic-gold/10">
-                  {promoCodes.filter(p => 
-                    p.dealerName?.trim() || 
-                    p.dealerRequisites?.trim() || 
-                    (p.channels && p.channels.length > 0) || 
-                    (p.audienceSize && p.audienceSize > 0) || 
-                    (p.commissionRate && p.commissionRate > 0)
-                  ).map(promo => (
-                    <tr key={promo.id} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
-                      <td className="px-8 py-6">
-                        <p className="text-white font-medium">{promo.dealerName || 'Unnamed Dealer'}</p>
-                        <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">Added {new Date(promo.createdAt).toLocaleDateString()}</p>
-                      </td>
-                      <td className="px-8 py-6">
-                        <span className="px-3 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-lg text-xs text-cosmic-gold font-bold">{promo.code}</span>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex flex-wrap gap-1">
-                          {promo.channels?.map((c: any) => (
-                            <span key={c} className="px-2 py-0.5 bg-cosmic-silver/10 rounded-md text-[9px] uppercase tracking-tighter">{c}</span>
-                          )) || <span className="text-cosmic-silver/20 italic">None</span>}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">{(promo.audienceSize || 0).toLocaleString()}</td>
-                      <td className="px-8 py-6 font-cinzel text-white">{promo.usageCount}</td>
-                      <td className="px-8 py-6 font-cinzel text-cosmic-gold">
-                        ${(promo.usageHistory?.reduce((acc: any, u: any) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <button 
-                          onClick={() => setViewingPromo(promo)}
-                          className="p-2 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-lg transition-colors"
-                          title="View Dealer Report"
-                        >
-                          <FileText className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {promoCodes.filter(p => 
-                    p.dealerName?.trim() || 
-                    p.dealerRequisites?.trim() || 
-                    (p.channels && p.channels.length > 0) || 
-                    (p.audienceSize && p.audienceSize > 0) || 
-                    (p.commissionRate && p.commissionRate > 0)
-                  ).length === 0 && (
-                    <tr>
-                      <td colSpan={7} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
-                        No dealers found. Add dealer information to a promo code to see it here.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="space-y-12">
+              {/* Applications Section */}
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl font-cinzel text-cosmic-gold uppercase tracking-widest">Dealer Applications</h3>
+                  <button 
+                    onClick={fetchDealerApplications}
+                    className="p-2 bg-cosmic-gold/10 text-cosmic-gold rounded-lg hover:bg-cosmic-gold/20 transition-all"
+                    title="Refresh Applications"
+                  >
+                    <Loader2 className={`w-5 h-5 ${isSaving ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+                
+                <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                      <tr>
+                        <th className="px-8 py-6">Company / Name</th>
+                        <th className="px-8 py-6">Contact</th>
+                        <th className="px-8 py-6">Channels</th>
+                        <th className="px-8 py-6">Audience</th>
+                        <th className="px-8 py-6">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-cosmic-gold/10">
+                      {dealerApplications.map((app, idx) => (
+                        <tr key={idx} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
+                          <td className="px-8 py-6">
+                            <p className="text-white font-medium">{app.legalName}</p>
+                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.country}</p>
+                          </td>
+                          <td className="px-8 py-6">
+                            <p className="text-white">{app.email}</p>
+                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.phone}</p>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex flex-wrap gap-1">
+                              {app.channels?.split(',').map((c: string, cIdx: number) => (
+                                <span key={cIdx} className="px-2 py-0.5 bg-cosmic-silver/10 rounded-md text-[9px] uppercase tracking-tighter">{c.trim()}</span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-8 py-6">{app.audienceSize}</td>
+                          <td className="px-8 py-6 text-[10px] uppercase tracking-widest">
+                            {new Date(app.timestamp).toLocaleString()}
+                          </td>
+                        </tr>
+                      ))}
+                      {dealerApplications.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
+                            No applications received yet.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Active Dealers Section */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-cinzel text-cosmic-gold uppercase tracking-widest">Active Dealers</h3>
+                <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-cosmic-gold/5 text-[10px] uppercase tracking-widest text-cosmic-gold/60">
+                      <tr>
+                        <th className="px-8 py-6">Dealer Name</th>
+                        <th className="px-8 py-6">Promo Code</th>
+                        <th className="px-8 py-6">Channels</th>
+                        <th className="px-8 py-6">Audience</th>
+                        <th className="px-8 py-6">Sales</th>
+                        <th className="px-8 py-6">Revenue</th>
+                        <th className="px-8 py-6 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-cosmic-gold/10">
+                      {promoCodes.filter(p => 
+                        p.dealerName?.trim() || 
+                        p.dealerRequisites?.trim() || 
+                        (p.channels && p.channels.length > 0) || 
+                        (p.audienceSize && p.audienceSize > 0) || 
+                        (p.commissionRate && p.commissionRate > 0)
+                      ).map(promo => (
+                        <tr key={promo.id} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
+                          <td className="px-8 py-6">
+                            <p className="text-white font-medium">{promo.dealerName || 'Unnamed Dealer'}</p>
+                            <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">Added {new Date(promo.createdAt).toLocaleDateString()}</p>
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className="px-3 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-lg text-xs text-cosmic-gold font-bold">{promo.code}</span>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex flex-wrap gap-1">
+                              {promo.channels?.map((c: any) => (
+                                <span key={c} className="px-2 py-0.5 bg-cosmic-silver/10 rounded-md text-[9px] uppercase tracking-tighter">{c}</span>
+                              )) || <span className="text-cosmic-silver/20 italic">None</span>}
+                            </div>
+                          </td>
+                          <td className="px-8 py-6">{(promo.audienceSize || 0).toLocaleString()}</td>
+                          <td className="px-8 py-6 font-cinzel text-white">{promo.usageCount}</td>
+                          <td className="px-8 py-6 font-cinzel text-cosmic-gold">
+                            ${(promo.usageHistory?.reduce((acc: any, u: any) => acc + (u.amount || 0), 0) || 0).toLocaleString()}
+                          </td>
+                          <td className="px-8 py-6 text-right">
+                            <button 
+                              onClick={() => setViewingPromo(promo)}
+                              className="p-2 text-cosmic-gold hover:bg-cosmic-gold/10 rounded-lg transition-colors"
+                              title="View Dealer Report"
+                            >
+                              <FileText className="w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {promoCodes.filter(p => 
+                        p.dealerName?.trim() || 
+                        p.dealerRequisites?.trim() || 
+                        (p.channels && p.channels.length > 0) || 
+                        (p.audienceSize && p.audienceSize > 0) || 
+                        (p.commissionRate && p.commissionRate > 0)
+                      ).length === 0 && (
+                        <tr>
+                          <td colSpan={7} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
+                            No dealers found. Add dealer information to a promo code to see it here.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           ) : activeTab === 'webhooks' ? (
             <div className="space-y-6">

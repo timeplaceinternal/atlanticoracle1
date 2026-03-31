@@ -494,6 +494,20 @@ async function startServer() {
     }
   });
 
+  // Get Dealer Registrations
+  app.get("/api/dealer-registrations", async (req, res) => {
+    try {
+      const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+      if (fs.existsSync(DEALER_REG_PATH)) {
+        const data = fs.readFileSync(DEALER_REG_PATH, 'utf-8');
+        return res.json(JSON.parse(data));
+      }
+      res.json([]);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch dealer registrations" });
+    }
+  });
+
   // Dealer Registration Endpoint
   app.post("/api/dealer-registration", async (req, res) => {
     console.log(">>> POST /api/dealer-registration - New application received...");
@@ -508,7 +522,6 @@ async function startServer() {
       
       // Log to console as requested
       console.log("Dealer Registration Details:", JSON.stringify(registration, null, 2));
-      console.log("Email to: astrologforme@gmail.com");
 
       // Save to local file as fallback/log
       let registrations = [];
@@ -532,9 +545,6 @@ async function startServer() {
 `;
       await sendTelegramMessage(telegramMessage);
 
-      // Note: In a real production environment, you would use Nodemailer or an API like SendGrid
-      // to send the actual email to astrologforme@gmail.com.
-      
       res.json({ success: true });
     } catch (error) {
       console.error("!!! Failed to process dealer registration:", error);
