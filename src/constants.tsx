@@ -514,16 +514,26 @@ export const COSMIC_PROMPTS = {
     5. Transformative Integration: Turning shadow into power.
     5. Transformative Integration: Turning shadow into power.
   `,
-  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: string) => `
-    ${PROMPT_CORE(lang)}
-    SERVICE: PERSONAL HOROSCOPE FOR TOMORROW. 
-    ZODIAC SIGN: ${sign}.
-    DATE: Tomorrow.
-    
-    TASK: Provide a short, professional astrological forecast for tomorrow (~half A4 page).
-    Focus on energy, opportunities, and warnings for this specific sign. 
-    Style: Professional, analytical, yet inspiring.
-  `,
+  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: string) => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toLocaleDateString('en-US', { 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric' 
+    }).toUpperCase();
+
+    return `
+      ${PROMPT_CORE(lang)}
+      SERVICE: PERSONAL HOROSCOPE FOR TOMORROW. 
+      ZODIAC SIGN: ${sign}.
+      TARGET DATE: ${tomorrowStr} (The day following the current date).
+      
+      TASK: Provide a short, professional astrological forecast specifically for ${tomorrowStr} (~half A4 page).
+      Focus on energy, opportunities, and warnings for this specific sign. 
+      Style: Professional, analytical, yet inspiring.
+    `;
+  },
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     SPECIAL GIFT: Personal Monthly Forecast. Subject: ${name}, born ${date}.
