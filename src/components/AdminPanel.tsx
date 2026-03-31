@@ -106,6 +106,48 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleDeleteApplication = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this application?')) return;
+    try {
+      const response = await fetch(`/api/dealer-registration/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        fetchDealerApplications();
+      } else {
+        alert('Failed to delete application');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+    }
+  };
+
+  const exportApplications = () => {
+    if (dealerApplications.length === 0) return;
+    
+    // CSV headers
+    const headers = ['Legal Name', 'Channel Name', 'Audience', 'Email', 'Messenger', 'Timestamp'];
+    
+    // CSV rows
+    const rows = dealerApplications.map(app => [
+      app.legalName || '',
+      app.channelName || '',
+      app.audience || '',
+      app.email || '',
+      app.messenger || '',
+      new Date(app.timestamp).toLocaleString()
+    ].map(val => `"${val.toString().replace(/"/g, '""')}"`).join(','));
+    
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `dealer_applications_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const testTelegram = async () => {
     setTestTelegramStatus('Sending test notification...');
     try {
@@ -1222,6 +1264,14 @@ const AdminPanel: React.FC = () => {
                     >
                       <Loader2 className={`w-5 h-5 ${isSaving ? 'animate-spin' : ''}`} />
                     </button>
+                    <button 
+                      onClick={exportApplications}
+                      className="flex items-center gap-2 px-4 py-2 bg-cosmic-gold/10 text-cosmic-gold border border-cosmic-gold/20 rounded-xl hover:bg-cosmic-gold/20 transition-all text-[10px] font-bold uppercase tracking-widest"
+                      title="Export to CSV"
+                    >
+                      <Download className="w-4 h-4" />
+                      Export CSV
+                    </button>
                   </div>
                 </div>
                 
@@ -1233,11 +1283,12 @@ const AdminPanel: React.FC = () => {
                         <th className="px-8 py-6">Contact / Messenger</th>
                         <th className="px-8 py-6">Audience</th>
                         <th className="px-8 py-6">Date</th>
+                        <th className="px-8 py-6 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-cosmic-gold/10">
                       {dealerApplications.map((app, idx) => (
-                        <tr key={idx} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors">
+                        <tr key={app.id || idx} className="text-cosmic-silver hover:bg-cosmic-gold/5 transition-colors group">
                           <td className="px-8 py-6">
                             <p className="text-white font-medium">{app.legalName}</p>
                             <p className="text-[10px] text-cosmic-gold/40 uppercase tracking-widest">{app.channelName}</p>
@@ -1254,11 +1305,20 @@ const AdminPanel: React.FC = () => {
                           <td className="px-8 py-6 text-[10px] uppercase tracking-widest">
                             {new Date(app.timestamp).toLocaleString()}
                           </td>
+                          <td className="px-8 py-6 text-right">
+                            <button 
+                              onClick={() => handleDeleteApplication(app.id)}
+                              className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                              title="Delete Application"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
                         </tr>
                       ))}
                       {dealerApplications.length === 0 && (
                         <tr>
-                          <td colSpan={4} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
+                          <td colSpan={5} className="px-8 py-12 text-center text-cosmic-silver/40 italic">
                             No applications received yet.
                           </td>
                         </tr>

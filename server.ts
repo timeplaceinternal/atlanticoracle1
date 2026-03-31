@@ -579,6 +579,7 @@ async function startServer() {
       }
 
       const newEntry = {
+        id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
         ...registration,
         timestamp: new Date().toISOString()
       };
@@ -589,11 +590,9 @@ async function startServer() {
         console.log(">>> Application saved to local storage successfully.");
       } catch (writeError) {
         console.error("!!! Error writing dealer registrations file:", writeError);
-        // We continue even if file write fails, as long as we can try Telegram
-        // But we should probably log this as a major issue
       }
 
-      // Send Telegram notification
+      // Send Telegram notification - COMPLETELY ISOLATED
       const telegramMessage = `
 🔔 <b>New Dealer Application</b>
 ━━━━━━━━━━━━━━━━━━━━
@@ -605,12 +604,10 @@ async function startServer() {
 📅 <b>Date:</b> ${new Date().toLocaleString()}
 `;
       
-      sendTelegramMessage(telegramMessage).then(success => {
-        if (success) console.log(">>> Telegram notification sent successfully.");
-        else console.warn(">>> Telegram notification failed to send.");
-      }).catch(err => {
-        console.error(">>> Telegram notification promise error:", err);
-      });
+      // Fire and forget, with its own catch to ensure it never bubbles up
+      sendTelegramMessage(telegramMessage)
+        .then(success => console.log(success ? ">>> Telegram sent." : ">>> Telegram failed (check config)."))
+        .catch(err => console.error(">>> Telegram background error:", err));
 
       return res.json({ success: true });
     } catch (error) {
@@ -619,6 +616,29 @@ async function startServer() {
         error: "Internal server error", 
         details: error instanceof Error ? error.message : String(error) 
       });
+    }
+  });
+
+  // Delete Dealer Registration
+  app.delete("/api/dealer-registration/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+      
+      if (fs.existsSync(DEALER_REG_PATH)) {
+        const data = fs.readFileSync(DEALER_REG_PATH, 'utf-8');
+        let registrations = JSON.parse(data);
+        const initialLength = registrations.length;
+        registrations = registrations.filter((reg: any) => reg.id !== id);
+        
+        if (registrations.length < initialLength) {
+          fs.writeFileSync(DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
+          return res.json({ success: true });
+        }
+      }
+      res.status(404).json({ error: "Application not found" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete application" });
     }
   });
 
