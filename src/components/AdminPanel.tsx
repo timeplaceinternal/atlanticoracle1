@@ -3,6 +3,8 @@ import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper,
 import { GoogleGenAI, Type } from "@google/genai";
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
+import { generateHoroscope } from '../services/geminiService';
+import { ZODIAC_SIGNS } from '../constants';
 import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType, ReportLanguage } from '../types';
 
 const AdminPanel: React.FC = () => {
@@ -126,35 +128,24 @@ const AdminPanel: React.FC = () => {
     const dateStr = tomorrow.toISOString().split('T')[0];
 
     try {
-      const ai = new GoogleGenAI({ apiKey: (process.env as any).GEMINI_API_KEY });
-      
       for (const lang of languages) {
-        for (const sign of signs) {
+        for (const signId of signs) {
           current++;
           setPreGenProgress({ 
             current, 
             total, 
-            status: `Generating ${sign} in ${lang}...` 
+            status: `Generating ${signId} in ${lang}...` 
           });
 
-          const prompt = `Generate a short, inspiring horoscope for tomorrow (${dateStr}) for the zodiac sign ${sign}. 
-          Language: ${lang === 'Portuguese' ? 'Portuguese (Brazil)' : 'English (US)'}. 
-          Style: Mystical, encouraging, professional. 
-          Format: Markdown. 
-          Length: 2-3 paragraphs.`;
-
-          const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
-            contents: prompt,
-          });
-
-          const forecast = response.text || '';
+          const sign = ZODIAC_SIGNS.find(s => s.id === signId);
+          const signName = sign ? sign.name[lang === 'Portuguese' ? 'Portuguese' : 'English'] : signId;
+          const forecast = await generateHoroscope(signName, lang);
 
           // Save to cache
           await fetch('/api/horoscope-cache', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sign, lang, date: dateStr, forecast }),
+            body: JSON.stringify({ sign: signId, lang, date: dateStr, content: forecast }),
           });
         }
       }

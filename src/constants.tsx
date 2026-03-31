@@ -309,7 +309,7 @@ export const getServiceIcon = (iconName: string) => {
   }
 };
 
-const PROMPT_CORE = (lang: string) => {
+const BASE_RULES = (lang: string) => {
   const langRules: Record<string, string> = {
     'English': 'REPLY ONLY IN AMERICAN ENGLISH (EN-US).',
     'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).'
@@ -327,14 +327,18 @@ const PROMPT_CORE = (lang: string) => {
     IDENTITY: ATLANTIC ORACLE. Authority in Astrology, Numerology, and Human Design.
     CURRENT DATE: ${dateStr}.
     FORMAT: No stars (*). Use headers # and ##.
-    DEPTH: Professional, analytical.
-    LENGTH: As specified in the service task below.
-    STRUCTURE: Use a structured approach with clear chapters or sections where appropriate.
     STRICTION: DO NOT use Markdown tables. Use plain text or sequential lists.
     STRICTION: NEVER generate URLs, links, or calls to action with fake links.
-    ENVIRONMENTAL INFLUENCE: Include a few interesting sentences about the subject's birth place (city/country/region). Explain how the specific environment and culture of their origin have helped shape their unique personality and energetic signature.
   `;
 };
+
+const PROMPT_CORE = (lang: string) => `
+  ${BASE_RULES(lang)}
+  DEPTH: Professional, analytical.
+  LENGTH: As specified in the service task below.
+  STRUCTURE: Use a structured approach with clear chapters or sections where appropriate.
+  ENVIRONMENTAL INFLUENCE: Include a few interesting sentences about the subject's birth place (city/country/region). Explain how the specific environment and culture of their origin have helped shape their unique personality and energetic signature.
+`;
 
 export const COSMIC_PROMPTS = {
   [ServiceType.NATAL_CHART]: (name: string, date: string, time: string, place: string, lang: string) => `
@@ -524,14 +528,17 @@ export const COSMIC_PROMPTS = {
     }).toUpperCase();
 
     return `
-      ${PROMPT_CORE(lang)}
+      ${BASE_RULES(lang)}
       SERVICE: PERSONAL HOROSCOPE FOR TOMORROW. 
       ZODIAC SIGN: ${sign}.
-      TARGET DATE: ${tomorrowStr} (The day following the current date).
+      TARGET DATE: ${tomorrowStr}.
       
-      TASK: Provide a short, professional astrological forecast specifically for ${tomorrowStr} (~half A4 page).
-      Focus on energy, opportunities, and warnings for this specific sign. 
-      Style: Professional, analytical, yet inspiring.
+      TASK: Provide a concise, friendly, and advising astrological forecast for ${sign} for tomorrow.
+      STYLE: Simple, clear, friendly, and encouraging. No "water" or filler text.
+      CONTENT: General astrological advice for everyone born under this sign. 
+      STRICTION: DO NOT mention birth place, birth time, or any personal details. This is a general forecast.
+      STRICTION: Keep it short (1-2 small paragraphs).
+      FORMAT: Markdown. No stars (*). Use ## for the title.
     `;
   },
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
