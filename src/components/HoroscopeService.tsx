@@ -11,14 +11,21 @@ import Markdown from 'react-markdown';
 interface HoroscopeServiceProps {
   language: ReportLanguage;
   onExploreServices: () => void;
+  initialSign?: string | null;
 }
 
-const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices }) => {
+const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices, initialSign }) => {
   const t = translations[language] || translations['English'];
-  const [selectedSign, setSelectedSign] = useState<string | null>(null);
+  const [selectedSign, setSelectedSign] = useState<string | null>(initialSign || null);
   const [loading, setLoading] = useState(false);
   const [forecast, setForecast] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialSign && !forecast && !loading) {
+      handleSignClick(initialSign);
+    }
+  }, [initialSign]);
 
   const handleSignClick = async (signId: string) => {
     setSelectedSign(signId);
@@ -27,20 +34,56 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
     setForecast(null);
 
     try {
-      // Artificial delay for the "splash" effect as requested
       const sign = ZODIAC_SIGNS.find(s => s.id === signId);
       const signName = sign ? sign.name[language === 'Portuguese' ? 'Portuguese' : 'English'] : signId;
       
+      // Calculate tomorrow's date consistently
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dateStr = tomorrow.toISOString().split('T')[0];
+      
+      // 1. Check Cache
+      try {
+        const cacheRes = await fetch(`/api/horoscope-cache?sign=${signId}&lang=${language}&date=${dateStr}`);
+        if (cacheRes.ok) {
+          const cachedData = await cacheRes.json();
+          setForecast(cachedData.content);
+          setLoading(false);
+          return; // Exit early if found in cache
+        }
+      } catch (cacheErr) {
+        console.warn("Cache check failed, proceeding to AI generation", cacheErr);
+      }
+
+      // 2. Generate if not in cache
       const [result] = await Promise.all([
         generateHoroscope(signName, language),
         new Promise(resolve => setTimeout(resolve, 2500)) // 2.5 seconds splash
       ]);
       
       setForecast(result);
+
+      // 3. Save to Cache (Fire and forget)
+      fetch('/api/horoscope-cache', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sign: signId,
+          lang: language,
+          date: dateStr,
+          content: result
+        })
+      }).catch(err => console.error("Failed to save to cache:", err));
+
     } catch (err: any) {
       setError(err.message || "The stars are obscured today.");
     } finally {
       setLoading(false);
+      // Trigger background fill for other signs
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dateStr = tomorrow.toISOString().split('T')[0];
+      fillMissingCache(dateStr);
     }
   };
 
@@ -48,6 +91,42 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
     setSelectedSign(null);
     setForecast(null);
     setError(null);
+  };
+
+  const fillMissingCache = async (dateStr: string) => {
+    try {
+      const res = await fetch(`/api/horoscope-cache-status?lang=${language}&date=${dateStr}`);
+      if (!res.ok) return;
+      const { missing } = await res.json();
+      
+      if (missing.length === 0) return;
+      
+      console.log(`[Background] Filling missing signs: ${missing.join(', ')}`);
+      
+      for (const signId of missing) {
+        const sign = ZODIAC_SIGNS.find(s => s.id === signId);
+        if (!sign) continue;
+        
+        const signName = sign.name[language === 'Portuguese' ? 'Portuguese' : 'English'];
+        const content = await generateHoroscope(signName, language);
+        
+        await fetch('/api/horoscope-cache', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sign: signId,
+            lang: language,
+            date: dateStr,
+            content: content
+          })
+        });
+        
+        // Small delay to avoid rate limits
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    } catch (err) {
+      console.error("Background cache fill failed:", err);
+    }
   };
 
   return (

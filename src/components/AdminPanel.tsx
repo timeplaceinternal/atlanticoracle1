@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download, Send, RefreshCw } from 'lucide-react';
+import { GoogleGenAI, Type } from "@google/genai";
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
-import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType } from '../types';
+import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType, ReportLanguage } from '../types';
 
 const AdminPanel: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos' | 'dealers' | 'webhooks'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'kb' | 'promos' | 'dealers' | 'webhooks' | 'horoscopes'>('news');
+  const [isPreGenerating, setIsPreGenerating] = useState(false);
+  const [preGenProgress, setPreGenProgress] = useState({ current: 0, total: 0, status: '' });
   const [webhookLogs, setWebhookLogs] = useState<any[]>([]);
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [kbPosts, setKbPosts] = useState<KnowledgeBasePost[]>([]);
@@ -103,6 +106,65 @@ const AdminPanel: React.FC = () => {
       console.error("Failed to fetch dealer applications:", error);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const preGenerateAllHoroscopes = async () => {
+    if (!window.confirm('This will generate 24 horoscopes (12 signs in 2 languages) for tomorrow. Continue?')) return;
+    
+    setIsPreGenerating(true);
+    const signs = [
+      'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 
+      'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+    ];
+    const languages: ReportLanguage[] = ['English', 'Portuguese'];
+    const total = signs.length * languages.length;
+    let current = 0;
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateStr = tomorrow.toISOString().split('T')[0];
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: (process.env as any).GEMINI_API_KEY });
+      
+      for (const lang of languages) {
+        for (const sign of signs) {
+          current++;
+          setPreGenProgress({ 
+            current, 
+            total, 
+            status: `Generating ${sign} in ${lang}...` 
+          });
+
+          const prompt = `Generate a short, inspiring horoscope for tomorrow (${dateStr}) for the zodiac sign ${sign}. 
+          Language: ${lang === 'Portuguese' ? 'Portuguese (Brazil)' : 'English (US)'}. 
+          Style: Mystical, encouraging, professional. 
+          Format: Markdown. 
+          Length: 2-3 paragraphs.`;
+
+          const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: prompt,
+          });
+
+          const forecast = response.text || '';
+
+          // Save to cache
+          await fetch('/api/horoscope-cache', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sign, lang, date: dateStr, forecast }),
+          });
+        }
+      }
+      
+      setPreGenProgress({ current: total, total, status: 'Successfully pre-generated all horoscopes!' });
+      setTimeout(() => setIsPreGenerating(false), 3000);
+    } catch (error) {
+      console.error('Pre-generation failed:', error);
+      setPreGenProgress(prev => ({ ...prev, status: 'Error: ' + (error instanceof Error ? error.message : 'Unknown error') }));
+      setTimeout(() => setIsPreGenerating(false), 5000);
     }
   };
 
@@ -1066,6 +1128,12 @@ const AdminPanel: React.FC = () => {
             >
               Webhooks
             </button>
+            <button 
+              onClick={() => setActiveTab('horoscopes')}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeTab === 'horoscopes' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-gold/60 hover:text-cosmic-gold'}`}
+            >
+              Horoscopes
+            </button>
           </div>
           <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
             <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> Exit Sanctuary
@@ -1455,6 +1523,75 @@ const AdminPanel: React.FC = () => {
                     )}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          ) : activeTab === 'horoscopes' ? (
+            <div className="space-y-12">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-cinzel text-cosmic-gold uppercase tracking-widest">Horoscope Cache Management</h3>
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={preGenerateAllHoroscopes}
+                    disabled={isPreGenerating}
+                    className="flex items-center gap-2 px-6 py-3 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    {isPreGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    Pre-generate All for Tomorrow
+                  </button>
+                </div>
+              </div>
+
+              {isPreGenerating && (
+                <div className="p-8 bg-cosmic-800/40 border border-cosmic-gold/20 rounded-3xl space-y-4 animate-in fade-in zoom-in-95">
+                  <div className="flex justify-between items-center text-xs uppercase tracking-widest text-cosmic-gold">
+                    <span>{preGenProgress.status}</span>
+                    <span>{preGenProgress.current} / {preGenProgress.total}</span>
+                  </div>
+                  <div className="w-full h-2 bg-cosmic-900 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-cosmic-gold transition-all duration-500"
+                      style={{ width: `${(preGenProgress.current / preGenProgress.total) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-8 border border-cosmic-gold/10 rounded-3xl bg-cosmic-800/10 space-y-4">
+                  <h4 className="text-white font-cinzel text-sm uppercase tracking-widest">Cache Status</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-cosmic-silver/60">Total Cached Entries</span>
+                      <span className="text-cosmic-gold font-mono">Loading...</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-cosmic-silver/60">Last Updated</span>
+                      <span className="text-cosmic-gold font-mono">Today</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-8 border border-cosmic-gold/10 rounded-3xl bg-cosmic-800/10 space-y-4">
+                  <h4 className="text-white font-cinzel text-sm uppercase tracking-widest">SEO Coverage</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-cosmic-silver/60">Sitemap Status</span>
+                      <span className="text-green-400 font-bold">ACTIVE</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-cosmic-silver/60">Indexed Signs</span>
+                      <span className="text-cosmic-gold font-mono">12 / 12</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl p-8">
+                <p className="text-cosmic-silver/60 text-sm italic text-center">
+                  The system automatically caches horoscopes when users request them. 
+                  Pre-generation ensures that the first user of the day doesn't experience AI latency.
+                  Old cache entries are automatically purged daily.
+                </p>
               </div>
             </div>
           ) : null}

@@ -10,6 +10,7 @@ interface NewsPageProps {
   language: ReportLanguage;
   initialSlug: string | null;
   onSlugChange: (slug: string | null) => void;
+  onNavigate?: (view: any, category?: string, slug?: string) => void;
 }
 
 const getDisplayImage = (post: NewsPost) => {
@@ -97,7 +98,7 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   );
 };
 
-const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSlugChange }) => {
+const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSlugChange, onNavigate }) => {
   const t = translations[language] || translations['English'];
   const [selectedPost, setSelectedPost] = useState<string | null>(initialSlug);
   const [posts, setPosts] = useState<NewsPost[]>([]);

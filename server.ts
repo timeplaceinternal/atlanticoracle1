@@ -124,10 +124,148 @@ async function startServer() {
 
   const NEWS_FILE_PATH = 'data/news.json';
   const KB_FILE_PATH = 'data/kb.json';
+  const HOROSCOPE_FILE_PATH = 'data/horoscopes.json';
   const LOCAL_NEWS_PATH = path.join(LOCAL_DATA_DIR, 'news.json');
   const LOCAL_KB_PATH = path.join(LOCAL_DATA_DIR, 'kb.json');
+  const LOCAL_HOROSCOPE_PATH = path.join(LOCAL_DATA_DIR, 'horoscopes.json');
 
   // API Routes
+  
+  // Horoscope Cache Endpoints
+  app.get("/api/horoscope-cache", async (req, res) => {
+    const { sign, lang, date } = req.query;
+    if (!sign || !lang || !date) {
+      return res.status(400).json({ error: "Missing parameters" });
+    }
+
+    try {
+      let horoscopes = [];
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      
+      if (token && token.trim() !== "") {
+        try {
+          const { blobs } = await list({ prefix: HOROSCOPE_FILE_PATH });
+          const blob = blobs.find(b => b.pathname === HOROSCOPE_FILE_PATH);
+          if (blob) {
+            const response = await fetch(blob.url);
+            if (response.ok) horoscopes = await response.json();
+          }
+        } catch (e) {}
+      }
+
+      if (horoscopes.length === 0 && fs.existsSync(LOCAL_HOROSCOPE_PATH)) {
+        horoscopes = JSON.parse(fs.readFileSync(LOCAL_HOROSCOPE_PATH, 'utf-8'));
+      }
+
+      const found = horoscopes.find((h: any) => 
+        h.sign === sign && h.lang === lang && h.date === date
+      );
+
+      if (found) {
+        return res.json(found);
+      }
+      res.status(404).json({ error: "Not found" });
+    } catch (error) {
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.get("/api/horoscope-cache-status", async (req, res) => {
+    const { lang, date } = req.query;
+    if (!lang || !date) {
+      return res.status(400).json({ error: "Missing parameters" });
+    }
+
+    try {
+      let horoscopes = [];
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      
+      if (token && token.trim() !== "") {
+        try {
+          const { blobs } = await list({ prefix: HOROSCOPE_FILE_PATH });
+          const blob = blobs.find(b => b.pathname === HOROSCOPE_FILE_PATH);
+          if (blob) {
+            const response = await fetch(blob.url);
+            if (response.ok) horoscopes = await response.json();
+          }
+        } catch (e) {}
+      }
+
+      if (horoscopes.length === 0 && fs.existsSync(LOCAL_HOROSCOPE_PATH)) {
+        horoscopes = JSON.parse(fs.readFileSync(LOCAL_HOROSCOPE_PATH, 'utf-8'));
+      }
+
+      const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+      const existing = horoscopes
+        .filter((h: any) => h.lang === lang && h.date === date)
+        .map((h: any) => h.sign);
+      
+      const missing = signs.filter(s => !existing.includes(s));
+      res.json({ missing });
+    } catch (error) {
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.post("/api/horoscope-cache", async (req, res) => {
+    const { sign, lang, date, content } = req.body;
+    if (!sign || !lang || !date || !content) {
+      return res.status(400).json({ error: "Missing data" });
+    }
+
+    try {
+      let horoscopes = [];
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      
+      // Load existing
+      if (token && token.trim() !== "") {
+        try {
+          const { blobs } = await list({ prefix: HOROSCOPE_FILE_PATH });
+          const blob = blobs.find(b => b.pathname === HOROSCOPE_FILE_PATH);
+          if (blob) {
+            const response = await fetch(blob.url);
+            if (response.ok) horoscopes = await response.json();
+          }
+        } catch (e) {}
+      }
+
+      if (horoscopes.length === 0 && fs.existsSync(LOCAL_HOROSCOPE_PATH)) {
+        horoscopes = JSON.parse(fs.readFileSync(LOCAL_HOROSCOPE_PATH, 'utf-8'));
+      }
+
+      // Cleanup old horoscopes (older than today)
+      const today = new Date().toISOString().split('T')[0];
+      horoscopes = horoscopes.filter((h: any) => h.date >= today);
+
+      // Add or update
+      const index = horoscopes.findIndex((h: any) => 
+        h.sign === sign && h.lang === lang && h.date === date
+      );
+
+      if (index > -1) {
+        horoscopes[index].content = content;
+      } else {
+        horoscopes.push({ sign, lang, date, content, timestamp: new Date().toISOString() });
+      }
+
+      // Save
+      if (token && token.trim() !== "") {
+        await put(HOROSCOPE_FILE_PATH, JSON.stringify(horoscopes), {
+          access: 'public',
+          addRandomSuffix: false,
+          allowOverwrite: true,
+        });
+      }
+
+      try {
+        fs.writeFileSync(LOCAL_HOROSCOPE_PATH, JSON.stringify(horoscopes, null, 2));
+      } catch (e) {}
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
   
   // File upload endpoint
   app.post("/api/upload", (req, res) => {
@@ -316,6 +454,10 @@ async function startServer() {
       }
       
       const baseUrl = 'https://atlanticoracle.com';
+      const signs = [
+        'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+        'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
+      ];
       
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -334,6 +476,12 @@ async function startServer() {
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+  ${signs.map(sign => `
+  <url>
+    <loc>${baseUrl}/horoscope/${sign}</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>`).join('')}
   ${posts.map(post => `
   <url>
     <loc>${baseUrl}/news/${post.slug}</loc>

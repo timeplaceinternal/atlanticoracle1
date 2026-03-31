@@ -14,10 +14,11 @@ import KBArticlePage from './components/KBArticlePage';
 import CookieConsent from './components/CookieConsent';
 import PrivacySettings from './components/PrivacySettings';
 import DealerProgram from './components/DealerProgram';
+import HoroscopeService from './components/HoroscopeService';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2 } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2 } from 'lucide-react';
 import { translations } from './translations';
 
 const STRIPE_URLS_30: Record<ReportLanguage, string> = {
@@ -129,7 +130,7 @@ const App: React.FC = () => {
     return () => { delete (window as any).openPrivacySettings; };
   }, []);
 
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer'>(() => {
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer' | 'horoscope'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
@@ -142,6 +143,7 @@ const App: React.FC = () => {
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
+      if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') return 'horoscope';
       if (cleanPath.includes('/database') || params.get('view') === 'database') {
         const match = cleanPath.match(/\/database\/([^/]+)\/([^/]+)/);
         return match ? 'kb-article' : 'database';
@@ -152,6 +154,15 @@ const App: React.FC = () => {
       }
     }
     return 'home';
+  });
+
+  const [horoscopeSign, setHoroscopeSign] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const match = path.match(/\/horoscope\/([^/]+)/);
+      return match ? match[1] : null;
+    }
+    return null;
   });
 
   // Sync URL with view state (without reloading)
@@ -166,6 +177,9 @@ const App: React.FC = () => {
         window.history.pushState({}, '', '/admin162463' + url.search);
       } else if (view === 'news') {
         const path = newsSlug ? `/news/${newsSlug}` : '/news';
+        window.history.pushState({}, '', path + url.search);
+      } else if (view === 'horoscope') {
+        const path = horoscopeSign ? `/horoscope/${horoscopeSign}` : '/horoscope';
         window.history.pushState({}, '', path + url.search);
       } else if (view === 'database') {
         window.history.pushState({}, '', '/database' + url.search);
@@ -217,6 +231,10 @@ const App: React.FC = () => {
         const match = cleanPath.match(/\/news\/([^/]+)/);
         setNewsSlug(match ? match[1] : null);
         setView('news');
+      } else if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') {
+        const match = cleanPath.match(/\/horoscope\/([^/]+)/);
+        setHoroscopeSign(match ? match[1] : null);
+        setView('horoscope');
       } else if (cleanPath.includes('/database') || params.get('view') === 'database') {
         const match = cleanPath.match(/\/database\/([^/]+)\/([^/]+)/);
         if (match) {
@@ -393,6 +411,9 @@ const App: React.FC = () => {
       setView('kb-article');
     } else if (newView === 'database') {
       setView('database');
+    } else if (newView === 'horoscope') {
+      setHoroscopeSign(slug || null);
+      setView('horoscope');
     } else if (newView === 'form' && slug) {
       const service = SERVICES.find(s => s.id === slug) || LIGHT_DROPS.find(s => s.id === slug);
       if (service) handleStartService(service);
@@ -730,7 +751,31 @@ const App: React.FC = () => {
 
           {view === 'news' && (
             <div className="py-10 md:py-20">
-              <NewsPage onBack={resetToHome} language={language} initialSlug={newsSlug} onSlugChange={setNewsSlug} />
+              <NewsPage 
+                onBack={resetToHome} 
+                language={language} 
+                initialSlug={newsSlug} 
+                onSlugChange={setNewsSlug} 
+                onNavigate={handleNavigate}
+              />
+            </div>
+          )}
+
+          {view === 'horoscope' && (
+            <div className="py-10 md:py-20">
+              <div className="max-w-4xl mx-auto px-6 mb-8">
+                <button 
+                  onClick={resetToHome}
+                  className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase text-[10px] font-bold tracking-widest"
+                >
+                  <ChevronLeft className="w-4 h-4" /> {t.backToStart}
+                </button>
+              </div>
+              <HoroscopeService 
+                language={language} 
+                onExploreServices={() => scrollToSection('services')}
+                initialSign={horoscopeSign}
+              />
             </div>
           )}
 
