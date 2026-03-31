@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { ReadingRequest, ServiceType } from "../types";
+import { ReadingRequest, ServiceType, ReportLanguage } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
@@ -33,6 +33,25 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     // Standard services (Natal Chart, Yearly Solar, etc.)
     prompt = (COSMIC_PROMPTS as any)[serviceId](name, birthDate, birthTime || "unknown", birthPlace, language);
   }
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+  });
+  
+  return response.text || "The stars are silent today.";
+};
+
+export const generateHoroscope = async (sign: string, language: ReportLanguage): Promise<string> => {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  
+  if (!apiKey) {
+    console.error("!!! GEMINI_API_KEY is missing from environment variables.");
+    throw new Error("The Oracle is currently disconnected from the cosmic source (API Key missing).");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+  const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language);
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",

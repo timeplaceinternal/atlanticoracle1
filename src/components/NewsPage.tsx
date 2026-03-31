@@ -3,6 +3,7 @@ import { ReportLanguage, NewsPost } from '../types';
 import { translations } from '../translations';
 import { ChevronLeft, Calendar, Share2, ArrowRight, Play, Star, Newspaper } from 'lucide-react';
 import { newsService } from '../services/newsService';
+import HoroscopeService from './HoroscopeService';
 
 interface NewsPageProps {
   onBack: () => void;
@@ -199,45 +200,11 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
 
       {!selectedPost ? (
         <main className="space-y-24">
-          {/* Daily Horoscope Section */}
-          {horoscopePosts.length > 0 && (
-            <section className="space-y-12">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-px bg-cosmic-gold"></div>
-                <h2 className="text-3xl font-cinzel text-white uppercase tracking-widest flex items-center gap-3">
-                  <Star className="w-6 h-6 text-cosmic-gold" /> Daily Horoscope
-                </h2>
-                <div className="flex-1 h-px bg-cosmic-gold/20"></div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                {horoscopePosts.map((post) => (
-                  <article 
-                    key={post.slug} 
-                    onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
-                    className="group cursor-pointer bg-cosmic-gold/5 border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold/40 transition-all space-y-6"
-                  >
-                    <div className="aspect-video rounded-2xl overflow-hidden border border-cosmic-gold/20 bg-cosmic-gold/5">
-                      {getDisplayImage(post) ? (
-                        <img src={getDisplayImage(post)!} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center opacity-20">
-                          <Star className="w-12 h-12 text-cosmic-gold" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="space-y-4">
-                      <h3 className="text-2xl font-cinzel text-white group-hover:text-cosmic-gold transition-colors">{post.title}</h3>
-                      <p className="text-cosmic-silver/70 font-serif italic line-clamp-3">{post.text}</p>
-                      <div className="flex items-center gap-2 text-cosmic-gold text-[10px] font-bold uppercase tracking-widest">
-                        Read Decree <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
+          {/* Interactive Horoscope Service */}
+          <HoroscopeService 
+            language={language} 
+            onExploreServices={onBack} 
+          />
 
           {/* Regular News Section */}
           <section className="space-y-12">

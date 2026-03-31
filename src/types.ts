@@ -16,7 +16,8 @@ export enum ServiceType {
   FORTUNE_MAP = 'free-fortune-map',
   CAPITAL_ALIGNMENT = 'free-capital-alignment',
   ENERGY_PULSE = 'free-energy-pulse',
-  FREE_DREAM_INTERPRETATION = 'free-dream-interpretation'
+  FREE_DREAM_INTERPRETATION = 'free-dream-interpretation',
+  HOROSCOPE_TOMORROW = 'horoscope-tomorrow'
 }
 
 export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Portuguese';

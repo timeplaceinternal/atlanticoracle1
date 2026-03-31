@@ -168,6 +168,11 @@ export interface Translations {
   requestDataExport: string;
   requestDataDeletion: string;
   navDealer: string;
+  horoscopeTitle: string;
+  horoscopeSubtitle: string;
+  horoscopeLoading: string;
+  horoscopeCTA: string;
+  horoscopeInvite: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -339,6 +344,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     requestDataExport: "Request Data Export",
     requestDataDeletion: "Request Data Deletion",
     navDealer: "Become a Dealer",
+    horoscopeTitle: "Personal Horoscope for Tomorrow",
+    horoscopeSubtitle: "Select your zodiac sign to receive a celestial forecast.",
+    horoscopeLoading: "Consulting the stars for tomorrow...",
+    horoscopeCTA: "Explore Other Services",
+    horoscopeInvite: "The stars have more to tell you. Explore our comprehensive cosmic decrees.",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -508,6 +518,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     requestDataExport: "Solicitar Exportação de Dados",
     requestDataDeletion: "Solicitar Exclusão de Dados",
     navDealer: "Seja um Revendedor",
+    horoscopeTitle: "Horóscopo Pessoal para Amanhã",
+    horoscopeSubtitle: "Selecione seu signo do zodíaco para receber uma previsão celestial.",
+    horoscopeLoading: "Consultando as estrelas para amanhã...",
+    horoscopeCTA: "Explorar Outros Serviços",
+    horoscopeInvite: "As estrelas têm mais a lhe dizer. Explore nossos decretos cósmicos abrangentes.",
   },
   French: {} as any,
   German: {} as any,

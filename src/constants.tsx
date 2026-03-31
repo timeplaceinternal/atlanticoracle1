@@ -269,6 +269,21 @@ export const SERVICES: Service[] = [
   }
 ];
 
+export const ZODIAC_SIGNS = [
+  { id: 'aries', name: { English: 'Aries', Portuguese: 'Áries' }, symbol: '♈', dates: 'Mar 21 - Apr 19' },
+  { id: 'taurus', name: { English: 'Taurus', Portuguese: 'Touro' }, symbol: '♉', dates: 'Apr 20 - May 20' },
+  { id: 'gemini', name: { English: 'Gemini', Portuguese: 'Gêmeos' }, symbol: '♊', dates: 'May 21 - Jun 20' },
+  { id: 'cancer', name: { English: 'Cancer', Portuguese: 'Câncer' }, symbol: '♋', dates: 'Jun 21 - Jul 22' },
+  { id: 'leo', name: { English: 'Leo', Portuguese: 'Leão' }, symbol: '♌', dates: 'Jul 23 - Aug 22' },
+  { id: 'virgo', name: { English: 'Virgo', Portuguese: 'Virgem' }, symbol: '♍', dates: 'Aug 23 - Sep 22' },
+  { id: 'libra', name: { English: 'Libra', Portuguese: 'Libra' }, symbol: '♎', dates: 'Sep 23 - Oct 22' },
+  { id: 'scorpio', name: { English: 'Scorpio', Portuguese: 'Escorpião' }, symbol: '♏', dates: 'Oct 23 - Nov 21' },
+  { id: 'sagittarius', name: { English: 'Sagittarius', Portuguese: 'Sagitário' }, symbol: '♐', dates: 'Nov 22 - Dec 21' },
+  { id: 'capricorn', name: { English: 'Capricorn', Portuguese: 'Capricórnio' }, symbol: '♑', dates: 'Dec 22 - Jan 19' },
+  { id: 'aquarius', name: { English: 'Aquarius', Portuguese: 'Aquário' }, symbol: '♒', dates: 'Jan 20 - Feb 18' },
+  { id: 'pisces', name: { English: 'Pisces', Portuguese: 'Peixes' }, symbol: '♓', dates: 'Feb 19 - Mar 20' }
+];
+
 export const getServiceIcon = (iconName: string) => {
   const props = { className: "w-8 h-8" };
   switch (iconName) {
@@ -497,6 +512,17 @@ export const COSMIC_PROMPTS = {
     3. Repressed Desires & Fears: Identifying the hidden self.
     4. The Reclaiming Ritual: A professional therapeutic/ritualistic approach to integration.
     5. Transformative Integration: Turning shadow into power.
+    5. Transformative Integration: Turning shadow into power.
+  `,
+  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: PERSONAL HOROSCOPE FOR TOMORROW. 
+    ZODIAC SIGN: ${sign}.
+    DATE: Tomorrow.
+    
+    TASK: Provide a short, professional astrological forecast for tomorrow (~half A4 page).
+    Focus on energy, opportunities, and warnings for this specific sign. 
+    Style: Professional, analytical, yet inspiring.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}

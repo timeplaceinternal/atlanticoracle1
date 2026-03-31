@@ -37,8 +37,16 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || errorData.details || 'Failed to submit application');
+        let errorMsg = 'Failed to submit application';
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorData.details || errorMsg;
+        } catch (e) {
+          // If not JSON, try text
+          const text = await response.text().catch(() => '');
+          if (text) errorMsg = text.substring(0, 100);
+        }
+        throw new Error(errorMsg);
       }
 
       setIsSuccess(true);

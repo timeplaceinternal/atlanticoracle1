@@ -497,14 +497,30 @@ async function startServer() {
   // Get Dealer Registrations
   app.get("/api/dealer-registrations", async (req, res) => {
     try {
-      const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
-      if (fs.existsSync(DEALER_REG_PATH)) {
-        const data = fs.readFileSync(DEALER_REG_PATH, 'utf-8');
+      const DEALER_REG_PATH = 'data/dealer_registrations.json';
+      const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+      
+      if (BLOB_TOKEN) {
+        const { blobs } = await list({ prefix: DEALER_REG_PATH, token: BLOB_TOKEN });
+        if (blobs.length > 0) {
+          const response = await fetch(blobs[0].url);
+          if (response.ok) {
+            const data = await response.json();
+            return res.json(data);
+          }
+        }
+      }
+
+      // Fallback to local
+      const LOCAL_DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+      if (fs.existsSync(LOCAL_DEALER_REG_PATH)) {
+        const data = fs.readFileSync(LOCAL_DEALER_REG_PATH, 'utf-8');
         return res.json(JSON.parse(data));
       }
       res.json([]);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch dealer registrations" });
+      console.error("Failed to fetch dealer registrations:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 
@@ -531,6 +547,7 @@ async function startServer() {
       env: {
         TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN ? "SET (length: " + process.env.TELEGRAM_BOT_TOKEN.length + ")" : "NOT SET",
         TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID ? "SET" : "NOT SET",
+        BLOB_TOKEN: process.env.BLOB_READ_WRITE_TOKEN ? "SET" : "NOT SET",
         NODE_ENV: process.env.NODE_ENV
       },
       contents: fs.existsSync(dataDir) ? fs.readdirSync(dataDir) : null
@@ -562,20 +579,36 @@ async function startServer() {
         return res.status(400).json({ error: "Invalid registration data: email is required" });
       }
 
-      const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+      const DEALER_REG_PATH = 'data/dealer_registrations.json';
+      const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
       
-      // Save to local file
+      // Save to Vercel Blob if token exists
       let registrations = [];
-      try {
-        if (fs.existsSync(DEALER_REG_PATH)) {
-          const fileContent = fs.readFileSync(DEALER_REG_PATH, 'utf-8');
-          if (fileContent.trim()) {
-            registrations = JSON.parse(fileContent);
+      if (BLOB_TOKEN) {
+        try {
+          const { blobs } = await list({ prefix: DEALER_REG_PATH, token: BLOB_TOKEN });
+          if (blobs.length > 0) {
+            const response = await fetch(blobs[0].url);
+            if (response.ok) {
+              registrations = await response.json();
+            }
           }
+        } catch (readError) {
+          console.error("!!! Error reading dealer registrations from blob:", readError);
         }
-      } catch (readError) {
-        console.error("!!! Error reading dealer registrations file:", readError);
-        registrations = [];
+      } else {
+        // Fallback to local file
+        const LOCAL_DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+        try {
+          if (fs.existsSync(LOCAL_DEALER_REG_PATH)) {
+            const fileContent = fs.readFileSync(LOCAL_DEALER_REG_PATH, 'utf-8');
+            if (fileContent.trim()) {
+              registrations = JSON.parse(fileContent);
+            }
+          }
+        } catch (readError) {
+          console.error("!!! Error reading dealer registrations file:", readError);
+        }
       }
 
       const newEntry = {
@@ -586,10 +619,21 @@ async function startServer() {
       registrations.push(newEntry);
 
       try {
-        fs.writeFileSync(DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
-        console.log(">>> Application saved to local storage successfully.");
+        if (BLOB_TOKEN) {
+          await put(DEALER_REG_PATH, JSON.stringify(registrations), {
+            access: 'public',
+            addRandomSuffix: false,
+            token: BLOB_TOKEN
+          });
+          console.log(">>> Application saved to Vercel Blob successfully.");
+        } else {
+          const LOCAL_DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+          fs.writeFileSync(LOCAL_DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
+          console.log(">>> Application saved to local storage successfully.");
+        }
       } catch (writeError) {
-        console.error("!!! Error writing dealer registrations file:", writeError);
+        console.error("!!! Error writing dealer registrations:", writeError);
+        throw new Error(`Failed to save application: ${writeError instanceof Error ? writeError.message : String(writeError)}`);
       }
 
       // Send Telegram notification - COMPLETELY ISOLATED
@@ -623,21 +667,47 @@ async function startServer() {
   app.delete("/api/dealer-registration/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+      const DEALER_REG_PATH = 'data/dealer_registrations.json';
+      const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
       
-      if (fs.existsSync(DEALER_REG_PATH)) {
-        const data = fs.readFileSync(DEALER_REG_PATH, 'utf-8');
-        let registrations = JSON.parse(data);
-        const initialLength = registrations.length;
-        registrations = registrations.filter((reg: any) => reg.id !== id);
-        
-        if (registrations.length < initialLength) {
-          fs.writeFileSync(DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
-          return res.json({ success: true });
+      let registrations = [];
+      let found = false;
+
+      if (BLOB_TOKEN) {
+        const { blobs } = await list({ prefix: DEALER_REG_PATH, token: BLOB_TOKEN });
+        if (blobs.length > 0) {
+          const response = await fetch(blobs[0].url);
+          if (response.ok) {
+            registrations = await response.json();
+          }
         }
+      } else {
+        const LOCAL_DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+        if (fs.existsSync(LOCAL_DEALER_REG_PATH)) {
+          registrations = JSON.parse(fs.readFileSync(LOCAL_DEALER_REG_PATH, 'utf-8'));
+        }
+      }
+
+      const initialLength = registrations.length;
+      registrations = registrations.filter((reg: any) => reg.id !== id);
+      found = registrations.length < initialLength;
+
+      if (found) {
+        if (BLOB_TOKEN) {
+          await put(DEALER_REG_PATH, JSON.stringify(registrations), {
+            access: 'public',
+            addRandomSuffix: false,
+            token: BLOB_TOKEN
+          });
+        } else {
+          const LOCAL_DEALER_REG_PATH = path.join(LOCAL_DATA_DIR, 'dealer_registrations.json');
+          fs.writeFileSync(LOCAL_DEALER_REG_PATH, JSON.stringify(registrations, null, 2));
+        }
+        return res.json({ success: true });
       }
       res.status(404).json({ error: "Application not found" });
     } catch (error) {
+      console.error("Failed to delete application:", error);
       res.status(500).json({ error: "Failed to delete application" });
     }
   });
