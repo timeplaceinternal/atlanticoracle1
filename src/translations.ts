@@ -168,6 +168,10 @@ export interface Translations {
   requestDataExport: string;
   requestDataDeletion: string;
   navDealer: string;
+  downloadOffer: string;
+  dealerContactTitle: string;
+  dealerContactWhatsApp: string;
+  dealerContactTelegram: string;
   horoscopeTitle: string;
   horoscopeSubtitle: string;
   horoscopeLoading: string;
@@ -348,6 +352,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     requestDataExport: "Request Data Export",
     requestDataDeletion: "Request Data Deletion",
     navDealer: "Become a Dealer",
+    downloadOffer: "Download Official Offer (PDF)",
+    dealerContactTitle: "Quick Contact:",
+    dealerContactWhatsApp: "WhatsApp Chat",
+    dealerContactTelegram: "Telegram Chat",
     horoscopeTitle: "Personal Horoscope for Tomorrow",
     horoscopeSubtitle: "Select your zodiac sign to receive a celestial forecast.",
     horoscopeLoading: "Consulting the stars for tomorrow...",
@@ -526,6 +534,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     requestDataExport: "Solicitar Exportação de Dados",
     requestDataDeletion: "Solicitar Exclusão de Dados",
     navDealer: "Seja um Revendedor",
+    downloadOffer: "Baixar Proposta Oficial (PDF)",
+    dealerContactTitle: "Contato Rápido:",
+    dealerContactWhatsApp: "Chat via WhatsApp",
+    dealerContactTelegram: "Chat via Telegram",
     horoscopeTitle: "Horóscopo Pessoal para Amanhã",
     horoscopeSubtitle: "Selecione seu signo do zodíaco para receber uma previsão celestial.",
     horoscopeLoading: "Consultando as estrelas para amanhã...",

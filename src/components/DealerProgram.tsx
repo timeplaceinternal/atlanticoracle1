@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Star, Send, Users, TrendingUp, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
+import { Star, Send, Users, TrendingUp, ShieldCheck, ArrowLeft, Loader2, FileText, MessageCircle } from 'lucide-react';
 import { ReportLanguage } from '../types';
 import { translations } from '../translations';
+import { generateDealerOffer } from '../lib/pdfGenerator';
 
 interface DealerProgramProps {
   language: ReportLanguage;
@@ -21,6 +22,13 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
     email: '',
     messenger: ''
   });
+
+  const handleDownloadOffer = () => {
+    generateDealerOffer({
+      ...formData,
+      language: language === 'Portuguese' ? 'Portuguese' : 'English'
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,12 +80,49 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
             ? 'Obrigado pelo seu interesse! Nossa equipe analisará seu perfil e entrará em contato em breve.' 
             : 'Thank you for your interest! Our team will review your profile and contact you shortly.'}
         </p>
-        <button 
-          onClick={onBack}
-          className="px-8 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 transition-transform"
-        >
-          {t.backToStart}
-        </button>
+        
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <button 
+            onClick={handleDownloadOffer}
+            className="w-full sm:w-auto px-8 py-4 bg-white/10 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/20 transition-all flex items-center justify-center gap-3 group"
+          >
+            <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            {t.downloadOffer}
+          </button>
+          
+          <button 
+            onClick={onBack}
+            className="w-full sm:w-auto px-8 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 transition-transform"
+          >
+            {t.backToStart}
+          </button>
+        </div>
+
+        <div className="pt-12 space-y-4">
+          <p className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">
+            {t.dealerContactTitle}
+          </p>
+          <div className="flex items-center justify-center gap-6">
+            <a 
+              href="https://wa.me/351926160750" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-cosmic-silver hover:text-white transition-colors"
+            >
+              <MessageCircle className="w-5 h-5 text-[#25D366]" />
+              <span className="text-xs font-medium">WhatsApp</span>
+            </a>
+            <a 
+              href="https://t.me/+351926160750" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-cosmic-silver hover:text-white transition-colors"
+            >
+              <Send className="w-5 h-5 text-[#24A1DE]" />
+              <span className="text-xs font-medium">Telegram</span>
+            </a>
+          </div>
+        </div>
       </div>
     );
   }
@@ -107,6 +152,37 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
             ? 'Monetize seu público compartilhando a sabedoria das estrelas e dos números.' 
             : 'Monetize your audience by sharing the wisdom of the stars and numbers.'}
         </p>
+
+        {/* Quick Contact Bar */}
+        <div className="flex flex-wrap items-center justify-center gap-8 pt-4">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-bold text-cosmic-gold/60 uppercase tracking-[0.2em]">
+              {t.dealerContactTitle}
+            </span>
+          </div>
+          <a 
+            href="https://wa.me/351926160750" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-cosmic-silver hover:text-cosmic-gold transition-all hover:scale-105"
+          >
+            <div className="w-8 h-8 bg-[#25D366]/10 rounded-full flex items-center justify-center border border-[#25D366]/20">
+              <MessageCircle className="w-4 h-4 text-[#25D366]" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{t.dealerContactWhatsApp}</span>
+          </a>
+          <a 
+            href="https://t.me/+351926160750" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-cosmic-silver hover:text-cosmic-gold transition-all hover:scale-105"
+          >
+            <div className="w-8 h-8 bg-[#24A1DE]/10 rounded-full flex items-center justify-center border border-[#24A1DE]/20">
+              <Send className="w-4 h-4 text-[#24A1DE]" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{t.dealerContactTelegram}</span>
+          </a>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
