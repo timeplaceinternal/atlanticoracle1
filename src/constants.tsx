@@ -518,10 +518,10 @@ export const COSMIC_PROMPTS = {
     5. Transformative Integration: Turning shadow into power.
     5. Transformative Integration: Turning shadow into power.
   `,
-  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: string) => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toLocaleDateString('en-US', { 
+  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: string, day: 'today' | 'tomorrow' = 'tomorrow') => {
+    const targetDate = new Date();
+    if (day === 'tomorrow') targetDate.setDate(targetDate.getDate() + 1);
+    const dateStr = targetDate.toLocaleDateString('en-US', { 
       month: 'long', 
       day: 'numeric', 
       year: 'numeric' 
@@ -529,11 +529,11 @@ export const COSMIC_PROMPTS = {
 
     return `
       ${BASE_RULES(lang)}
-      SERVICE: PERSONAL HOROSCOPE FOR TOMORROW. 
+      SERVICE: PERSONAL HOROSCOPE FOR ${day.toUpperCase()}. 
       ZODIAC SIGN: ${sign}.
-      TARGET DATE: ${tomorrowStr}.
+      TARGET DATE: ${dateStr}.
       
-      TASK: Provide a concise, friendly, and advising astrological forecast for ${sign} for tomorrow.
+      TASK: Provide a concise, friendly, and advising astrological forecast for ${sign} for ${day}.
       STYLE: Simple, clear, friendly, and encouraging. No "water" or filler text.
       CONTENT: General astrological advice for everyone born under this sign. 
       STRICTION: DO NOT mention birth place, birth time, or any personal details. This is a general forecast.

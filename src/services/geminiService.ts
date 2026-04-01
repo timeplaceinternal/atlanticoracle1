@@ -42,7 +42,7 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   return response.text || "The stars are silent today.";
 };
 
-export const generateHoroscope = async (sign: string, language: ReportLanguage): Promise<string> => {
+export const generateHoroscope = async (sign: string, language: ReportLanguage, day: 'today' | 'tomorrow' = 'tomorrow'): Promise<string> => {
   const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   
   if (!apiKey) {
@@ -51,7 +51,7 @@ export const generateHoroscope = async (sign: string, language: ReportLanguage):
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language);
+  const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language, day);
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",

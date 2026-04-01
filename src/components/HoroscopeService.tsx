@@ -17,6 +17,7 @@ interface HoroscopeServiceProps {
 const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices, initialSign }) => {
   const t = translations[language] || translations['English'];
   const [selectedSign, setSelectedSign] = useState<string | null>(initialSign || null);
+  const [selectedDay, setSelectedDay] = useState<'today' | 'tomorrow'>('tomorrow');
   const [loading, setLoading] = useState(false);
   const [forecast, setForecast] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +28,14 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
     }
   }, [initialSign]);
 
-  const handleSignClick = async (signId: string) => {
+  const getDateStr = (day: 'today' | 'tomorrow') => {
+    const d = new Date();
+    if (day === 'tomorrow') d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  };
+
+  const handleSignClick = async (signId: string, dayOverride?: 'today' | 'tomorrow') => {
+    const day = dayOverride || selectedDay;
     setSelectedSign(signId);
     setLoading(true);
     setError(null);
@@ -37,28 +45,28 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
       const sign = ZODIAC_SIGNS.find(s => s.id === signId);
       const signName = sign ? sign.name[language === 'Portuguese' ? 'Portuguese' : 'English'] : signId;
       
-      // Calculate tomorrow's date consistently
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const dateStr = tomorrow.toISOString().split('T')[0];
+      const dateStr = getDateStr(day);
       
       // 1. Check Cache
       try {
+        console.log(`[Horoscope] Checking cache for ${signId} (${day}) on ${dateStr}...`);
         const cacheRes = await fetch(`/api/horoscope-cache?sign=${signId}&lang=${language}&date=${dateStr}`);
         if (cacheRes.ok) {
           const cachedData = await cacheRes.json();
+          console.log(`[Horoscope] Cache HIT for ${signId} (${day})`);
           setForecast(cachedData.content);
           setLoading(false);
           return; // Exit early if found in cache
         }
+        console.log(`[Horoscope] Cache MISS for ${signId} (${day})`);
       } catch (cacheErr) {
-        console.warn("Cache check failed, proceeding to AI generation", cacheErr);
+        console.warn("[Horoscope] Cache check failed, proceeding to AI generation", cacheErr);
       }
 
       // 2. Generate if not in cache
       const [result] = await Promise.all([
-        generateHoroscope(signName, language),
-        new Promise(resolve => setTimeout(resolve, 2500)) // 2.5 seconds splash
+        generateHoroscope(signName, language, day),
+        new Promise(resolve => setTimeout(resolve, 2000)) // 2 seconds splash
       ]);
       
       setForecast(result);
@@ -79,11 +87,9 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
       setError(err.message || "The stars are obscured today.");
     } finally {
       setLoading(false);
-      // Trigger background fill for other signs
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const dateStr = tomorrow.toISOString().split('T')[0];
-      fillMissingCache(dateStr);
+      // Trigger background fill for both today and tomorrow
+      fillMissingCache(getDateStr('today'), 'today');
+      fillMissingCache(getDateStr('tomorrow'), 'tomorrow');
     }
   };
 
@@ -93,7 +99,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
     setError(null);
   };
 
-  const fillMissingCache = async (dateStr: string) => {
+  const fillMissingCache = async (dateStr: string, day: 'today' | 'tomorrow') => {
     try {
       const res = await fetch(`/api/horoscope-cache-status?lang=${language}&date=${dateStr}`);
       if (!res.ok) return;
@@ -101,14 +107,14 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
       
       if (missing.length === 0) return;
       
-      console.log(`[Background] Filling missing signs: ${missing.join(', ')}`);
+      console.log(`[Background] Filling missing signs for ${day} (${dateStr}): ${missing.join(', ')}`);
       
       for (const signId of missing) {
         const sign = ZODIAC_SIGNS.find(s => s.id === signId);
         if (!sign) continue;
         
         const signName = sign.name[language === 'Portuguese' ? 'Portuguese' : 'English'];
-        const content = await generateHoroscope(signName, language);
+        const content = await generateHoroscope(signName, language, day);
         
         await fetch('/api/horoscope-cache', {
           method: 'POST',
@@ -145,7 +151,33 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
             <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.horoscopeTitle}</h2>
             <p className="text-cosmic-silver/60 italic font-playfair text-lg">{t.horoscopeSubtitle}</p>
             
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8 pt-8">
+            {/* Day Selector Toggle */}
+            <div className="flex justify-center pt-4">
+              <div className="inline-flex p-1 bg-cosmic-900/60 border border-cosmic-gold/20 rounded-2xl">
+                <button
+                  onClick={() => setSelectedDay('today')}
+                  className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${
+                    selectedDay === 'today' 
+                      ? 'bg-cosmic-gold text-cosmic-900 shadow-lg shadow-cosmic-gold/20' 
+                      : 'text-cosmic-silver/60 hover:text-cosmic-gold'
+                  }`}
+                >
+                  {t.horoscopeToday}
+                </button>
+                <button
+                  onClick={() => setSelectedDay('tomorrow')}
+                  className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${
+                    selectedDay === 'tomorrow' 
+                      ? 'bg-cosmic-gold text-cosmic-900 shadow-lg shadow-cosmic-gold/20' 
+                      : 'text-cosmic-silver/60 hover:text-cosmic-gold'
+                  }`}
+                >
+                  {t.horoscopeTomorrow}
+                </button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-8 pt-4">
               {ZODIAC_SIGNS.map((sign) => (
                 <button
                   key={sign.id}
@@ -210,7 +242,9 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                 </div>
               </div>
               <div className="space-y-4">
-                <h3 className="text-xl font-cinzel text-white uppercase tracking-widest animate-pulse">{t.horoscopeLoading}</h3>
+                <h3 className="text-xl font-cinzel text-white uppercase tracking-widest animate-pulse">
+                  {selectedDay === 'today' ? t.horoscopeLoading.replace('tomorrow', 'today') : t.horoscopeLoading}
+                </h3>
                 <div className="flex justify-center gap-2">
                   <div className="w-1.5 h-1.5 bg-cosmic-gold rounded-full animate-bounce delay-0"></div>
                   <div className="w-1.5 h-1.5 bg-cosmic-gold rounded-full animate-bounce delay-150"></div>
@@ -247,7 +281,39 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                     <h3 className="text-3xl font-cinzel text-white uppercase tracking-widest">
                       {ZODIAC_SIGNS.find(s => s.id === selectedSign)?.name[language === 'Portuguese' ? 'Portuguese' : 'English']}
                     </h3>
-                    <p className="text-cosmic-gold text-xs font-bold uppercase tracking-[0.3em] mt-1">{t.horoscopeForecastLabel}</p>
+                    <div className="flex items-center gap-4 mt-1">
+                      <p className="text-cosmic-gold text-[10px] font-bold uppercase tracking-[0.3em]">
+                        {selectedDay === 'today' ? t.horoscopeToday : t.horoscopeTomorrow} {t.horoscopeForecastLabel} ({getDateStr(selectedDay)})
+                      </p>
+                      <div className="flex gap-2 ml-4">
+                        <button
+                          onClick={() => {
+                            setSelectedDay('today');
+                            handleSignClick(selectedSign!, 'today');
+                          }}
+                          className={`px-3 py-1 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all ${
+                            selectedDay === 'today' 
+                              ? 'bg-cosmic-gold text-cosmic-900' 
+                              : 'text-cosmic-silver/40 hover:text-cosmic-gold border border-cosmic-gold/20'
+                          }`}
+                        >
+                          {t.horoscopeToday}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedDay('tomorrow');
+                            handleSignClick(selectedSign!, 'tomorrow');
+                          }}
+                          className={`px-3 py-1 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all ${
+                            selectedDay === 'tomorrow' 
+                              ? 'bg-cosmic-gold text-cosmic-900' 
+                              : 'text-cosmic-silver/40 hover:text-cosmic-gold border border-cosmic-gold/20'
+                          }`}
+                        >
+                          {t.horoscopeTomorrow}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <button 

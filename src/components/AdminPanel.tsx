@@ -112,7 +112,7 @@ const AdminPanel: React.FC = () => {
   };
 
   const preGenerateAllHoroscopes = async () => {
-    if (!window.confirm('This will generate 24 horoscopes (12 signs in 2 languages) for tomorrow. Continue?')) return;
+    if (!window.confirm('This will generate 48 horoscopes (12 signs in 2 languages for Today and Tomorrow). Continue?')) return;
     
     setIsPreGenerating(true);
     const signs = [
@@ -120,33 +120,36 @@ const AdminPanel: React.FC = () => {
       'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
     ];
     const languages: ReportLanguage[] = ['English', 'Portuguese'];
-    const total = signs.length * languages.length;
+    const days: ('today' | 'tomorrow')[] = ['today', 'tomorrow'];
+    const total = signs.length * languages.length * days.length;
     let current = 0;
 
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dateStr = tomorrow.toISOString().split('T')[0];
-
     try {
-      for (const lang of languages) {
-        for (const signId of signs) {
-          current++;
-          setPreGenProgress({ 
-            current, 
-            total, 
-            status: `Generating ${signId} in ${lang}...` 
-          });
+      for (const day of days) {
+        const targetDate = new Date();
+        if (day === 'tomorrow') targetDate.setDate(targetDate.getDate() + 1);
+        const dateStr = targetDate.toISOString().split('T')[0];
 
-          const sign = ZODIAC_SIGNS.find(s => s.id === signId);
-          const signName = sign ? sign.name[lang === 'Portuguese' ? 'Portuguese' : 'English'] : signId;
-          const forecast = await generateHoroscope(signName, lang);
+        for (const lang of languages) {
+          for (const signId of signs) {
+            current++;
+            setPreGenProgress({ 
+              current, 
+              total, 
+              status: `Generating ${signId} for ${day} (${dateStr}) in ${lang}...` 
+            });
 
-          // Save to cache
-          await fetch('/api/horoscope-cache', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sign: signId, lang, date: dateStr, content: forecast }),
-          });
+            const sign = ZODIAC_SIGNS.find(s => s.id === signId);
+            const signName = sign ? sign.name[lang === 'Portuguese' ? 'Portuguese' : 'English'] : signId;
+            const forecast = await generateHoroscope(signName, lang, day);
+
+            // Save to cache
+            await fetch('/api/horoscope-cache', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sign: signId, lang, date: dateStr, content: forecast }),
+            });
+          }
         }
       }
       
