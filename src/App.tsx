@@ -397,13 +397,6 @@ const App: React.FC = () => {
     }
   };
 
-  const handleBypass = () => {
-    const savedReq = currentRequest || JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    if (savedReq.name) {
-      startGeneration(savedReq);
-    }
-  };
-
   const handleNavigate = (newView: string, category?: string, slug?: string) => {
     if (newView === 'kb-article' && category && slug) {
       setKbCategory(category);
@@ -701,12 +694,8 @@ const App: React.FC = () => {
               <div className="bg-cosmic-800/60 p-12 rounded-[3rem] border border-cosmic-gold/30 text-center max-w-md w-full backdrop-blur-3xl animate-in zoom-in-95 shadow-2xl">
                 <div className="relative group">
                   <ShieldCheck 
-                    onClick={handleBypass}
-                    className="w-16 h-16 text-cosmic-gold mx-auto mb-6 cursor-pointer hover:scale-110 active:scale-95 transition-all" 
+                    className="w-16 h-16 text-cosmic-gold mx-auto mb-6" 
                   />
-                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-cosmic-gold text-cosmic-900 text-[10px] font-bold px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                    TEST BYPASS: CLICK TO SEE ANSWER
-                  </div>
                 </div>
                 <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>
                 <p className="text-cosmic-silver mb-8 italic">
@@ -722,11 +711,6 @@ const App: React.FC = () => {
                     Pay via Stripe <ExternalLink className="w-5 h-5" />
                   </button>
                   
-                  <div className="p-4 bg-cosmic-gold/5 border border-cosmic-gold/10 rounded-2xl text-[10px] text-cosmic-silver/60 italic">
-                    Note: For testing in this preview, use the Shield icon above to skip payment. 
-                    In production, Stripe will redirect you back automatically.
-                  </div>
-
                   <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Return to Sanctuary</button>
                 </div>
               </div>
