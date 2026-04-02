@@ -207,6 +207,7 @@ export interface Translations {
   pitchSlide9Step1: string;
   pitchSlide9Step2: string;
   pitchSlide9Step3: string;
+  pitchSlide9Step4: string;
   pitchSlide10Title: string;
   pitchSlide10Contact: string;
   pitchSlide10CTA: string;
@@ -451,10 +452,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide7Message: "You are not limited by the local market. Earn in hard currency.",
     pitchSlide8Title: "Trend on Self-Growth",
     pitchSlide8Text: "Interest in mental health, astrology, and finding purpose has grown by 40% over the last 2 years. Your audience is already looking for these answers — give them through Atlantic Oracle.",
-    pitchSlide9Title: "3 Steps to Your First Profit",
+    pitchSlide9Title: "Just 4 steps to monetize your channel",
     pitchSlide9Step1: "Get your unique promo code.",
     pitchSlide9Step2: "Make a post or story recommending the service.",
     pitchSlide9Step3: "Receive payouts every Monday.",
+    pitchSlide9Step4: "After a month of testing and setup — signing an annual partnership agreement.",
     pitchSlide10Title: "Let's Grow Together",
     pitchSlide10Contact: "TG, Email, WhatsApp",
     pitchSlide10CTA: "Write to us right now to reserve your promo code.",
@@ -673,7 +675,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide3Feature2: "Dois idiomas: Inglês e Português (BR).",
     pitchSlide3Feature3: "Experiência de usuário perfeita (UX/UI).",
     pitchSlide4Title: "Valor para o Usuário",
-    pitchSlide4Desc: "Relatórios pessoais profundos sobre astrologia e numerology.",
+    pitchSlide4Desc: "Relatórios pessoais profundos sobre astrologia e numerologia.",
     pitchSlide4Premium: "12 relatórios premium diferentes (mais detalhados)",
     pitchSlide4Standard: "6 relatórios padrão",
     pitchSlide4Free: "Serviço gratuito de horóscopo para hoje e amanhã na seção de Notícias Cósmicas",
@@ -694,10 +696,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide7Message: "Você não está limitado pelo mercado local. Ganhe em moeda forte.",
     pitchSlide8Title: "Tendência de Autocrescimento",
     pitchSlide8Text: "O interesse em saúde mental, astrologia e busca de propósito cresceu 40% nos últimos 2 anos. Sua audiência já está procurando por essas respostas — dê a elas através do Atlantic Oracle.",
-    pitchSlide9Title: "3 Passos para seu Primeiro Lucro",
+    pitchSlide9Title: "Apenas 4 passos para monetizar seu canal",
     pitchSlide9Step1: "Obtenha seu código promocional exclusivo.",
     pitchSlide9Step2: "Faça um post ou story recomendando o serviço.",
     pitchSlide9Step3: "Receba pagamentos toda segunda-feira.",
+    pitchSlide9Step4: "Após um mês de testes e configuração — assinatura de um contrato de parceria anual.",
     pitchSlide10Title: "Vamos Crescer Juntos",
     pitchSlide10Contact: "TG, E-mail, WhatsApp",
     pitchSlide10CTA: "Escreva para nós agora mesmo para reservar seu código promocional.",
@@ -939,10 +942,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide7Message: "No estás limitado por el mercado local. Gana en moneda fuerte.",
     pitchSlide8Title: "Tendencia en el Crecimiento Personal",
     pitchSlide8Text: "El interés por la salud mental, la astrología и la búsqueda de propósito ha crecido un 40% en los últimos 2 años. Tu audiencia ya está buscando estas respuestas; dáselas a través de Atlantic Oracle.",
-    pitchSlide9Title: "3 Pasos para tu Primer Beneficio",
+    pitchSlide9Title: "Solo 4 pasos para monetizar tu canal",
     pitchSlide9Step1: "Obtén tu código promocional único.",
     pitchSlide9Step2: "Haz una publicación o historia recomendando el servicio.",
     pitchSlide9Step3: "Recibe pagos todos los lunes.",
+    pitchSlide9Step4: "Después de un mes de pruebas y configuración — firma de un contrato de asociación anual.",
     pitchSlide10Title: "Crezcamos Juntos",
     pitchSlide10Contact: "TG, Email, WhatsApp",
     pitchSlide10CTA: "Escríbenos ahora mismo para reservar tu código promocional.",
@@ -1182,10 +1186,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide7Message: "Вы не ограничены локальным рынком. Зарабатывайте в твердой валюте.",
     pitchSlide8Title: "Тренд на саморазвитие",
     pitchSlide8Text: "Интерес к ментальному здоровью, астрологии и поиску предназначения вырос на 40% за последние 2 года. Ваша аудитория уже ищет эти ответы — дайте их через Atlantic Oracle.",
-    pitchSlide9Title: "3 шага к вашей первой прибыли",
+    pitchSlide9Title: "Всего 4 шага к монетизации вашего канала",
     pitchSlide9Step1: "Получите свой уникальный промокод.",
     pitchSlide9Step2: "Сделайте пост или сторис с рекомендацией сервиса.",
     pitchSlide9Step3: "Получайте выплаты каждый понедельник.",
+    pitchSlide9Step4: "После месяца для тестов и настройки — заключение годового партнёрского договора.",
     pitchSlide10Title: "Давайте расти вместе",
     pitchSlide10Contact: "TG, Email, WhatsApp",
     pitchSlide10CTA: "Напишите нам прямо сейчас, чтобы забронировать свой промокод.",

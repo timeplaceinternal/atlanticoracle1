@@ -17,7 +17,8 @@ import {
   DollarSign,
   BarChart3,
   Smartphone,
-  Users
+  Users,
+  FileText
 } from 'lucide-react';
 import { ReportLanguage } from '../types';
 import { translations } from '../translations';
@@ -296,20 +297,21 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, setLanguage, on
               <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">09. {t.pitchSlide9Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide9Title}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { icon: Zap, text: t.pitchSlide9Step1 },
                 { icon: MessageCircle, text: t.pitchSlide9Step2 },
-                { icon: DollarSign, text: t.pitchSlide9Step3 }
+                { icon: DollarSign, text: t.pitchSlide9Step3 },
+                { icon: FileText, text: t.pitchSlide9Step4 }
               ].map((step, i) => (
-                <div key={i} className="p-8 bg-cosmic-800/30 border border-cosmic-gold/10 rounded-[2rem] space-y-6 text-center relative">
+                <div key={i} className="p-6 bg-cosmic-800/30 border border-cosmic-gold/10 rounded-[2rem] space-y-6 text-center relative">
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-cosmic-gold text-cosmic-900 rounded-full flex items-center justify-center font-bold">
                     {i + 1}
                   </div>
                   <div className="w-16 h-16 bg-cosmic-gold/10 rounded-full flex items-center justify-center mx-auto">
                     <step.icon className="w-8 h-8 text-cosmic-gold" />
                   </div>
-                  <p className="text-white font-light leading-relaxed">{step.text}</p>
+                  <p className="text-white font-light leading-relaxed text-sm">{step.text}</p>
                 </div>
               ))}
             </div>
