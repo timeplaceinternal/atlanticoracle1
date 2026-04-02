@@ -24,10 +24,11 @@ import { translations } from '../translations';
 
 interface DealerProgramProps {
   language: ReportLanguage;
+  setLanguage: (lang: ReportLanguage) => void;
   onBack: () => void;
 }
 
-const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
+const DealerProgram: React.FC<DealerProgramProps> = ({ language, setLanguage, onBack }) => {
   const t = translations[language];
   const [currentSlide, setCurrentSlide] = useState<number | null>(null);
 
@@ -72,7 +73,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">02. {language === 'Portuguese' ? 'O Problema' : 'The Pain'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">02. {t.pitchSlide2Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide2Title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -101,7 +102,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">03. {language === 'Portuguese' ? 'A Solução' : 'The Solution'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">03. {t.pitchSlide3Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide3Title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -135,7 +136,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">04. {language === 'Portuguese' ? 'O Produto' : 'What we sell'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">04. {t.pitchSlide4Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide4Title}</h2>
             </div>
             <div className="space-y-8">
@@ -166,7 +167,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">05. {language === 'Portuguese' ? 'A Oferta' : 'The Offer'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">05. {t.pitchSlide5Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide5Title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -174,14 +175,14 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
                 <div className="w-12 h-12 bg-cosmic-gold/10 rounded-full flex items-center justify-center">
                   <Users className="w-6 h-6 text-cosmic-gold" />
                 </div>
-                <h3 className="text-white font-cinzel text-lg uppercase tracking-widest">{language === 'Portuguese' ? 'Para seu Cliente' : 'For your Client'}</h3>
+                <h3 className="text-white font-cinzel text-lg uppercase tracking-widest">{t.pitchSlide5ClientTitle}</h3>
                 <p className="text-cosmic-silver leading-relaxed">{t.pitchSlide5Client}</p>
               </div>
               <div className="p-8 bg-cosmic-800/30 border border-cosmic-gold/10 rounded-[2rem] space-y-4">
                 <div className="w-12 h-12 bg-cosmic-gold/10 rounded-full flex items-center justify-center">
                   <DollarSign className="w-6 h-6 text-cosmic-gold" />
                 </div>
-                <h3 className="text-white font-cinzel text-lg uppercase tracking-widest">{language === 'Portuguese' ? 'Para Você' : 'For You'}</h3>
+                <h3 className="text-white font-cinzel text-lg uppercase tracking-widest">{t.pitchSlide5PartnerTitle}</h3>
                 <p className="text-cosmic-silver leading-relaxed">{t.pitchSlide5Partner}</p>
               </div>
               <div className="md:col-span-2 p-8 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-[2rem] text-center">
@@ -196,7 +197,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">06. {language === 'Portuguese' ? 'Confiança' : 'Trust'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">06. {t.pitchSlide6Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide6Title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -227,7 +228,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">07. {language === 'Portuguese' ? 'Oportunidade' : 'The Opportunity'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">07. {t.pitchSlide7Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide7Title}</h2>
             </div>
             <div className="space-y-8">
@@ -259,7 +260,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">08. {language === 'Portuguese' ? 'Tendência de Mercado' : 'Market Trend'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">08. {t.pitchSlide8Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide8Title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -282,7 +283,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col h-full space-y-12 p-8 md:p-16">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">09. {language === 'Portuguese' ? 'Integração' : 'Onboarding'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">09. {t.pitchSlide9Badge}</span>
               <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.pitchSlide9Title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -308,7 +309,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         return (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-12 p-8">
             <div className="space-y-4">
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">10. {language === 'Portuguese' ? 'O Encerramento' : 'The Closing'}</span>
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">10. {t.pitchSlide10Badge}</span>
               <h2 className="text-4xl md:text-6xl font-cinzel text-white uppercase tracking-widest leading-tight">
                 {t.pitchSlide10Title}
               </h2>
@@ -337,7 +338,7 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
                 onClick={closeDeck}
                 className="px-8 py-4 bg-cosmic-gold text-cosmic-900 font-cinzel text-sm uppercase tracking-widest rounded-full hover:bg-white transition-all hover:scale-105 active:scale-95"
               >
-                {language === 'Portuguese' ? 'Voltar ao Início' : 'Back to Start'}
+                {t.backToStart}
               </button>
             </div>
           </div>
@@ -359,21 +360,43 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, onBack }) => {
         </button>
 
         <div className="text-center space-y-12 py-12">
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
-            <TrendingUp className="w-4 h-4 text-cosmic-gold" />
-            <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">
-              {language === 'Portuguese' ? 'Parceria Ganха-Ganha' : 'Win-Win Partnership'}
-            </span>
+          <div className="flex flex-col items-center gap-6">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
+              <TrendingUp className="w-4 h-4 text-cosmic-gold" />
+              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">
+                {t.pitchWinWin}
+              </span>
+            </div>
+
+            {/* Language Switcher */}
+            <div className="flex items-center gap-2 p-1 bg-cosmic-800/50 border border-cosmic-gold/10 rounded-full backdrop-blur-sm">
+              {[
+                { code: 'English', label: 'EN' },
+                { code: 'Russian', label: 'RU' },
+                { code: 'Spanish', label: 'ES' },
+                { code: 'Portuguese', label: 'PT' }
+              ].map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code as ReportLanguage)}
+                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
+                    language === lang.code 
+                      ? 'bg-cosmic-gold text-cosmic-900' 
+                      : 'text-cosmic-silver hover:text-white'
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
           </div>
           
           <div className="space-y-6">
             <h1 className="text-4xl md:text-7xl font-cinzel text-white uppercase tracking-widest leading-tight">
-              {language === 'Portuguese' ? 'Programa de Revendedores' : 'Dealer Program'}
+              {t.pitchDealerProgram}
             </h1>
             <p className="text-cosmic-silver text-xl md:text-2xl font-light italic font-playfair max-w-2xl mx-auto">
-              {language === 'Portuguese' 
-                ? 'Monetize seu público compartilhando a sabedoria das estrelas e dos números.' 
-                : 'Monetize your audience by sharing the wisdom of the stars and numbers.'}
+              {t.pitchDealerSubtitle}
             </p>
           </div>
 

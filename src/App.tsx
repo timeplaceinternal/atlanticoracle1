@@ -27,7 +27,8 @@ const STRIPE_URLS_30: Record<ReportLanguage, string> = {
   French: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
   German: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
   Spanish: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-  Italian: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+  Italian: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+  Russian: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
 };
 
 const STRIPE_URLS_10: Record<ReportLanguage, string> = {
@@ -36,7 +37,8 @@ const STRIPE_URLS_10: Record<ReportLanguage, string> = {
   French: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
   German: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
   Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-  Italian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+  Italian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+  Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
 };
 const STORAGE_KEY = "atlantic_oracle_pending_request";
 
@@ -805,7 +807,7 @@ const App: React.FC = () => {
 
           {view === 'dealer' && (
             <div className="py-20 px-6">
-              <DealerProgram language={language} onBack={resetToHome} />
+              <DealerProgram language={language} setLanguage={setLanguage} onBack={resetToHome} />
             </div>
           )}
         </main>

@@ -22,7 +22,7 @@ export enum ServiceType {
   HOROSCOPE_TOMORROW = 'horoscope-tomorrow'
 }
 
-export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Portuguese';
+export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Portuguese' | 'Russian';
 
 export interface Service {
   id: ServiceType;
