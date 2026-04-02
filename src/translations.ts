@@ -168,7 +168,6 @@ export interface Translations {
   requestDataExport: string;
   requestDataDeletion: string;
   navDealer: string;
-  downloadOffer: string;
   dealerContactTitle: string;
   dealerContactWhatsApp: string;
   dealerContactTelegram: string;
@@ -352,7 +351,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     requestDataExport: "Request Data Export",
     requestDataDeletion: "Request Data Deletion",
     navDealer: "Become a Dealer",
-    downloadOffer: "Download Official Offer (PDF)",
     dealerContactTitle: "Quick Contact:",
     dealerContactWhatsApp: "WhatsApp Chat",
     dealerContactTelegram: "Telegram Chat",
@@ -534,7 +532,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     requestDataExport: "Solicitar Exportação de Dados",
     requestDataDeletion: "Solicitar Exclusão de Dados",
     navDealer: "Seja um Revendedor",
-    downloadOffer: "Baixar Proposta Oficial (PDF)",
     dealerContactTitle: "Contato Rápido:",
     dealerContactWhatsApp: "Chat via WhatsApp",
     dealerContactTelegram: "Chat via Telegram",
