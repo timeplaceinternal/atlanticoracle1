@@ -143,17 +143,27 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, setLanguage, on
               <p className="text-xl text-cosmic-silver font-light leading-relaxed max-w-3xl">
                 {t.pitchSlide4Desc}
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((n) => (
-                  <div key={n} className="aspect-[3/4] bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl flex items-center justify-center overflow-hidden group">
-                    <img 
-                      src={`https://picsum.photos/seed/oracle-${n}/300/400`} 
-                      alt="Report Preview" 
-                      className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity"
-                      referrerPolicy="no-referrer"
-                    />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-6 bg-cosmic-800/30 border border-cosmic-gold/10 rounded-2xl space-y-4">
+                  <div className="w-10 h-10 bg-cosmic-gold/10 rounded-full flex items-center justify-center">
+                    <ShieldCheck className="w-5 h-5 text-cosmic-gold" />
                   </div>
-                ))}
+                  <h3 className="text-white font-cinzel text-sm uppercase tracking-widest">Premium</h3>
+                  <p className="text-cosmic-silver">{t.pitchSlide4Premium}</p>
+                </div>
+                <div className="p-6 bg-cosmic-800/30 border border-cosmic-gold/10 rounded-2xl space-y-4">
+                  <div className="w-10 h-10 bg-cosmic-gold/10 rounded-full flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-cosmic-gold" />
+                  </div>
+                  <h3 className="text-white font-cinzel text-sm uppercase tracking-widest">Standard</h3>
+                  <p className="text-cosmic-silver">{t.pitchSlide4Standard}</p>
+                </div>
+                <div className="md:col-span-2 p-6 bg-cosmic-gold/5 border border-cosmic-gold/10 rounded-2xl flex items-center gap-4">
+                  <div className="w-10 h-10 bg-cosmic-gold/10 rounded-full flex items-center justify-center shrink-0">
+                    <Globe className="w-5 h-5 text-cosmic-gold" />
+                  </div>
+                  <p className="text-white font-light italic">{t.pitchSlide4Free}</p>
+                </div>
               </div>
               <div className="p-6 bg-cosmic-gold/5 border-l-2 border-cosmic-gold rounded-r-xl">
                 <p className="text-cosmic-gold font-medium italic">

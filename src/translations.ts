@@ -213,6 +213,9 @@ export interface Translations {
   pitchSlide2Badge: string;
   pitchSlide3Badge: string;
   pitchSlide4Badge: string;
+  pitchSlide4Premium: string;
+  pitchSlide4Standard: string;
+  pitchSlide4Free: string;
   pitchSlide5Badge: string;
   pitchSlide6Badge: string;
   pitchSlide7Badge: string;
@@ -428,6 +431,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide3Feature3: "Seamless user experience (UX/UI).",
     pitchSlide4Title: "Value for the User",
     pitchSlide4Desc: "Deep personal reports on astrology and numerology.",
+    pitchSlide4Premium: "12 different premium reports (more detailed)",
+    pitchSlide4Standard: "6 standard reports",
+    pitchSlide4Free: "Free horoscope service for today and tomorrow in the Cosmic News section",
     pitchSlide4Accent: "This is not just a \"daily horoscope,\" but a deep analytical product for self-discovery.",
     pitchSlide5Title: "The Fairest Partnership on the Market",
     pitchSlide5Client: "For your client: 50% discount with your personal promo code.",
@@ -667,7 +673,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide3Feature2: "Dois idiomas: Inglês e Português (BR).",
     pitchSlide3Feature3: "Experiência de usuário perfeita (UX/UI).",
     pitchSlide4Title: "Valor para o Usuário",
-    pitchSlide4Desc: "Relatórios pessoais profundos sobre astrologia e numerologia.",
+    pitchSlide4Desc: "Relatórios pessoais profundos sobre astrologia e numerology.",
+    pitchSlide4Premium: "12 relatórios premium diferentes (mais detalhados)",
+    pitchSlide4Standard: "6 relatórios padrão",
+    pitchSlide4Free: "Serviço gratuito de horóscopo para hoje e amanhã na seção de Notícias Cósmicas",
     pitchSlide4Accent: "Não é apenas um \"horóscopo diário\", mas um produto analítico profundo para autodescoberta.",
     pitchSlide5Title: "A Parceria Mais Justa do Mercado",
     pitchSlide5Client: "Para seu cliente: 50% de desconto com seu código promocional pessoal.",
@@ -910,6 +919,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide3Feature3: "Experiencia de usuario fluida (UX/UI).",
     pitchSlide4Title: "Valor para el Usuario",
     pitchSlide4Desc: "Informes personales profundos sobre astrología и numerología.",
+    pitchSlide4Premium: "12 informes premium diferentes (más detallados)",
+    pitchSlide4Standard: "6 informes estándar",
+    pitchSlide4Free: "Servicio de horóscopo gratuito para hoy и mañana en la sección de Noticias Cósmicas",
     pitchSlide4Accent: "Esto no es solo un \"horóscopo diario\", sino un producto analítico profundo para el autodescubrimiento.",
     pitchSlide5Title: "La Asociación más Justa del Mercado",
     pitchSlide5Client: "Para tu cliente: 50% de descuento con tu código promocional personal.",
@@ -1150,6 +1162,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide3Feature3: "Безупречный пользовательский опыт (UX/UI).",
     pitchSlide4Title: "Ценность для пользователя",
     pitchSlide4Desc: "Глубокие персональные отчеты по астрологии и нумерологии.",
+    pitchSlide4Premium: "12 различных премиум отчетов (более подробных)",
+    pitchSlide4Standard: "6 стандартных отчетов",
+    pitchSlide4Free: "Бесплатный сервис гороскоп на сегодня-завтра в разделе Космические Новости",
     pitchSlide4Accent: "Это не просто «гороскоп на день», а глубокий аналитический продукт для самопознания.",
     pitchSlide5Title: "Самое честное партнерство на рынке",
     pitchSlide5Client: "Для вашего клиента: скидка 50% по вашему личному промокоду.",
