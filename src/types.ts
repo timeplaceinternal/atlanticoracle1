@@ -12,6 +12,8 @@ export enum ServiceType {
   DREAM_INTERPRETATION = 'dream-interpretation',
   GOLDEN_SEED = 'golden-seed',
   SHADOW_WORK = 'shadow-work',
+  DAILY_VIBRATION = 'daily-vibration',
+  RELATIONSHIP_SPARK = 'relationship-spark',
   // Free Services
   FORTUNE_MAP = 'free-fortune-map',
   CAPITAL_ALIGNMENT = 'free-capital-alignment',

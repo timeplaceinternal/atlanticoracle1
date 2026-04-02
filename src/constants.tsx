@@ -83,6 +83,38 @@ export const LIGHT_DROPS: Service[] = [
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
+  },
+  {
+    id: ServiceType.DAILY_VIBRATION,
+    title: "The Daily Vibration (Transit Key)",
+    description: "Your personal \"Frequency of the Day\" and a specific action-mantra to align with today’s transits. Short calculation of how today's planetary positions resonate personally with your chart.",
+    icon: "activity",
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
+  },
+  {
+    id: ServiceType.RELATIONSHIP_SPARK,
+    title: "The Relationship Spark (Compatibility Quick-Check)",
+    description: "A 1-minute chemistry snapshot. Discover the primary \"lesson\" or \"vibe\" between you and another person. Express compatibility analysis based on two birth dates.",
+    icon: "heart",
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
   }
 ];
 
@@ -496,6 +528,22 @@ export const COSMIC_PROMPTS = {
     4. The Sage's Path: Professional advice and a gentle, wise path forward.
     
     STYLE: Simple, understandable language of a "wise sage". Trusting and positive.
+  `,
+  [ServiceType.DAILY_VIBRATION]: (name: string, date: string, time: string, place: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: THE DAILY VIBRATION (Transit Key). Subject: ${name}, born ${date} at ${time} in ${place}.
+    Generate a personal "Frequency of the Day" and a specific action-mantra to align with today’s transits. 
+    Provide a short calculation of how today's planetary positions resonate personally with the subject's chart. 
+    Include one key recommendation: what to initiate today and what to refrain from, plus a personal affirmation.
+    LENGTH: ~4 pages of deep insight.
+  `,
+  [ServiceType.RELATIONSHIP_SPARK]: (n1: string, d1: string, t1: string, n2: string, d2: string, t2: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: THE RELATIONSHIP SPARK (Compatibility Quick-Check). Partners: ${n1} (${d1} ${t1}) and ${n2} (${d2} ${t2}).
+    Generate a 1-minute chemistry snapshot. Discover the primary "lesson" or "vibe" between the partners. 
+    Express compatibility analysis based on two birth dates. 
+    Define the connection type: "Karmic Teacher", "Mirror", "Energy Donor", or "Creative Union".
+    LENGTH: ~4 pages of deep insight.
   `,
   [ServiceType.GOLDEN_SEED]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}

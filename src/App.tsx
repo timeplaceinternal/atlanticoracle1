@@ -74,6 +74,17 @@ const App: React.FC = () => {
   const t = translations[language];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
+  const getServiceTranslation = (service: Service) => {
+    switch (service.id) {
+      case ServiceType.DAILY_VIBRATION:
+        return { title: t.dailyVibrationTitle, description: t.dailyVibrationDesc };
+      case ServiceType.RELATIONSHIP_SPARK:
+        return { title: t.relationshipSparkTitle, description: t.relationshipSparkDesc };
+      default:
+        return { title: service.title, description: service.description };
+    }
+  };
+
   // Sync URL with language state
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -155,6 +166,10 @@ const App: React.FC = () => {
     }
     return 'home';
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [view]);
 
   const [horoscopeSign, setHoroscopeSign] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
@@ -590,17 +605,20 @@ const App: React.FC = () => {
                   <p className="text-cosmic-silver italic font-playfair">{t.decreesSubtitle}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {SERVICES.map(s => (
-                    <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-700/50 p-10 rounded-[2.5rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-xl">
-                      <div className="mb-8">{getServiceIcon(s.icon)}</div>
-                      <h3 className="text-2xl font-cinzel text-white mb-4">{s.title}</h3>
-                      <p className="text-cosmic-silver font-light text-sm mb-8 leading-relaxed h-20 overflow-hidden line-clamp-4">{s.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-cosmic-gold font-cinzel text-xl">€{s.price}</span>
-                        <ChevronRight className="text-white group-hover:translate-x-2 transition-transform" />
+                  {SERVICES.map(s => {
+                    const { title, description } = getServiceTranslation(s);
+                    return (
+                      <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-700/50 p-10 rounded-[2.5rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-xl">
+                        <div className="mb-8">{getServiceIcon(s.icon)}</div>
+                        <h3 className="text-2xl font-cinzel text-white mb-4">{title}</h3>
+                        <p className="text-cosmic-silver font-light text-sm mb-8 leading-relaxed h-20 overflow-hidden line-clamp-4">{description}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-cosmic-gold font-cinzel text-xl">€{s.price}</span>
+                          <ChevronRight className="text-white group-hover:translate-x-2 transition-transform" />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
 
@@ -612,17 +630,20 @@ const App: React.FC = () => {
                   <p className="text-cosmic-silver italic font-playfair text-sm">{t.freeInsightsSubtitle}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {LIGHT_DROPS.map(s => (
-                    <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
-                      <div className="mb-6">{getServiceIcon(s.icon)}</div>
-                      <h3 className="text-lg font-cinzel text-white mb-2">{s.title}</h3>
-                      <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{s.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-cosmic-gold font-cinzel text-sm">€{s.price}</span>
-                        <ChevronRight className="text-cosmic-gold group-hover:translate-x-1 transition-transform w-4 h-4" />
+                  {LIGHT_DROPS.map(s => {
+                    const { title, description } = getServiceTranslation(s);
+                    return (
+                      <div key={s.id} onClick={() => handleStartService(s)} className="group bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 p-8 rounded-[2rem] hover:border-cosmic-gold transition-all cursor-pointer relative overflow-hidden shadow-lg hover:shadow-cosmic-gold/5">
+                        <div className="mb-6">{getServiceIcon(s.icon)}</div>
+                        <h3 className="text-lg font-cinzel text-white mb-2">{title}</h3>
+                        <p className="text-cosmic-silver/70 font-light text-xs mb-6 leading-relaxed line-clamp-2">{description}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-cosmic-gold font-cinzel text-sm">€{s.price}</span>
+                          <ChevronRight className="text-cosmic-gold group-hover:translate-x-1 transition-transform w-4 h-4" />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
               

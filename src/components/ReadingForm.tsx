@@ -291,9 +291,9 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       email,
       language,
       serviceId: service.id,
-      partnerName: service.id === ServiceType.LOVE_SYNASTRY ? partnerName : undefined,
-      partnerBirthDate: service.id === ServiceType.LOVE_SYNASTRY ? formatDate(partnerBirthDate) : undefined,
-      partnerBirthTime: service.id === ServiceType.LOVE_SYNASTRY ? formatTimeForSubmit(partnerBirthTime) : undefined,
+      partnerName: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? partnerName : undefined,
+      partnerBirthDate: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? formatDate(partnerBirthDate) : undefined,
+      partnerBirthTime: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? formatTimeForSubmit(partnerBirthTime) : undefined,
       dreamDescription: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamDescription : undefined,
       dreamKeywords: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamKeywords : undefined,
       dreamDate: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? formatDate(dreamDate) : undefined,
@@ -302,13 +302,24 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
     });
   };
 
+  const getServiceTitle = () => {
+    switch (service.id) {
+      case ServiceType.DAILY_VIBRATION:
+        return t.dailyVibrationTitle;
+      case ServiceType.RELATIONSHIP_SPARK:
+        return t.relationshipSparkTitle;
+      default:
+        return service.title;
+    }
+  };
+
   const isDreamService = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
-  const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY;
+  const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK;
   const isFree = service.isFree;
 
   return (
     <div className="max-w-2xl mx-auto bg-cosmic-800/40 backdrop-blur-xl p-8 rounded-[2rem] border border-cosmic-gold/20">
-      <h2 className="text-3xl font-cinzel text-white mb-6">{service.title}</h2>
+      <h2 className="text-3xl font-cinzel text-white mb-6">{getServiceTitle()}</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-6">
           <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Your Details</h3>

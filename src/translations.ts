@@ -171,6 +171,51 @@ export interface Translations {
   dealerContactTitle: string;
   dealerContactWhatsApp: string;
   dealerContactTelegram: string;
+  pitchButton: string;
+  pitchSlide1Title: string;
+  pitchSlide1Subtitle: string;
+  pitchSlide2Title: string;
+  pitchSlide2Point1: string;
+  pitchSlide2Point2: string;
+  pitchSlide2Point3: string;
+  pitchSlide2Message: string;
+  pitchSlide3Title: string;
+  pitchSlide3Desc: string;
+  pitchSlide3Feature1: string;
+  pitchSlide3Feature2: string;
+  pitchSlide3Feature3: string;
+  pitchSlide4Title: string;
+  pitchSlide4Desc: string;
+  pitchSlide4Accent: string;
+  pitchSlide5Title: string;
+  pitchSlide5Client: string;
+  pitchSlide5Partner: string;
+  pitchSlide5Result: string;
+  pitchSlide6Title: string;
+  pitchSlide6Text1: string;
+  pitchSlide6Text2: string;
+  pitchSlide6Text3: string;
+  pitchSlide6Text4: string;
+  pitchSlide6Visual: string;
+  pitchSlide7Title: string;
+  pitchSlide7En: string;
+  pitchSlide7Pt: string;
+  pitchSlide7Message: string;
+  pitchSlide8Title: string;
+  pitchSlide8Text: string;
+  pitchSlide9Title: string;
+  pitchSlide9Step1: string;
+  pitchSlide9Step2: string;
+  pitchSlide9Step3: string;
+  pitchSlide10Title: string;
+  pitchSlide10Contact: string;
+  pitchSlide10CTA: string;
+  dailyVibrationTitle: string;
+  dailyVibrationSlogan: string;
+  dailyVibrationDesc: string;
+  relationshipSparkTitle: string;
+  relationshipSparkSlogan: string;
+  relationshipSparkDesc: string;
   horoscopeTitle: string;
   horoscopeSubtitle: string;
   horoscopeLoading: string;
@@ -354,6 +399,51 @@ export const translations: Record<ReportLanguage, Translations> = {
     dealerContactTitle: "Quick Contact:",
     dealerContactWhatsApp: "WhatsApp Chat",
     dealerContactTelegram: "Telegram Chat",
+    pitchButton: "How to monetize your SMM channel?",
+    pitchSlide1Title: "Monetize the Magic of Your Content",
+    pitchSlide1Subtitle: "P2P Affiliate Platform: Professional Astrology & Numerology for your audience.",
+    pitchSlide2Title: "Challenges of Monetizing SMM Channels",
+    pitchSlide2Point1: "Low payouts from direct advertising.",
+    pitchSlide2Point2: "Difficulty finding a high-quality product to recommend.",
+    pitchSlide2Point3: "Audience distrust of \"empty\" offers.",
+    pitchSlide2Message: "You create the content, but platforms take the main profit.",
+    pitchSlide3Title: "Atlantic Oracle — A Ready Business in Your Smartphone",
+    pitchSlide3Desc: "We created a personal analysis platform that converts followers into loyal clients.",
+    pitchSlide3Feature1: "High-quality automated reports.",
+    pitchSlide3Feature2: "Dual language: English & Portuguese (BR).",
+    pitchSlide3Feature3: "Seamless user experience (UX/UI).",
+    pitchSlide4Title: "Value for the User",
+    pitchSlide4Desc: "Deep personal reports on astrology and numerology.",
+    pitchSlide4Accent: "This is not just a \"daily horoscope,\" but a deep analytical product for self-discovery.",
+    pitchSlide5Title: "The Fairest Partnership on the Market",
+    pitchSlide5Client: "For your client: 50% discount with your personal promo code.",
+    pitchSlide5Partner: "For you: 50% of net income from every sale.",
+    pitchSlide5Result: "Result: Loyal audience (you gave value with a discount) + high income.",
+    pitchSlide6Title: "Financial Transparency with Stripe",
+    pitchSlide6Text1: "We don't ask you to take our word for it.",
+    pitchSlide6Text2: "Integration with the global payment leader — Stripe.",
+    pitchSlide6Text3: "Weekly transaction reports directly from the system.",
+    pitchSlide6Text4: "Payouts without delays on schedule.",
+    pitchSlide6Visual: "Weekly Payouts",
+    pitchSlide7Title: "Global Reach: EN & PT-BR",
+    pitchSlide7En: "English: Access to a premium audience worldwide.",
+    pitchSlide7Pt: "Portuguese (Brazil): The fastest-growing and most loyal esoteric market in the world.",
+    pitchSlide7Message: "You are not limited by the local market. Earn in hard currency.",
+    pitchSlide8Title: "Trend on Self-Growth",
+    pitchSlide8Text: "Interest in mental health, astrology, and finding purpose has grown by 40% over the last 2 years. Your audience is already looking for these answers — give them through Atlantic Oracle.",
+    pitchSlide9Title: "3 Steps to Your First Profit",
+    pitchSlide9Step1: "Get your unique promo code.",
+    pitchSlide9Step2: "Make a post or story recommending the service.",
+    pitchSlide9Step3: "Receive payouts every Monday.",
+    pitchSlide10Title: "Let's Grow Together",
+    pitchSlide10Contact: "TG, Email, WhatsApp",
+    pitchSlide10CTA: "Write to us right now to reserve your promo code.",
+    dailyVibrationTitle: "The Daily Vibration (Transit Key)",
+    dailyVibrationSlogan: "Your personal \"Frequency of the Day\" and a specific action-mantra to align with today’s transits.",
+    dailyVibrationDesc: "Short calculation of how today's planetary positions resonate personally with your chart. You receive one key recommendation: what to initiate today and what to refrain from, plus a personal affirmation.",
+    relationshipSparkTitle: "The Relationship Spark (Compatibility Quick-Check)",
+    relationshipSparkSlogan: "A 1-minute chemistry snapshot. Discover the primary \"lesson\" or \"vibe\" between you and another person.",
+    relationshipSparkDesc: "Express compatibility analysis based on two birth dates. Instead of 5 pages of text, you get a clear definition of the connection type: \"Karmic Teacher\", \"Mirror\", \"Energy Donor\", or \"Creative Union\". Ideal for a quick check of a new contact.",
     horoscopeTitle: "Personal Horoscope for Tomorrow",
     horoscopeSubtitle: "Select your zodiac sign to receive a celestial forecast.",
     horoscopeLoading: "Consulting the stars for tomorrow...",
@@ -535,6 +625,51 @@ export const translations: Record<ReportLanguage, Translations> = {
     dealerContactTitle: "Contato Rápido:",
     dealerContactWhatsApp: "Chat via WhatsApp",
     dealerContactTelegram: "Chat via Telegram",
+    pitchButton: "Como monetizar seu canal de SMM?",
+    pitchSlide1Title: "Monetize a Magia do seu Conteúdo",
+    pitchSlide1Subtitle: "Plataforma de Afiliados P2P: Astrologia e Numerologia profissional para sua audiência.",
+    pitchSlide2Title: "Dificuldades de Monetização de Canais de SMM",
+    pitchSlide2Point1: "Baixos pagamentos de publicidade direta.",
+    pitchSlide2Point2: "Dificuldade em encontrar um produto de qualidade para recomendar.",
+    pitchSlide2Point3: "Desconfiança da audiência em ofertas \"vazias\".",
+    pitchSlide2Message: "Você cria o conteúdo, mas as plataformas ficam com o lucro principal.",
+    pitchSlide3Title: "Atlantic Oracle — Um Negócio Pronto no seu Smartphone",
+    pitchSlide3Desc: "Criamos uma plataforma de análise pessoal que converte seguidores em clientes leais.",
+    pitchSlide3Feature1: "Relatórios automatizados de alta qualidade.",
+    pitchSlide3Feature2: "Dois idiomas: Inglês e Português (BR).",
+    pitchSlide3Feature3: "Experiência de usuário perfeita (UX/UI).",
+    pitchSlide4Title: "Valor para o Usuário",
+    pitchSlide4Desc: "Relatórios pessoais profundos sobre astrologia e numerologia.",
+    pitchSlide4Accent: "Não é apenas um \"horóscopo diário\", mas um produto analítico profundo para autodescoberta.",
+    pitchSlide5Title: "A Parceria Mais Justa do Mercado",
+    pitchSlide5Client: "Para seu cliente: 50% de desconto com seu código promocional pessoal.",
+    pitchSlide5Partner: "Para você: 50% da receita líquida de cada venda.",
+    pitchSlide5Result: "Resultado: Audiência leal (você deu valor com desconto) + alta renda.",
+    pitchSlide6Title: "Transparência Financeira com Stripe",
+    pitchSlide6Text1: "Não pedimos que você acredite apenas na nossa palavra.",
+    pitchSlide6Text2: "Integração com o líder global de pagamentos — Stripe.",
+    pitchSlide6Text3: "Relatórios semanais de transações diretamente do sistema.",
+    pitchSlide6Text4: "Pagamentos sem atrasos conforme o cronograma.",
+    pitchSlide6Visual: "Pagamentos Semanais",
+    pitchSlide7Title: "Alcance Global: EN & PT-BR",
+    pitchSlide7En: "Inglês: Acesso a uma audiência premium em todo o mundo.",
+    pitchSlide7Pt: "Português (Brasil): O mercado esotérico que mais cresce e é mais leal no mundo.",
+    pitchSlide7Message: "Você não está limitado pelo mercado local. Ganhe em moeda forte.",
+    pitchSlide8Title: "Tendência de Autocrescimento",
+    pitchSlide8Text: "O interesse em saúde mental, astrologia e busca de propósito cresceu 40% nos últimos 2 anos. Sua audiência já está procurando por essas respostas — dê a elas através do Atlantic Oracle.",
+    pitchSlide9Title: "3 Passos para seu Primeiro Lucro",
+    pitchSlide9Step1: "Obtenha seu código promocional exclusivo.",
+    pitchSlide9Step2: "Faça um post ou story recomendando o serviço.",
+    pitchSlide9Step3: "Receba pagamentos toda segunda-feira.",
+    pitchSlide10Title: "Vamos Crescer Juntos",
+    pitchSlide10Contact: "TG, E-mail, WhatsApp",
+    pitchSlide10CTA: "Escreva para nós agora mesmo para reservar seu código promocional.",
+    dailyVibrationTitle: "The Daily Vibration (Chave de Trânsito)",
+    dailyVibrationSlogan: "Sua \"Frequência do Dia\" pessoal e um mantra de ação específico para se alinhar com os trânsitos de hoje.",
+    dailyVibrationDesc: "Curto cálculo de como as posições planetárias de hoje ressoam pessoalmente com seu mapa. Você recebe uma recomendação chave: o que iniciar hoje e do que se abster, além de uma afirmação pessoal.",
+    relationshipSparkTitle: "The Relationship Spark (Check-rápido de Compatibilidade)",
+    relationshipSparkSlogan: "Um snapshot de química de 1 minuto. Descubra a principal \"lição\" ou \"vibe\" entre você e outra pessoa.",
+    relationshipSparkDesc: "Análise expressa de compatibilidade baseada em duas datas de nascimento. Em vez de 5 páginas de texto, você obtém uma definição clara do tipo de conexão: \"Professor Cármico\", \"Espelho\", \"Doador de Energia\" ou \"União Criativa\". Ideal para uma verificação rápida de um novo contato.",
     horoscopeTitle: "Horóscopo Pessoal para Amanhã",
     horoscopeSubtitle: "Selecione seu signo do zodíaco para receber uma previsão celestial.",
     horoscopeLoading: "Consultando as estrelas para amanhã...",
