@@ -250,9 +250,12 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
   // Sports fields
   const [sportsEvent, setSportsEvent] = useState('');
+  const [sportsSide1, setSportsSide1] = useState('');
+  const [sportsSide2, setSportsSide2] = useState('');
+  const [sportsVenue, setSportsVenue] = useState('');
+  const [sportsDate, setSportsDate] = useState<Date | null>(null);
   const [sportsContext, setSportsContext] = useState('');
   const [sportsOdds, setSportsOdds] = useState('');
-  const [sportsChartData, setSportsChartData] = useState('');
 
   const hourRef = React.useRef<HTMLInputElement>(null);
   const minuteRef = React.useRef<HTMLInputElement>(null);
@@ -289,11 +292,13 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
   const handleSubmit = (e: React.FormEvent, isTest: boolean = false) => {
     e.preventDefault();
+    const isSportsOracle = service.id === ServiceType.SPORTS_ORACLE;
+    
     onSubmit({
-      name,
-      birthDate: formatDate(birthDate),
-      birthTime: formatTimeForSubmit(birthTime),
-      birthPlace,
+      name: isSportsOracle ? undefined : name,
+      birthDate: isSportsOracle ? undefined : formatDate(birthDate),
+      birthTime: isSportsOracle ? undefined : formatTimeForSubmit(birthTime),
+      birthPlace: isSportsOracle ? undefined : birthPlace,
       email,
       language,
       isTest,
@@ -306,9 +311,12 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       dreamDate: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? formatDate(dreamDate) : undefined,
       dreamTime: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? formatTimeForSubmit(dreamTime) : undefined,
       sportsEvent: service.id === ServiceType.SPORTS_ORACLE ? sportsEvent : undefined,
+      sportsSide1: service.id === ServiceType.SPORTS_ORACLE ? sportsSide1 : undefined,
+      sportsSide2: service.id === ServiceType.SPORTS_ORACLE ? sportsSide2 : undefined,
+      sportsVenue: service.id === ServiceType.SPORTS_ORACLE ? sportsVenue : undefined,
+      sportsDate: service.id === ServiceType.SPORTS_ORACLE ? formatDate(sportsDate) : undefined,
       sportsContext: service.id === ServiceType.SPORTS_ORACLE ? sportsContext : undefined,
       sportsOdds: service.id === ServiceType.SPORTS_ORACLE ? sportsOdds : undefined,
-      sportsChartData: service.id === ServiceType.SPORTS_ORACLE ? sportsChartData : undefined,
       timestamp: Date.now()
     });
   };
@@ -326,6 +334,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
   const isDreamService = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
   const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK;
+  const isSportsOracle = service.id === ServiceType.SPORTS_ORACLE;
   const isFree = service.isFree;
 
   return (
@@ -333,76 +342,96 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       <h2 className="text-3xl font-cinzel text-white mb-6">{getServiceTitle()}</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-6">
-          <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Your Details</h3>
-          <div>
-            <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formName}</label>
-            <input 
-              type="text" 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-              required
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
-              <DatePicker
-                selected={birthDate}
-                onChange={(date: Date | null) => setBirthDate(date)}
-                locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
-                placeholderText={t.formBirthDatePlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                showYearDropdown
-                scrollableYearDropdown
-                yearDropdownItemNumber={100}
-                required
-                customInput={
-                  <MaskedDateInput 
-                    nextRef={isFree ? birthPlaceRef : hourRef} 
-                  />
-                }
-              />
-            </div>
-            {!isFree && (
-              <div className="md:col-span-2">
-                <TimeInputFields 
-                  data={birthTime} 
-                  setter={setBirthTime} 
-                  label={t.formBirthTime} 
-                  hRef={hourRef} 
-                  mRef={minuteRef} 
-                  t={t}
-                  nextFieldRef={birthPlaceRef}
+          {!isSportsOracle ? (
+            <>
+              <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Your Details</h3>
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formName}</label>
+                <input 
+                  type="text" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  required
                 />
               </div>
-            )}
-            <div className={isFree ? "md:col-span-1" : "md:col-span-2"}>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthPlace}</label>
-              <input 
-                ref={birthPlaceRef}
-                type="text" 
-                value={birthPlace} 
-                onChange={(e) => setBirthPlace(e.target.value)} 
-                placeholder={t.formBirthPlacePlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formEmail}</label>
-              <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder={t.formEmailPlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                required
-              />
-              <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formEmailHelp}</p>
-            </div>
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
+                  <DatePicker
+                    selected={birthDate}
+                    onChange={(date: Date | null) => setBirthDate(date)}
+                    locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
+                    dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                    placeholderText={t.formBirthDatePlaceholder}
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    required
+                    customInput={
+                      <MaskedDateInput 
+                        nextRef={isFree ? birthPlaceRef : hourRef} 
+                      />
+                    }
+                  />
+                </div>
+                {!isFree && (
+                  <div className="md:col-span-2">
+                    <TimeInputFields 
+                      data={birthTime} 
+                      setter={setBirthTime} 
+                      label={t.formBirthTime} 
+                      hRef={hourRef} 
+                      mRef={minuteRef} 
+                      t={t}
+                      nextFieldRef={birthPlaceRef}
+                    />
+                  </div>
+                )}
+                <div className={isFree ? "md:col-span-1" : "md:col-span-2"}>
+                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthPlace}</label>
+                  <input 
+                    ref={birthPlaceRef}
+                    type="text" 
+                    value={birthPlace} 
+                    onChange={(e) => setBirthPlace(e.target.value)} 
+                    placeholder={t.formBirthPlacePlaceholder}
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    required
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formEmail}</label>
+                  <input 
+                    type="email" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder={t.formEmailPlaceholder}
+                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    required
+                  />
+                  <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formEmailHelp}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Delivery Details</h3>
+              <div className="md:col-span-2">
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formEmail}</label>
+                <input 
+                  type="email" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  placeholder={t.formEmailPlaceholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  required
+                />
+                <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formEmailHelp}</p>
+              </div>
+            </>
+          )}
         </div>
 
         {isSynastryService && (
@@ -517,48 +546,60 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
         {service.id === ServiceType.SPORTS_ORACLE && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
             <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Sports Event Details</h3>
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsEventLabel}</label>
-              <input 
-                type="text" 
-                value={sportsEvent} 
-                onChange={(e) => setSportsEvent(e.target.value)} 
-                placeholder={t.sportsEventPlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                required
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsSide1Label}</label>
+                <input 
+                  type="text" 
+                  value={sportsSide1} 
+                  onChange={(e) => setSportsSide1(e.target.value)} 
+                  placeholder={t.sportsSide1Placeholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsSide2Label}</label>
+                <input 
+                  type="text" 
+                  value={sportsSide2} 
+                  onChange={(e) => setSportsSide2(e.target.value)} 
+                  placeholder={t.sportsSide2Placeholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsContextLabel}</label>
-              <input 
-                type="text" 
-                value={sportsContext} 
-                onChange={(e) => setSportsContext(e.target.value)} 
-                placeholder={t.sportsContextPlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsOddsLabel}</label>
-              <input 
-                type="text" 
-                value={sportsOdds} 
-                onChange={(e) => setSportsOdds(e.target.value)} 
-                placeholder={t.sportsOddsPlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsChartDataLabel}</label>
-              <textarea 
-                value={sportsChartData} 
-                onChange={(e) => setSportsChartData(e.target.value)} 
-                placeholder={t.sportsChartDataPlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors min-h-[100px] resize-none"
-                required
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsVenueLabel}</label>
+                <input 
+                  type="text" 
+                  value={sportsVenue} 
+                  onChange={(e) => setSportsVenue(e.target.value)} 
+                  placeholder={t.sportsVenuePlaceholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsDateLabel}</label>
+                <DatePicker
+                  selected={sportsDate}
+                  onChange={(date: Date | null) => setSportsDate(date)}
+                  locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
+                  dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                  placeholderText={t.sportsDatePlaceholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={10}
+                  required
+                  customInput={
+                    <MaskedDateInput />
+                  }
+                />
+              </div>
             </div>
           </div>
         )}
@@ -566,16 +607,6 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
         <div className="flex flex-col sm:flex-row gap-4 pt-8">
           <button type="button" onClick={onBack} className="flex-1 py-4 border border-cosmic-gold/20 text-cosmic-silver rounded-xl hover:bg-cosmic-gold/5 transition-colors">{t.formBack}</button>
           
-          {service.id === ServiceType.SPORTS_ORACLE && (
-            <button 
-              type="button" 
-              onClick={(e) => handleSubmit(e, true)}
-              className="flex-1 py-4 border border-cosmic-gold text-cosmic-gold font-bold rounded-xl hover:bg-cosmic-gold/10 transition-all"
-            >
-              {t.freeTest}
-            </button>
-          )}
-
           <button 
             type="submit" 
             onClick={(e) => handleSubmit(e, false)}

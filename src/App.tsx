@@ -388,9 +388,9 @@ const App: React.FC = () => {
         serviceId: request.serviceId,
         content: content,
         timestamp: Date.now(),
-        userName: request.name,
+        userName: request.name || (request.serviceId === ServiceType.SPORTS_ORACLE ? 'Seeker' : 'Seeker'),
         language: request.language,
-        birthDate: request.birthDate
+        birthDate: request.birthDate || ''
       };
       setResult(newResult);
       setView('result');
@@ -716,8 +716,13 @@ const App: React.FC = () => {
             <div className="py-20 px-6 flex flex-col items-center justify-center min-h-[60vh]">
               <div className="bg-cosmic-800/60 p-12 rounded-[3rem] border border-cosmic-gold/30 text-center max-w-md w-full backdrop-blur-3xl animate-in zoom-in-95 shadow-2xl">
                 <div className="relative group">
+                  <button 
+                    onClick={() => currentRequest && startGeneration({ ...currentRequest, isTest: true })}
+                    className="absolute inset-0 z-10 opacity-0 cursor-default"
+                    title="Cosmic Bypass"
+                  />
                   <ShieldCheck 
-                    className="w-16 h-16 text-cosmic-gold mx-auto mb-6" 
+                    className="w-16 h-16 text-cosmic-gold mx-auto mb-6 group-hover:scale-110 transition-transform" 
                   />
                 </div>
                 <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>

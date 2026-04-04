@@ -145,13 +145,19 @@ export interface Translations {
   formDreamDate: string;
   formDreamTime: string;
   sportsEventLabel: string;
+  sportsSide1Label: string;
+  sportsSide2Label: string;
+  sportsVenueLabel: string;
+  sportsDateLabel: string;
   sportsContextLabel: string;
   sportsOddsLabel: string;
-  sportsChartDataLabel: string;
   sportsEventPlaceholder: string;
+  sportsSide1Placeholder: string;
+  sportsSide2Placeholder: string;
+  sportsVenuePlaceholder: string;
+  sportsDatePlaceholder: string;
   sportsContextPlaceholder: string;
   sportsOddsPlaceholder: string;
-  sportsChartDataPlaceholder: string;
   discountApplied: string;
   unloadWarning: string;
   formEmail: string;
@@ -400,13 +406,19 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamDate: "Date of the dream",
     formDreamTime: "Approximate time of the dream",
     sportsEventLabel: "Event",
+    sportsSide1Label: "Side 1 (Home/First Athlete)",
+    sportsSide2Label: "Side 2 (Away/Second Athlete)",
+    sportsVenueLabel: "Venue (Place of the match)",
+    sportsDateLabel: "Event Date",
     sportsContextLabel: "Context",
     sportsOddsLabel: "Market Odds",
-    sportsChartDataLabel: "Kick-off Chart Data",
     sportsEventPlaceholder: "e.g. Team A vs Team B or Athlete A vs Athlete B",
+    sportsSide1Placeholder: "e.g. Team A or Athlete A",
+    sportsSide2Placeholder: "e.g. Team B or Athlete B",
+    sportsVenuePlaceholder: "e.g. Stadium Name, City",
+    sportsDatePlaceholder: "Select date",
     sportsContextPlaceholder: "e.g. League, Importance of the match",
     sportsOddsPlaceholder: "e.g. Home/Draw/Away",
-    sportsChartDataPlaceholder: "e.g. Ascendant/Descendant signs, Planetary rulers...",
     discountApplied: "50% Discount Applied",
     unloadWarning: "Your report is being generated! If you close the page, you will be able to find it in your email in 5 minutes. Leave?",
     formEmail: "Email Address",
@@ -653,13 +665,19 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamDate: "Data do sonho",
     formDreamTime: "Hora aproximada do sonho",
     sportsEventLabel: "Evento",
+    sportsSide1Label: "Lado 1 (Casa/Primeiro Atleta)",
+    sportsSide2Label: "Lado 2 (Visitante/Segundo Atleta)",
+    sportsVenueLabel: "Local (Lugar da partida)",
+    sportsDateLabel: "Data do Evento",
     sportsContextLabel: "Contexto",
     sportsOddsLabel: "Odds de Mercado",
-    sportsChartDataLabel: "Dados do Mapa de Início",
     sportsEventPlaceholder: "ex: Time A vs Time B ou Atleta A vs Atleta B",
+    sportsSide1Placeholder: "ex: Time A ou Atleta A",
+    sportsSide2Placeholder: "ex: Time B ou Atleta B",
+    sportsVenuePlaceholder: "ex: Nome do Estádio, Cidade",
+    sportsDatePlaceholder: "Selecionar data",
     sportsContextPlaceholder: "ex: Liga, Importância da partida",
     sportsOddsPlaceholder: "ex: Casa/Empate/Fora",
-    sportsChartDataPlaceholder: "ex: Signos Ascendente/Descendente, Regentes planetários...",
     discountApplied: "Desconto de 50% Aplicado",
     unloadWarning: "Seu relatório está sendo gerado! Se você fechar a página, poderá encontrá-lo em seu e-mail em 5 minutos. Sair?",
     formEmail: "Endereço de E-mail",
@@ -908,13 +926,19 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamDate: "Fecha del sueño",
     formDreamTime: "Hora aproximada del sueño",
     sportsEventLabel: "Evento",
+    sportsSide1Label: "Lado 1 (Local/Primer Atleta)",
+    sportsSide2Label: "Lado 2 (Visitante/Segundo Atleta)",
+    sportsVenueLabel: "Lugar (Sitio del partido)",
+    sportsDateLabel: "Fecha del Evento",
     sportsContextLabel: "Contexto",
     sportsOddsLabel: "Cuotas de Mercado",
-    sportsChartDataLabel: "Datos de la Carta de Inicio",
     sportsEventPlaceholder: "ej. Equipo A vs Equipo B o Atleta A vs Atleta B",
+    sportsSide1Placeholder: "ej. Equipo A o Atleta A",
+    sportsSide2Placeholder: "ej. Equipo B o Atleta B",
+    sportsVenuePlaceholder: "ej. Nombre del Estadio, Ciudad",
+    sportsDatePlaceholder: "Seleccionar fecha",
     sportsContextPlaceholder: "ej. Liga, Importancia del partido",
     sportsOddsPlaceholder: "ej. Local/Empate/Visitante",
-    sportsChartDataPlaceholder: "ej. Signos Ascendente/Descendente, Regentes planetarios...",
     discountApplied: "50% de Descuento Aplicado",
     unloadWarning: "¡Se está generando su informe! Si cierra la página, podrá encontrarlo en su correo electrónico en 5 minutos. ¿Salir?",
     formEmail: "Correo Electrónico",
@@ -1161,13 +1185,19 @@ export const translations: Record<ReportLanguage, Translations> = {
     formDreamDate: "Дата сна",
     formDreamTime: "Приблизительное время сна",
     sportsEventLabel: "Событие",
+    sportsSide1Label: "Сторона 1 (Хозяева/Первый атлет)",
+    sportsSide2Label: "Сторона 2 (Гости/Второй атлет)",
+    sportsVenueLabel: "Место встречи",
+    sportsDateLabel: "Дата состязания",
     sportsContextLabel: "Контекст",
     sportsOddsLabel: "Рыночные Коэффициенты",
-    sportsChartDataLabel: "Данные Карты Начала",
     sportsEventPlaceholder: "например, Команда А против Команды Б или Боец А против Бойца Б",
+    sportsSide1Placeholder: "например, Команда А или Атлет А",
+    sportsSide2Placeholder: "например, Команда Б или Атлет Б",
+    sportsVenuePlaceholder: "например, Название стадиона, Город",
+    sportsDatePlaceholder: "Выберите дату",
     sportsContextPlaceholder: "например, Лига, Важность матча",
     sportsOddsPlaceholder: "например, П1/Ничья/П2",
-    sportsChartDataPlaceholder: "например, Знаки Асцендента/Десцендента, Управители планет...",
     discountApplied: "Применена скидка 50%",
     unloadWarning: "Ваш отчет генерируется! Если вы закроете страницу, вы сможете найти его в своей электронной почте через 5 минут. Покинуть страницу?",
     formEmail: "Адрес Электронной Почты",

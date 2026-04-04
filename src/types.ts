@@ -42,13 +42,13 @@ export interface Service {
 
 export interface ReadingRequest {
   serviceId: ServiceType;
-  name: string;
+  name?: string;
   partnerName?: string;
-  birthDate: string;
+  birthDate?: string;
   partnerBirthDate?: string;
   birthTime?: string;
   partnerBirthTime?: string;
-  birthPlace: string;
+  birthPlace?: string;
   email: string;
   language: ReportLanguage;
   isTest?: boolean;
@@ -57,9 +57,12 @@ export interface ReadingRequest {
   dreamDate?: string;
   dreamTime?: string;
   sportsEvent?: string;
+  sportsSide1?: string;
+  sportsSide2?: string;
+  sportsVenue?: string;
+  sportsDate?: string;
   sportsContext?: string;
   sportsOdds?: string;
-  sportsChartData?: string;
   timestamp: number;
 }
 
