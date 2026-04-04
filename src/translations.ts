@@ -525,7 +525,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeSelectDay: "Select Day",
     chatTitle: "Cosmic Guide",
     chatPlaceholder: "Ask the stars...",
-    chatWelcome: "Welcome, seeker. I am your guide through the Atlantic Oracle portal. How can I assist your journey today?",
+    chatWelcome: "Welcome, seeker. How can I guide your journey today?",
     chatPromoMessage: "Looking for a sign? Use the code SPACE for 25% off any service.",
   },
   Portuguese: {
@@ -788,7 +788,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeSelectDay: "Selecione o Dia",
     chatTitle: "Guia Cósmico",
     chatPlaceholder: "Pergunte às estrelas...",
-    chatWelcome: "Bem-vindo, buscador. Sou seu guia pelo portal Atlantic Oracle. Como posso ajudar em sua jornada hoje?",
+    chatWelcome: "Bem-vindo, buscador. Como posso guiar sua jornada hoje?",
     chatPromoMessage: "Procurando um sinal? Use o código SPACE para 25% de desconto em qualquer serviço.",
   },
   Spanish: {
@@ -1051,7 +1051,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeSelectDay: "Seleccionar Día",
     chatTitle: "Guía Cósmico",
     chatPlaceholder: "Pregunta a las estrellas...",
-    chatWelcome: "Bienvenido, buscador. Soy tu guía a través del portal Atlantic Oracle. ¿Cómo puedo ayudarte en tu viaje hoy?",
+    chatWelcome: "Bienvenido, buscador. ¿Cómo puedo guiar tu camino hoy?",
     chatPromoMessage: "¿Buscas una señal? Usa el código SPACE para un 25% de descuento en cualquier servicio.",
   },
   Russian: {
@@ -1314,25 +1314,25 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeSelectDay: "Выберите День",
     chatTitle: "Космический Гид",
     chatPlaceholder: "Спроси у звезд...",
-    chatWelcome: "Приветствую, ищущий. Я твой проводник по порталу Atlantic Oracle. Чем я могу помочь тебе сегодня?",
+    chatWelcome: "Приветствую, ищущий. Как я могу направить твой путь сегодня?",
     chatPromoMessage: "Ищешь знак? Используй код SPACE для скидки 25% на любую услугу.",
   },
   French: {
     chatTitle: "Guide Cosmique",
     chatPlaceholder: "Demandez aux étoiles...",
-    chatWelcome: "Bienvenue, chercheur. Je suis votre guide à travers le portail Atlantic Oracle. Comment puis-je vous aider aujourd'hui ?",
+    chatWelcome: "Bienvenue, chercheur. Comment puis-je vous guider aujourd'hui ?",
     chatPromoMessage: "Vous cherchez un signe ? Utilisez le code SPACE pour 25% de réduction sur tout service.",
   } as any,
   German: {
     chatTitle: "Kosmischer Führer",
     chatPlaceholder: "Fragen Sie die Sterne...",
-    chatWelcome: "Willkommen, Suchender. Ich bin Ihr Führer durch das Atlantic Oracle Portal. Wie kann ich Ihnen heute helfen?",
+    chatWelcome: "Willkommen, Suchender. Wie kann ich Sie heute führen?",
     chatPromoMessage: "Suchen Sie nach einem Zeichen? Nutzen Sie den Code SPACE für 25% Rabatt auf jeden Service.",
   } as any,
   Italian: {
     chatTitle: "Guida Cosmica",
     chatPlaceholder: "Chiedi alle stelle...",
-    chatWelcome: "Benvenuto, cercatore. Sono la tua guida attraverso il portale Atlantic Oracle. Come posso aiutarti oggi?",
+    chatWelcome: "Benvenuto, cercatore. Come posso guidarti oggi?",
     chatPromoMessage: "Cerchi un segno? Usa il codice SPACE per il 25% di sconto su qualsiasi servizio.",
   } as any,
 };
