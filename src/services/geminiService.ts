@@ -13,12 +13,25 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   const ai = new GoogleGenAI({ apiKey });
   
   let prompt = "";
-  const { serviceId, name, birthDate, birthTime, birthPlace, language, partnerName, partnerBirthDate, partnerBirthTime, dreamDescription, dreamKeywords, dreamDate, dreamTime } = request;
+  const { 
+    serviceId, name, birthDate, birthTime, birthPlace, language, 
+    partnerName, partnerBirthDate, partnerBirthTime, 
+    dreamDescription, dreamKeywords, dreamDate, dreamTime,
+    sportsEvent, sportsContext, sportsOdds, sportsChartData
+  } = request;
 
-  if (serviceId === ServiceType.LOVE_SYNASTRY) {
-    prompt = COSMIC_PROMPTS[ServiceType.LOVE_SYNASTRY](
+  if (serviceId === ServiceType.LOVE_SYNASTRY || serviceId === ServiceType.RELATIONSHIP_SPARK) {
+    prompt = (COSMIC_PROMPTS as any)[serviceId](
       name, birthDate, birthTime || "unknown",
       partnerName || "Partner", partnerBirthDate || "unknown", partnerBirthTime || "unknown",
+      language
+    );
+  } else if (serviceId === ServiceType.SPORTS_ORACLE) {
+    prompt = COSMIC_PROMPTS[ServiceType.SPORTS_ORACLE](
+      sportsEvent || "Unknown Event",
+      sportsContext || "Unknown Context",
+      sportsOdds || "Unknown Odds",
+      sportsChartData || "Unknown Chart Data",
       language
     );
   } else if (serviceId === ServiceType.DREAM_INTERPRETATION || serviceId === ServiceType.FREE_DREAM_INTERPRETATION) {

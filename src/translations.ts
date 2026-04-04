@@ -137,12 +137,21 @@ export interface Translations {
   form12h: string;
   formBack: string;
   formSubmit: string;
+  freeTest: string;
   formPartnerName: string;
   formPartnerBirthDate: string;
   formDreamDescription: string;
   formDreamKeywords: string;
   formDreamDate: string;
   formDreamTime: string;
+  sportsEventLabel: string;
+  sportsContextLabel: string;
+  sportsOddsLabel: string;
+  sportsChartDataLabel: string;
+  sportsEventPlaceholder: string;
+  sportsContextPlaceholder: string;
+  sportsOddsPlaceholder: string;
+  sportsChartDataPlaceholder: string;
   discountApplied: string;
   unloadWarning: string;
   formEmail: string;
@@ -383,12 +392,21 @@ export const translations: Record<ReportLanguage, Translations> = {
     form12h: "12h",
     formBack: "Back",
     formSubmit: "Consult Oracle",
+    freeTest: "Free Test",
     formPartnerName: "Partner's Full Name",
     formPartnerBirthDate: "Partner's Birth Date",
     formDreamDescription: "Describe your dream in detail",
     formDreamKeywords: "Key symbols or images (comma separated)",
     formDreamDate: "Date of the dream",
     formDreamTime: "Approximate time of the dream",
+    sportsEventLabel: "Event",
+    sportsContextLabel: "Context",
+    sportsOddsLabel: "Market Odds",
+    sportsChartDataLabel: "Kick-off Chart Data",
+    sportsEventPlaceholder: "e.g. Team A vs Team B or Athlete A vs Athlete B",
+    sportsContextPlaceholder: "e.g. League, Importance of the match",
+    sportsOddsPlaceholder: "e.g. Home/Draw/Away",
+    sportsChartDataPlaceholder: "e.g. Ascendant/Descendant signs, Planetary rulers...",
     discountApplied: "50% Discount Applied",
     unloadWarning: "Your report is being generated! If you close the page, you will be able to find it in your email in 5 minutes. Leave?",
     formEmail: "Email Address",
@@ -627,12 +645,21 @@ export const translations: Record<ReportLanguage, Translations> = {
     form12h: "12h",
     formBack: "Voltar",
     formSubmit: "Consultar Oráculo",
+    freeTest: "Teste Grátis",
     formPartnerName: "Nome Completo do Parceiro",
     formPartnerBirthDate: "Data de Nascimento do Parceiro",
     formDreamDescription: "Descreva seu sonho em detalhes",
     formDreamKeywords: "Símbolos ou imagens principais (separados por vírgula)",
     formDreamDate: "Data do sonho",
     formDreamTime: "Hora aproximada do sonho",
+    sportsEventLabel: "Evento",
+    sportsContextLabel: "Contexto",
+    sportsOddsLabel: "Odds de Mercado",
+    sportsChartDataLabel: "Dados do Mapa de Início",
+    sportsEventPlaceholder: "ex: Time A vs Time B ou Atleta A vs Atleta B",
+    sportsContextPlaceholder: "ex: Liga, Importância da partida",
+    sportsOddsPlaceholder: "ex: Casa/Empate/Fora",
+    sportsChartDataPlaceholder: "ex: Signos Ascendente/Descendente, Regentes planetários...",
     discountApplied: "Desconto de 50% Aplicado",
     unloadWarning: "Seu relatório está sendo gerado! Se você fechar a página, poderá encontrá-lo em seu e-mail em 5 minutos. Sair?",
     formEmail: "Endereço de E-mail",
@@ -873,12 +900,21 @@ export const translations: Record<ReportLanguage, Translations> = {
     form12h: "12h",
     formBack: "Atrás",
     formSubmit: "Consultar Oráculo",
+    freeTest: "Prueba Gratis",
     formPartnerName: "Nombre Completo de la Pareja",
     formPartnerBirthDate: "Fecha de Nacimiento de la Pareja",
     formDreamDescription: "Describe tu sueño en detalle",
     formDreamKeywords: "Símbolos o imágenes clave (separados por comas)",
     formDreamDate: "Fecha del sueño",
     formDreamTime: "Hora aproximada del sueño",
+    sportsEventLabel: "Evento",
+    sportsContextLabel: "Contexto",
+    sportsOddsLabel: "Cuotas de Mercado",
+    sportsChartDataLabel: "Datos de la Carta de Inicio",
+    sportsEventPlaceholder: "ej. Equipo A vs Equipo B o Atleta A vs Atleta B",
+    sportsContextPlaceholder: "ej. Liga, Importancia del partido",
+    sportsOddsPlaceholder: "ej. Local/Empate/Visitante",
+    sportsChartDataPlaceholder: "ej. Signos Ascendente/Descendente, Regentes planetarios...",
     discountApplied: "50% de Descuento Aplicado",
     unloadWarning: "¡Se está generando su informe! Si cierra la página, podrá encontrarlo en su correo electrónico en 5 minutos. ¿Salir?",
     formEmail: "Correo Electrónico",
@@ -1117,12 +1153,21 @@ export const translations: Record<ReportLanguage, Translations> = {
     form12h: "12ч",
     formBack: "Назад",
     formSubmit: "Спросить Оракула",
+    freeTest: "Бесплатный Тест",
     formPartnerName: "Полное Имя Партнера",
     formPartnerBirthDate: "Дата Рождения Партнера",
     formDreamDescription: "Опишите свой сон подробно",
     formDreamKeywords: "Ключевые символы или образы (через запятую)",
     formDreamDate: "Дата сна",
     formDreamTime: "Приблизительное время сна",
+    sportsEventLabel: "Событие",
+    sportsContextLabel: "Контекст",
+    sportsOddsLabel: "Рыночные Коэффициенты",
+    sportsChartDataLabel: "Данные Карты Начала",
+    sportsEventPlaceholder: "например, Команда А против Команды Б или Боец А против Бойца Б",
+    sportsContextPlaceholder: "например, Лига, Важность матча",
+    sportsOddsPlaceholder: "например, П1/Ничья/П2",
+    sportsChartDataPlaceholder: "например, Знаки Асцендента/Десцендента, Управители планет...",
     discountApplied: "Применена скидка 50%",
     unloadWarning: "Ваш отчет генерируется! Если вы закроете страницу, вы сможете найти его в своей электронной почте через 5 минут. Покинуть страницу?",
     formEmail: "Адрес Электронной Почты",

@@ -14,6 +14,7 @@ export enum ServiceType {
   SHADOW_WORK = 'shadow-work',
   DAILY_VIBRATION = 'daily-vibration',
   RELATIONSHIP_SPARK = 'relationship-spark',
+  SPORTS_ORACLE = 'sports-oracle',
   // Free Services
   FORTUNE_MAP = 'free-fortune-map',
   CAPITAL_ALIGNMENT = 'free-capital-alignment',
@@ -50,10 +51,15 @@ export interface ReadingRequest {
   birthPlace: string;
   email: string;
   language: ReportLanguage;
+  isTest?: boolean;
   dreamDescription?: string;
   dreamKeywords?: string;
   dreamDate?: string;
   dreamTime?: string;
+  sportsEvent?: string;
+  sportsContext?: string;
+  sportsOdds?: string;
+  sportsChartData?: string;
   timestamp: number;
 }
 

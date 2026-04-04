@@ -355,7 +355,7 @@ const App: React.FC = () => {
 
   const handleFormSubmit = (request: ReadingRequest) => {
     setCurrentRequest(request);
-    if (selectedService?.isFree) {
+    if (selectedService?.isFree || request.isTest) {
       startGeneration(request);
     } else {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(request));

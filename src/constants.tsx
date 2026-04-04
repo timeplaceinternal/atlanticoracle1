@@ -2,7 +2,7 @@
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy
 } from 'lucide-react';
 import { ServiceType, Service, NewsPost } from './types';
 
@@ -114,6 +114,26 @@ export const LIGHT_DROPS: Service[] = [
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
+  },
+  {
+    id: ServiceType.SPORTS_ORACLE,
+    title: "The Odds Oracle (Sports Prediction)",
+    description: "A synthesis of hard sports data, bookmaker odds, and Horary Astrology to identify 'Cosmic Edges'. Discover discrepancies between market expectations and celestial reality.",
+    icon: "trophy",
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    },
+    stripeUrlsDiscounted: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   }
 ];
@@ -337,6 +357,7 @@ export const getServiceIcon = (iconName: string) => {
     case 'battery': return <Battery {...props} className="text-cosmic-gold" />;
     case 'baby': return <Baby {...props} className="text-cosmic-gold" />;
     case 'moon': return <Moon {...props} className="text-cosmic-purple" />;
+    case 'trophy': return <Trophy {...props} className="text-cosmic-gold" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -589,6 +610,40 @@ export const COSMIC_PROMPTS = {
       FORMAT: Markdown. No stars (*). Use ## for the title.
     `;
   },
+  [ServiceType.SPORTS_ORACLE]: (event: string, context: string, odds: string, chartData: string, lang: string) => `
+    ${BASE_RULES(lang)}
+    ROLE: You are the "Odds Oracle" for AtlanticOracle.com. Your mission is to synthesize hard sports data, bookmaker odds, and Horary Astrology to identify "Cosmic Edges" (discrepancies between market expectations and celestial reality).
+
+    INPUT:
+    - Event: ${event} (Can be Team vs Team or Athlete vs Athlete)
+    - Context: ${context}
+    - Market Odds: ${odds}
+    - Kick-off Chart Data: ${chartData}
+
+    ANALYSIS PROTOCOL:
+
+    1. Market Sentiment (The "Earthly" View): Interpret the odds. Who is the favorite? What is the implied probability? (e.g., 1.50 odds = 66% probability).
+
+    2. Celestial Integrity (The "Heavenly" View):
+    - Assign the 1st House (Ascendant) and its ruler to the Home Team or the First Athlete.
+    - Assign the 7th House (Descendant) and its ruler to the Away Team or the Opponent.
+    - Evaluate the dignity of their Rulers. Is the favorite's ruler "Combust" (weakened by the Sun) or "Retrograde" (facing setbacks)?
+    - Check the Moon: It represents the flow of the match/bout. If its last aspect is to the 7th house ruler, the underdog/opponent has a "hidden blessing."
+
+    3. The Synthesis (The "Edge"):
+    - Compare Market vs. Stars. 
+    - If Market says "Easy Win" but Stars show "Afflicted Ruler," alert the user to a high probability of an upset or a draw (if applicable).
+    - If both align, confirm a "Solid Victory."
+
+    OUTPUT STYLE:
+    Maintain the Atlantic Oracle brand voice: Sophisticated, analytical, mysterious yet grounded. Use Markdown. Use the term "Vibe Index" (0-100%) to show confidence.
+    
+    IMPORTANT: You MUST justify WHY you expect such a result based on the synthesis of data and stars.
+    
+    CONSTRAINT: Never give direct betting advice. Use phrases like "The cosmic energy favors..." or "There is a significant tension in the favorite's sector." 
+    
+    MANDATORY DISCLAIMER: At the very end, add a clear section about non-responsibility for the result. State that this is an entertainment service and users are responsible for their own decisions. Use a professional yet firm tone.
+  `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     SPECIAL GIFT: Personal Monthly Forecast. Subject: ${name}, born ${date}.

@@ -248,6 +248,12 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const [dreamDate, setDreamDate] = useState<Date | null>(null);
   const [dreamTime, setDreamTime] = useState({ hour: '', minute: '', is12h: false, amPm: 'AM' });
 
+  // Sports fields
+  const [sportsEvent, setSportsEvent] = useState('');
+  const [sportsContext, setSportsContext] = useState('');
+  const [sportsOdds, setSportsOdds] = useState('');
+  const [sportsChartData, setSportsChartData] = useState('');
+
   const hourRef = React.useRef<HTMLInputElement>(null);
   const minuteRef = React.useRef<HTMLInputElement>(null);
   const partnerHourRef = React.useRef<HTMLInputElement>(null);
@@ -281,7 +287,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
     return `${h}:${m}`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent, isTest: boolean = false) => {
     e.preventDefault();
     onSubmit({
       name,
@@ -290,6 +296,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       birthPlace,
       email,
       language,
+      isTest,
       serviceId: service.id,
       partnerName: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? partnerName : undefined,
       partnerBirthDate: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? formatDate(partnerBirthDate) : undefined,
@@ -298,6 +305,10 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       dreamKeywords: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? dreamKeywords : undefined,
       dreamDate: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? formatDate(dreamDate) : undefined,
       dreamTime: (service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION) ? formatTimeForSubmit(dreamTime) : undefined,
+      sportsEvent: service.id === ServiceType.SPORTS_ORACLE ? sportsEvent : undefined,
+      sportsContext: service.id === ServiceType.SPORTS_ORACLE ? sportsContext : undefined,
+      sportsOdds: service.id === ServiceType.SPORTS_ORACLE ? sportsOdds : undefined,
+      sportsChartData: service.id === ServiceType.SPORTS_ORACLE ? sportsChartData : undefined,
       timestamp: Date.now()
     });
   };
@@ -503,9 +514,75 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
           </div>
         )}
 
-        <div className="flex gap-4 pt-8">
+        {service.id === ServiceType.SPORTS_ORACLE && (
+          <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
+            <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Sports Event Details</h3>
+            <div>
+              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsEventLabel}</label>
+              <input 
+                type="text" 
+                value={sportsEvent} 
+                onChange={(e) => setSportsEvent(e.target.value)} 
+                placeholder={t.sportsEventPlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsContextLabel}</label>
+              <input 
+                type="text" 
+                value={sportsContext} 
+                onChange={(e) => setSportsContext(e.target.value)} 
+                placeholder={t.sportsContextPlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsOddsLabel}</label>
+              <input 
+                type="text" 
+                value={sportsOdds} 
+                onChange={(e) => setSportsOdds(e.target.value)} 
+                placeholder={t.sportsOddsPlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsChartDataLabel}</label>
+              <textarea 
+                value={sportsChartData} 
+                onChange={(e) => setSportsChartData(e.target.value)} 
+                placeholder={t.sportsChartDataPlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors min-h-[100px] resize-none"
+                required
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row gap-4 pt-8">
           <button type="button" onClick={onBack} className="flex-1 py-4 border border-cosmic-gold/20 text-cosmic-silver rounded-xl hover:bg-cosmic-gold/5 transition-colors">{t.formBack}</button>
-          <button type="submit" className="flex-1 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform">{t.formSubmit}</button>
+          
+          {service.id === ServiceType.SPORTS_ORACLE && (
+            <button 
+              type="button" 
+              onClick={(e) => handleSubmit(e, true)}
+              className="flex-1 py-4 border border-cosmic-gold text-cosmic-gold font-bold rounded-xl hover:bg-cosmic-gold/10 transition-all"
+            >
+              {t.freeTest}
+            </button>
+          )}
+
+          <button 
+            type="submit" 
+            onClick={(e) => handleSubmit(e, false)}
+            className="flex-1 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-xl hover:scale-105 transition-transform"
+          >
+            {t.formSubmit}
+          </button>
         </div>
       </form>
     </div>
