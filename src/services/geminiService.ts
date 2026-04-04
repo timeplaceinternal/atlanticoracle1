@@ -77,6 +77,9 @@ export const generateAssistantResponse = async (message: string, history: { role
       { role: 'user', parts: [{ text: prompt }] },
       { role: 'user', parts: [{ text: message }] }
     ],
+    config: {
+      tools: [{ googleSearch: {} }]
+    }
   });
   
   return response.text || "The stars are silent today.";
