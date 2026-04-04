@@ -58,6 +58,30 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
   return response.text || "The stars are silent today.";
 };
 
+export const generateAssistantResponse = async (message: string, history: { role: 'user' | 'model', text: string }[], language: ReportLanguage): Promise<string> => {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  
+  if (!apiKey) {
+    console.error("!!! GEMINI_API_KEY is missing.");
+    return "The Oracle is currently disconnected. Please try again later.";
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+  
+  const historyStr = history.map(h => `${h.role === 'user' ? 'User' : 'Sage'}: ${h.text}`).join('\n');
+  const prompt = (COSMIC_PROMPTS as any).AI_ASSISTANT(language, historyStr);
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: [
+      { role: 'user', parts: [{ text: prompt }] },
+      { role: 'user', parts: [{ text: message }] }
+    ],
+  });
+  
+  return response.text || "The stars are silent today.";
+};
+
 export const generateHoroscope = async (sign: string, language: ReportLanguage, day: 'today' | 'tomorrow' = 'tomorrow'): Promise<string> => {
   const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   

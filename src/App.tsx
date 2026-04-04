@@ -18,8 +18,9 @@ import HoroscopeService from './components/HoroscopeService';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2 } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2, Ticket } from 'lucide-react';
 import { translations } from './translations';
+import AIAssistant from './components/AIAssistant';
 
 const STRIPE_URLS_30: Record<ReportLanguage, string> = {
   English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
@@ -137,6 +138,8 @@ const App: React.FC = () => {
   });
 
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [isPromoApplied, setIsPromoApplied] = useState(false);
 
   useEffect(() => {
     (window as any).openPrivacySettings = () => setIsPrivacySettingsOpen(true);
@@ -374,6 +377,11 @@ const App: React.FC = () => {
     if (language === 'Portuguese') {
       stripeUrl.searchParams.set('locale', 'pt');
     }
+    
+    if (isPromoApplied) {
+      stripeUrl.searchParams.set('prefilled_promo_code', 'SPACE');
+    }
+    
     window.location.href = stripeUrl.toString();
   };
 
@@ -732,6 +740,28 @@ const App: React.FC = () => {
                 </p>
                 
                 <div className="space-y-6">
+                  <div className="bg-cosmic-900/50 border border-cosmic-gold/20 rounded-2xl p-4 flex items-center gap-3">
+                    <Ticket className="w-5 h-5 text-cosmic-gold" />
+                    <input 
+                      type="text" 
+                      value={promoCode}
+                      onChange={(e) => {
+                        const val = e.target.value.toUpperCase();
+                        setPromoCode(val);
+                        if (val === 'SPACE') {
+                          setIsPromoApplied(true);
+                        } else {
+                          setIsPromoApplied(false);
+                        }
+                      }}
+                      placeholder="PROMO CODE"
+                      className="bg-transparent border-none outline-none text-white text-sm tracking-widest w-full uppercase"
+                    />
+                    {isPromoApplied && (
+                      <span className="text-cosmic-gold text-[10px] font-bold animate-in fade-in zoom-in">25% OFF</span>
+                    )}
+                  </div>
+
                   <button 
                     onClick={handleProceedToStripe} 
                     className="w-full py-5 bg-white text-cosmic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
@@ -906,6 +936,7 @@ const App: React.FC = () => {
       </div>
       <CookieConsent language={language} onOpenSettings={() => setIsPrivacySettingsOpen(true)} />
       <PrivacySettings language={language} isOpen={isPrivacySettingsOpen} onClose={() => setIsPrivacySettingsOpen(false)} />
+      <AIAssistant language={language} />
     </div>
   );
 };
