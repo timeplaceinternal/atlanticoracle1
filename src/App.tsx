@@ -574,9 +574,13 @@ const App: React.FC = () => {
                   ) : t.heroTitle}
                 </h1>
                 <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair text-lg md:text-2xl">"{t.heroSubtitle}"</p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-                  <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95">{t.heroCTA}</button>
-                  <button onClick={() => scrollToSection('free-insights')} className="w-full sm:w-auto px-10 py-5 bg-transparent border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/5 transition-all">{t.heroFreeCTA}</button>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+                  <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-10 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95 text-sm uppercase tracking-wider">{t.heroCTA}</button>
+                  <button onClick={() => { setNewsSlug(null); setView('news'); }} className="w-full sm:w-auto px-10 py-4 bg-cosmic-800/40 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/10 transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+                    <Star className="w-4 h-4 fill-current" />
+                    {t.freeDailyHoroscope}
+                  </button>
+                  <button onClick={() => scrollToSection('free-insights')} className="w-full sm:w-auto px-10 py-4 bg-transparent border border-white/10 text-cosmic-silver font-bold rounded-full hover:bg-white/5 transition-all text-sm uppercase tracking-wider">{t.heroFreeCTA}</button>
                 </div>
               </section>
 

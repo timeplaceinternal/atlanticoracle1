@@ -258,6 +258,7 @@ export interface Translations {
   horoscopeToday: string;
   horoscopeTomorrow: string;
   horoscopeSelectDay: string;
+  freeDailyHoroscope: string;
   chatTitle: string;
   chatPlaceholder: string;
   chatWelcome: string;
@@ -523,6 +524,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeToday: "Today",
     horoscopeTomorrow: "Tomorrow",
     horoscopeSelectDay: "Select Day",
+    freeDailyHoroscope: "Free Daily Horoscope",
     chatTitle: "Cosmic Guide",
     chatPlaceholder: "Ask the stars...",
     chatWelcome: "Welcome, seeker. How can I guide your journey today?",
@@ -786,6 +788,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeToday: "Hoje",
     horoscopeTomorrow: "Amanhã",
     horoscopeSelectDay: "Selecione o Dia",
+    freeDailyHoroscope: "Horóscopo Diário Gratuito",
     chatTitle: "Guia Cósmico",
     chatPlaceholder: "Pergunte às estrelas...",
     chatWelcome: "Bem-vindo, buscador. Como posso guiar sua jornada hoje?",
@@ -1049,6 +1052,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeToday: "Hoy",
     horoscopeTomorrow: "Mañana",
     horoscopeSelectDay: "Seleccionar Día",
+    freeDailyHoroscope: "Horóscopo Diario Gratis",
     chatTitle: "Guía Cósmico",
     chatPlaceholder: "Pregunta a las estrellas...",
     chatWelcome: "Bienvenido, buscador. ¿Cómo puedo guiar tu camino hoy?",
@@ -1312,6 +1316,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     horoscopeToday: "Сегодня",
     horoscopeTomorrow: "Завтра",
     horoscopeSelectDay: "Выберите День",
+    freeDailyHoroscope: "Бесплатный гороскоп на день",
     chatTitle: "Космический Гид",
     chatPlaceholder: "Спроси у звезд...",
     chatWelcome: "Приветствую, ищущий. Как я могу направить твой путь сегодня?",
@@ -1319,18 +1324,21 @@ export const translations: Record<ReportLanguage, Translations> = {
   },
   French: {
     chatTitle: "Guide Cosmique",
+    freeDailyHoroscope: "Horoscope Quotidien Gratuit",
     chatPlaceholder: "Demandez aux étoiles...",
     chatWelcome: "Bienvenue, chercheur. Comment puis-je vous guider aujourd'hui ?",
     chatPromoMessage: "Vous cherchez un signe ? Utilisez le code SPACE pour 25% de réduction sur tout service.",
   } as any,
   German: {
     chatTitle: "Kosmischer Führer",
+    freeDailyHoroscope: "Kostenloses Tageshoroskop",
     chatPlaceholder: "Fragen Sie die Sterne...",
     chatWelcome: "Willkommen, Suchender. Wie kann ich Sie heute führen?",
     chatPromoMessage: "Suchen Sie nach einem Zeichen? Nutzen Sie den Code SPACE für 25% Rabatt auf jeden Service.",
   } as any,
   Italian: {
     chatTitle: "Guida Cosmica",
+    freeDailyHoroscope: "Oroscopo Giornaliero Gratuito",
     chatPlaceholder: "Chiedi alle stelle...",
     chatWelcome: "Benvenuto, cercatore. Come posso guidarti oggi?",
     chatPromoMessage: "Cerchi un segno? Usa il codice SPACE per il 25% di sconto su qualsiasi servizio.",
