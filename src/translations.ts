@@ -263,6 +263,11 @@ export interface Translations {
   chatPlaceholder: string;
   chatWelcome: string;
   chatPromoMessage: string;
+  promoTitle: string;
+  promoDesc: string;
+  promoButton: string;
+  promoCodeLabel: string;
+  promoSuccess: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -529,6 +534,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Ask the stars...",
     chatWelcome: "Welcome, seeker. How can I guide your journey today?",
     chatPromoMessage: "Looking for a sign? Use the code SPACE for 25% off any service.",
+    promoTitle: "Unlock 25% Discount",
+    promoDesc: "Share the wisdom of the stars with your circle to reveal the sacred promo code.",
+    promoButton: "I agree to share",
+    promoCodeLabel: "Your Sacred Code:",
+    promoSuccess: "Code revealed! Use it at checkout.",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -793,6 +803,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Pergunte às estrelas...",
     chatWelcome: "Bem-vindo, buscador. Como posso guiar sua jornada hoje?",
     chatPromoMessage: "Procurando um sinal? Use o código SPACE para 25% de desconto em qualquer serviço.",
+    promoTitle: "Desbloquear 25% de Desconto",
+    promoDesc: "Compartilhe a sabedoria das estrelas com seu círculo para revelar o código promocional sagrado.",
+    promoButton: "Eu concordo em compartilhar",
+    promoCodeLabel: "Seu Código Sagrado:",
+    promoSuccess: "Código revelado! Use-o no checkout.",
   },
   Spanish: {
     navNews: "Noticias Cósmicas",
@@ -1057,6 +1072,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Pregunta a las estrellas...",
     chatWelcome: "Bienvenido, buscador. ¿Cómo puedo guiar tu camino hoy?",
     chatPromoMessage: "¿Buscas una señal? Usa el código SPACE para un 25% de descuento en cualquier servicio.",
+    promoTitle: "Desbloquear 25% de Descuento",
+    promoDesc: "Comparte la sabiduría de las estrellas con tu círculo para revelar el código promocional sagrado.",
+    promoButton: "Acepto compartir",
+    promoCodeLabel: "Tu Código Sagrado:",
+    promoSuccess: "¡Código revelado! Úsalo al finalizar la compra.",
   },
   Russian: {
     navNews: "Космические Новости",
@@ -1321,6 +1341,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Спроси у звезд...",
     chatWelcome: "Приветствую, ищущий. Как я могу направить твой путь сегодня?",
     chatPromoMessage: "Ищешь знак? Используй код SPACE для скидки 25% на любую услугу.",
+    promoTitle: "Получить скидку 25%",
+    promoDesc: "Поделитесь мудростью звезд со своим окружением, чтобы открыть священный промокод.",
+    promoButton: "Я согласен поделиться ссылкой",
+    promoCodeLabel: "Ваш священный код:",
+    promoSuccess: "Код открыт! Используйте его при оплате.",
   },
   French: {
     chatTitle: "Guide Cosmique",
@@ -1328,6 +1353,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Demandez aux étoiles...",
     chatWelcome: "Bienvenue, chercheur. Comment puis-je vous guider aujourd'hui ?",
     chatPromoMessage: "Vous cherchez un signe ? Utilisez le code SPACE pour 25% de réduction sur tout service.",
+    promoTitle: "Débloquer 25% de Réduction",
+    promoDesc: "Partagez la sagesse des étoiles avec votre entourage pour révéler le code promo sacré.",
+    promoButton: "Je suis d'accord pour partager",
+    promoCodeLabel: "Votre Code Sacré :",
+    promoSuccess: "Code révélé ! Utilisez-le lors du paiement.",
   } as any,
   German: {
     chatTitle: "Kosmischer Führer",
@@ -1335,6 +1365,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Fragen Sie die Sterne...",
     chatWelcome: "Willkommen, Suchender. Wie kann ich Sie heute führen?",
     chatPromoMessage: "Suchen Sie nach einem Zeichen? Nutzen Sie den Code SPACE für 25% Rabatt auf jeden Service.",
+    promoTitle: "25% Rabatt freischalten",
+    promoDesc: "Teilen Sie die Weisheit der Sterne mit Ihrem Umfeld, um den heiligen Promo-Code zu enthüllen.",
+    promoButton: "Ich stimme zu, zu teilen",
+    promoCodeLabel: "Ihr heiliger Code:",
+    promoSuccess: "Code enthüllt! Verwenden Sie ihn an der Kasse.",
   } as any,
   Italian: {
     chatTitle: "Guida Cosmica",
@@ -1342,5 +1377,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatPlaceholder: "Chiedi alle stelle...",
     chatWelcome: "Benvenuto, cercatore. Come posso guidarti oggi?",
     chatPromoMessage: "Cerchi un segno? Usa il codice SPACE per il 25% di sconto su qualsiasi servizio.",
+    promoTitle: "Sblocca il 25% di Sconto",
+    promoDesc: "Condividi la saggezza delle stelle con la tua cerchia per rivelare il codice promozionale sacro.",
+    promoButton: "Accetto di condividere",
+    promoCodeLabel: "Il Tuo Codice Sacro:",
+    promoSuccess: "Codice rivelato! Usalo al momento del pagamento.",
   } as any,
 };
