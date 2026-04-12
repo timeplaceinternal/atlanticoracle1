@@ -47,8 +47,8 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);
   }
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+  const response = await (ai as any).models.generateContent({
+    model: "gemini-1.5-flash",
     contents: prompt,
     config: {
       tools: serviceId === ServiceType.SPORTS_ORACLE ? [{ googleSearch: {} }] : undefined
@@ -67,16 +67,35 @@ export const generateAssistantResponse = async (message: string, history: { role
   }
 
   const ai = new GoogleGenAI({ apiKey });
+  const systemPrompt = (COSMIC_PROMPTS as any).AI_ASSISTANT(language);
   
-  const historyStr = history.map(h => `${h.role === 'user' ? 'User' : 'Sage'}: ${h.text}`).join('\n');
-  const prompt = (COSMIC_PROMPTS as any).AI_ASSISTANT(language, historyStr);
+  // Build contents with alternating roles
+  const contents: any[] = [
+    { role: 'user', parts: [{ text: systemPrompt }] },
+    { role: 'model', parts: [{ text: "Understood. I am the Cosmic Guide. I will assist the seeker with expert precision and brevity." }] }
+  ];
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: [
-      { role: 'user', parts: [{ text: prompt }] },
-      { role: 'user', parts: [{ text: message }] }
-    ],
+  // Add history (skip the very first welcome message if it's from the model to maintain alternating order)
+  history.forEach((h, idx) => {
+    // Gemini expects user -> model -> user -> model
+    // Our first two messages are user (system) -> model (ack)
+    // So the next should be user.
+    // If history[0] is model, we might need to skip or adjust.
+    contents.push({
+      role: h.role === 'user' ? 'user' : 'model',
+      parts: [{ text: h.text }]
+    });
+  });
+
+  // Add current message
+  contents.push({
+    role: 'user',
+    parts: [{ text: message }]
+  });
+
+  const response = await (ai as any).models.generateContent({
+    model: "gemini-1.5-flash",
+    contents,
     config: {
       tools: [{ googleSearch: {} }]
     }
@@ -96,8 +115,8 @@ export const generateHoroscope = async (sign: string, language: ReportLanguage, 
   const ai = new GoogleGenAI({ apiKey });
   const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language, day);
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+  const response = await (ai as any).models.generateContent({
+    model: "gemini-1.5-flash",
     contents: prompt,
   });
   
