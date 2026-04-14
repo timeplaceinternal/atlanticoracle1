@@ -21,6 +21,8 @@ import { generateCosmicReading } from './services/geminiService';
 import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2, Ticket, Share2 } from 'lucide-react';
 import { translations } from './translations';
 import AIAssistant from './components/AIAssistant';
+import AboutSection from './components/AboutSection';
+import FAQSection from './components/FAQSection';
 
 const STRIPE_URLS_30: Record<ReportLanguage, string> = {
   English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
@@ -704,7 +706,7 @@ const App: React.FC = () => {
                       <Ticket className="w-3 h-3" />
                       Special Offer
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">{t.promoTitle}</h3>
+                    <h2 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">{t.promoTitle}</h2>
                     <p className="text-cosmic-silver font-light max-w-2xl mx-auto italic font-playfair">
                       {t.promoDesc}
                     </p>
@@ -730,8 +732,10 @@ const App: React.FC = () => {
                 </div>
               </section>
               
+              <AboutSection language={language} />
               <PhilosophySection language={language} />
               <HowItWorksSection language={language} />
+              <FAQSection language={language} />
 
               {/* TESTIMONIALS SECTION */}
               <section id="testimonials" className="px-6 max-w-7xl mx-auto py-20 relative">
@@ -992,6 +996,12 @@ const App: React.FC = () => {
             <p className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 block">
               {t.footerCopyright}
             </p>
+            
+            <div className="pt-8 max-w-2xl mx-auto">
+              <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.2em] leading-relaxed italic">
+                Unlike other astrology sites, Atlantic Oracle provides free natal chart calculations without registration. We value your ephemeral privacy. No email required, no cookies tracking your destiny.
+              </p>
+            </div>
           </div>
         </footer>
       </div>

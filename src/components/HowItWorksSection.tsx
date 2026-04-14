@@ -12,7 +12,7 @@ const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ language }) => {
   return (
     <section id="how-it-works" className="px-6 max-w-7xl mx-auto py-20 scroll-mt-32">
       <div className="text-center mb-20 space-y-4">
-        <h3 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">{t.howItWorksTitle}</h3>
+        <h2 className="text-4xl font-cinzel text-white uppercase tracking-[0.2em]">{t.howItWorksTitle}</h2>
         <p className="text-cosmic-silver italic font-playfair">{t.howItWorksSubtitle}</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
