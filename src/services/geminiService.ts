@@ -40,6 +40,12 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
       dreamDescription || "", dreamKeywords || "", dreamDate || "", dreamTime || "",
       language
     );
+  } else if (serviceId === ServiceType.ACTION_PLAN_10 || serviceId === ServiceType.ACTION_PLAN_30 || serviceId === ServiceType.ACTION_PLAN_100) {
+    prompt = (COSMIC_PROMPTS as any).ACTION_PLAN(
+      name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown",
+      request.goal || "Achievement", request.duration || 10,
+      language
+    );
   } else if (serviceId === ServiceType.PYTHAGOREAN_CODE || serviceId === ServiceType.FORTUNE_MAP || serviceId === ServiceType.CAPITAL_ALIGNMENT || serviceId === ServiceType.ENERGY_PULSE) {
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", language);
   } else {

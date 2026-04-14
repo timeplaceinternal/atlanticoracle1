@@ -2,7 +2,7 @@
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy, Target
 } from 'lucide-react';
 import { ServiceType, Service, NewsPost } from './types';
 
@@ -134,6 +134,26 @@ export const LIGHT_DROPS: Service[] = [
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
+  },
+  {
+    id: ServiceType.ACTION_PLAN_10,
+    title: "10-Day Action Plan (Free)",
+    description: "A high-precision energy roadmap for the next 10 days. Align your actions with celestial rhythms to jumpstart your goal.",
+    icon: "target",
+    price: 0,
+    isFree: true
+  },
+  {
+    id: ServiceType.ACTION_PLAN_30,
+    title: "30-Day Action Plan",
+    description: "A comprehensive monthly strategy. Synthesizes astrology, numerology, and achievement psychology to maintain your momentum.",
+    icon: "target",
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   }
 ];
@@ -318,6 +338,17 @@ export const SERVICES: Service[] = [
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
+  },
+  {
+    id: ServiceType.ACTION_PLAN_100,
+    title: "100-Day Action Plan (Master Decree)",
+    description: "The ultimate roadmap for major life shifts. A 100-day deep dive into your energetic cycles, psychological blocks, and strategic windows of power.",
+    icon: "target",
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+    }
   }
 ];
 
@@ -358,6 +389,7 @@ export const getServiceIcon = (iconName: string) => {
     case 'baby': return <Baby {...props} className="text-cosmic-gold" />;
     case 'moon': return <Moon {...props} className="text-cosmic-purple" />;
     case 'trophy': return <Trophy {...props} className="text-cosmic-gold" />;
+    case 'target': return <Target {...props} className="text-cosmic-gold" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -651,6 +683,29 @@ export const COSMIC_PROMPTS = {
     
     MANDATORY DISCLAIMER: At the very end, add a clear section about non-responsibility for the result. State that this is an entertainment service and users are responsible for their own decisions.
   `,
+  ACTION_PLAN: (name: string, date: string, time: string, place: string, goal: string, duration: number, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: ${duration}-DAY ACTION PLAN (Goal Achievement). 
+    SUBJECT: ${name}, born ${date} at ${time} in ${place}.
+    SPECIFIC GOAL: ${goal}
+    DURATION: ${duration} Days.
+
+    TASK: Act as a "Wise Sage" and "Achievement Architect". Provide a professional "Energy Roadmap" for achieving this specific goal.
+    
+    STRUCTURE:
+    1. THE COSMIC ALIGNMENT: How the subject's natal energy (Astrology/Numerology) resonates with this specific goal.
+    2. THE ENERGY GRAPH: A day-by-day (or phase-by-day) roadmap of energetic peaks and valleys for the next ${duration} days. 
+       - For 10 days: Day-by-day.
+       - For 30/100 days: Weekly or phase-based clusters.
+    3. FAVORABLE MOMENTS: Specific windows of power for initiation, communication, and deep work.
+    4. PSYCHOLOGY OF ACHIEVEMENT: Integrate psychological principles (concentration, momentum, habit formation) tailored to their energetic type.
+    5. THE SAGE'S DECREE: Final advice on how to start, how to maintain the tempo, and how to stay focused.
+
+    STYLE: Sophisticated, mysterious yet grounded. Do not provide a simple to-do list. Provide a "Plan of Energies".
+    LENGTH: 
+    - 10 Days: ~4 pages.
+    - 30/100 Days: ~15 pages.
+  `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
     SPECIAL GIFT: Personal Monthly Forecast. Subject: ${name}, born ${date}.
@@ -684,9 +739,11 @@ export const COSMIC_PROMPTS = {
         - Relationship Spark: 1-minute chemistry snapshot (Karmic Teacher, Mirror, etc.).
         - Energy Pulse: Current energetic state.
         - Fortune Map: Quick luck/opportunity check.
-    - DECREES (30 EUR): Professional, comprehensive 15-page deep-dive reports.
+        - Action Plan: 10-day (Free) or 30-day (10 EUR) energetic roadmap for goal achievement.
+    - DECREES (30 EUR): Professional, comprehensive 15-page deep-dive reports. Includes the 100-day Action Plan.
     - FREE SERVICES:
         - Daily Horoscope: Available in the "Cosmic News" section. General forecasts for all signs.
+        - 10-Day Action Plan: Free energetic roadmap for your goals.
         - Promo Discount: Users can unlock a 25% discount (code SPACE) by sharing the site via the "Unlock Discount" section on the home page.
 
     STRATEGY:

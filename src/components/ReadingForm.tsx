@@ -256,6 +256,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const [sportsDate, setSportsDate] = useState<Date | null>(null);
   const [sportsContext, setSportsContext] = useState('');
   const [sportsOdds, setSportsOdds] = useState('');
+  const [goal, setGoal] = useState('');
 
   const hourRef = React.useRef<HTMLInputElement>(null);
   const minuteRef = React.useRef<HTMLInputElement>(null);
@@ -317,6 +318,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       sportsDate: service.id === ServiceType.SPORTS_ORACLE ? formatDate(sportsDate) : undefined,
       sportsContext: service.id === ServiceType.SPORTS_ORACLE ? sportsContext : undefined,
       sportsOdds: service.id === ServiceType.SPORTS_ORACLE ? sportsOdds : undefined,
+      goal: (service.id === ServiceType.ACTION_PLAN_10 || service.id === ServiceType.ACTION_PLAN_30 || service.id === ServiceType.ACTION_PLAN_100) ? goal : undefined,
+      duration: service.id === ServiceType.ACTION_PLAN_10 ? 10 : service.id === ServiceType.ACTION_PLAN_30 ? 30 : service.id === ServiceType.ACTION_PLAN_100 ? 100 : undefined,
       timestamp: Date.now()
     });
   };
@@ -335,6 +338,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const isDreamService = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
   const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK;
   const isSportsOracle = service.id === ServiceType.SPORTS_ORACLE;
+  const isActionPlan = service.id === ServiceType.ACTION_PLAN_10 || service.id === ServiceType.ACTION_PLAN_30 || service.id === ServiceType.ACTION_PLAN_100;
   const isFree = service.isFree;
 
   return (
@@ -600,6 +604,23 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                   }
                 />
               </div>
+            </div>
+          </div>
+        )}
+
+        {isActionPlan && (
+          <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
+            <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Goal Details</h3>
+            <div>
+              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formGoal}</label>
+              <textarea 
+                value={goal} 
+                onChange={(e) => setGoal(e.target.value)} 
+                placeholder={t.formGoalPlaceholder}
+                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors min-h-[100px] resize-none"
+                required
+              />
+              <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formGoalHelp}</p>
             </div>
           </div>
         )}

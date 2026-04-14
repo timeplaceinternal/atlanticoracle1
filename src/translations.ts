@@ -268,6 +268,9 @@ export interface Translations {
   promoButton: string;
   promoCodeLabel: string;
   promoSuccess: string;
+  formGoal: string;
+  formGoalPlaceholder: string;
+  formGoalHelp: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -539,6 +542,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "I agree to share",
     promoCodeLabel: "Your Sacred Code:",
     promoSuccess: "Code revealed! Use it at checkout.",
+    formGoal: "Your Specific Goal",
+    formGoalPlaceholder: "e.g. Start a business, run a marathon, find inner peace...",
+    formGoalHelp: "Be as specific as possible for a more precise energy roadmap.",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -808,6 +814,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Eu concordo em compartilhar",
     promoCodeLabel: "Seu Código Sagrado:",
     promoSuccess: "Código revelado! Use-o no checkout.",
+    formGoal: "Seu Objetivo Específico",
+    formGoalPlaceholder: "ex: Iniciar um negócio, correr uma maratona, encontrar paz interior...",
+    formGoalHelp: "Seja o mais específico possível para um roteiro de energia mais preciso.",
   },
   Spanish: {
     navNews: "Noticias Cósmicas",
@@ -1077,6 +1086,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Acepto compartir",
     promoCodeLabel: "Tu Código Sagrado:",
     promoSuccess: "¡Código revelado! Úsalo al finalizar la compra.",
+    formGoal: "Tu Objetivo Específico",
+    formGoalPlaceholder: "ej. Iniciar un negocio, correr una maratón, encontrar paz interior...",
+    formGoalHelp: "Sea lo más específico posible para una hoja de ruta energética más precisa.",
   },
   Russian: {
     navNews: "Космические Новости",
@@ -1346,6 +1358,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Я согласен поделиться ссылкой",
     promoCodeLabel: "Ваш священный код:",
     promoSuccess: "Код открыт! Используйте его при оплате.",
+    formGoal: "Ваша Конкретная Цель",
+    formGoalPlaceholder: "например: Начать бизнес, пробежать марафон, обрести внутренний покой...",
+    formGoalHelp: "Будьте максимально конкретны для получения более точного энергетического плана.",
   },
   French: {
     chatTitle: "Guide Cosmique",
