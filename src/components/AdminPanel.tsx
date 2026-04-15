@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff, LogOut, Plus, Trash2, Edit2, Newspaper, Upload, Image as ImageIcon, Loader2, X as CloseIcon, ChevronLeft, Play, Calendar, Star, BookOpen, Hash, HelpCircle, Table, Link as LinkIcon, FileText, Sparkles, Download, Send, RefreshCw } from 'lucide-react';
+import { GoogleGenAI, Type } from "@google/genai";
 import { newsService } from '../services/newsService';
 import { kbService } from '../services/kbService';
 import { generateHoroscope } from '../services/geminiService';

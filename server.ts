@@ -7,9 +7,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import type { NewsPost } from "./src/types";
 import Stripe from "stripe";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { COSMIC_PROMPTS } from "./src/constants.js";
-import { ServiceType } from "./src/types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,197 +131,6 @@ async function startServer() {
 
   // API Routes
   
-  // AI Endpoints
-  app.post("/api/generate-reading", async (req, res) => {
-    const request = req.body;
-    const rawKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
-    const apiKey = rawKey.trim();
-
-    if (!apiKey || apiKey.length < 10) {
-      console.error("!!! GEMINI_API_KEY is missing or too short. Length:", apiKey.length);
-      return res.status(500).json({ error: "The Oracle is currently disconnected. Please check your API key settings." });
-    }
-
-    // Safe debug log: show length and first/last 3 chars
-    console.log(`[API] Request for ${request.serviceId}. Key Length: ${apiKey.length}, Prefix: ${apiKey.substring(0, 6)}`);
-
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash-latest", 
-        tools: request.serviceId === ServiceType.SPORTS_ORACLE ? [{ googleSearch: {} }] as any : undefined
-      });
-
-      let prompt = "";
-      const { 
-        serviceId, name, birthDate, birthTime, birthPlace, language, 
-        partnerName, partnerBirthDate, partnerBirthTime, 
-        dreamDescription, dreamKeywords, dreamDate, dreamTime,
-        sportsSide1, sportsSide2, sportsVenue, sportsDate,
-        goal, duration
-      } = request;
-
-      if (serviceId === ServiceType.LOVE_SYNASTRY || serviceId === ServiceType.RELATIONSHIP_SPARK) {
-        prompt = (COSMIC_PROMPTS as any)[serviceId](
-          name, birthDate, birthTime || "unknown",
-          partnerName || "Partner", partnerBirthDate || "unknown", partnerBirthTime || "unknown",
-          language
-        );
-      } else if (serviceId === ServiceType.SPORTS_ORACLE) {
-        prompt = (COSMIC_PROMPTS as any)[ServiceType.SPORTS_ORACLE](
-          sportsSide1 || "Unknown Side 1",
-          sportsSide2 || "Unknown Side 2",
-          sportsVenue || "Unknown Venue",
-          sportsDate || "Unknown Date",
-          language
-        );
-      } else if (serviceId === ServiceType.DREAM_INTERPRETATION || serviceId === ServiceType.FREE_DREAM_INTERPRETATION) {
-        prompt = (COSMIC_PROMPTS as any)[serviceId](
-          name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown",
-          dreamDescription || "", dreamKeywords || "", dreamDate || "", dreamTime || "",
-          language
-        );
-      } else if (serviceId === ServiceType.ACTION_PLAN_10 || serviceId === ServiceType.ACTION_PLAN_30 || serviceId === ServiceType.ACTION_PLAN_100) {
-        prompt = (COSMIC_PROMPTS as any).ACTION_PLAN(
-          name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown",
-          goal || "Achievement", duration || 10,
-          language
-        );
-      } else if (serviceId === ServiceType.PYTHAGOREAN_CODE || serviceId === ServiceType.FORTUNE_MAP || serviceId === ServiceType.CAPITAL_ALIGNMENT || serviceId === ServiceType.ENERGY_PULSE) {
-        prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", language);
-      } else {
-        prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);
-      }
-      
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      res.json({ text: response.text() });
-    } catch (error: any) {
-      console.error("AI Generation Full Error:", JSON.stringify(error, null, 2));
-      console.error("Error Message:", error.message);
-      console.error("Error Stack:", error.stack);
-      
-      if (error.message?.includes("API key not valid") || error.message?.includes("API_KEY_INVALID")) {
-        return res.status(400).json({ 
-          error: "The provided Gemini API Key is invalid. Please check your settings and ensure the key is correct and active." 
-        });
-      }
-      if (error.message?.includes("404") || error.status === 404) {
-        return res.status(404).json({
-          error: "Model not found (404). This might happen if the model 'gemini-1.5-flash' is not available in your region or for your project tier. Please check Google AI Studio settings."
-        });
-      }
-      res.status(500).json({ error: error.message || "Failed to generate reading" });
-    }
-  });
-
-  app.post("/api/assistant", async (req, res) => {
-    const { message, history, language } = req.body;
-    const rawKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
-    const apiKey = rawKey.trim();
-
-    if (!apiKey || apiKey.length < 10) {
-      return res.status(500).json({ error: "The Oracle is currently disconnected." });
-    }
-
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash-latest",
-        tools: [{ googleSearch: {} }] as any
-      });
-      
-      const systemPrompt = (COSMIC_PROMPTS as any).AI_ASSISTANT(language);
-      
-      const chat = model.startChat({
-        history: [
-          { role: 'user', parts: [{ text: systemPrompt }] },
-          { role: 'model', parts: [{ text: "Understood. I am the Cosmic Guide. I will assist the seeker with expert precision and brevity." }] },
-          ...history.map((h: any) => ({
-            role: h.role,
-            parts: [{ text: h.text }]
-          }))
-        ]
-      });
-
-      const result = await chat.sendMessage(message);
-      const response = await result.response;
-      res.json({ text: response.text() });
-    } catch (error: any) {
-      console.error("Assistant Error:", error);
-      if (error.message?.includes("API key not valid") || error.message?.includes("API_KEY_INVALID")) {
-        return res.status(400).json({ 
-          error: "The Oracle is currently disconnected. Please check your API key settings." 
-        });
-      }
-      res.status(500).json({ error: error.message || "Failed to get response" });
-    }
-  });
-
-  app.post("/api/horoscope", async (req, res) => {
-    const { sign, language, day } = req.body;
-    const rawKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
-    const apiKey = rawKey.trim();
-
-    if (!apiKey || apiKey.length < 10) {
-      return res.status(500).json({ error: "The Oracle is currently disconnected." });
-    }
-
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-      const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language, day);
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      res.json({ text: response.text() });
-    } catch (error: any) {
-      console.error("Horoscope Error:", error);
-      if (error.message?.includes("API key not valid") || error.message?.includes("API_KEY_INVALID")) {
-        return res.status(400).json({ 
-          error: "The Oracle is currently disconnected. Please check your API key settings." 
-        });
-      }
-      res.status(500).json({ error: error.message || "Failed to generate horoscope" });
-    }
-  });
-
-  // Health Check for API Key
-  app.get("/api/check-oracle", async (req, res) => {
-    const rawKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
-    const apiKey = rawKey.trim();
-    
-    if (!apiKey) {
-      return res.json({ status: "error", message: "API Key is missing in environment variables." });
-    }
-
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-      const result = await model.generateContent("hi");
-      const response = await result.response;
-      res.json({ 
-        status: "ok", 
-        message: "The Oracle is connected!",
-        keyInfo: {
-          length: apiKey.length,
-          start: apiKey.substring(0, 3),
-          end: apiKey.substring(apiKey.length - 3)
-        }
-      });
-    } catch (error: any) {
-      res.json({ 
-        status: "error", 
-        message: error.message,
-        keyInfo: {
-          length: apiKey.length,
-          start: apiKey.substring(0, 3),
-          end: apiKey.substring(apiKey.length - 3)
-        }
-      });
-    }
-  });
-
   // Horoscope Cache Endpoints
   app.get("/api/horoscope-cache", async (req, res) => {
     const { sign, lang, date } = req.query;
@@ -919,7 +725,7 @@ async function startServer() {
   } else {
     // Serve static files in production
     app.use(express.static("dist"));
-    app.get("*", (_req, res) => {
+    app.get("*all", (_req, res) => {
       res.sendFile("dist/index.html", { root: "." });
     });
   }

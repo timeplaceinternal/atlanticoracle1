@@ -183,7 +183,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
           }}
           className={`font-cinzel text-white uppercase tracking-tighter leading-none transition-all duration-700 cursor-pointer hover:opacity-80 ${selectedPost ? 'text-4xl md:text-6xl' : 'text-7xl md:text-9xl'}`}
         >
-          Daily Cosmic Insights: <span className="text-cosmic-gold">Astrology meets Numerology</span>
+          <span className="text-cosmic-gold">Cosmic</span> News
         </h1>
 
         <div className="border-y border-cosmic-gold/30 py-3 flex flex-wrap justify-between items-center text-[10px] uppercase tracking-[0.2em] text-cosmic-gold/80 font-bold px-4 gap-4">
@@ -211,7 +211,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
           <section className="space-y-12">
             <div className="flex items-center gap-4">
               <div className="w-12 h-px bg-cosmic-gold"></div>
-              <h2 className="text-3xl font-cinzel text-white uppercase tracking-widest">Daily Astrological Weather & Numerology Forecast</h2>
+              <h2 className="text-3xl font-cinzel text-white uppercase tracking-widest">Latest Transmissions</h2>
               <div className="flex-1 h-px bg-cosmic-gold/20"></div>
             </div>
 
@@ -220,7 +220,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                 const isFeatured = index === 0;
                 return (
                   <article 
-                    key={`${post.id || post.slug}-${index}`} 
+                    key={post.slug} 
                     onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
                     className={`group cursor-pointer space-y-6 flex flex-col h-full border rounded-[2.5rem] transition-all duration-500 ${
                       isFeatured 
