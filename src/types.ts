@@ -20,7 +20,10 @@ export enum ServiceType {
   CAPITAL_ALIGNMENT = 'free-capital-alignment',
   ENERGY_PULSE = 'free-energy-pulse',
   FREE_DREAM_INTERPRETATION = 'free-dream-interpretation',
-  HOROSCOPE_TOMORROW = 'horoscope-tomorrow'
+  HOROSCOPE_TOMORROW = 'horoscope-tomorrow',
+  GOAL_10_DAYS = 'goal-10-days',
+  GOAL_30_DAYS = 'goal-30-days',
+  GOAL_100_DAYS = 'goal-100-days'
 }
 
 export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Portuguese' | 'Russian';
@@ -63,6 +66,7 @@ export interface ReadingRequest {
   sportsDate?: string;
   sportsContext?: string;
   sportsOdds?: string;
+  goal?: string;
   timestamp: number;
 }
 

@@ -163,6 +163,9 @@ export interface Translations {
   formEmail: string;
   formEmailPlaceholder: string;
   formEmailHelp: string;
+  formGoal: string;
+  formGoalPlaceholder: string;
+  formGoalHelp: string;
   emailRequired: string;
   cookieConsentTitle: string;
   cookieConsentText: string;
@@ -434,6 +437,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     formEmail: "Email Address",
     formEmailPlaceholder: "your@email.com",
     formEmailHelp: "Required only to send your Oracle report and ensure you don't lose it.",
+    formGoal: "Your Goal",
+    formGoalPlaceholder: "Describe your goal clearly (e.g., 'Start a business', 'Lose 5kg', 'Learn a new language')",
+    formGoalHelp: "Be specific and clear for the best energetic alignment.",
     emailRequired: "Email is required for report delivery",
     cookieConsentTitle: "Celestial Consent",
     cookieConsentText: "We use cookies to enhance your cosmic journey. Essential cookies are required for the Oracle to function, while others help us understand the stars better.",
@@ -703,6 +709,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     formEmail: "Endereço de E-mail",
     formEmailPlaceholder: "seu@email.com",
     formEmailHelp: "Necessário apenas para enviar seu relatório do Oráculo e garantir que você não o perca.",
+    formGoal: "Seu Objetivo",
+    formGoalPlaceholder: "Descreva seu objetivo claramente (ex: 'Abrir um negócio', 'Perder 5kg', 'Aprender um novo idioma')",
+    formGoalHelp: "Seja específico e claro para o melhor alinhamento energético.",
     emailRequired: "O e-mail é necessário para a entrega do relatório",
     cookieConsentTitle: "Consentimento Celestial",
     cookieConsentText: "Usamos cookies para aprimorar sua jornada cósmica. Cookies essenciais são necessários para o funcionamento do Oráculo, enquanto outros nos ajudam a entender melhor as estrelas.",
@@ -972,6 +981,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     formEmail: "Correo Electrónico",
     formEmailPlaceholder: "tu@email.com",
     formEmailHelp: "Requerido solo para enviar su informe del Oráculo и asegurar que no lo pierda.",
+    formGoal: "Tu Objetivo",
+    formGoalPlaceholder: "Describe tu objetivo claramente (ej. 'Iniciar un negocio', 'Perder 5kg', 'Aprender un nuevo idioma')",
+    formGoalHelp: "Sé específico и claro para el mejor alineamiento energético.",
     emailRequired: "Se requiere correo electrónico para la entrega del informe",
     cookieConsentTitle: "Consentimiento Celestial",
     cookieConsentText: "Utilizamos cookies para mejorar su viaje cósmico. Las cookies esenciales son necesarias para que el Oráculo funcione, mientras que otras nos ayudan a comprender mejor las estrellas.",
@@ -1241,6 +1253,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     formEmail: "Адрес Электронной Почты",
     formEmailPlaceholder: "your@email.com",
     formEmailHelp: "Требуется только для отправки вашего отчета Оракула и гарантии того, что вы его не потеряете.",
+    formGoal: "Ваша Цель",
+    formGoalPlaceholder: "Опишите вашу цель четко (например, 'Начать бизнес', 'Похудеть на 5 кг', 'Выучить новый язык')",
+    formGoalHelp: "Будьте конкретны и ясны для наилучшего энергетического выравнивания.",
     emailRequired: "Электронная почта обязательна для доставки отчета",
     cookieConsentTitle: "Небесное Согласие",
     cookieConsentText: "Мы используем файлы cookie для улучшения вашего космического путешествия. Основные файлы cookie необходимы для работы Оракула, в то время как другие помогают нам лучше понимать звезды.",
@@ -1358,6 +1373,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Je suis d'accord pour partager",
     promoCodeLabel: "Votre Code Sacré :",
     promoSuccess: "Code révélé ! Utilisez-le lors du paiement.",
+    formGoal: "Votre Objectif",
+    formGoalPlaceholder: "Décrivez votre objectif clairement",
+    formGoalHelp: "Soyez spécifique pour un meilleur alignement.",
   } as any,
   German: {
     chatTitle: "Kosmischer Führer",
@@ -1370,6 +1388,9 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Ich stimme zu, zu teilen",
     promoCodeLabel: "Ihr heiliger Code:",
     promoSuccess: "Code enthüllt! Verwenden Sie ihn an der Kasse.",
+    formGoal: "Ihr Ziel",
+    formGoalPlaceholder: "Beschreiben Sie Ihr Ziel klar",
+    formGoalHelp: "Seien Sie spezifisch für eine bessere Ausrichtung.",
   } as any,
   Italian: {
     chatTitle: "Guida Cosmica",
@@ -1382,5 +1403,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Accetto di condividere",
     promoCodeLabel: "Il Tuo Codice Sacro:",
     promoSuccess: "Codice rivelato! Usalo al momento del pagamento.",
+    formGoal: "Il Tuo Obiettivo",
+    formGoalPlaceholder: "Descrivi chiaramente il tuo obiettivo",
+    formGoalHelp: "Sii specifico per un migliore allineamento.",
   } as any,
 };

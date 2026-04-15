@@ -2,7 +2,7 @@
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy, Target
 } from 'lucide-react';
 import { ServiceType, Service, NewsPost } from './types';
 
@@ -134,6 +134,26 @@ export const LIGHT_DROPS: Service[] = [
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+    }
+  },
+  {
+    id: ServiceType.GOAL_10_DAYS,
+    title: "10-Day Goal Accelerator (Free)",
+    description: "A quick energetic roadmap for your immediate goal. Includes psychological focus and cosmic timing for the next 10 days.",
+    icon: "target",
+    price: 0,
+    isFree: true
+  },
+  {
+    id: ServiceType.GOAL_30_DAYS,
+    title: "30-Day Achievement Plan",
+    description: "A deep monthly strategy for your goal. Synthesis of astrology, numerology, and achievement psychology to maintain your momentum.",
+    icon: "target",
+    price: 10,
+    isFree: false,
+    stripeUrls: {
+      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
+      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   }
 ];
@@ -318,6 +338,17 @@ export const SERVICES: Service[] = [
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
+  },
+  {
+    id: ServiceType.GOAL_100_DAYS,
+    title: "100-Day Master Decree",
+    description: "The ultimate long-term roadmap for major life goals. A 100-day plan of energies, favorable moments, and psychological concentration techniques.",
+    icon: "target",
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+    }
   }
 ];
 
@@ -358,6 +389,7 @@ export const getServiceIcon = (iconName: string) => {
     case 'baby': return <Baby {...props} className="text-cosmic-gold" />;
     case 'moon': return <Moon {...props} className="text-cosmic-purple" />;
     case 'trophy': return <Trophy {...props} className="text-cosmic-gold" />;
+    case 'target': return <Target {...props} className="text-red-500" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -650,6 +682,29 @@ export const COSMIC_PROMPTS = {
     CONSTRAINT: Never give direct betting advice. Use phrases like "The cosmic energy favors..." or "There is a significant tension in the favorite's sector." 
     
     MANDATORY DISCLAIMER: At the very end, add a clear section about non-responsibility for the result. State that this is an entertainment service and users are responsible for their own decisions.
+  `,
+  GOAL_ACHIEVEMENT: (name: string, date: string, time: string, place: string, goal: string, days: number, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    SERVICE: GOAL ACHIEVEMENT ACCELERATOR (${days} DAYS).
+    SUBJECT: ${name}, born ${date} at ${time} in ${place}.
+    THE GOAL: "${goal}"
+
+    TASK: Generate a professional, highly strategic ${days === 100 ? '15-page' : '4-page'} achievement roadmap.
+    
+    METHODOLOGY:
+    1. ASTROLOGY: Analyze current and upcoming transits (Mars for drive, Saturn for discipline, Jupiter for expansion) relative to the subject's chart for the next ${days} days.
+    2. NUMEROLOGY: Calculate the vibrational compatibility of the goal with the subject's Life Path and current Personal Year.
+    3. PSYCHOLOGY OF ACHIEVEMENT: Integrate "Achiever Mode" principles—concentration techniques, momentum maintenance, and overcoming resistance.
+
+    STRUCTURE:
+    - THE VISION: A sage's perspective on the goal's energetic alignment.
+    - ENERGETIC CALENDAR: A day-by-day (for 10 days) or phase-by-phase (for 30/100 days) plan of energies and favorable moments. Identify "Power Windows" for action and "Silence Windows" for planning.
+    - CONCENTRATION DECREE: Specific psychological techniques to maintain focus on this specific goal.
+    - MOMENTUM STRATEGY: How to maintain pace and what to do when energy dips.
+    - THE STARTING SPARK: Practical advice on how to take the first step TODAY.
+    - FINAL SAGE ADVICE: How to set goals that resonate with the soul.
+
+    TONE: Wise, encouraging, strategic, and direct. Focus on "Plan of Energies" rather than just a to-do list.
   `,
   GIFT_MONTHLY_HOROSCOPE: (name: string, date: string, lang: string) => `
     ${PROMPT_CORE(lang)}
