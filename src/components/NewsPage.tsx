@@ -220,7 +220,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                 const isFeatured = index === 0;
                 return (
                   <article 
-                    key={post.slug} 
+                    key={`${post.id || post.slug}-${index}`} 
                     onClick={() => { setSelectedPost(post.slug); onSlugChange(post.slug); }} 
                     className={`group cursor-pointer space-y-6 flex flex-col h-full border rounded-[2.5rem] transition-all duration-500 ${
                       isFeatured 

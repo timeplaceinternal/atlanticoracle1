@@ -142,16 +142,16 @@ async function startServer() {
 
     if (!apiKey || apiKey.length < 10) {
       console.error("!!! GEMINI_API_KEY is missing or too short. Length:", apiKey.length);
-      return res.status(500).json({ error: "The Oracle is currently disconnected (API Key missing or invalid). Please check your settings." });
+      return res.status(500).json({ error: "The Oracle is currently disconnected. Please check your API key settings." });
     }
 
     // Safe debug log: show length and first/last 3 chars
-    console.log(`Using API Key: Length=${apiKey.length}, Start=${apiKey.substring(0, 3)}..., End=...${apiKey.substring(apiKey.length - 3)}`);
+    console.log(`[API] Request for ${request.serviceId}. Key Length: ${apiKey.length}, Prefix: ${apiKey.substring(0, 6)}`);
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.0-flash", // Using a more stable and widely available model
+        model: "gemini-1.5-flash-latest", 
         tools: request.serviceId === ServiceType.SPORTS_ORACLE ? [{ googleSearch: {} }] as any : undefined
       });
 
@@ -230,7 +230,7 @@ async function startServer() {
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-1.5-flash-latest",
         tools: [{ googleSearch: {} }] as any
       });
       
@@ -254,7 +254,7 @@ async function startServer() {
       console.error("Assistant Error:", error);
       if (error.message?.includes("API key not valid") || error.message?.includes("API_KEY_INVALID")) {
         return res.status(400).json({ 
-          error: "Invalid Gemini API Key. Please check your settings." 
+          error: "The Oracle is currently disconnected. Please check your API key settings." 
         });
       }
       res.status(500).json({ error: error.message || "Failed to get response" });
@@ -272,7 +272,7 @@ async function startServer() {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
       const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language, day);
 
       const result = await model.generateContent(prompt);
@@ -282,7 +282,7 @@ async function startServer() {
       console.error("Horoscope Error:", error);
       if (error.message?.includes("API key not valid") || error.message?.includes("API_KEY_INVALID")) {
         return res.status(400).json({ 
-          error: "Invalid Gemini API Key. Please check your settings." 
+          error: "The Oracle is currently disconnected. Please check your API key settings." 
         });
       }
       res.status(500).json({ error: error.message || "Failed to generate horoscope" });
@@ -300,7 +300,7 @@ async function startServer() {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
       const result = await model.generateContent("hi");
       const response = await result.response;
       res.json({ 

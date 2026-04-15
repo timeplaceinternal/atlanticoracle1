@@ -8,10 +8,6 @@ export default defineConfig({
     port: 3000,
     host: '0.0.0.0',
   },
-  define: {
-    'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY),
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || process.env.GEMINI_API_KEY)
-  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -19,7 +15,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'oracle-vendor': ['lucide-react', '@google/genai'],
+          'oracle-vendor': ['lucide-react'],
         },
       },
     },
