@@ -2,6 +2,7 @@ import { ReportLanguage } from './types';
 
 export interface Translations {
   navNews: string;
+  navHoroscope: string;
   navDatabase: string;
   navPhilosophy: string;
   navHowItWorks: string;
@@ -276,6 +277,7 @@ export interface Translations {
 export const translations: Record<ReportLanguage, Translations> = {
   English: {
     navNews: "Cosmic News",
+    navHoroscope: "Daily Horoscope",
     navDatabase: "Database",
     navPhilosophy: "Philosophy",
     navHowItWorks: "How It Works",
@@ -548,6 +550,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
+    navHoroscope: "Horóscopo Diário",
     navDatabase: "Base de Dados",
     navPhilosophy: "Filosofia",
     navHowItWorks: "Como Funciona",
@@ -820,6 +823,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   },
   Spanish: {
     navNews: "Noticias Cósmicas",
+    navHoroscope: "Horóscopo Diario",
     navDatabase: "Base de Datos",
     navPhilosophy: "Filosofía",
     navHowItWorks: "Cómo Funciona",
@@ -1092,6 +1096,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   },
   Russian: {
     navNews: "Космические Новости",
+    navHoroscope: "Гороскоп на день",
     navDatabase: "База Данных",
     navPhilosophy: "Философия",
     navHowItWorks: "Как Это Работает",
@@ -1364,6 +1369,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   },
   French: {
     chatTitle: "Guide Cosmique",
+    navHoroscope: "Horoscope Quotidien",
     freeDailyHoroscope: "Horoscope Quotidien Gratuit",
     chatPlaceholder: "Demandez aux étoiles...",
     chatWelcome: "Bienvenue, chercheur. Comment puis-je vous guider aujourd'hui ?",
@@ -1379,6 +1385,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   } as any,
   German: {
     chatTitle: "Kosmischer Führer",
+    navHoroscope: "Tageshoroskop",
     freeDailyHoroscope: "Kostenloses Tageshoroskop",
     chatPlaceholder: "Fragen Sie die Sterne...",
     chatWelcome: "Willkommen, Suchender. Wie kann ich Sie heute führen?",
@@ -1394,6 +1401,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   } as any,
   Italian: {
     chatTitle: "Guida Cosmica",
+    navHoroscope: "Oroscopo Giornaliero",
     freeDailyHoroscope: "Oroscopo Giornaliero Gratuito",
     chatPlaceholder: "Chiedi alle stelle...",
     chatWelcome: "Benvenuto, cercatore. Come posso guidarti oggi?",

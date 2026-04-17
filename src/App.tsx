@@ -535,11 +535,14 @@ const App: React.FC = () => {
                 {t.navNews}
               </button>
               <button 
-                onClick={() => setView('database')} 
+                onClick={() => {
+                  const service = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
+                  if (service) handleStartService(service);
+                }} 
                 className="hover:text-cosmic-gold transition-colors uppercase"
-                aria-label="View Knowledge Base"
+                aria-label="View Daily Horoscope"
               >
-                {t.navDatabase}
+                {t.navHoroscope}
               </button>
               <button 
                 onClick={() => scrollToSection('philosophy')} 
@@ -600,7 +603,11 @@ const App: React.FC = () => {
                 </select>
               </div>
               <button onClick={() => { setNewsSlug(null); setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navNews}</button>
-              <button onClick={() => { setView('database'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navDatabase}</button>
+              <button onClick={() => { 
+                const service = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
+                if (service) handleStartService(service);
+                setIsMenuOpen(false); 
+              }} className="py-2 hover:text-cosmic-gold">{t.navHoroscope}</button>
               <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navPhilosophy}</button>
               <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navHowItWorks}</button>
               <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">{t.navConsult}</button>
@@ -1009,6 +1016,12 @@ const App: React.FC = () => {
                    <span className="text-sm font-bold tracking-[0.2em] uppercase">oracle@atlanticoracle.com</span>
                  </a>
                  <div className="flex flex-col gap-2">
+                    <button 
+                      onClick={() => setView('database')} 
+                      className="text-cosmic-gold hover:text-white transition-colors text-[10px] font-bold uppercase tracking-[0.3em] py-2"
+                    >
+                      {t.navDatabase}
+                    </button>
                     <button 
                       onClick={() => setView('dealer')} 
                       className="text-cosmic-gold hover:text-white transition-colors text-[10px] font-bold uppercase tracking-[0.3em] py-2"
