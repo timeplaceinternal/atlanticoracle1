@@ -384,6 +384,16 @@ export const SERVICES: Service[] = [
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
     }
+  },
+  {
+    id: ServiceType.HOROSCOPE_TOMORROW,
+    slug: "daily-horoscope",
+    title: "Personal Daily Horoscope",
+    description: "Your celestial forecast for today and tomorrow. Discover the current planetary transits affecting your zodiac sign.",
+    seoContent: "Unlock your personal daily horoscope for today and tomorrow. Our detailed celestial forecast analyzes the structural vibrations of the current planetary transits and how they interact with each of the twelve zodiac signs. Whether you are a fiery Aries or a grounded Capricorn, understand the energetic weather for the next 48 hours. Use this birth chart analysis tool to align your daily actions with the cosmic cycles of growth, challenge, and opportunity.",
+    icon: "sparkles",
+    price: 0,
+    isFree: true
   }
 ];
 

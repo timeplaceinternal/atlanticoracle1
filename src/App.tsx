@@ -161,6 +161,7 @@ const App: React.FC = () => {
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
+      if (cleanPath.includes('/daily-horoscope')) return 'service-detail';
       if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') return 'horoscope';
       if (cleanPath.startsWith('/services/')) return 'service-detail';
       if (cleanPath.includes('/database') || params.get('view') === 'database') {
@@ -205,7 +206,11 @@ const App: React.FC = () => {
         const path = horoscopeSign ? `/horoscope/${horoscopeSign}` : '/horoscope';
         window.history.pushState({}, '', path + url.search);
       } else if (view === 'service-detail' && selectedService) {
-        window.history.pushState({}, '', `/services/${selectedService.slug}` + url.search);
+        if (selectedService.id === ServiceType.HOROSCOPE_TOMORROW) {
+          window.history.pushState({}, '', '/daily-horoscope' + url.search);
+        } else {
+          window.history.pushState({}, '', `/services/${selectedService.slug}` + url.search);
+        }
       } else if (view === 'database') {
         window.history.pushState({}, '', '/database' + url.search);
       } else if (view === 'kb-article') {
@@ -252,6 +257,14 @@ const App: React.FC = () => {
 
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
+      } else if (cleanPath.includes('/daily-horoscope')) {
+        const service = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
+        if (service) {
+          setSelectedService(service);
+          setView('service-detail');
+        } else {
+          setView('home');
+        }
       } else if (cleanPath.startsWith('/services/')) {
         const slug = cleanPath.split('/services/')[1];
         const service = SERVICES.find(s => s.slug === slug);
@@ -365,8 +378,10 @@ const App: React.FC = () => {
 
   const handleStartService = (service: Service) => {
     setSelectedService(service);
-    if (service.price >= 30 && view !== 'service-detail') {
+    if ((service.price >= 30 || service.id === ServiceType.HOROSCOPE_TOMORROW) && view !== 'service-detail') {
       setView('service-detail');
+    } else if (service.id === ServiceType.HOROSCOPE_TOMORROW) {
+      setView('horoscope');
     } else {
       setView('form');
     }
@@ -614,7 +629,10 @@ const App: React.FC = () => {
                 <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair text-lg md:text-2xl">"{t.heroSubtitle}"</p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
                   <button onClick={() => scrollToSection('services')} className="w-full sm:w-auto px-10 py-4 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/20 hover:scale-105 transition-transform active:scale-95 text-sm uppercase tracking-wider">{t.heroCTA}</button>
-                  <button onClick={() => { setNewsSlug(null); setView('news'); }} className="w-full sm:w-auto px-10 py-4 bg-cosmic-800/40 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/10 transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+                  <button onClick={() => { 
+                    const service = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
+                    if (service) handleStartService(service);
+                  }} className="w-full sm:w-auto px-10 py-4 bg-cosmic-800/40 border border-cosmic-gold/30 text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold/10 transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2">
                     <Star className="w-4 h-4 fill-current" />
                     {t.freeDailyHoroscope}
                   </button>
