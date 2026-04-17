@@ -30,8 +30,10 @@ export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Ital
 
 export interface Service {
   id: ServiceType;
+  slug: string;
   title: string;
   description: string;
+  seoContent?: string;
   icon: string;
   price: number;
   isFree?: boolean;

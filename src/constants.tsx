@@ -22,6 +22,7 @@ export const INITIAL_NEWS: NewsPost[] = [
 export const LIGHT_DROPS: Service[] = [
   {
     id: ServiceType.FORTUNE_MAP,
+    slug: "fortune-map",
     title: "The Fortune Map (Weekly Forecast)",
     description: "Your personalized weekly luck index, power windows, and numerical vibrations for the next 7 days.",
     icon: "trending",
@@ -38,6 +39,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.CAPITAL_ALIGNMENT,
+    slug: "capital-alignment",
     title: "Capital Alignment",
     description: "Identify your leading income energy and financial resource leaks.",
     icon: "coins",
@@ -54,6 +56,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.ENERGY_PULSE,
+    slug: "energy-pulse",
     title: "The Energy Pulse",
     description: "Biological rhythm guide and a 1-minute mental reset technique.",
     icon: "battery",
@@ -70,6 +73,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.FREE_DREAM_INTERPRETATION,
+    slug: "dream-whisper",
     title: "The Dream Whisper",
     description: "A brief psychological insight into your dream. Soft advice from a wise sage to help you find clarity.",
     icon: "moonstar",
@@ -86,6 +90,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.DAILY_VIBRATION,
+    slug: "daily-vibration",
     title: "The Daily Vibration (Transit Key)",
     description: "Your personal \"Frequency of the Day\" and a specific action-mantra to align with today’s transits. Short calculation of how today's planetary positions resonate personally with your chart.",
     icon: "activity",
@@ -102,6 +107,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.RELATIONSHIP_SPARK,
+    slug: "relationship-spark",
     title: "The Relationship Spark (Compatibility Quick-Check)",
     description: "A 1-minute chemistry snapshot. Discover the primary \"lesson\" or \"vibe\" between you and another person. Express compatibility analysis based on two birth dates.",
     icon: "heart",
@@ -118,6 +124,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.SPORTS_ORACLE,
+    slug: "sports-oracle",
     title: "The Odds Oracle (Sports Prediction)",
     description: "A synthesis of hard sports data, bookmaker odds, and Horary Astrology to identify 'Cosmic Edges'. Discover discrepancies between market expectations and celestial reality.",
     icon: "trophy",
@@ -138,6 +145,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.GOAL_10_DAYS,
+    slug: "goal-10-days",
     title: "10-Day Goal Accelerator (Free)",
     description: "A quick energetic roadmap for your immediate goal. Includes psychological focus and cosmic timing for the next 10 days.",
     icon: "target",
@@ -146,6 +154,7 @@ export const LIGHT_DROPS: Service[] = [
   },
   {
     id: ServiceType.GOAL_30_DAYS,
+    slug: "goal-30-days",
     title: "30-Day Achievement Plan",
     description: "A deep monthly strategy for your goal. Synthesis of astrology, numerology, and achievement psychology to maintain your momentum.",
     icon: "target",
@@ -161,8 +170,10 @@ export const LIGHT_DROPS: Service[] = [
 export const SERVICES: Service[] = [
   {
     id: ServiceType.NATAL_CHART,
+    slug: "natal-chart",
     title: "The Natal Matrix (Natal Chart Report)",
     description: "Your cosmic blueprint. A deep psychological portrait based on planetary positions at birth. Discover your innate strengths, core weaknesses, and the unique architecture of your personality.",
+    seoContent: "A Natal Matrix astrology report provides a comprehensive birth chart analysis, mapping the planetary positions at the exact moment of your arrival. This architectural blueprint of your soul reveals the cosmic signature you carry. By synthesizing celestial mechanics and numerical vibrations, our Natal Matrix deep-dive explores your Sun's core identity, your Moon's emotional architecture, and the rising sign's first impression. Understand your innate strengths and hidden challenges through a professional, 15-page synthesis of destiny.",
     icon: "sparkles",
     price: 30,
     stripeUrls: {
@@ -176,8 +187,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.LOVE_SYNASTRY,
+    slug: "love-synastry",
     title: "Synastry & Love Compatibility",
     description: "Our most requested guide. Why are you drawn to each other? Explore relationship dynamics, domestic harmony, and sexual chemistry between two souls.",
+    seoContent: "Discover the chemistry of two souls with our Love Synastry report. This detailed astrology report analyzes relationship dynamics, domestic harmony, and sexual chemistry. By comparing two birth charts, we reveal how your planets activate each other's sectors, showing where you find support and where you face karmic growth. Whether you are seeking clarity on a new connection or deep insights into a long-term partnership, our synastry report offers an architectural view of your union.",
     icon: "heart",
     price: 30,
     stripeUrls: {
@@ -191,8 +204,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.YEARLY_SOLAR,
+    slug: "yearly-solar",
     title: "The 12-Month Solar Return (Yearly Forecast)",
     description: "\"Your Year Ahead.\" A comprehensive roadmap for the next 12 months. Identify key dates of fortune, periods of luck, and celestial warnings from birthday to birthday.",
+    seoContent: "Navigate your 12-month solar return with our comprehensive yearly forecast. This birth chart analysis for your birthday year maps out the key transits and celestial windows of opportunity. From quarterly breakdowns to monthly focus points, the Solar Return report identifies lucky dates and warns of energetic friction. Align your actions with the universe's timing and make each year your most powerful one yet.",
     icon: "calendar",
     price: 30,
     stripeUrls: {
@@ -206,8 +221,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.KARMIC_DESTINY,
+    slug: "karmic-destiny",
     title: "Karmic Destiny & Past Lives",
     description: "Identify the lessons you've brought from past incarnations. Understand your Nodes of Fate (North/South Node) and your soul's current mission in this life.",
+    seoContent: "Explore your karmic destiny and the residues of past lives with a deep-dive soul report. We analyze your Nodes of Fate—the North and South Nodes—to understand the spiritual mandate you were born with. This astrology report identifies transformative blocks and karmic debts, providing a structured roadmap for your soul's current mission. Discover why you repeat certain patterns and how to finally break through into your highest potential.",
     icon: "history",
     price: 30,
     stripeUrls: {
@@ -221,8 +238,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.CAREER_WEALTH,
+    slug: "career-wealth",
     title: "Career & Wealth Alignment",
     description: "A niche guide for professionals and seekers. Discover where your abundance lies, which sectors offer the highest returns, and the best timing for career shifts.",
+    seoContent: "Align your professional trajectory with our Career & Wealth report. This detailed analysis uses your birth chart to find your sectors of highest return and identifies financial resource leaks. Discover your innate leadership style and the best timing for career shifts or investments. By understanding the vibrations of your 10th and 2nd houses, you can build a legacy that resonates with your architectural frequency.",
     icon: "briefcase",
     price: 30,
     stripeUrls: {
@@ -236,8 +255,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.PYTHAGOREAN_CODE,
+    slug: "numerology",
     title: "The Pythagorean Code (Numerology)",
     description: "Mathematical precision for the modern mind. Calculation of your Life Path Number and core vibrations hidden within your birth date and name.",
+    seoContent: "Decode the mathematical vibration of your life with our Pythagorean Code numerology report. This analysis goes beyond simple horoscopes to reveal the core vibrations hidden in your name and birth date. Calculate your Life Path Number and Expression Number with professional precision. Understand the rhythm of your personal year cycles and align your lifestyle with the structural numbers that define your psychological reality.",
     icon: "hash",
     price: 30,
     stripeUrls: {
@@ -251,8 +272,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.HUMAN_DESIGN,
+    slug: "human-design",
     title: "Human Design: The Strategy of Life",
     description: "Identify your energetic type (Manifestor, Generator, etc.). Learn how to make decisions without resistance and align with your natural flow.",
+    seoContent: "Discover your unique energetic signature with an in-depth Human Design strategy report. Unlike traditional birth chart analysis, Human Design provides a practical manual for decision-making without resistance. Identify your Type—Manifestor, Generator, Projector, or Reflector—and understand your Inner Authority. Learn where you are consistent and where you are conditioned by the world around you, allowing you to live in your natural state of flow.",
     icon: "fingerprint",
     price: 30,
     stripeUrls: {
@@ -266,8 +289,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.ASTRO_CARTOGRAPHY,
+    slug: "astro-cartography",
     title: "Astro-Cartography (Relocation Map)",
     description: "\"Where is your city of power?\" Find specific coordinates on Earth where you'll encounter love, career breakthroughs, or spiritual peace.",
+    seoContent: "Find your city of power with our Astro-Cartography relocation guide. This astrology report maps your planetary lines across the globe to identify specific coordinates for love, career, and spiritual peace. Whether you are planning a temporary move or a permanent relocation, understand how the Earth's geography interacts with your birth chart analysis. Discover where your Sun line shines for success or your Venus line glows for relationship breakthroughs.",
     icon: "globe",
     price: 30,
     stripeUrls: {
@@ -281,8 +306,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.SATURN_RETURN,
+    slug: "saturn-return",
     title: "Saturn Return Survival Guide",
     description: "Navigate the critical crisis of age 29-30. Learn how to survive this cosmic 'coming of age' and emerge as a mature, victorious version of yourself.",
+    seoContent: "Survive and thrive during your 29-30 year crisis with our Saturn Return survival guide. This astrology report provides a foundational birth chart analysis to help you navigate the major life transition of your late twenties. Understand your Saturn natal placement and the specific phases of the return transit. Learn to master lessons in career, relationships, and self-authority to build a rock-solid foundation for the next thirty years of your journey.",
     icon: "zap",
     price: 30,
     stripeUrls: {
@@ -296,8 +323,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.DREAM_INTERPRETATION,
+    slug: "dream-interpretation",
     title: "The Sage's Dream Decree",
     description: "A comprehensive interpretation of your dream. Discover the psychological roots, symbolic meanings, and how it aligns with your cosmic path.",
+    seoContent: "Unlock the secrets of your subconscious with The Sage's Dream Decree. This comprehensive dream interpretation uses archetypal analysis to explore the psychological roots and symbolic meanings behind your night visions. By aligning your dream symbols with your birth chart analysis, we provide a structured path forward. Discover why certain images recur and how your inner wisdom is guiding your architectural destiny through the language of dreams.",
     icon: "moonstar",
     price: 30,
     stripeUrls: {
@@ -311,8 +340,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.GOLDEN_SEED,
+    slug: "golden-seed",
     title: "The Golden Seed (Child’s Cosmic Blueprint)",
     description: "\"The ultimate manual for conscious parents.\" Understand your child's energy from birth. This report is not about \"fate,\" but about potential: how they learn, how they express emotions, and in which activities they will flourish most brightly. Help the \"golden seed\" sprout without resistance.",
+    seoContent: "Understand your child's innate potential with The Golden Seed cosmic blueprint. This specialized birth chart analysis serves as a manual for conscious parents, revealing how your child learns, expresses emotions, and interacts with the world. Instead of predicting a fixed fate, we identify their unique talents and energetic signature. Help your child flourish by aligning your parenting strategy with their architectural design and structural vibrations.",
     icon: "baby",
     price: 30,
     stripeUrls: {
@@ -326,8 +357,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.SHADOW_WORK,
+    slug: "shadow-work",
     title: "The Shadow Work Ritual (Lilith & Pluto Deep Dive)",
     description: "\"Meet your dark side and turn it into your greatest ally.\" A deep analysis of Lilith, Pluto, and retrograde planets in your chart. Explore your repressed desires, fears, and irrational blocks. This report is for those ready for radical honesty and wanting to reclaim energy locked in the \"Shadow\" aspects of their personality.",
+    seoContent: "Embrace radical honesty with our Shadow Work Ritual report. This deep-dive astrology report analyzes Lilith, Pluto, and retrograde planets in your birth chart analysis to identify repressed desires and irrational blocks. Reclaim the energy locked in your shadow aspects and turn your 'dark side' into your greatest ally. For those seeking true transformation, this architectural exploration offers a structured path to psychological integration and inner power.",
     icon: "moon",
     price: 30,
     stripeUrls: {
@@ -341,8 +374,10 @@ export const SERVICES: Service[] = [
   },
   {
     id: ServiceType.GOAL_100_DAYS,
+    slug: "goal-accelerator",
     title: "100-Day Master Decree",
     description: "The ultimate long-term roadmap for major life goals. A 100-day plan of energies, favorable moments, and psychological concentration techniques.",
+    seoContent: "Achieve your most ambitious goals with the 100-Day Master Decree. This strategic roadmap integrates birth chart analysis, numerological vibrations, and the psychology of achievement. Receive a phase-by-phase plan of energies that identifies your 'Power Windows' for action and 'Silence Windows' for planning. Whether you are launching a business or seeking personal transformation, this 100-day accelerator provides the structural alignment needed for success.",
     icon: "target",
     price: 30,
     stripeUrls: {

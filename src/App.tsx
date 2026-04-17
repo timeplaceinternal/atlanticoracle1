@@ -21,6 +21,7 @@ import { generateCosmicReading } from './services/geminiService';
 import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2, Ticket, Share2 } from 'lucide-react';
 import { translations } from './translations';
 import AIAssistant from './components/AIAssistant';
+import ServiceDetailPage from './components/ServiceDetailPage';
 
 const STRIPE_URLS_30: Record<ReportLanguage, string> = {
   English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
@@ -147,7 +148,7 @@ const App: React.FC = () => {
     return () => { delete (window as any).openPrivacySettings; };
   }, []);
 
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer' | 'horoscope'>(() => {
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer' | 'horoscope' | 'service-detail'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
@@ -161,6 +162,7 @@ const App: React.FC = () => {
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
       if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') return 'horoscope';
+      if (cleanPath.startsWith('/services/')) return 'service-detail';
       if (cleanPath.includes('/database') || params.get('view') === 'database') {
         const match = cleanPath.match(/\/database\/([^/]+)\/([^/]+)/);
         return match ? 'kb-article' : 'database';
@@ -202,6 +204,8 @@ const App: React.FC = () => {
       } else if (view === 'horoscope') {
         const path = horoscopeSign ? `/horoscope/${horoscopeSign}` : '/horoscope';
         window.history.pushState({}, '', path + url.search);
+      } else if (view === 'service-detail' && selectedService) {
+        window.history.pushState({}, '', `/services/${selectedService.slug}` + url.search);
       } else if (view === 'database') {
         window.history.pushState({}, '', '/database' + url.search);
       } else if (view === 'kb-article') {
@@ -248,6 +252,15 @@ const App: React.FC = () => {
 
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
+      } else if (cleanPath.startsWith('/services/')) {
+        const slug = cleanPath.split('/services/')[1];
+        const service = SERVICES.find(s => s.slug === slug);
+        if (service) {
+          setSelectedService(service);
+          setView('service-detail');
+        } else {
+          setView('home');
+        }
       } else if (cleanPath.includes('/news') || params.get('view') === 'news') {
         const match = cleanPath.match(/\/news\/([^/]+)/);
         setNewsSlug(match ? match[1] : null);
@@ -352,7 +365,11 @@ const App: React.FC = () => {
 
   const handleStartService = (service: Service) => {
     setSelectedService(service);
-    setView('form');
+    if (service.price >= 30 && view !== 'service-detail') {
+      setView('service-detail');
+    } else {
+      setView('form');
+    }
     setIsMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -768,6 +785,15 @@ const App: React.FC = () => {
                 </div>
               </section>
             </div>
+          )}
+
+          {view === 'service-detail' && selectedService && (
+            <ServiceDetailPage 
+              service={selectedService} 
+              language={language} 
+              onBack={resetToHome} 
+              onStart={handleStartService} 
+            />
           )}
 
           {view === 'form' && selectedService && (
