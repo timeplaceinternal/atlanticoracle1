@@ -3,10 +3,6 @@ import { ReadingRequest, ServiceType, ReportLanguage } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
-  if (request.isTest) {
-    return "### TRANSMIÇÃO DE TESTE / TEST TRANSMISSION\n\n*O Portal está em modo de teste.*\n\nAs coordenadas celestiais foram processadas com sucesso. Este é um relatório de demonstração para validar o alinhamento do Santuário. Em uma análise real, aqui você encontraria entre 800 e 1500 palavras de síntese profunda entre Astrologia e Numerologia.\n\n**Coordenadas Recebidas:**\n- Nome: " + (request.name || "N/A") + "\n- Serviço: " + request.serviceId + "\n- Idioma: " + request.language + "\n\nO Oráculo está pronto para o seu decreto real.";
-  }
-
   const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   
   if (!apiKey) {
