@@ -84,6 +84,8 @@ const App: React.FC = () => {
         return { title: t.dailyVibrationTitle, description: t.dailyVibrationDesc };
       case ServiceType.RELATIONSHIP_SPARK:
         return { title: t.relationshipSparkTitle, description: t.relationshipSparkDesc };
+      case ServiceType.HOROSCOPE_TOMORROW:
+        return { title: t.horoscopeTitle, description: service.description };
       default:
         return { title: service.title, description: service.description };
     }
@@ -261,7 +263,7 @@ const App: React.FC = () => {
         const service = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
         if (service) {
           setSelectedService(service);
-          setView('service-detail');
+          setView('horoscope');
         } else {
           setView('home');
         }
@@ -378,10 +380,10 @@ const App: React.FC = () => {
 
   const handleStartService = (service: Service) => {
     setSelectedService(service);
-    if ((service.price >= 30 || service.id === ServiceType.HOROSCOPE_TOMORROW) && view !== 'service-detail') {
-      setView('service-detail');
-    } else if (service.id === ServiceType.HOROSCOPE_TOMORROW) {
+    if (service.id === ServiceType.HOROSCOPE_TOMORROW) {
       setView('horoscope');
+    } else if (service.price >= 30 && view !== 'service-detail') {
+      setView('service-detail');
     } else {
       setView('form');
     }
