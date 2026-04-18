@@ -6,6 +6,22 @@ interface PrivacyPolicyProps {
 }
 
 const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ onBack }) => {
+  React.useEffect(() => {
+    const originalTitle = document.title;
+    document.title = `Privacy Policy | data Sovereignty | Atlantic Oracle™`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const originalDesc = metaDesc?.getAttribute('content');
+    
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Understand how Atlantic Oracle™ handles your sacred data. Ephemeral privacy, GDPR compliance, and absolute transparency.');
+    }
+
+    return () => {
+      document.title = originalTitle;
+      if (metaDesc && originalDesc) metaDesc.setAttribute('content', originalDesc);
+    };
+  }, []);
+
   return (
     <div className="max-w-4xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       <div className="flex items-center justify-between mb-12">

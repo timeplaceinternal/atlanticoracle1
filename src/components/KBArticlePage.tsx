@@ -33,6 +33,58 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
     window.scrollTo(0, 0);
   }, [category, slug]);
 
+  useEffect(() => {
+    if (post) {
+      const originalTitle = document.title;
+      document.title = `${post.title} | Cosmic Database | Atlantic Oracle™`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      const originalDesc = metaDesc?.getAttribute('content');
+      
+      if (metaDesc) {
+        metaDesc.setAttribute('content', post.metaDescription || post.shortDefinition);
+      }
+
+      // Breadcrumb Schema
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Database",
+            "item": "https://atlanticoracle.com/database"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": post.category,
+            "item": `https://atlanticoracle.com/database/${post.category}`
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": post.title,
+            "item": `https://atlanticoracle.com/database/${post.category}/${post.slug}`
+          }
+        ]
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'breadcrumb-schema';
+      script.text = JSON.stringify(breadcrumbSchema);
+      document.head.appendChild(script);
+
+      return () => {
+        document.title = originalTitle;
+        if (metaDesc && originalDesc) metaDesc.setAttribute('content', originalDesc);
+        const scriptTags = document.querySelectorAll('#breadcrumb-schema');
+        scriptTags.forEach(tag => tag.remove());
+      };
+    }
+  }, [post]);
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);

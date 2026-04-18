@@ -39,19 +39,50 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       "category": "Astrology & Numerology Analysis"
     };
 
+    // Breadcrumb Schema
+    const breadcrumbData = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Services",
+          "item": `https://atlanticoracle.com/#services`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": service.title,
+          "item": `https://atlanticoracle.com/services/${service.slug}`
+        }
+      ]
+    };
+
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'service-schema';
     script.text = JSON.stringify(schemaData);
     document.head.appendChild(script);
 
+    const bScript = document.createElement('script');
+    bScript.type = 'application/ld+json';
+    bScript.id = 'breadcrumb-schema';
+    bScript.text = JSON.stringify(breadcrumbData);
+    document.head.appendChild(bScript);
+
     // Update Meta Title & Description for SEO
     const originalTitle = document.title;
+    const originalDesc = document.querySelector('meta[name="description"]')?.getAttribute('content');
     document.title = `${service.title} - Atlantic Oracle™`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', service.description);
     
     return () => {
       document.head.removeChild(script);
+      document.head.removeChild(bScript);
       document.title = originalTitle;
+      if (metaDesc && originalDesc) metaDesc.setAttribute('content', originalDesc);
     };
   }, [service]);
 

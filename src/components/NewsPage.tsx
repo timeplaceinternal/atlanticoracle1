@@ -141,6 +141,62 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
     document.title = title;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', description);
+
+    // Structured Data
+    const scripts: HTMLScriptElement[] = [];
+
+    if (selectedPost && currentPost) {
+      // NewsArticle Schema
+      const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": currentPost.title,
+        "datePublished": currentPost.date,
+        "author": {
+          "@type": "Organization",
+          "name": "Atlantic Oracle™"
+        },
+        "description": description,
+        "image": currentPost.imageUrl || "https://atlanticoracle.com/favicon.png"
+      };
+      
+      const articleScript = document.createElement('script');
+      articleScript.type = 'application/ld+json';
+      articleScript.id = 'news-article-schema';
+      articleScript.text = JSON.stringify(articleSchema);
+      document.head.appendChild(articleScript);
+      scripts.push(articleScript);
+
+      // Breadcrumb Schema
+      const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "News",
+            "item": "https://atlanticoracle.com/news"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": currentPost.title,
+            "item": `https://atlanticoracle.com/news/${currentPost.slug}`
+          }
+        ]
+      };
+      const breadcrumbScript = document.createElement('script');
+      breadcrumbScript.type = 'application/ld+json';
+      breadcrumbScript.id = 'breadcrumb-schema';
+      breadcrumbScript.text = JSON.stringify(breadcrumbSchema);
+      document.head.appendChild(breadcrumbScript);
+      scripts.push(breadcrumbScript);
+    }
+
+    return () => {
+      scripts.forEach(script => script.remove());
+    };
   }, [selectedPost, currentPost]);
   
   const horoscopePosts = posts.filter(p => p.topic === 'horoscope' || p.format === 'horoscope');

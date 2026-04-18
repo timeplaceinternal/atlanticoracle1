@@ -361,6 +361,17 @@ const App: React.FC = () => {
     }
   ];
 
+  // Manage document title based on view
+  useEffect(() => {
+    if (view === 'home') {
+      document.title = "Atlantic Oracle™ | Soul Horoscopes, Natal Charts & Human Design";
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', 'Premium soul horoscopes, union harmony analysis, and professional natal chart reports. AI-powered celestial guidance and Human Design strategy for the modern soul.');
+      }
+    }
+  }, [view]);
+
   const resetToHome = () => {
     setView('home');
     setSelectedService(null);

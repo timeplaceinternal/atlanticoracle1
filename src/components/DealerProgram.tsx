@@ -33,6 +33,22 @@ const DealerProgram: React.FC<DealerProgramProps> = ({ language, setLanguage, on
   const t = translations[language];
   const [currentSlide, setCurrentSlide] = useState<number | null>(null);
 
+  React.useEffect(() => {
+    const originalTitle = document.title;
+    document.title = `Dealer Program | Atlantic Oracle™ Affiliate`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const originalDesc = metaDesc?.getAttribute('content');
+    
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Monetize your SMM channel with premium astrology and numerology reports. Join the Atlantic Oracle™ P2P affiliate platform and earn high rewards by sharing cosmic wisdom.');
+    }
+
+    return () => {
+      document.title = originalTitle;
+      if (metaDesc && originalDesc) metaDesc.setAttribute('content', originalDesc);
+    };
+  }, []);
+
   const nextSlide = () => {
     if (currentSlide !== null && currentSlide < 10) {
       setCurrentSlide(currentSlide + 1);

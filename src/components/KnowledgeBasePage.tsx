@@ -38,6 +38,22 @@ const KnowledgeBasePage: React.FC<KnowledgeBasePageProps> = ({ language, onNavig
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const originalTitle = document.title;
+    document.title = `Cosmic Database | Atlantic Oracle™ Knowledge Base`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const originalDesc = metaDesc?.getAttribute('content');
+    
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Explore the Atlantic Oracle™ Knowledge Base. In-depth definitions of astrological entities, numerical vibrations, and Human Design strategy.');
+    }
+
+    return () => {
+      document.title = originalTitle;
+      if (metaDesc && originalDesc) metaDesc.setAttribute('content', originalDesc);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
         const fetched = await kbService.getPosts();
