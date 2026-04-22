@@ -676,7 +676,7 @@ export const COSMIC_PROMPTS = {
     5. Transformative Integration: Turning shadow into power.
     5. Transformative Integration: Turning shadow into power.
   `,
-  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: string, day: 'today' | 'tomorrow' = 'tomorrow') => {
+  [ServiceType.HOROSCOPE_TOMORROW]: (sign: string, lang: ReportLanguage, day: 'today' | 'tomorrow' = 'tomorrow') => {
     const targetDate = new Date();
     if (day === 'tomorrow') targetDate.setDate(targetDate.getDate() + 1);
     const dateStr = targetDate.toLocaleDateString('en-US', { 
