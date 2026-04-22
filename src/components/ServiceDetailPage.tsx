@@ -10,13 +10,15 @@ interface ServiceDetailPageProps {
   language: ReportLanguage;
   onBack: () => void;
   onStart: (service: Service) => void;
+  isWidget?: boolean;
 }
 
 const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ 
   service, 
   language, 
   onBack, 
-  onStart 
+  onStart,
+  isWidget
 }) => {
   const t = translations[language];
 
@@ -87,17 +89,19 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   }, [service]);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-cosmic-silver hover:text-cosmic-gold transition-colors mb-12 group"
-      >
-        <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-        <span className="text-xs font-bold uppercase tracking-widest">{t.backToStart}</span>
-      </button>
+    <div className={`max-w-4xl mx-auto ${isWidget ? 'px-2 py-4' : 'px-6 py-12'} animate-in fade-in slide-in-from-bottom-8 duration-700`}>
+      {!isWidget && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-cosmic-silver hover:text-cosmic-gold transition-colors mb-12 group"
+        >
+          <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-xs font-bold uppercase tracking-widest">{t.backToStart}</span>
+        </button>
+      )}
 
-      <div className="bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-gold/20 rounded-[3rem] overflow-hidden shadow-2xl">
-        <div className="p-8 md:p-16 space-y-12">
+      <div className={`${isWidget ? 'bg-transparent border-none' : 'bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-gold/20 rounded-[3rem]'} overflow-hidden shadow-2xl`}>
+        <div className={`${isWidget ? 'p-4' : 'p-8 md:p-16'} space-y-12`}>
           <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
             <div className="w-24 h-24 bg-cosmic-gold/10 rounded-3xl flex items-center justify-center border border-cosmic-gold/20 shadow-inner">
               {getServiceIcon(service.icon)}

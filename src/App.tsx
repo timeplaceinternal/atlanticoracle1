@@ -14,6 +14,7 @@ import KBArticlePage from './components/KBArticlePage';
 import CookieConsent from './components/CookieConsent';
 import PrivacySettings from './components/PrivacySettings';
 import DealerProgram from './components/DealerProgram';
+import WidgetsPage from './components/WidgetsPage';
 import HoroscopeService from './components/HoroscopeService';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
@@ -167,7 +168,7 @@ const App: React.FC = () => {
     return () => { delete (window as any).openPrivacySettings; };
   }, []);
 
-  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer' | 'horoscope' | 'service-detail'>(() => {
+  const [view, setView] = useState<'home' | 'form' | 'payment' | 'loading' | 'result' | 'privacy' | 'news' | 'admin' | 'database' | 'kb-article' | 'dealer' | 'horoscope' | 'service-detail' | 'widgets'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const path = window.location.pathname;
@@ -180,6 +181,7 @@ const App: React.FC = () => {
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
+      if (cleanPath.includes('/widgets') || params.get('view') === 'widgets') return 'widgets';
       if (cleanPath.includes('/daily-horoscope')) return 'horoscope';
       if (cleanPath.includes('/astro-weather')) return 'service-detail';
       if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') return 'horoscope';
@@ -240,8 +242,10 @@ const App: React.FC = () => {
         window.history.pushState({}, '', path + url.search);
       } else if (view === 'privacy') {
         window.history.pushState({}, '', '/privacy' + url.search);
-      } else if (view === 'dealer') {
+      } else if (cleanPath.includes('/dealer')) {
         window.history.pushState({}, '', '/dealer' + url.search);
+      } else if (view === 'widgets') {
+        window.history.pushState({}, '', '/widgets' + url.search);
       }
     }
   }, [view, newsSlug]);
@@ -279,6 +283,8 @@ const App: React.FC = () => {
 
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
+      } else if (cleanPath.includes('/widgets') || params.get('view') === 'widgets') {
+        setView('widgets');
       } else if (cleanPath.includes('/astro-weather')) {
         const service = SERVICES.find(s => s.id === ServiceType.ASTRO_WEATHER);
         if (service) {
@@ -539,6 +545,51 @@ const App: React.FC = () => {
       setIsPromoUnlocked(true);
     }
   };
+
+  const isWidgetMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('widget') === 'true';
+
+  if (isWidgetMode) {
+    return (
+      <div className="min-h-screen bg-cosmic-950 font-sans selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden p-0 m-0">
+         {view === 'loading' && <LoadingAnimation language={language} />}
+         {view === 'horoscope' && (
+           <HoroscopeService 
+             language={language} 
+             onExploreServices={() => window.open('https://atlanticoracle.com', '_blank')} 
+             isWidget={true}
+           />
+         )}
+         {view === 'service-detail' && selectedService?.id === ServiceType.ASTRO_WEATHER && (
+           <ServiceDetailPage 
+              service={selectedService} 
+              language={language} 
+              onBack={() => {}} 
+              onStart={handleStartService} 
+              isWidget={true}
+            />
+         )}
+         {view === 'form' && selectedService && (
+            <div className="py-4 px-2">
+              <ReadingForm 
+                service={selectedService} 
+                language={language}
+                onBack={resetToHome} 
+                onSubmit={handleFormSubmit} 
+              />
+            </div>
+          )}
+          {view === 'result' && result && (
+            <div className="py-4 px-2">
+              <ReadingResult 
+                result={result} 
+                onReset={resetToHome} 
+                onSelectService={handleStartService}
+              />
+            </div>
+          )}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen font-inter selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden">
@@ -1000,6 +1051,10 @@ const App: React.FC = () => {
             />
           )}
 
+          {view === 'widgets' && (
+            <WidgetsPage language={language} onBack={resetToHome} />
+          )}
+
           {view === 'admin' && (
             <div className="py-20">
               <AdminPanel />
@@ -1081,6 +1136,12 @@ const App: React.FC = () => {
                       className="text-cosmic-gold hover:text-white transition-colors text-[10px] font-bold uppercase tracking-[0.3em] py-2"
                     >
                       {t.navDealer}
+                    </button>
+                    <button 
+                      onClick={() => setView('widgets')} 
+                      className="text-cosmic-gold hover:text-white transition-colors text-[10px] font-bold uppercase tracking-[0.3em] py-2"
+                    >
+                      {t.navWidgets}
                     </button>
                     <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.3em] font-medium">{t.contactSupport}</p>
                     <p className="text-cosmic-silver/40 text-[9px] uppercase tracking-[0.2em] font-medium">R. Dom Martinho Castelo Branco 12 14, 8500-782 Portimão, Portugal</p>

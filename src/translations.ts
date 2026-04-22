@@ -5,6 +5,7 @@ export interface Translations {
   navHoroscope: string;
   navDatabase: string;
   navAstroWeather: string;
+  navWidgets: string;
   navPhilosophy: string;
   navHowItWorks: string;
   navConsult: string;
@@ -289,6 +290,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     navHoroscope: "Daily Horoscope",
     navDatabase: "Database",
     navAstroWeather: "Weather Forecast",
+    navWidgets: "Webmaster Widgets",
     navPhilosophy: "Philosophy",
     navHowItWorks: "How It Works",
     navConsult: "Oracle Consult",
@@ -571,6 +573,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     navHoroscope: "Horóscopo Diário",
     navDatabase: "Base de Dados",
     navAstroWeather: "Previsão do Tempo",
+    navWidgets: "Widgets para Webmasters",
     navPhilosophy: "Filosofia",
     navHowItWorks: "Como Funciona",
     navConsult: "Consultar Oráculo",

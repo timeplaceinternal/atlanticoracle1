@@ -12,9 +12,10 @@ interface HoroscopeServiceProps {
   language: ReportLanguage;
   onExploreServices: () => void;
   initialSign?: string | null;
+  isWidget?: boolean;
 }
 
-const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices, initialSign }) => {
+const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices, initialSign, isWidget }) => {
   const t = translations[language] || translations['English'];
   const [selectedSign, setSelectedSign] = useState<string | null>(initialSign || null);
   const [selectedDay, setSelectedDay] = useState<'today' | 'tomorrow'>('tomorrow');
@@ -136,20 +137,22 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
   };
 
   return (
-    <section className="w-full py-12 px-4 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-[3rem] overflow-hidden shadow-2xl relative">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <section className={`w-full ${isWidget ? 'py-4 px-2 bg-transparent border-none' : 'py-12 px-4 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-[3rem] shadow-2xl'} overflow-hidden relative`}>
+      <div className={`max-w-4xl mx-auto ${isWidget ? 'space-y-6' : 'space-y-12'}`}>
         {!selectedSign && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center space-y-6"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
-              <Sparkles className="w-4 h-4 text-cosmic-gold" />
-              <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">{t.horoscopeTitle}</span>
-            </div>
-            <h2 className="text-3xl md:text-5xl font-cinzel text-white uppercase tracking-widest">{t.horoscopeTitle}</h2>
-            <p className="text-cosmic-silver/60 italic font-playfair text-lg">{t.horoscopeSubtitle}</p>
+            {!isWidget && (
+              <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
+                <Sparkles className="w-4 h-4 text-cosmic-gold" />
+                <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">{t.horoscopeTitle}</span>
+              </div>
+            )}
+            <h2 className={`${isWidget ? 'text-2xl' : 'text-3xl md:text-5xl'} font-cinzel text-white uppercase tracking-widest`}>{t.horoscopeTitle}</h2>
+            {!isWidget && <p className="text-cosmic-silver/60 italic font-playfair text-lg">{t.horoscopeSubtitle}</p>}
             
             {/* Day Selector Toggle */}
             <div className="flex justify-center pt-4">
@@ -330,7 +333,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
 
               <div className="pt-12 border-t border-cosmic-gold/10 text-center space-y-8">
                 <div className="space-y-4">
-                  <Quote className="w-8 h-8 text-cosmic-gold/20 mx-auto" />
+                  <Star className="w-8 h-8 text-cosmic-gold/20 mx-auto" />
                   <p className="text-cosmic-silver italic font-playfair text-lg max-w-2xl mx-auto">
                     {t.horoscopeInvite}
                   </p>
