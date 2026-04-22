@@ -15,6 +15,7 @@ export enum ServiceType {
   DAILY_VIBRATION = 'daily-vibration',
   RELATIONSHIP_SPARK = 'relationship-spark',
   SPORTS_ORACLE = 'sports-oracle',
+  ASTRO_WEATHER = 'astro-weather',
   // Free Services
   FORTUNE_MAP = 'free-fortune-map',
   CAPITAL_ALIGNMENT = 'free-capital-alignment',
@@ -54,7 +55,7 @@ export interface ReadingRequest {
   birthTime?: string;
   partnerBirthTime?: string;
   birthPlace?: string;
-  email: string;
+  email?: string;
   language: ReportLanguage;
   isTest?: boolean;
   dreamDescription?: string;
@@ -68,6 +69,9 @@ export interface ReadingRequest {
   sportsDate?: string;
   sportsContext?: string;
   sportsOdds?: string;
+  city?: string;
+  forecastDuration?: 'today' | 'tomorrow' | '3days' | '10days';
+  zodiacSign?: string;
   goal?: string;
   timestamp: number;
 }

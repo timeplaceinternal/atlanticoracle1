@@ -2,7 +2,7 @@
 import React from 'react';
 import { 
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
-  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy, Target
+  History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy, Target, CloudSun
 } from 'lucide-react';
 import { ServiceType, Service, NewsPost } from './types';
 
@@ -394,6 +394,16 @@ export const SERVICES: Service[] = [
     icon: "sparkles",
     price: 0,
     isFree: true
+  },
+  {
+    id: ServiceType.ASTRO_WEATHER,
+    slug: "astro-weather",
+    title: "Astrological Weather Forecast",
+    description: "A professional synthesis of real-time meteorological data and celestial mechanics. Plan your days with cosmic and atmospheric precision.",
+    seoContent: "Get your personalized astrological weather forecast. Our AI Oracle combines real-time weather data with professional astrology, analyzing how atmospheric conditions and planetary transits affect your zodiac sign. Plan for today, tomorrow, or up to 10 days ahead with a deep, 4-page synthesis of destiny and nature.",
+    icon: "cloud-sun",
+    price: 0,
+    isFree: true
   }
 ];
 
@@ -435,6 +445,7 @@ export const getServiceIcon = (iconName: string) => {
     case 'moon': return <Moon {...props} className="text-cosmic-purple" />;
     case 'trophy': return <Trophy {...props} className="text-cosmic-gold" />;
     case 'target': return <Target {...props} className="text-red-500" />;
+    case 'cloud-sun': return <CloudSun {...props} className="text-sky-400" />;
     default: return <Sparkles {...props} />;
   }
 };
@@ -727,6 +738,36 @@ export const COSMIC_PROMPTS = {
     CONSTRAINT: Never give direct betting advice. Use phrases like "The cosmic energy favors..." or "There is a significant tension in the favorite's sector." 
     
     MANDATORY DISCLAIMER: At the very end, add a clear section about non-responsibility for the result. State that this is an entertainment service and users are responsible for their own decisions.
+  `,
+  [ServiceType.ASTRO_WEATHER]: (city: string, sign: string, duration: string, lang: string) => `
+    ${BASE_RULES(lang)}
+    ROLE: You are the "Celestial Meteorologist" for AtlanticOracle.com. Your mission is to synthesize real-time weather data and professional astrology to provide a unique "Astro-Weather" forecast.
+
+    INPUT:
+    - City: ${city}
+    - Zodiac Sign: ${sign}
+    - Duration: ${duration}
+
+    YOUR TASK:
+    1. USE GOOGLE SEARCH to find the real-time weather forecast for ${city} for the next ${duration}.
+       - Temperature, conditions (sky, rain, wind), and any notable atmospheric shifts.
+    2. CELESTIAL ANALYSIS:
+       - Identify the current planetary transits (Sun, Moon, Mercury, etc.) for this period.
+       - Analyze how these transits specifically affect someone born under the sign of ${sign}.
+    3. THE SYNTHESIS:
+       - Combine the meteorological and astrological data into a detailed report (~4 A4 pages).
+       - Explain how the "external" weather (nature) resonates with the "internal" weather (destiny).
+
+    STRUCTURE:
+    - THE COSMIC SKY: An evocative overview of the coming days.
+    - DAY-BY-DAY JOURNEY: A detailed breakdown (for ${duration}) linking specific weather events to astrological opportunities.
+    - POWER WINDOWS: Identify moments of high energy or periods for rest based on both storm/sun and planetary aspects.
+    - WHISPER FOR THE SOUL: A concluding poetic and practical advice.
+
+    TONE & STYLE:
+    - Sophisticated, analytical, mysterious, yet grounded.
+    - Detailed, accurate, and poetic.
+    - Use Markdown.
   `,
   GOAL_ACHIEVEMENT: (name: string, date: string, time: string, place: string, goal: string, days: number, lang: string) => `
     ${PROMPT_CORE(lang)}

@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { ReadingRequest, ServiceType, ReportLanguage } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
@@ -17,7 +17,8 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     serviceId, name, birthDate, birthTime, birthPlace, language, 
     partnerName, partnerBirthDate, partnerBirthTime, 
     dreamDescription, dreamKeywords, dreamDate, dreamTime,
-    sportsSide1, sportsSide2, sportsVenue, sportsDate
+    sportsSide1, sportsSide2, sportsVenue, sportsDate,
+    city, zodiacSign, forecastDuration
   } = request;
 
   if (serviceId === ServiceType.LOVE_SYNASTRY || serviceId === ServiceType.RELATIONSHIP_SPARK) {
@@ -48,27 +49,36 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     );
   } else if (serviceId === ServiceType.PYTHAGOREAN_CODE || serviceId === ServiceType.FORTUNE_MAP || serviceId === ServiceType.CAPITAL_ALIGNMENT || serviceId === ServiceType.ENERGY_PULSE) {
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", language);
+  } else if (serviceId === ServiceType.ASTRO_WEATHER) {
+    prompt = COSMIC_PROMPTS[ServiceType.ASTRO_WEATHER](
+      city || "Unknown City",
+      zodiacSign || "aries",
+      forecastDuration || "today",
+      language
+    );
   } else {
     // Standard services (Natal Chart, Yearly Solar, etc.)
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);
   }
 
-  const modelName = (serviceId === ServiceType.SPORTS_ORACLE || 
-                    serviceId === ServiceType.NATAL_CHART || 
-                    serviceId === ServiceType.LOVE_SYNASTRY || 
-                    serviceId === ServiceType.YEARLY_SOLAR || 
-                    serviceId === ServiceType.KARMIC_DESTINY || 
-                    serviceId === ServiceType.CAREER_WEALTH || 
-                    serviceId === ServiceType.SATURN_RETURN || 
-                    serviceId === ServiceType.SHADOW_WORK) 
-                    ? "gemini-3.1-pro-preview" 
-                    : "gemini-3-flash-preview";
+  const isPro = (serviceId === ServiceType.SPORTS_ORACLE || 
+                serviceId === ServiceType.ASTRO_WEATHER ||
+                serviceId === ServiceType.NATAL_CHART || 
+                serviceId === ServiceType.LOVE_SYNASTRY || 
+                serviceId === ServiceType.YEARLY_SOLAR || 
+                serviceId === ServiceType.KARMIC_DESTINY || 
+                serviceId === ServiceType.CAREER_WEALTH || 
+                serviceId === ServiceType.SATURN_RETURN || 
+                serviceId === ServiceType.SHADOW_WORK);
+
+  const modelName = isPro ? "gemini-3.1-pro-preview" : "gemini-3-flash-preview";
 
   const response = await ai.models.generateContent({
     model: modelName,
     contents: prompt,
     config: {
-      tools: serviceId === ServiceType.SPORTS_ORACLE ? [{ googleSearch: {} }] : undefined
+      tools: (serviceId === ServiceType.SPORTS_ORACLE || serviceId === ServiceType.ASTRO_WEATHER) ? [{ googleSearch: {} }] : undefined,
+      thinkingConfig: isPro ? { thinkingLevel: ThinkingLevel.HIGH } : undefined
     }
   });
   

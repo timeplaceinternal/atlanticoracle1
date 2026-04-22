@@ -235,7 +235,6 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [birthTime, setBirthTime] = useState({ hour: '', minute: '', is12h: false, amPm: 'AM' });
   const [birthPlace, setBirthPlace] = useState('');
-  const [email, setEmail] = useState('');
   const [goal, setGoal] = useState('');
   
   // Partner fields
@@ -257,6 +256,11 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const [sportsDate, setSportsDate] = useState<Date | null>(null);
   const [sportsContext, setSportsContext] = useState('');
   const [sportsOdds, setSportsOdds] = useState('');
+  
+  // Astro Weather fields
+  const [city, setCity] = useState('');
+  const [zodiacSign, setZodiacSign] = useState('aries');
+  const [forecastDuration, setForecastDuration] = useState<'today' | 'tomorrow' | '3days' | '10days'>('today');
 
   const hourRef = React.useRef<HTMLInputElement>(null);
   const minuteRef = React.useRef<HTMLInputElement>(null);
@@ -300,7 +304,6 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       birthDate: isSportsOracle ? undefined : formatDate(birthDate),
       birthTime: isSportsOracle ? undefined : formatTimeForSubmit(birthTime),
       birthPlace: isSportsOracle ? undefined : birthPlace,
-      email,
       language,
       isTest,
       serviceId: service.id,
@@ -319,6 +322,9 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       sportsDate: service.id === ServiceType.SPORTS_ORACLE ? formatDate(sportsDate) : undefined,
       sportsContext: service.id === ServiceType.SPORTS_ORACLE ? sportsContext : undefined,
       sportsOdds: service.id === ServiceType.SPORTS_ORACLE ? sportsOdds : undefined,
+      city: service.id === ServiceType.ASTRO_WEATHER ? city : undefined,
+      zodiacSign: service.id === ServiceType.ASTRO_WEATHER ? zodiacSign : undefined,
+      forecastDuration: service.id === ServiceType.ASTRO_WEATHER ? forecastDuration : undefined,
       timestamp: Date.now()
     });
   };
@@ -338,6 +344,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK;
   const isGoalService = service.id === ServiceType.GOAL_10_DAYS || service.id === ServiceType.GOAL_30_DAYS || service.id === ServiceType.GOAL_100_DAYS;
   const isSportsOracle = service.id === ServiceType.SPORTS_ORACLE;
+  const isAstroWeather = service.id === ServiceType.ASTRO_WEATHER;
   const isFree = service.isFree;
 
   return (
@@ -345,7 +352,67 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
       <h2 className="text-3xl font-cinzel text-white mb-6">{getServiceTitle()}</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-6">
-          {!isSportsOracle ? (
+          {isAstroWeather && (
+            <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
+              <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Forecast Details</h3>
+              
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formCity}</label>
+                <input 
+                  type="text" 
+                  value={city} 
+                  onChange={(e) => setCity(e.target.value)} 
+                  placeholder={t.formCityPlaceholder}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formZodiacSign}</label>
+                <select 
+                  value={zodiacSign} 
+                  onChange={(e) => setZodiacSign(e.target.value)}
+                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors appearance-none"
+                >
+                  <option value="aries" className="bg-cosmic-900">Aries ♈</option>
+                  <option value="taurus" className="bg-cosmic-900">Taurus ♉</option>
+                  <option value="gemini" className="bg-cosmic-900">Gemini ♊</option>
+                  <option value="cancer" className="bg-cosmic-900">Cancer ♋</option>
+                  <option value="leo" className="bg-cosmic-900">Leo ♌</option>
+                  <option value="virgo" className="bg-cosmic-900">Virgo ♍</option>
+                  <option value="libra" className="bg-cosmic-900">Libra ♎</option>
+                  <option value="scorpio" className="bg-cosmic-900">Scorpio ♏</option>
+                  <option value="sagittarius" className="bg-cosmic-900">Sagittarius ♐</option>
+                  <option value="capricorn" className="bg-cosmic-900">Capricorn ♑</option>
+                  <option value="aquarius" className="bg-cosmic-900">Aquarius ♒</option>
+                  <option value="pisces" className="bg-cosmic-900">Pisces ♓</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDuration}</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {(['today', 'tomorrow', '3days', '10days'] as const).map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setForecastDuration(d)}
+                      className={`py-3 rounded-xl border text-xs font-bold transition-all ${
+                        forecastDuration === d 
+                          ? 'bg-cosmic-gold border-cosmic-gold text-cosmic-900' 
+                          : 'bg-cosmic-900/50 border-cosmic-gold/20 text-cosmic-silver hover:border-cosmic-gold/40'
+                      }`}
+                    >
+                      {d === 'today' ? t.durationToday : d === 'tomorrow' ? t.durationTomorrow : d === '3days' ? t.duration3Days : t.duration10Days}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!isSportsOracle && !isAstroWeather ? (
             <>
               <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Your Details</h3>
               <div>
@@ -404,37 +471,9 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                     required
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formEmail}</label>
-                  <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    placeholder={t.formEmailPlaceholder}
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                    required
-                  />
-                  <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formEmailHelp}</p>
-                </div>
               </div>
             </>
-          ) : (
-            <>
-              <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Delivery Details</h3>
-              <div className="md:col-span-2">
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formEmail}</label>
-                <input 
-                  type="email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  placeholder={t.formEmailPlaceholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
-                  required
-                />
-                <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formEmailHelp}</p>
-              </div>
-            </>
-          )}
+          ) : null}
         </div>
 
         {isGoalService && (

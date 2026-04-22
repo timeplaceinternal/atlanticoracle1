@@ -164,6 +164,7 @@ const App: React.FC = () => {
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
       if (cleanPath.includes('/daily-horoscope')) return 'service-detail';
+      if (cleanPath.includes('/astro-weather')) return 'service-detail';
       if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') return 'horoscope';
       if (cleanPath.startsWith('/services/')) return 'service-detail';
       if (cleanPath.includes('/database') || params.get('view') === 'database') {
@@ -210,6 +211,8 @@ const App: React.FC = () => {
       } else if (view === 'service-detail' && selectedService) {
         if (selectedService.id === ServiceType.HOROSCOPE_TOMORROW) {
           window.history.pushState({}, '', '/daily-horoscope' + url.search);
+        } else if (selectedService.id === ServiceType.ASTRO_WEATHER) {
+          window.history.pushState({}, '', '/astro-weather' + url.search);
         } else {
           window.history.pushState({}, '', `/services/${selectedService.slug}` + url.search);
         }
@@ -369,8 +372,14 @@ const App: React.FC = () => {
       if (metaDesc) {
         metaDesc.setAttribute('content', 'Premium soul horoscopes, union harmony analysis, and professional natal chart reports. AI-powered celestial guidance and Human Design strategy for the modern soul.');
       }
+    } else if (view === 'service-detail' && selectedService?.id === ServiceType.ASTRO_WEATHER) {
+      document.title = "Astrological Weather Forecast | Atlantic Oracle™";
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', 'Personalized astrological weather forecast. AI-powered synthesis of real-time weather and planetary transits for your zodiac sign.');
+      }
     }
-  }, [view]);
+  }, [view, selectedService]);
 
   const resetToHome = () => {
     setView('home');
@@ -558,11 +567,14 @@ const App: React.FC = () => {
                 {t.navHoroscope}
               </button>
               <button 
-                onClick={() => scrollToSection('philosophy')} 
+                onClick={() => {
+                  const service = SERVICES.find(s => s.id === ServiceType.ASTRO_WEATHER);
+                  if (service) handleStartService(service);
+                }} 
                 className="hover:text-cosmic-gold transition-colors uppercase"
-                aria-label="Read our Philosophy"
+                aria-label="Astrological Weather Forecast"
               >
-                {t.navPhilosophy}
+                {t.navAstroWeather}
               </button>
               <button 
                 onClick={() => scrollToSection('how-it-works')} 
@@ -621,7 +633,11 @@ const App: React.FC = () => {
                 if (service) handleStartService(service);
                 setIsMenuOpen(false); 
               }} className="py-2 hover:text-cosmic-gold">{t.navHoroscope}</button>
-              <button onClick={() => { scrollToSection('philosophy'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navPhilosophy}</button>
+              <button onClick={() => { 
+                const service = SERVICES.find(s => s.id === ServiceType.ASTRO_WEATHER);
+                if (service) handleStartService(service);
+                setIsMenuOpen(false); 
+              }} className="py-2 hover:text-cosmic-gold">{t.navAstroWeather}</button>
               <button onClick={() => { scrollToSection('how-it-works'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navHowItWorks}</button>
               <button onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }} className="mt-4 px-6 py-4 bg-cosmic-gold text-cosmic-900 rounded-full font-cinzel">{t.navConsult}</button>
             </div>

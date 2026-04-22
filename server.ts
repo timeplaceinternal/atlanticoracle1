@@ -458,6 +458,14 @@ async function startServer() {
         'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
         'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'
       ];
+
+      const services = [
+        'natal-chart', 'love-synastry', 'yearly-solar', 'karmic-destiny', 
+        'career-wealth', 'numerology', 'human-design', 'astro-cartography', 
+        'saturn-return', 'dream-interpretation', 'golden-seed', 'shadow-work',
+        'goal-accelerator', 'fortune-map', 'capital-alignment', 'energy-pulse',
+        'dream-whisper', 'daily-vibration', 'relationship-spark', 'sports-oracle'
+      ];
       
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -465,6 +473,11 @@ async function startServer() {
     <loc>${baseUrl}/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/daily-horoscope</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>${baseUrl}/news</loc>
@@ -476,6 +489,22 @@ async function startServer() {
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>${baseUrl}/dealer</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  ${services.map(slug => `
+  <url>
+    <loc>${baseUrl}/services/${slug}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`).join('')}
   ${signs.map(sign => `
   <url>
     <loc>${baseUrl}/horoscope/${sign}</loc>
@@ -492,7 +521,7 @@ async function startServer() {
   ${kbPosts.map(post => `
   <url>
     <loc>${baseUrl}/database/${post.category}/${post.slug}</loc>
-    <lastmod>${post.dateModified}</lastmod>
+    <lastmod>${post.dateModified || post.date || '2026-04-18'}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>`).join('')}
