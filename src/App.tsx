@@ -78,6 +78,23 @@ const App: React.FC = () => {
   const t = translations[language];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
+  useEffect(() => {
+    if (!selectedService && typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase().replace(/\/$/, '');
+      if (path.includes('/astro-weather')) {
+        const s = SERVICES.find(s => s.id === ServiceType.ASTRO_WEATHER);
+        if (s) setSelectedService(s);
+      } else if (path.includes('/daily-horoscope')) {
+        const s = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
+        if (s) setSelectedService(s);
+      } else if (path.startsWith('/services/')) {
+        const slug = path.split('/services/')[1];
+        const s = SERVICES.find(s => s.slug === slug);
+        if (s) setSelectedService(s);
+      }
+    }
+  }, []);
+
   const getServiceTranslation = (service: Service) => {
     switch (service.id) {
       case ServiceType.DAILY_VIBRATION:
@@ -163,7 +180,7 @@ const App: React.FC = () => {
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
-      if (cleanPath.includes('/daily-horoscope')) return 'service-detail';
+      if (cleanPath.includes('/daily-horoscope')) return 'horoscope';
       if (cleanPath.includes('/astro-weather')) return 'service-detail';
       if (cleanPath.includes('/horoscope') || params.get('view') === 'horoscope') return 'horoscope';
       if (cleanPath.startsWith('/services/')) return 'service-detail';
@@ -262,6 +279,14 @@ const App: React.FC = () => {
 
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
         setView('admin');
+      } else if (cleanPath.includes('/astro-weather')) {
+        const service = SERVICES.find(s => s.id === ServiceType.ASTRO_WEATHER);
+        if (service) {
+          setSelectedService(service);
+          setView('service-detail');
+        } else {
+          setView('home');
+        }
       } else if (cleanPath.includes('/daily-horoscope')) {
         const service = SERVICES.find(s => s.id === ServiceType.HOROSCOPE_TOMORROW);
         if (service) {
