@@ -61,9 +61,7 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);
   }
 
-  const isPro = (serviceId === ServiceType.SPORTS_ORACLE || 
-                serviceId === ServiceType.ASTRO_WEATHER ||
-                serviceId === ServiceType.NATAL_CHART || 
+  const isPro = (serviceId === ServiceType.NATAL_CHART || 
                 serviceId === ServiceType.LOVE_SYNASTRY || 
                 serviceId === ServiceType.YEARLY_SOLAR || 
                 serviceId === ServiceType.KARMIC_DESTINY || 
@@ -78,7 +76,8 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     contents: prompt,
     config: {
       tools: (serviceId === ServiceType.SPORTS_ORACLE || serviceId === ServiceType.ASTRO_WEATHER) ? [{ googleSearch: {} }] : undefined,
-      thinkingConfig: isPro ? { thinkingLevel: ThinkingLevel.HIGH } : undefined
+      thinkingConfig: isPro ? { thinkingLevel: ThinkingLevel.LOW } : undefined,
+      temperature: (serviceId === ServiceType.ASTRO_WEATHER || serviceId === ServiceType.SPORTS_ORACLE) ? 0.0 : undefined
     }
   });
   

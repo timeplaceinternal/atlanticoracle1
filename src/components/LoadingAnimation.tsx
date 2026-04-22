@@ -21,7 +21,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setPhase((prev) => (prev + 1) % phases.length);
-    }, 3000);
+    }, 2000);
     return () => clearInterval(interval);
   }, [phases.length]);
 
