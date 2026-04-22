@@ -74,6 +74,11 @@ const App: React.FC = () => {
       const lang = params.get('lang');
       if (lang === 'pt') return 'Portuguese';
       if (lang === 'en') return 'English';
+      if (lang === 'es') return 'Spanish';
+      if (lang === 'ru') return 'Russian';
+      if (lang === 'fr') return 'French';
+      if (lang === 'de') return 'German';
+      if (lang === 'it') return 'Italian';
     }
     return 'English';
   });
@@ -99,12 +104,52 @@ const App: React.FC = () => {
 
   const getServiceTranslation = (service: Service) => {
     switch (service.id) {
+      case ServiceType.NATAL_CHART:
+        return { title: t.s_natal_chart, description: t.s_natal_chart_desc };
+      case ServiceType.LOVE_SYNASTRY:
+        return { title: t.s_love_synastry, description: t.s_love_synastry_desc };
+      case ServiceType.YEARLY_SOLAR:
+        return { title: t.s_yearly_solar, description: t.s_yearly_solar_desc };
+      case ServiceType.KARMIC_DESTINY:
+        return { title: t.s_karmic_destiny, description: t.s_karmic_destiny_desc };
+      case ServiceType.CAREER_WEALTH:
+        return { title: t.s_career_wealth, description: t.s_career_wealth_desc };
+      case ServiceType.PYTHAGOREAN_CODE:
+        return { title: t.s_numerology, description: t.s_numerology_desc };
+      case ServiceType.HUMAN_DESIGN:
+        return { title: t.s_human_design, description: t.s_human_design_desc };
+      case ServiceType.ASTRO_CARTOGRAPHY:
+        return { title: t.s_astro_cartography, description: t.s_astro_cartography_desc };
+      case ServiceType.SATURN_RETURN:
+        return { title: t.s_saturn_return, description: t.s_saturn_return_desc };
+      case ServiceType.DREAM_INTERPRETATION:
+        return { title: t.s_dream_decree, description: t.s_dream_decree_desc };
+      case ServiceType.GOLDEN_SEED:
+        return { title: t.s_golden_seed, description: t.s_golden_seed_desc };
+      case ServiceType.SHADOW_WORK:
+        return { title: t.s_shadow_work, description: t.s_shadow_work_desc };
+      case ServiceType.GOAL_100_DAYS:
+        return { title: t.s_goal_100, description: t.s_goal_100_desc };
+      case ServiceType.FORTUNE_MAP:
+        return { title: t.s_fortune_map, description: t.s_fortune_map_desc };
+      case ServiceType.CAPITAL_ALIGNMENT:
+        return { title: t.s_capital_alignment, description: t.s_capital_alignment_desc };
+      case ServiceType.ENERGY_PULSE:
+        return { title: t.s_energy_pulse, description: t.s_energy_pulse_desc };
+      case ServiceType.FREE_DREAM_INTERPRETATION:
+        return { title: t.s_dream_whisper, description: t.s_dream_whisper_desc };
       case ServiceType.DAILY_VIBRATION:
-        return { title: t.dailyVibrationTitle, description: t.dailyVibrationDesc };
+        return { title: t.s_daily_vibration, description: t.s_daily_vibration_desc };
       case ServiceType.RELATIONSHIP_SPARK:
-        return { title: t.relationshipSparkTitle, description: t.relationshipSparkDesc };
+        return { title: t.s_relationship_spark, description: t.s_relationship_spark_desc };
+      case ServiceType.SPORTS_ORACLE:
+        return { title: t.s_sports_oracle, description: t.s_sports_oracle_desc };
+      case ServiceType.GOAL_10_DAYS:
+        return { title: t.s_goal_10, description: t.s_goal_10_desc };
+      case ServiceType.GOAL_30_DAYS:
+        return { title: t.s_goal_30, description: t.s_goal_30_desc };
       case ServiceType.HOROSCOPE_TOMORROW:
-        return { title: t.horoscopeTitle, description: service.description };
+        return { title: t.horoscopeTitle, description: t.horoscopeSubtitle };
       default:
         return { title: service.title, description: service.description };
     }
@@ -116,6 +161,16 @@ const App: React.FC = () => {
       const url = new URL(window.location.href);
       if (language === 'Portuguese') {
         url.searchParams.set('lang', 'pt');
+      } else if (language === 'Spanish') {
+        url.searchParams.set('lang', 'es');
+      } else if (language === 'Russian') {
+        url.searchParams.set('lang', 'ru');
+      } else if (language === 'French') {
+        url.searchParams.set('lang', 'fr');
+      } else if (language === 'German') {
+        url.searchParams.set('lang', 'de');
+      } else if (language === 'Italian') {
+        url.searchParams.set('lang', 'it');
       } else if (language === 'English') {
         url.searchParams.delete('lang');
       }
@@ -127,7 +182,12 @@ const App: React.FC = () => {
   useEffect(() => {
     const langMap: Record<string, string> = {
       'English': 'en',
-      'Portuguese': 'pt-BR'
+      'Portuguese': 'pt-BR',
+      'Spanish': 'es',
+      'Russian': 'ru',
+      'French': 'fr',
+      'German': 'de',
+      'Italian': 'it'
     };
     document.documentElement.lang = langMap[language] || 'en';
   }, [language]);
@@ -621,6 +681,11 @@ const App: React.FC = () => {
                 >
                   <option value="English" className="bg-cosmic-900">EN</option>
                   <option value="Portuguese" className="bg-cosmic-900">PT</option>
+                  <option value="Spanish" className="bg-cosmic-900">ES</option>
+                  <option value="Russian" className="bg-cosmic-900">RU</option>
+                  <option value="French" className="bg-cosmic-900">FR</option>
+                  <option value="German" className="bg-cosmic-900">DE</option>
+                  <option value="Italian" className="bg-cosmic-900">IT</option>
                 </select>
               </div>
               <button 
@@ -679,6 +744,11 @@ const App: React.FC = () => {
                 >
                   <option value="English" className="bg-cosmic-900">EN</option>
                   <option value="Portuguese" className="bg-cosmic-900">PT</option>
+                  <option value="Spanish" className="bg-cosmic-900">ES</option>
+                  <option value="Russian" className="bg-cosmic-900">RU</option>
+                  <option value="French" className="bg-cosmic-900">FR</option>
+                  <option value="German" className="bg-cosmic-900">DE</option>
+                  <option value="Italian" className="bg-cosmic-900">IT</option>
                 </select>
               </div>
               <button 
@@ -702,6 +772,11 @@ const App: React.FC = () => {
                 >
                   <option value="English" className="bg-cosmic-900">English (EN)</option>
                   <option value="Portuguese" className="bg-cosmic-900">Português (PT-BR)</option>
+                  <option value="Spanish" className="bg-cosmic-900">Español (ES)</option>
+                  <option value="Russian" className="bg-cosmic-900">Русский (RU)</option>
+                  <option value="French" className="bg-cosmic-900">Français (FR)</option>
+                  <option value="German" className="bg-cosmic-900">Deutsch (DE)</option>
+                  <option value="Italian" className="bg-cosmic-900">Italiano (IT)</option>
                 </select>
               </div>
               <button onClick={() => { setNewsSlug(null); setView('news'); setIsMenuOpen(false); }} className="py-2 hover:text-cosmic-gold">{t.navNews}</button>
@@ -737,6 +812,10 @@ const App: React.FC = () => {
                     <>The Secret Language of <span className="text-cosmic-gold">Space and Numbers</span></>
                   ) : language === 'Portuguese' ? (
                     <>A Linguagem Secreta do <span className="text-cosmic-gold">Espaço e dos Números</span></>
+                  ) : language === 'Spanish' ? (
+                    <>El Lenguaje Secreto del <span className="text-cosmic-gold">Espacio y los Números</span></>
+                  ) : language === 'Russian' ? (
+                    <>Секретный Язык <span className="text-cosmic-gold">Пространства и Чисел</span></>
                   ) : t.heroTitle}
                 </h1>
                 <p className="text-lg md:text-2xl text-cosmic-silver font-light max-w-3xl mx-auto italic font-playfair text-lg md:text-2xl">"{t.heroSubtitle}"</p>
@@ -850,7 +929,7 @@ const App: React.FC = () => {
                   <div className="space-y-4">
                     <div className="inline-flex items-center gap-2 px-4 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">
                       <Ticket className="w-3 h-3" />
-                      Special Offer
+                      {t.specialOffer}
                     </div>
                     <h3 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">{t.promoTitle}</h3>
                     <p className="text-cosmic-silver font-light max-w-2xl mx-auto italic font-playfair">
@@ -951,10 +1030,11 @@ const App: React.FC = () => {
                     className="w-16 h-16 text-cosmic-gold mx-auto mb-6 group-hover:scale-110 transition-transform" 
                   />
                 </div>
-                <h2 className="text-3xl font-cinzel text-white mb-4">Secure Gateway</h2>
+                <h2 className="text-3xl font-cinzel text-white mb-4">{t.paySecureGateway}</h2>
                 <p className="text-cosmic-silver mb-8 italic">
-                  Your study in {currentRequest?.language} is formatted and ready for the matrix. 
-                  Fee: €{selectedService?.price || 0}.
+                  {t.payReadyMessage} ({currentRequest?.language})
+                  <br />
+                  {t.payFeeLabel} €{selectedService?.price || 0}.
                 </p>
                 
                 <div className="space-y-6">
@@ -972,7 +1052,7 @@ const App: React.FC = () => {
                           setIsPromoApplied(false);
                         }
                       }}
-                      placeholder="PROMO CODE"
+                      placeholder={t.payPromoPlaceholder}
                       className="bg-transparent border-none outline-none text-white text-sm tracking-widest w-full uppercase"
                     />
                     {isPromoApplied && (
@@ -984,7 +1064,7 @@ const App: React.FC = () => {
                     onClick={handleProceedToStripe} 
                     className="w-full py-5 bg-white text-cosmic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
                   >
-                    Pay via Stripe <ExternalLink className="w-5 h-5" />
+                    {t.payButtonLabel} <ExternalLink className="w-5 h-5" />
                   </button>
                   
                   <button onClick={resetToHome} className="text-cosmic-silver/60 text-xs uppercase tracking-widest hover:text-white transition-colors block mx-auto pt-4">Return to Sanctuary</button>

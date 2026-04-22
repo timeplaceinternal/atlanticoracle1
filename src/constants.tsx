@@ -382,8 +382,13 @@ export const SERVICES: Service[] = [
     icon: "target",
     price: 30,
     stripeUrls: {
-      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+      English: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      Portuguese: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      Russian: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      Spanish: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      French: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      German: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
+      Italian: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06"
     }
   },
   {
@@ -454,7 +459,12 @@ export const getServiceIcon = (iconName: string) => {
 const BASE_RULES = (lang: string) => {
   const langRules: Record<string, string> = {
     'English': 'REPLY ONLY IN AMERICAN ENGLISH (EN-US).',
-    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).'
+    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).',
+    'Spanish': 'REPLY ONLY IN SPANISH (ES).',
+    'Russian': 'REPLY ONLY IN RUSSIAN (RU).',
+    'French': 'REPLY ONLY IN FRENCH (FR).',
+    'German': 'REPLY ONLY IN GERMAN (DE).',
+    'Italian': 'REPLY ONLY IN ITALIAN (IT).'
   };
   
   const now = new Date();
