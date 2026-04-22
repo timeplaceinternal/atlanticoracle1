@@ -4,7 +4,8 @@ import {
   Sparkles, Heart, Briefcase, Calendar, Hash, Globe, 
   History, Activity, MoonStar, Star, ShieldCheck, Zap, Gift, Compass, Fingerprint, TrendingUp, Coins, Battery, Baby, Moon, Trophy, Target, CloudSun
 } from 'lucide-react';
-import { ServiceType, Service, NewsPost } from './types';
+import { ServiceType, Service, NewsPost, ReportLanguage } from './types';
+import { translations } from './translations';
 
 export const INITIAL_NEWS: NewsPost[] = [
   {
@@ -690,12 +691,26 @@ export const COSMIC_PROMPTS = {
       ZODIAC SIGN: ${sign}.
       TARGET DATE: ${dateStr}.
       
-      TASK: Provide a concise, friendly, and advising astrological forecast for ${sign} for ${day}.
-      STYLE: Simple, clear, friendly, and encouraging. No "water" or filler text.
-      CONTENT: General astrological advice for everyone born under this sign. 
+      TASK: Provide a structured, advising astrological forecast for ${sign} for ${day}.
+      STYLE: Simple, clear, friendly, and encouraging.
+      FORMAT: Markdown. No stars (*). 
+      STRUCTURE:
+      Use exactly these categories with emojis:
+      ## ${translations[lang].h_career}
+      [Bullet points about career/money]
+      
+      ## ${translations[lang].h_love}
+      [Bullet points about relationships/social]
+      
+      ## ${translations[lang].h_health}
+      [Bullet points about well-being]
+      
+      ## ${translations[lang].h_advice}
+      [A conclusion or a focus mantra for the day]
+      
+      STRICTION: DO NOT use hashtags like #Aries. Start directly with the first category.
+      STRICTION: Keep it concise but insightful.
       STRICTION: DO NOT mention birth place, birth time, or any personal details. This is a general forecast.
-      STRICTION: Keep it short (1-2 small paragraphs).
-      FORMAT: Markdown. No stars (*). Use ## for the title.
     `;
   },
   // MASTER PROMPT: This prompt is synchronized with GEMINI.md. 

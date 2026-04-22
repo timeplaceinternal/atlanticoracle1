@@ -282,6 +282,10 @@ export interface Translations {
   promoButton: string;
   promoCodeLabel: string;
   promoSuccess: string;
+  h_career: string;
+  h_love: string;
+  h_health: string;
+  h_advice: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -567,6 +571,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "I agree to share",
     promoCodeLabel: "Your Sacred Code:",
     promoSuccess: "Code revealed! Use it at checkout.",
+    h_career: "Career & Ambition 🤓",
+    h_love: "Love & Connection ❤️",
+    h_health: "Health & Energy 👌",
+    h_advice: "Sage Advice ✨",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -850,12 +858,17 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Eu concordo em compartilhar",
     promoCodeLabel: "Seu Código Sagrado:",
     promoSuccess: "Código revelado! Use-o no checkout.",
+    h_career: "Carreira & Ambição 🤓",
+    h_love: "Amor & Conexão ❤️",
+    h_health: "Saúde & Energia 👌",
+    h_advice: "Conselho do Sábio ✨",
   },
   Spanish: {
     navNews: "Noticias Cósmicas",
     navHoroscope: "Horóscopo Diario",
     navDatabase: "Base de Datos",
     navAstroWeather: "Pronóstico del Tiempo",
+    navWidgets: "Widgets para Webmasters",
     navPhilosophy: "Filosofía",
     navHowItWorks: "Cómo Funciona",
     navConsult: "Consultar Oráculo",
@@ -1132,12 +1145,17 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Acepto compartir",
     promoCodeLabel: "Tu Código Sagrado:",
     promoSuccess: "¡Código revelado! Úsalo al finalizar la compra.",
+    h_career: "Carrera & Ambición 🤓",
+    h_love: "Amor & Conexión ❤️",
+    h_health: "Salud & Energía 👌",
+    h_advice: "Consejo del Sabio ✨",
   },
   Russian: {
     navNews: "Космические Новости",
     navHoroscope: "Гороскоп на день",
     navDatabase: "База Данных",
     navAstroWeather: "Прогноз Погоды",
+    navWidgets: "Виджеты для веб-мастеров",
     navPhilosophy: "Философия",
     navHowItWorks: "Как Это Работает",
     navConsult: "Консультация Оракула",
@@ -1414,10 +1432,15 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Я согласен поделиться ссылкой",
     promoCodeLabel: "Ваш священный код:",
     promoSuccess: "Код открыт! Используйте его при оплате.",
+    h_career: "Карьера и Амбиции 🤓",
+    h_love: "Любовь и Отношения ❤️",
+    h_health: "Здоровье и Энергия 👌",
+    h_advice: "Совет Оракула ✨",
   },
   French: {
     chatTitle: "Guide Cosmique",
     navHoroscope: "Horoscope Quotidien",
+    navWidgets: "Widgets pour Webmasters",
     freeDailyHoroscope: "Horoscope Quotidien Gratuit",
     chatPlaceholder: "Demandez aux étoiles...",
     chatWelcome: "Bienvenue, chercheur. Comment puis-je vous guider aujourd'hui ?",
@@ -1427,6 +1450,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Je suis d'accord pour partager",
     promoCodeLabel: "Votre Code Sacré :",
     promoSuccess: "Code révélé ! Utilisez-le lors du paiement.",
+    h_career: "Carrière & Ambition 🤓",
+    h_love: "Amour & Connexion ❤️",
+    h_health: "Santé & Énergie 👌",
+    h_advice: "Conseil du Sage ✨",
     navAstroWeather: "Météo Astro",
     formCity: "Votre Ville",
     formCityPlaceholder: "ex. Paris",
@@ -1443,6 +1470,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   German: {
     chatTitle: "Kosmischer Führer",
     navHoroscope: "Tageshoroskop",
+    navWidgets: "Webmaster-Widgets",
     freeDailyHoroscope: "Kostenloses Tageshoroskop",
     chatPlaceholder: "Fragen Sie die Sterne...",
     chatWelcome: "Willkommen, Suchender. Wie kann ich Sie heute führen?",
@@ -1452,6 +1480,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Ich stimme zu, zu teilen",
     promoCodeLabel: "Ihr heiliger Code:",
     promoSuccess: "Code enthüllt! Verwenden Sie ihn an der Kasse.",
+    h_career: "Karriere & Ehrgeiz 🤓",
+    h_love: "Liebe & Verbindung ❤️",
+    h_health: "Gesundheit & Energie 👌",
+    h_advice: "Rat des Weisen ✨",
     navAstroWeather: "Astro-Wetter",
     formCity: "Ihre Stadt",
     formCityPlaceholder: "z.B. Berlin",
@@ -1468,6 +1500,7 @@ export const translations: Record<ReportLanguage, Translations> = {
   Italian: {
     chatTitle: "Guida Cosmica",
     navHoroscope: "Oroscopo Giornaliero",
+    navWidgets: "Widget per Webmaster",
     freeDailyHoroscope: "Oroscopo Giornaliero Gratuito",
     chatPlaceholder: "Chiedi alle stelle...",
     chatWelcome: "Benvenuto, cercatore. Come posso guidarti oggi?",
@@ -1477,6 +1510,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     promoButton: "Accetto di condividere",
     promoCodeLabel: "Il Tuo Codice Sacro:",
     promoSuccess: "Codice rivelato! Usalo al momento del pagamento.",
+    h_career: "Carriera & Ambizione 🤓",
+    h_love: "Amore & Relazioni ❤️",
+    h_health: "Salute & Energia 👌",
+    h_advice: "Consiglio del Saggio ✨",
     navAstroWeather: "Meteo Astro",
     formCity: "La tua città",
     formCityPlaceholder: "es. Roma",

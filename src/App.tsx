@@ -242,7 +242,7 @@ const App: React.FC = () => {
         window.history.pushState({}, '', path + url.search);
       } else if (view === 'privacy') {
         window.history.pushState({}, '', '/privacy' + url.search);
-      } else if (cleanPath.includes('/dealer')) {
+      } else if (view === 'dealer') {
         window.history.pushState({}, '', '/dealer' + url.search);
       } else if (view === 'widgets') {
         window.history.pushState({}, '', '/widgets' + url.search);

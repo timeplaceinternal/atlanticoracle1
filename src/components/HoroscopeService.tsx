@@ -35,6 +35,31 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
     return d.toISOString().split('T')[0];
   };
 
+  const [loadingPhase, setLoadingPhase] = useState(0);
+
+  const loadingPhases = language === 'Portuguese' ? [
+    "Digitalizando trânsitos...",
+    "Calculando vibrações...",
+    "Sincronizando com as estrelas...",
+    "Manifestando visão..."
+  ] : [
+    "Scanning Transits...",
+    "Calculating Vibrations...",
+    "Synchronizing with Stars...",
+    "Manifesting Insight..."
+  ];
+
+  useEffect(() => {
+    let interval: any;
+    if (loading) {
+      setLoadingPhase(0);
+      interval = setInterval(() => {
+        setLoadingPhase(prev => (prev + 1) % loadingPhases.length);
+      }, 1500);
+    }
+    return () => clearInterval(interval);
+  }, [loading, language]);
+
   const handleSignClick = async (signId: string, dayOverride?: 'today' | 'tomorrow') => {
     const day = dayOverride || selectedDay;
     setSelectedSign(signId);
@@ -244,10 +269,21 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                   </span>
                 </div>
               </div>
-              <div className="space-y-4">
-                <h3 className="text-xl font-cinzel text-white uppercase tracking-widest animate-pulse">
-                  {selectedDay === 'today' ? t.horoscopeLoading.replace('tomorrow', 'today') : t.horoscopeLoading}
+              <div className="space-y-6 w-full max-w-xs mx-auto">
+                <h3 className="text-xl font-cinzel text-white uppercase tracking-widest h-8">
+                  {loadingPhases[loadingPhase]}
                 </h3>
+                
+                {/* Progress bar */}
+                <div className="w-full h-1 bg-cosmic-gold/10 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 6, ease: "linear" }}
+                    className="h-full bg-cosmic-gold shadow-[0_0_10px_rgba(212,175,55,0.5)]"
+                  />
+                </div>
+
                 <div className="flex justify-center gap-2">
                   <div className="w-1.5 h-1.5 bg-cosmic-gold rounded-full animate-bounce delay-0"></div>
                   <div className="w-1.5 h-1.5 bg-cosmic-gold rounded-full animate-bounce delay-150"></div>
@@ -327,7 +363,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                 </button>
               </div>
 
-              <div className="prose prose-invert prose-gold max-w-none prose-p:text-cosmic-silver prose-p:leading-relaxed prose-p:text-lg prose-p:font-serif prose-headings:font-cinzel prose-headings:text-white prose-strong:text-cosmic-gold first-letter:text-6xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:mr-4 first-letter:float-left first-letter:mt-2">
+              <div className="prose prose-invert prose-gold max-w-none prose-p:text-cosmic-silver prose-p:leading-relaxed prose-p:text-lg prose-p:font-sans prose-headings:font-cinzel prose-headings:text-white prose-headings:uppercase prose-headings:tracking-widest prose-headings:text-xl prose-headings:mt-12 prose-headings:mb-6 prose-strong:text-cosmic-gold prose-ul:list-disc prose-ul:pl-6 prose-li:text-cosmic-silver prose-li:mb-2">
                 <Markdown>{forecast}</Markdown>
               </div>
 
