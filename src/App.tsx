@@ -74,8 +74,9 @@ const App: React.FC = () => {
       const lang = params.get('lang');
       if (lang === 'pt') return 'Portuguese';
       if (lang === 'en') return 'English';
+      if (lang === 'es') return 'Spanish';
     }
-    return 'English';
+    return 'Spanish';
   });
   const t = translations[language];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -107,10 +108,52 @@ const App: React.FC = () => {
 
   const getServiceTranslation = (service: Service) => {
     switch (service.id) {
+      case ServiceType.NATAL_CHART:
+        return { title: t.s_natal_title, description: t.s_natal_desc };
+      case ServiceType.LOVE_SYNASTRY:
+        return { title: t.s_love_title, description: t.s_love_desc };
+      case ServiceType.YEARLY_SOLAR:
+        return { title: t.s_solar_title, description: t.s_solar_desc };
+      case ServiceType.KARMIC_DESTINY:
+        return { title: t.s_karmic_title, description: t.s_karmic_desc };
+      case ServiceType.CAREER_WEALTH:
+        return { title: t.s_career_title, description: t.s_career_desc };
+      case ServiceType.PYTHAGOREAN_CODE:
+        return { title: t.s_num_title, description: t.s_num_desc };
+      case ServiceType.HUMAN_DESIGN:
+        return { title: t.s_hd_title, description: t.s_hd_desc };
+      case ServiceType.ASTRO_CARTOGRAPHY:
+        return { title: t.s_carto_title, description: t.s_carto_desc };
+      case ServiceType.SATURN_RETURN:
+        return { title: t.s_saturn_title, description: t.s_saturn_desc };
+      case ServiceType.DREAM_INTERPRETATION:
+        return { title: t.s_dream_title, description: t.s_dream_desc };
+      case ServiceType.GOLDEN_SEED:
+        return { title: t.s_child_title, description: t.s_child_desc };
+      case ServiceType.SHADOW_WORK:
+        return { title: t.s_shadow_title, description: t.s_shadow_desc };
+      case ServiceType.GOAL_100_DAYS:
+        return { title: t.s_master_title, description: t.s_master_desc };
+      case ServiceType.ASTRO_WEATHER:
+        return { title: t.s_weather_title, description: t.s_weather_desc };
+      case ServiceType.FORTUNE_MAP:
+        return { title: t.s_fortune_title, description: t.s_fortune_desc };
+      case ServiceType.CAPITAL_ALIGNMENT:
+        return { title: t.s_capital_title, description: t.s_capital_desc };
+      case ServiceType.ENERGY_PULSE:
+        return { title: t.s_pulse_title, description: t.s_pulse_desc };
+      case ServiceType.FREE_DREAM_INTERPRETATION:
+        return { title: t.s_whisper_title, description: t.s_whisper_desc };
       case ServiceType.DAILY_VIBRATION:
-        return { title: t.dailyVibrationTitle, description: t.dailyVibrationDesc };
+        return { title: t.s_vibration_title, description: t.s_vibration_desc };
       case ServiceType.RELATIONSHIP_SPARK:
-        return { title: t.relationshipSparkTitle, description: t.relationshipSparkDesc };
+        return { title: t.s_spark_title, description: t.s_spark_desc };
+      case ServiceType.SPORTS_ORACLE:
+        return { title: t.s_oracle_title, description: t.s_oracle_desc };
+      case ServiceType.GOAL_10_DAYS:
+        return { title: t.s_goal10_title, description: t.s_goal10_desc };
+      case ServiceType.GOAL_30_DAYS:
+        return { title: t.s_goal30_title, description: t.s_goal30_desc };
       case ServiceType.HOROSCOPE_TOMORROW:
         return { title: t.horoscopeTitle, description: service.description };
       default:
@@ -124,6 +167,8 @@ const App: React.FC = () => {
       const url = new URL(window.location.href);
       if (language === 'Portuguese') {
         url.searchParams.set('lang', 'pt');
+      } else if (language === 'Spanish') {
+        url.searchParams.set('lang', 'es');
       } else if (language === 'English') {
         url.searchParams.delete('lang');
       }
@@ -135,7 +180,8 @@ const App: React.FC = () => {
   useEffect(() => {
     const langMap: Record<string, string> = {
       'English': 'en',
-      'Portuguese': 'pt-BR'
+      'Portuguese': 'pt-BR',
+      'Spanish': 'es'
     };
     document.documentElement.lang = langMap[language] || 'en';
   }, [language]);
@@ -227,6 +273,9 @@ const App: React.FC = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
+      const langCode = language === 'Portuguese' ? 'pt' : language === 'Spanish' ? 'es' : 'en';
+      url.searchParams.set('lang', langCode);
+      
       if (view === 'home') {
         url.searchParams.delete('view');
         window.history.pushState({}, '', '/' + url.search);
@@ -260,7 +309,7 @@ const App: React.FC = () => {
         window.history.pushState({}, '', '/widgets' + url.search);
       }
     }
-  }, [view, newsSlug]);
+  }, [view, newsSlug, language]);
 
   // Protection for the loading view
   useEffect(() => {
@@ -291,6 +340,7 @@ const App: React.FC = () => {
       
       const lang = params.get('lang');
       if (lang === 'pt') setLanguage('Portuguese');
+      else if (lang === 'es') setLanguage('Spanish');
       else if (lang === 'en') setLanguage('English');
 
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') {
@@ -359,6 +409,67 @@ const App: React.FC = () => {
   useEffect(() => {
     (window as any).setAppView = setView;
   }, []);
+
+  // Dynamic SEO management
+  useEffect(() => {
+    const updateSEO = () => {
+      let title = t.metaHomeTitle;
+      let description = t.metaHomeDescription;
+
+      switch (view) {
+        case 'home':
+          title = t.metaHomeTitle;
+          description = t.metaHomeDescription;
+          break;
+        case 'service-detail':
+          if (selectedService) {
+            title = `${selectedService.title} | Atlantic Oracle`;
+            description = selectedService.description.substring(0, 160);
+          } else {
+            title = t.metaServicesTitle;
+          }
+          break;
+        case 'news':
+          title = t.metaNewsTitle;
+          break;
+        case 'database':
+        case 'kb-article':
+          title = t.metaDatabaseTitle;
+          break;
+        case 'horoscope':
+          title = t.metaHoroscopeTitle;
+          break;
+        default:
+          title = t.metaHomeTitle;
+      }
+
+      document.title = title;
+      
+      // Update meta description
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', description);
+      } else {
+        const meta = document.createElement('meta');
+        meta.name = "description";
+        meta.content = description;
+        document.head.appendChild(meta);
+      }
+
+      // Update OG tags
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', title);
+      
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', description);
+
+      // Update html lang
+      const langCode = language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es-ES' : 'en-US';
+      document.documentElement.lang = langCode;
+    };
+
+    updateSEO();
+  }, [view, language, selectedService, t]);
 
   const [currentRequest, setCurrentRequest] = useState<ReadingRequest | null>(null);
   const [result, setResult] = useState<ReadingResultType | null>(null);
@@ -474,6 +585,8 @@ const App: React.FC = () => {
     const stripeUrl = new URL(baseUrl);
     if (language === 'Portuguese') {
       stripeUrl.searchParams.set('locale', 'pt');
+    } else if (language === 'Spanish') {
+      stripeUrl.searchParams.set('locale', 'es');
     }
     
     if (isPromoApplied) {
@@ -637,6 +750,7 @@ const App: React.FC = () => {
                   className="bg-transparent text-cosmic-gold outline-none cursor-pointer font-bold"
                 >
                   <option value="English" className="bg-cosmic-900">EN</option>
+                  <option value="Spanish" className="bg-cosmic-900">ES</option>
                   <option value="Portuguese" className="bg-cosmic-900">PT</option>
                 </select>
               </div>
@@ -695,6 +809,7 @@ const App: React.FC = () => {
                   className="bg-transparent text-cosmic-gold outline-none cursor-pointer text-[10px] font-bold"
                 >
                   <option value="English" className="bg-cosmic-900">EN</option>
+                  <option value="Spanish" className="bg-cosmic-900">ES</option>
                   <option value="Portuguese" className="bg-cosmic-900">PT</option>
                 </select>
               </div>
@@ -718,6 +833,7 @@ const App: React.FC = () => {
                   className="bg-transparent text-cosmic-gold outline-none cursor-pointer"
                 >
                   <option value="English" className="bg-cosmic-900">English (EN)</option>
+                  <option value="Spanish" className="bg-cosmic-900">Español (ES)</option>
                   <option value="Portuguese" className="bg-cosmic-900">Português (PT-BR)</option>
                 </select>
               </div>

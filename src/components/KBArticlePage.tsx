@@ -16,6 +16,19 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
   const [post, setPost] = useState<KnowledgeBasePost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const lang = (language as ReportLanguage) || 'English';
+
+  const getLocalizedValue = (value: any, lang: string) => {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value[lang] || value['English'] || '';
+  };
+
+  const getLocalizedFaq = (faq: any, lang: string) => {
+    if (!faq) return [];
+    if (Array.isArray(faq)) return faq;
+    return faq[lang] || faq['English'] || [];
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -36,12 +49,16 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
   useEffect(() => {
     if (post) {
       const originalTitle = document.title;
-      document.title = `${post.title} | Cosmic Database | Atlantic Oracle™`;
+      const title = getLocalizedValue(post.title, lang);
+      document.title = `${title} | Cosmic Database | Atlantic Oracle™`;
       const metaDesc = document.querySelector('meta[name="description"]');
       const originalDesc = metaDesc?.getAttribute('content');
       
+      const metaTitle = getLocalizedValue(post.metaTitle, lang);
+      const metaDescription = getLocalizedValue(post.metaDescription, lang) || getLocalizedValue(post.shortDefinition, lang);
+
       if (metaDesc) {
-        metaDesc.setAttribute('content', post.metaDescription || post.shortDefinition);
+        metaDesc.setAttribute('content', metaDescription);
       }
 
       // Breadcrumb Schema
@@ -64,7 +81,7 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
           {
             "@type": "ListItem",
             "position": 3,
-            "name": post.title,
+            "name": title,
             "item": `https://atlanticoracle.com/database/${post.category}/${post.slug}`
           }
         ]
@@ -83,7 +100,7 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
         scriptTags.forEach(tag => tag.remove());
       };
     }
-  }, [post]);
+  }, [post, lang]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -100,19 +117,23 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
   }
 
   if (!post) {
+    const t = translations[lang] || translations.English;
     return (
       <div className="min-h-screen bg-cosmic-900 pt-32 px-6 text-center space-y-8">
-        <h1 className="text-4xl font-cinzel text-white uppercase tracking-widest">Transmission Lost</h1>
-        <p className="text-cosmic-silver italic">The requested wisdom could not be retrieved from the database.</p>
+        <h1 className="text-4xl font-cinzel text-white uppercase tracking-widest">{(t as any).kb_not_found_header || 'Transmission Lost'}</h1>
+        <p className="text-cosmic-silver italic">{(t as any).kb_not_found_text || 'The requested wisdom could not be retrieved from the database.'}</p>
         <button 
           onClick={() => onNavigate('database')}
           className="px-8 py-3 bg-cosmic-gold text-cosmic-900 rounded-xl font-bold hover:scale-105 transition-transform"
         >
-          Return to Database
+          {(t as any).kb_return || 'Return to Database'}
         </button>
       </div>
     );
   }
+
+  const t = translations[lang] || translations.English;
+  const currentFaq = getLocalizedFaq(post.faq, lang);
 
   return (
     <div className="min-h-screen bg-cosmic-900 pt-32 pb-32 px-6">
@@ -123,13 +144,13 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
             onClick={() => onNavigate('database')}
             className="flex items-center gap-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors uppercase tracking-widest text-[10px] font-bold group"
           >
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Database
+            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> {(t as any).kb_back || 'Back to Database'}
           </button>
           <div className="flex items-center gap-4">
             <button 
               onClick={handleCopyLink}
               className="p-2 text-cosmic-gold/60 hover:text-cosmic-gold transition-colors rounded-full hover:bg-cosmic-gold/10"
-              title="Copy Link"
+              title={(t as any).kb_copy_link || "Copy Link"}
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
@@ -145,11 +166,11 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
             <BookOpen className="w-3 h-3" />
             <span>{post.category.replace(/-/g, ' ')}</span>
             <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
-            <time>Last Modified: {new Date(post.dateModified).toLocaleDateString()}</time>
+            <time>{(t as any).kb_modified || 'Last Modified'}: {new Date(post.dateModified).toLocaleDateString(lang === 'Spanish' ? 'es-ES' : lang === 'Portuguese' ? 'pt-PT' : 'en-US')}</time>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-cinzel text-white uppercase tracking-widest leading-tight">
-            {post.title}
+            {getLocalizedValue(post.title, lang)}
           </h1>
 
           <div className="flex justify-center">
@@ -157,57 +178,57 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
           </div>
 
           <p className="definition text-2xl md:text-3xl font-serif italic text-cosmic-silver leading-relaxed max-w-3xl mx-auto">
-            {post.shortDefinition}
+            {getLocalizedValue(post.shortDefinition, lang)}
           </p>
         </header>
 
         {/* Main Content */}
         <article className="prose prose-invert prose-cosmic max-w-none">
           <div className="markdown-body text-xl leading-relaxed font-serif text-cosmic-silver/90 space-y-8">
-            <ReactMarkdown>{post.mainContent}</ReactMarkdown>
+            <ReactMarkdown>{getLocalizedValue(post.mainContent, lang)}</ReactMarkdown>
           </div>
         </article>
 
         {/* Data Table Section */}
-        {post.dataTable && (
+        {getLocalizedValue(post.dataTable, lang) && (
           <section className="space-y-6">
             <div className="flex items-center gap-3 text-cosmic-gold uppercase tracking-widest text-xs font-bold">
               <Table className="w-4 h-4" />
-              <span>Technical Characteristics</span>
+              <span>{(t as any).kb_technical || 'Technical Characteristics'}</span>
             </div>
             <div className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-3xl overflow-hidden p-8">
               <div 
                 className="kb-data-table overflow-x-auto"
-                dangerouslySetInnerHTML={{ __html: post.dataTable }}
+                dangerouslySetInnerHTML={{ __html: getLocalizedValue(post.dataTable, lang) }}
               />
             </div>
           </section>
         )}
 
         {/* Synthesis Note */}
-        {post.synthesisNote && (
+        {getLocalizedValue(post.synthesisNote, lang) && (
           <section className="relative p-12 bg-cosmic-gold/5 border border-cosmic-gold/10 rounded-[3rem] overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
               <BookOpen className="w-32 h-32 text-cosmic-gold" />
             </div>
             <div className="relative space-y-6">
-              <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-[0.3em]">Synthesis & Connection</h4>
+              <h4 className="text-sm font-cinzel text-cosmic-gold uppercase tracking-[0.3em]">{(t as any).kb_synthesis_title || 'Synthesis & Connection'}</h4>
               <blockquote className="text-2xl font-serif italic text-cosmic-silver leading-relaxed">
-                "{post.synthesisNote}"
+                "{getLocalizedValue(post.synthesisNote, lang)}"
               </blockquote>
             </div>
           </section>
         )}
 
         {/* FAQ Block */}
-        {post.faq && post.faq.length > 0 && (
+        {currentFaq && currentFaq.length > 0 && (
           <section className="space-y-8">
             <div className="flex items-center gap-3 text-cosmic-gold uppercase tracking-widest text-xs font-bold">
               <HelpCircle className="w-4 h-4" />
-              <span>Frequently Asked Questions</span>
+              <span>{(t as any).kb_faq_title || 'Frequently Asked Questions'}</span>
             </div>
             <div className="space-y-4">
-              {post.faq.map((item, idx) => (
+              {currentFaq.map((item: any, idx: number) => (
                 <div key={idx} className="bg-cosmic-800/20 border border-cosmic-gold/10 rounded-2xl p-8 space-y-4">
                   <h5 className="text-lg font-cinzel text-white uppercase tracking-widest">{item.question}</h5>
                   <p className="text-cosmic-silver/80 leading-relaxed italic">{item.answer}</p>
@@ -219,7 +240,7 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                "mainEntity": post.faq.map(item => ({
+                "mainEntity": currentFaq.map((item: any) => ({
                   "@type": "Question",
                   "name": item.question,
                   "acceptedAnswer": {
@@ -238,20 +259,20 @@ const KBArticlePage: React.FC<KBArticlePageProps> = ({ category, slug, language,
             <div className="bg-cosmic-800/40 border border-cosmic-gold/20 rounded-[3rem] p-12 flex flex-col md:flex-row items-center justify-between gap-8 group hover:border-cosmic-gold/40 transition-all">
               <div className="space-y-4 text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-2 text-cosmic-gold/60 uppercase tracking-widest text-[10px] font-bold">
-                  <LinkIcon className="w-3 h-3" /> Related Transmission
+                  <LinkIcon className="w-3 h-3" /> {(t as any).kb_related || 'Related Transmission'}
                 </div>
                 <h3 className="text-3xl font-cinzel text-white uppercase tracking-widest">
-                  Deepen Your Understanding
+                  {(t as any).kb_deepen_title || 'Deepen Your Understanding'}
                 </h3>
                 <p className="text-cosmic-silver italic">
-                  Explore how these cosmic principles manifest in your personal journey.
+                  {(t as any).kb_deepen_text || 'Explore how these cosmic principles manifest in your personal journey.'}
                 </p>
               </div>
               <button 
                 onClick={() => onNavigate('form', post.relatedProductId)}
                 className="px-10 py-5 bg-cosmic-gold text-cosmic-900 rounded-2xl font-bold hover:scale-105 transition-all flex items-center gap-3 shadow-2xl shadow-cosmic-gold/20"
               >
-                Get Personal Report <ArrowRight className="w-5 h-5" />
+                {(t as any).kb_cta || 'Get Personal Report'} <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </section>

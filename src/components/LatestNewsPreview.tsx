@@ -72,9 +72,13 @@ const LatestNewsPreview: React.FC<LatestNewsPreviewProps> = ({ onViewNews, onVie
                   <Calendar className="w-3 h-3" />
                   <span>{post.date}</span>
                 </div>
-                <h4 className="text-2xl font-cinzel text-white mb-4 group-hover:text-cosmic-gold transition-colors">{post.title}</h4>
-                <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed mb-8 line-clamp-3">{post.text}</p>
-                <div className="flex items-center gap-2 text-cosmic-gold text-xs font-bold uppercase tracking-widest">Read More <ChevronRight className="w-4 h-4" /></div>
+                <h4 className="text-2xl font-cinzel text-white mb-4 group-hover:text-cosmic-gold transition-colors">
+                  {typeof post.title === 'string' ? post.title : post.title[language] || post.title.English}
+                </h4>
+                <p className="text-cosmic-silver/70 font-light text-sm leading-relaxed mb-8 line-clamp-3">
+                  {typeof post.text === 'string' ? post.text : post.text[language] || post.text.English}
+                </p>
+                <div className="flex items-center gap-2 text-cosmic-gold text-xs font-bold uppercase tracking-widest">{t.readMore} <ChevronRight className="w-4 h-4" /></div>
               </div>
             </div>
           );

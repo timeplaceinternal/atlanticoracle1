@@ -38,16 +38,11 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
 
   const [loadingPhase, setLoadingPhase] = useState(0);
 
-  const loadingPhases = language === 'Portuguese' ? [
-    "Digitalizando trânsitos...",
-    "Calculando vibrações...",
-    "Sincronizando com as estrelas...",
-    "Manifestando visão..."
-  ] : [
-    "Scanning Transits...",
-    "Calculating Vibrations...",
-    "Synchronizing with Stars...",
-    "Manifesting Insight..."
+  const loadingPhases = [
+    t.horoscope_phase1,
+    t.horoscope_phase2,
+    t.horoscope_phase3,
+    t.horoscope_phase4
   ];
 
   useEffect(() => {
@@ -70,7 +65,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
 
     try {
       const sign = ZODIAC_SIGNS.find(s => s.id === signId);
-      const signName = sign ? sign.name[language === 'Portuguese' ? 'Portuguese' : 'English'] : signId;
+      const signName = sign ? sign.name[language] || sign.name.English : signId;
       
       const dateStr = getDateStr(day);
       
@@ -140,7 +135,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
         const sign = ZODIAC_SIGNS.find(s => s.id === signId);
         if (!sign) continue;
         
-        const signName = sign.name[language === 'Portuguese' ? 'Portuguese' : 'English'];
+        const signName = sign.name[language] || sign.name.English;
         const content = await generateHoroscope(signName, language, day);
         
         await fetch('/api/horoscope-cache', {
@@ -235,7 +230,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                   </div>
                   
                   <div className="text-center space-y-0.5">
-                    <span className={`block text-[10px] font-bold ${theme === 'light' ? 'text-cosmic-950' : 'text-white'} uppercase tracking-[0.2em] group-hover:text-cosmic-gold transition-colors`}>{sign.name[language === 'Portuguese' ? 'Portuguese' : 'English']}</span>
+                    <span className={`block text-[10px] font-bold ${theme === 'light' ? 'text-cosmic-950' : 'text-white'} uppercase tracking-[0.2em] group-hover:text-cosmic-gold transition-colors`}>{sign.name[language] || sign.name.English}</span>
                     <span className={`block text-[8px] ${theme === 'light' ? 'text-cosmic-950/40' : 'text-cosmic-silver/50'} uppercase tracking-widest`}>{sign.dates}</span>
                   </div>
                 </button>
@@ -319,7 +314,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                   </div>
                   <div>
                     <h3 className={`text-3xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest`}>
-                      {ZODIAC_SIGNS.find(s => s.id === selectedSign)?.name[language === 'Portuguese' ? 'Portuguese' : 'English']}
+                      {ZODIAC_SIGNS.find(s => s.id === selectedSign)?.name[language] || ZODIAC_SIGNS.find(s => s.id === selectedSign)?.name.English}
                     </h3>
                     <div className="flex items-center gap-4 mt-1">
                       <p className="text-cosmic-gold text-[10px] font-bold uppercase tracking-[0.3em]">
@@ -360,7 +355,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                   onClick={reset}
                   className={`${theme === 'light' ? 'text-slate-400 hover:text-cosmic-900' : 'text-cosmic-silver/40 hover:text-cosmic-gold'} transition-colors text-[10px] uppercase tracking-[0.3em]`}
                 >
-                  Change Sign
+                  {t.horoscope_change_sign}
                 </button>
               </div>
 
@@ -398,7 +393,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                 onClick={reset}
                 className="px-8 py-3 border border-cosmic-gold/30 text-cosmic-gold rounded-full hover:bg-cosmic-gold/5 transition-all"
               >
-                Try Again
+                {t.horoscope_try_again}
               </button>
             </motion.div>
           )}

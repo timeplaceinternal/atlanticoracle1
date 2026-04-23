@@ -98,7 +98,7 @@ export const generateAssistantResponse = async (message: string, history: { role
   // Build contents with alternating roles
   const contents: any[] = [
     { role: 'user', parts: [{ text: systemPrompt }] },
-    { role: 'model', parts: [{ text: "Understood. I am the Cosmic Guide. I will assist the seeker with expert precision and brevity." }] }
+    { role: 'model', parts: [{ text: language === 'Spanish' ? "Entendido. Soy el Guía Cósmico. Asistiré al buscador con precisión experta y brevedad." : language === 'Portuguese' ? "Entendido. Sou o Guia Cósmico. Assistirei ao buscador com precisão especialista e brevidade." : "Understood. I am the Cosmic Guide. I will assist the seeker with expert precision and brevity." }] }
   ];
 
   // Add history (skip the very first welcome message if it's from the model to maintain alternating order)

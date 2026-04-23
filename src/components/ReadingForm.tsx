@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { enUS } from 'date-fns/locale/en-US';
+import { es } from 'date-fns/locale/es';
 import { Service, ReadingRequest, ReportLanguage, ServiceType } from '../types';
 import { translations } from '../translations';
+import { ZODIAC_SIGNS } from '../constants';
 
 registerLocale('pt-BR', ptBR);
 registerLocale('en', enUS);
+registerLocale('es', es);
 
 interface ReadingFormProps {
   service: Service;
@@ -357,7 +360,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
         <div className="space-y-6">
           {isAstroWeather && (
             <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-              <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Forecast Details</h3>
+              <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>{t.formSectionForecast}</h3>
               
               <div>
                 <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formCity}</label>
@@ -378,18 +381,11 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                   onChange={(e) => setZodiacSign(e.target.value)}
                   className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors appearance-none`}
                 >
-                  <option value="aries" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Aries ♈</option>
-                  <option value="taurus" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Taurus ♉</option>
-                  <option value="gemini" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Gemini ♊</option>
-                  <option value="cancer" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Cancer ♋</option>
-                  <option value="leo" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Leo ♌</option>
-                  <option value="virgo" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Virgo ♍</option>
-                  <option value="libra" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Libra ♎</option>
-                  <option value="scorpio" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Scorpio ♏</option>
-                  <option value="sagittarius" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Sagittarius ♐</option>
-                  <option value="capricorn" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Capricorn ♑</option>
-                  <option value="aquarius" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Aquarius ♒</option>
-                  <option value="pisces" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Pisces ♓</option>
+                  {ZODIAC_SIGNS.map(sign => (
+                    <option key={sign.id} value={sign.id} className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>
+                      {(sign.name as any)[language] || sign.name.English} {sign.symbol}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -417,7 +413,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
           {!isSportsOracle && !isAstroWeather ? (
             <>
-              <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Your Details</h3>
+              <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>{t.formSectionUser}</h3>
               <div>
                 <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formName}</label>
                 <input 
@@ -434,8 +430,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                   <DatePicker
                     selected={birthDate}
                     onChange={(date: Date | null) => setBirthDate(date)}
-                    locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                    dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                    locale={language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es' : 'en'}
+                    dateFormat={language === 'English' ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
                     placeholderText={t.formBirthDatePlaceholder}
                     className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                     showYearDropdown
@@ -482,7 +478,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {isGoalService && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Goal Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>{t.formSectionGoal}</h3>
             <div>
               <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formGoal}</label>
               <textarea 
@@ -499,7 +495,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {isSynastryService && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Partner Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>{t.formSectionPartner}</h3>
             <div>
               <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formPartnerName}</label>
               <input 
@@ -516,8 +512,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                 <DatePicker
                   selected={partnerBirthDate}
                   onChange={(date: Date | null) => setPartnerBirthDate(date)}
-                  locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                  dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                  locale={language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es' : 'en'}
+                  dateFormat={language === 'English' ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
                   placeholderText={t.formBirthDatePlaceholder}
                   className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   showYearDropdown
@@ -550,7 +546,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {isDreamService && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Dream Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>{t.formSectionDream}</h3>
             <div>
               <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formDreamDescription}</label>
               <textarea 
@@ -577,8 +573,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                     <DatePicker
                       selected={dreamDate}
                       onChange={(date: Date | null) => setDreamDate(date)}
-                      locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                      dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                      locale={language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es' : 'en'}
+                      dateFormat={language === 'English' ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
                       placeholderText={t.formBirthDatePlaceholder}
                       className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                       showYearDropdown
@@ -610,7 +606,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {service.id === ServiceType.SPORTS_ORACLE && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Sports Event Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>{t.formSectionSports}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.sportsSide1Label}</label>
@@ -652,8 +648,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                 <DatePicker
                   selected={sportsDate}
                   onChange={(date: Date | null) => setSportsDate(date)}
-                  locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
-                  dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                  locale={language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es' : 'en'}
+                  dateFormat={language === 'English' ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
                   placeholderText={t.sportsDatePlaceholder}
                   className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   showYearDropdown

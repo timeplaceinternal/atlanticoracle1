@@ -46,7 +46,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ language }) => {
       setMessages(prev => [...prev, { role: 'model', text: response }]);
     } catch (error) {
       console.error('Assistant Error:', error);
-      setMessages(prev => [...prev, { role: 'model', text: 'The cosmic connection was interrupted. Please try again later.' }]);
+      setMessages(prev => [...prev, { role: 'model', text: t.chatError }]);
     } finally {
       setIsLoading(false);
     }

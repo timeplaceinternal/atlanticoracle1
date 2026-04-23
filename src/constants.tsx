@@ -11,11 +11,19 @@ export const INITIAL_NEWS: NewsPost[] = [
   {
     id: 'init-1',
     slug: 'the-saturn-shift-navigating-the-great-restructuring',
-    title: 'The Saturn Shift: Navigating the Great Restructuring',
+    title: {
+      English: 'The Saturn Shift: Navigating the Great Restructuring',
+      Spanish: 'El Cambio de Saturno: Navegando la Gran Reestructuración',
+      Portuguese: 'O Deslocamento de Saturno: Navegando pela Grande Reestruturação'
+    },
     date: '2026-02-22',
     topic: 'astrology',
     format: 'forecast',
-    text: 'As Saturn moves through the final degrees of its current transit, the collective consciousness is undergoing a profound restructuring. This period marks the end of old systems and the birth of new, more resilient structures. For individuals, this is a time to audit your foundations. What is built on sand will crumble; what is built on truth will endure. Pay close attention to your professional boundaries and long-term commitments during this celestial window.',
+    text: {
+      English: 'As Saturn moves through the final degrees of its current transit, the collective consciousness is undergoing a profound restructuring. This period marks the end of old systems and the birth of new, more resilient structures. For individuals, this is a time to audit your foundations. What is built on sand will crumble; what is built on truth will endure. Pay close attention to your professional boundaries and long-term commitments during this celestial window.',
+      Spanish: 'A medida que Saturno se desplaza por los últimos grados de su tránsito actual, la conciencia colectiva está experimentando una profunda reestructuración. Este periodo marca el fin de los viejos sistemas y el nacimiento de estructuras nuevas y más resistentes. Para los individuos, es un momento para auditar sus cimientos. Lo que esté construido sobre arena se desmoronará; lo que esté construido sobre la verdad perdurará. Preste mucha atención a sus límites profesionales y compromisos a largo plazo durante esta ventana celestial.',
+      Portuguese: 'À medida que Saturno se desloca pelos últimos graus do seu trânsito atual, a consciência coletiva está a passar por uma reestruturação profunda. Este período marca o fim de sistemas antigos e o nascimento de estruturas novas e mais resilientes. Para os indivíduos, este é um momento para auditar os seus fundamentos. O que for construído sobre areia desmoronar-se-á; o que for construído sobre a verdade perdurará. Preste muita atenção aos seus limites profissionais e compromissos de longo prazo durante esta janela celestial.'
+    },
     imageUrl: 'https://picsum.photos/seed/saturn/1200/800'
   }
 ];
@@ -414,18 +422,18 @@ export const SERVICES: Service[] = [
 ];
 
 export const ZODIAC_SIGNS = [
-  { id: 'aries', name: { English: 'Aries', Portuguese: 'Áries' }, symbol: '♈', dates: 'Mar 21 - Apr 19' },
-  { id: 'taurus', name: { English: 'Taurus', Portuguese: 'Touro' }, symbol: '♉', dates: 'Apr 20 - May 20' },
-  { id: 'gemini', name: { English: 'Gemini', Portuguese: 'Gêmeos' }, symbol: '♊', dates: 'May 21 - Jun 20' },
-  { id: 'cancer', name: { English: 'Cancer', Portuguese: 'Câncer' }, symbol: '♋', dates: 'Jun 21 - Jul 22' },
-  { id: 'leo', name: { English: 'Leo', Portuguese: 'Leão' }, symbol: '♌', dates: 'Jul 23 - Aug 22' },
-  { id: 'virgo', name: { English: 'Virgo', Portuguese: 'Virgem' }, symbol: '♍', dates: 'Aug 23 - Sep 22' },
-  { id: 'libra', name: { English: 'Libra', Portuguese: 'Libra' }, symbol: '♎', dates: 'Sep 23 - Oct 22' },
-  { id: 'scorpio', name: { English: 'Scorpio', Portuguese: 'Escorpião' }, symbol: '♏', dates: 'Oct 23 - Nov 21' },
-  { id: 'sagittarius', name: { English: 'Sagittarius', Portuguese: 'Sagitário' }, symbol: '♐', dates: 'Nov 22 - Dec 21' },
-  { id: 'capricorn', name: { English: 'Capricorn', Portuguese: 'Capricórnio' }, symbol: '♑', dates: 'Dec 22 - Jan 19' },
-  { id: 'aquarius', name: { English: 'Aquarius', Portuguese: 'Aquário' }, symbol: '♒', dates: 'Jan 20 - Feb 18' },
-  { id: 'pisces', name: { English: 'Pisces', Portuguese: 'Peixes' }, symbol: '♓', dates: 'Feb 19 - Mar 20' }
+  { id: 'aries', name: { English: 'Aries', Portuguese: 'Áries', Spanish: 'Aries' }, symbol: '♈', dates: 'Mar 21 - Apr 19' },
+  { id: 'taurus', name: { English: 'Taurus', Portuguese: 'Touro', Spanish: 'Tauro' }, symbol: '♉', dates: 'Apr 20 - May 20' },
+  { id: 'gemini', name: { English: 'Gemini', Portuguese: 'Gêmeos', Spanish: 'Géminis' }, symbol: '♊', dates: 'May 21 - Jun 20' },
+  { id: 'cancer', name: { English: 'Cancer', Portuguese: 'Câncer', Spanish: 'Cáncer' }, symbol: '♋', dates: 'Jun 21 - Jul 22' },
+  { id: 'leo', name: { English: 'Leo', Portuguese: 'Leão', Spanish: 'Leo' }, symbol: '♌', dates: 'Jul 23 - Aug 22' },
+  { id: 'virgo', name: { English: 'Virgo', Portuguese: 'Virgem', Spanish: 'Virgo' }, symbol: '♍', dates: 'Aug 23 - Sep 22' },
+  { id: 'libra', name: { English: 'Libra', Portuguese: 'Libra', Spanish: 'Libra' }, symbol: '♎', dates: 'Sep 23 - Oct 22' },
+  { id: 'scorpio', name: { English: 'Scorpio', Portuguese: 'Escorpião', Spanish: 'Escorpio' }, symbol: '♏', dates: 'Oct 23 - Nov 21' },
+  { id: 'sagittarius', name: { English: 'Sagittarius', Portuguese: 'Sagitário', Spanish: 'Sagitario' }, symbol: '♐', dates: 'Nov 22 - Dec 21' },
+  { id: 'capricorn', name: { English: 'Capricorn', Portuguese: 'Capricórnio', Spanish: 'Capricornio' }, symbol: '♑', dates: 'Dec 22 - Jan 19' },
+  { id: 'aquarius', name: { English: 'Aquarius', Portuguese: 'Aquário', Spanish: 'Acuario' }, symbol: '♒', dates: 'Jan 20 - Feb 18' },
+  { id: 'pisces', name: { English: 'Pisces', Portuguese: 'Peixes', Spanish: 'Piscis' }, symbol: '♓', dates: 'Feb 19 - Mar 20' }
 ];
 
 export const getServiceIcon = (iconName: string) => {
@@ -459,7 +467,8 @@ export const getServiceIcon = (iconName: string) => {
 const BASE_RULES = (lang: string) => {
   const langRules: Record<string, string> = {
     'English': 'REPLY ONLY IN AMERICAN ENGLISH (EN-US).',
-    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).'
+    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).',
+    'Spanish': 'REPLY ONLY IN NEUTRAL SPANISH (ES-ES).'
   };
   
   const now = new Date();

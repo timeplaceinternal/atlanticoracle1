@@ -98,7 +98,7 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
           className={`flex items-center gap-2 ${theme === 'light' ? 'text-slate-500 hover:text-cosmic-gold' : 'text-cosmic-silver hover:text-cosmic-gold'} transition-colors mb-12 group`}
         >
           <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-xs font-bold uppercase tracking-widest">{t.backToStart}</span>
+          <span className="text-xs font-bold uppercase tracking-widest">{t.s_back_to_start}</span>
         </button>
       )}
 
@@ -113,7 +113,7 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                 {service.title}
               </h1>
               <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[10px] uppercase tracking-[0.3em] rounded-full">
-                €{service.price} Decree
+                €{service.price} {t.s_decree}
               </div>
             </div>
           </div>
@@ -123,23 +123,23 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className={`space-y-4 p-6 border ${theme === 'light' ? 'border-cosmic-gold/20 bg-slate-50/50' : 'border-cosmic-gold/10 bg-cosmic-900/40'} rounded-2xl`}>
               <Compass className="w-6 h-6 text-cosmic-gold" />
-              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>Architectural Path</h3>
+              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>{t.s_arch_path}</h3>
               <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver/70'} text-xs leading-relaxed`}>
-                A structured roadmap synthesizing celestial mechanics and numerical vibrations.
+                {t.s_arch_path_desc}
               </p>
             </div>
             <div className={`space-y-4 p-6 border ${theme === 'light' ? 'border-cosmic-gold/20 bg-slate-50/50' : 'border-cosmic-gold/10 bg-cosmic-900/40'} rounded-2xl`}>
               <ShieldCheck className="w-6 h-6 text-cosmic-gold" />
-              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>Privacy Absolute</h3>
+              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>{t.s_privacy}</h3>
               <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver/70'} text-xs leading-relaxed`}>
-                Ephemeral data processing. Your coordinates are deleted immediately after synthesis.
+                {t.s_privacy_desc}
               </p>
             </div>
             <div className={`space-y-4 p-6 border ${theme === 'light' ? 'border-cosmic-gold/20 bg-slate-50/50' : 'border-cosmic-gold/10 bg-cosmic-900/40'} rounded-2xl`}>
               <Zap className="w-6 h-6 text-cosmic-gold" />
-              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>Instant Reach</h3>
+              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>{t.s_instant}</h3>
               <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver/70'} text-xs leading-relaxed`}>
-                Receive your professional 15-page report in your digital sanctuary within moments.
+                {t.s_instant_desc}
               </p>
             </div>
           </div>
@@ -147,7 +147,7 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
           <div className="space-y-6">
             <h2 className={`text-2xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest flex items-center gap-3`}>
               <Star className="w-5 h-5 text-cosmic-gold fill-current" />
-              The Oracle's Synthesis
+              {t.s_oracle_synthesis}
             </h2>
             <div className={`prose ${theme === 'light' ? 'prose-slate' : 'prose-invert'} prose-p:text-lg`}>
               <p className="first-letter:text-5xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:float-left first-letter:mr-3 first-letter:mt-1">
@@ -158,20 +158,20 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               {!service.seoContent && (
                 <>
                   <p>
-                    Every soul manifests in this physical plane under a specific set of coordinates—mathematical and celestial markers that define the architectural blueprint of one's existence. At Atlantic Oracle, we believe that understanding these markers is not about predicting a fixed destiny, but about revealing the map of potentials you carry.
+                    {t.s_philosophy_1}
                   </p>
                   <p>
-                    This comprehensive study deep-dives into the structural vibrations of your identity. We use advanced algorithms to synthesize the ancient wisdom of Pythagorean numerology with the precise mechanics of modern astrology. The result is a substantive report, ranging from 800 to 1500 words, that provides clarity on your innate strengths, karmic leassons, and the energetic climate of your destiny.
+                    {t.s_philosophy_2}
                   </p>
                 </>
               )}
               
               {/* Some additional depth text for all services */}
               <p>
-                The {service.title} ritual is designed for those seeking high-resolution clarity. It bridges the gap between general horoscope forecasts and personal structural analysis. By mapping the interaction between your inner engine (Numerology) and the outer environment (Astrology), we help you achieve a state of flow where friction disappears and your path becomes clear.
+                {t.s_ritual_desc}
               </p>
               <p>
-                Your report will be delivered as a professional 15-page PDF document, suitable for printing and long-term reflection. It includes detailed quarterly breakdowns, specific celestial windows of opportunity, and a psychological roadmap for your current cycle.
+                {t.s_report_delivery}
               </p>
             </div>
           </div>
@@ -181,10 +181,10 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               onClick={() => onStart(service)}
               className="w-full md:w-auto px-12 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full shadow-2xl shadow-cosmic-gold/30 hover:scale-105 transition-transform active:scale-95 text-sm uppercase tracking-[0.2em]"
             >
-              Start Your Consultation
+              {t.s_start_consultation}
             </button>
             <p className={`text-[10px] ${theme === 'light' ? 'text-slate-400' : 'text-cosmic-silver/40'} uppercase tracking-[0.3em]`}>
-              Fee for Wisdom: €{service.price} • Professional Synthesis
+              {t.s_fee_wisdom}: €{service.price} • {t.s_prof_synthesis}
             </p>
           </div>
         </div>

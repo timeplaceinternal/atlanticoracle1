@@ -30,13 +30,14 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   // Handle YouTube Video
   if (post.videoUrl) {
     const videoId = post.videoUrl.split('v=')[1]?.split('&')[0] || post.videoUrl.split('/').pop();
+    const title = typeof post.title === 'string' ? post.title : post.title.English;
     return (
       <div className="aspect-video w-full rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl mb-8">
         <iframe
           width="100%"
           height="100%"
           src={`https://www.youtube.com/embed/${videoId}`}
-          title={post.title}
+          title={title}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -75,11 +76,12 @@ const MediaRenderer: React.FC<{ post: NewsPost }> = ({ post }) => {
   // Handle Single Image (Small or Large)
   if (displayImage) {
     const isSmall = post.imageSize === 'small';
+    const altText = typeof post.title === 'string' ? post.title : post.title.English;
     return (
       <div className={`${isSmall ? 'md:float-right md:ml-8 md:mb-8 md:w-1/2' : 'w-full mb-8'} rounded-3xl overflow-hidden border border-cosmic-gold/20 shadow-2xl`}>
         <img
           src={displayImage}
-          alt={post.title}
+          alt={altText || 'Cosmic Image'}
           className="w-full h-auto object-cover"
         />
       </div>
@@ -132,11 +134,14 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
   const currentPost = posts.find(p => p.slug === selectedPost);
 
   useEffect(() => {
+    const postTitle = currentPost ? (typeof currentPost.title === 'string' ? currentPost.title : currentPost.title[language] || currentPost.title.English) : '';
+    const postText = currentPost ? (typeof currentPost.text === 'string' ? currentPost.text : currentPost.text[language] || currentPost.text.English) : '';
+    
     const title = selectedPost 
-      ? (currentPost?.metaTitle || `${currentPost?.title} | Cosmic News`) 
+      ? (currentPost?.metaTitle || `${postTitle} | Cosmic News`) 
       : 'Cosmic News | The Atlantic Oracle™ Gazette';
     const description = selectedPost 
-      ? (currentPost?.metaDescription || currentPost?.text?.substring(0, 160) || '') 
+      ? (currentPost?.metaDescription || postText?.substring(0, 160) || '') 
       : 'Celestial transmissions for the modern soul. Read the latest astrology and numerology insights.';
     document.title = title;
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -146,11 +151,12 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
     const scripts: HTMLScriptElement[] = [];
 
     if (selectedPost && currentPost) {
+      const pTitle = typeof currentPost.title === 'string' ? currentPost.title : currentPost.title[language] || currentPost.title.English;
       // NewsArticle Schema
       const articleSchema = {
         "@context": "https://schema.org",
         "@type": "NewsArticle",
-        "headline": currentPost.title,
+        "headline": pTitle,
         "datePublished": currentPost.date,
         "author": {
           "@type": "Organization",
@@ -218,7 +224,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
           className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group"
         >
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
-          {selectedPost ? 'Back to Gazette' : 'Back to Sanctuary'}
+          {selectedPost ? t.news_back_gazette : t.news_back_sanctuary}
         </button>
       </nav>
 
@@ -243,14 +249,14 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
         </h1>
 
         <div className="border-y border-cosmic-gold/30 py-3 flex flex-wrap justify-between items-center text-[10px] uppercase tracking-[0.2em] text-cosmic-gold/80 font-bold px-4 gap-4">
-          <span>Vol. I — No. 42</span>
-          <time className="text-white">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</time>
-          <span>Price: One Soul</span>
+          <span>{t.news_vol} I — {t.news_no} 42</span>
+          <time className="text-white">{new Date().toLocaleDateString(language === 'Spanish' ? 'es-ES' : language === 'Portuguese' ? 'pt-PT' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          <span>{t.news_price}: {t.news_price_value}</span>
         </div>
 
         {!selectedPost && (
           <p className="text-cosmic-silver/60 italic font-playfair text-lg max-w-2xl mx-auto">
-            "As above, so below. The celestial rhythms captured in ink and light."
+            "{t.news_quote}"
           </p>
         )}
       </header>
@@ -267,13 +273,17 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
           <section className="space-y-12">
             <div className="flex items-center gap-4">
               <div className="w-12 h-px bg-cosmic-gold"></div>
-              <h2 className="text-3xl font-cinzel text-white uppercase tracking-widest">Latest Transmissions</h2>
+              <h2 className="text-3xl font-cinzel text-white uppercase tracking-widest">{t.news_latest}</h2>
               <div className="flex-1 h-px bg-cosmic-gold/20"></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               {regularPosts.map((post, index) => {
                 const isFeatured = index === 0;
+                const pTitle = typeof post.title === 'string' ? post.title : post.title[language] || post.title.English;
+                const pText = typeof post.text === 'string' ? post.text : post.text[language] || post.text.English;
+                const displayImage = getDisplayImage(post);
+                
                 return (
                   <article 
                     key={post.slug} 
@@ -285,8 +295,8 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                     }`}
                   >
                     <div className={`${isFeatured ? 'aspect-video' : 'aspect-[4/3]'} rounded-2xl overflow-hidden border border-cosmic-gold/10 mb-2 bg-cosmic-gold/5`}>
-                      {getDisplayImage(post) ? (
-                        <img src={getDisplayImage(post)!} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                      {displayImage ? (
+                        <img src={displayImage} alt={pTitle || ''} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center opacity-10">
                           <Newspaper className="w-16 h-16 text-cosmic-gold" />
@@ -300,17 +310,17 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
                     </div>
                     
                     <h3 className={`${isFeatured ? 'text-4xl md:text-6xl' : 'text-2xl'} font-cinzel text-white group-hover:text-cosmic-gold transition-colors leading-tight decoration-cosmic-gold/20 decoration-1 underline-offset-8 group-hover:underline`}>
-                      {post.title}
+                      {pTitle}
                     </h3>
                     
                     <div className="w-16 h-px bg-cosmic-gold/30"></div>
                     
                     <p className={`text-cosmic-silver/70 font-light ${isFeatured ? 'text-lg md:text-xl first-letter:text-6xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:mr-3 first-letter:float-left first-letter:mt-1' : 'text-sm'} leading-relaxed line-clamp-4 font-serif italic flex-grow`}>
-                      {post.text}
+                      {pText}
                     </p>
                     
                     <div className="pt-4 flex items-center gap-2 text-cosmic-gold text-[10px] font-bold uppercase tracking-widest border-t border-cosmic-gold/10">
-                      Full Transmission <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                      {t.news_full} <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </article>
                 );
@@ -320,7 +330,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
 
           {posts.length === 0 && (
             <div className="col-span-full p-20 text-center text-cosmic-silver/40 italic">
-              The cosmic ink is currently dry. Check back when the stars align.
+              {t.news_empty}
             </div>
           )}
         </main>
@@ -334,7 +344,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
               <span>{currentPost?.topic}</span>
             </div>
             <h2 className="text-4xl md:text-7xl font-cinzel text-white uppercase tracking-widest leading-tight">
-              {currentPost?.title}
+              {currentPost && (typeof currentPost.title === 'string' ? currentPost.title : currentPost.title[language] || currentPost.title.English)}
             </h2>
             <div className="flex justify-center">
               <div className="w-32 h-px bg-cosmic-gold/30"></div>
@@ -345,20 +355,22 @@ const NewsPage: React.FC<NewsPageProps> = ({ onBack, language, initialSlug, onSl
             {currentPost && <MediaRenderer post={currentPost} />}
             
             <div className="prose prose-invert prose-gold max-w-none prose-p:text-cosmic-silver prose-p:leading-relaxed prose-p:text-xl prose-p:font-serif prose-headings:font-cinzel prose-headings:text-white prose-strong:text-cosmic-gold first-letter:text-7xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:mr-4 first-letter:float-left first-letter:mt-2">
-              <p className="whitespace-pre-wrap">{currentPost?.text}</p>
+              <p className="whitespace-pre-wrap">
+                {currentPost && (typeof currentPost.text === 'string' ? currentPost.text : currentPost.text[language] || currentPost.text.English)}
+              </p>
             </div>
           </div>
 
           <footer className="flex flex-col items-center gap-8 pt-20 border-t border-cosmic-gold/10">
             <button className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase tracking-widest text-xs font-bold group">
-              <Share2 className="w-4 h-4" /> Share this Wisdom
+              <Share2 className="w-4 h-4" /> {t.news_share}
             </button>
             
             <button 
               onClick={() => { setSelectedPost(null); onSlugChange(null); }}
               className="text-cosmic-silver/40 hover:text-cosmic-gold transition-colors text-[10px] uppercase tracking-[0.3em]"
             >
-              Return to the Archives
+              {t.news_return}
             </button>
           </footer>
         </article>

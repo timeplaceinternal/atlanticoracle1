@@ -48,9 +48,11 @@ const ReadingResult: React.FC<ReadingResultProps> = ({ result, onReset, onSelect
           <div className="w-16 h-16 bg-cosmic-gold rounded-full flex items-center justify-center shadow-2xl shadow-cosmic-gold/20">
             <Star className="text-cosmic-900 fill-current w-8 h-8" />
           </div>
-          <h2 className={`text-3xl md:text-4xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest leading-tight`}>{result.userName}'s Cosmic Decree</h2>
+          <h2 className={`text-3xl md:text-4xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest leading-tight`}>
+            {t.cosmicDecreeOf} {result.userName}
+          </h2>
           <div className={`flex items-center gap-4 ${theme === 'light' ? 'text-slate-500' : 'text-cosmic-silver/60'} text-[10px] md:text-xs uppercase tracking-[0.3em]`}>
-            <span>{new Date(result.timestamp).toLocaleDateString()}</span>
+            <span>{new Date(result.timestamp).toLocaleDateString(result.language === 'Spanish' ? 'es-ES' : result.language === 'Portuguese' ? 'pt-PT' : 'en-US')}</span>
             <span className="w-1 h-1 bg-cosmic-gold rounded-full" />
             <span>ID: {result.id}</span>
           </div>

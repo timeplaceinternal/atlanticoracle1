@@ -103,15 +103,15 @@ export interface KnowledgeBasePost {
   id: string;
   slug: string;
   category: KBCategory;
-  title: string;
-  shortDefinition: string;
-  mainContent: string;
-  dataTable?: string; // HTML string for table
-  synthesisNote?: string;
-  faq?: FAQItem[];
+  title: string | { [key in ReportLanguage]?: string };
+  shortDefinition: string | { [key in ReportLanguage]?: string };
+  mainContent: string | { [key in ReportLanguage]?: string };
+  dataTable?: string | { [key in ReportLanguage]?: string }; // HTML string for table
+  synthesisNote?: string | { [key in ReportLanguage]?: string };
+  faq?: FAQItem[] | { [key in ReportLanguage]?: FAQItem[] };
   imageUrl?: string;
-  metaTitle?: string;
-  metaDescription?: string;
+  metaTitle?: string | { [key in ReportLanguage]?: string };
+  metaDescription?: string | { [key in ReportLanguage]?: string };
   dateModified: string;
   relatedProductId?: ServiceType;
 }
@@ -119,8 +119,8 @@ export interface KnowledgeBasePost {
 export interface NewsPost {
   id: string;
   slug: string;
-  title: string;
-  text: string;
+  title: string | { [key in ReportLanguage]?: string };
+  text: string | { [key in ReportLanguage]?: string };
   imageUrl: string;
   imageSize?: 'small' | 'large';
   format: PostFormat;

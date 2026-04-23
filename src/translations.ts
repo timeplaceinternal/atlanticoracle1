@@ -286,6 +286,147 @@ export interface Translations {
   h_love: string;
   h_health: string;
   h_advice: string;
+  kb_title: string;
+  kb_meta_desc: string;
+  kb_tag: string;
+  kb_header: string;
+  kb_subheader: string;
+  kb_search: string;
+  kb_loading: string;
+  kb_empty: string;
+  kb_footer: string;
+  kb_not_found_header: string;
+  kb_not_found_text: string;
+  kb_return: string;
+  kb_back: string;
+  kb_copy_link: string;
+  kb_modified: string;
+  kb_technical: string;
+  kb_synthesis_title: string;
+  kb_faq_title: string;
+  kb_related: string;
+  kb_deepen_title: string;
+  kb_deepen_text: string;
+  kb_cta: string;
+  news_back_gazette: string;
+  news_back_sanctuary: string;
+  news_vol: string;
+  news_no: string;
+  news_price: string;
+  news_price_value: string;
+  news_quote: string;
+  news_latest: string;
+  news_full: string;
+  news_empty: string;
+  news_share: string;
+  news_return: string;
+  readMore: string;
+  horoscope_change_sign: string;
+  horoscope_try_again: string;
+  horoscope_phase1: string;
+  horoscope_phase2: string;
+  horoscope_phase3: string;
+  horoscope_phase4: string;
+  cosmic_decree: string;
+  s_natal_title: string;
+  s_natal_desc: string;
+  s_love_title: string;
+  s_love_desc: string;
+  s_solar_title: string;
+  s_solar_desc: string;
+  s_karmic_title: string;
+  s_karmic_desc: string;
+  s_career_title: string;
+  s_career_desc: string;
+  s_num_title: string;
+  s_num_desc: string;
+  s_hd_title: string;
+  s_hd_desc: string;
+  s_carto_title: string;
+  s_carto_desc: string;
+  s_saturn_title: string;
+  s_saturn_desc: string;
+  s_dream_title: string;
+  s_dream_desc: string;
+  s_child_title: string;
+  s_child_desc: string;
+  s_shadow_title: string;
+  s_shadow_desc: string;
+  s_master_title: string;
+  s_master_desc: string;
+  s_weather_title: string;
+  s_weather_desc: string;
+  s_fortune_title: string;
+  s_fortune_desc: string;
+  s_capital_title: string;
+  s_capital_desc: string;
+  s_pulse_title: string;
+  s_pulse_desc: string;
+  s_whisper_title: string;
+  s_whisper_desc: string;
+  s_vibration_title: string;
+  s_vibration_desc: string;
+  s_spark_title: string;
+  s_spark_desc: string;
+  s_oracle_title: string;
+  s_oracle_desc: string;
+  s_goal10_title: string;
+  s_goal10_desc: string;
+  s_goal30_title: string;
+  s_goal30_desc: string;
+  s_back_to_start: string;
+  s_decree: string;
+  s_arch_path: string;
+  s_arch_path_desc: string;
+  s_privacy: string;
+  s_privacy_desc: string;
+  s_instant: string;
+  s_instant_desc: string;
+  s_oracle_synthesis: string;
+  s_philosophy_1: string;
+  s_philosophy_2: string;
+  s_ritual_desc: string;
+  s_report_delivery: string;
+  s_start_consultation: string;
+  s_fee_wisdom: string;
+  s_prof_synthesis: string;
+  formSectionForecast: string;
+  formSectionUser: string;
+  formSectionGoal: string;
+  formSectionPartner: string;
+  formSectionDream: string;
+  formSectionSports: string;
+  chatError: string;
+  cosmicDecreeOf: string;
+  widgetTitle: string;
+  widgetSubtitle: string;
+  widgetPremiumDesign: string;
+  widgetPremiumDesignDesc: string;
+  widgetEasyIntegration: string;
+  widgetEasyIntegrationDesc: string;
+  widgetTrafficRetention: string;
+  widgetTrafficRetentionDesc: string;
+  widgetSelectTheme: string;
+  widgetSelectThemeDesc: string;
+  widgetDarkTheme: string;
+  widgetLightTheme: string;
+  widgetLiveIntegration: string;
+  widgetEmbedCode: string;
+  widgetBioResponsive: string;
+  widgetNoCredit: string;
+  widgetCustomPartnership: string;
+  widgetCustomPartnershipDesc: string;
+  widgetInquire: string;
+  widgetHoroscopeTitle: string;
+  widgetHoroscopeDesc: string;
+  widgetWeatherTitle: string;
+  widgetWeatherDesc: string;
+  metaHomeTitle: string;
+  metaHomeDescription: string;
+  metaServicesTitle: string;
+  metaNewsTitle: string;
+  metaDatabaseTitle: string;
+  metaHoroscopeTitle: string;
 }
 
 export const translations: Record<ReportLanguage, Translations> = {
@@ -575,6 +716,147 @@ export const translations: Record<ReportLanguage, Translations> = {
     h_love: "Love & Connection ❤️",
     h_health: "Health & Energy 👌",
     h_advice: "Sage Advice ✨",
+    kb_title: "Cosmic Database",
+    kb_meta_desc: "Access the ancient wisdom and structured data of the universe.",
+    kb_tag: "Registry of Truth",
+    kb_header: "Cosmic Database",
+    kb_subheader: "A structured synthesis of celestial mechanics and numerical archetypes.",
+    kb_search: "Search the registry...",
+    kb_loading: "Accessing database...",
+    kb_empty: "No transmissions found matching your search.",
+    kb_footer: "Data provided for educational and inspirational purposes. Destiny is a set of coordinates, you are the pilot.",
+    kb_not_found_header: "Transmission Lost",
+    kb_not_found_text: "The requested wisdom could not be retrieved from the database.",
+    kb_return: "Return to Database",
+    kb_back: "Back to Database",
+    kb_copy_link: "Copy Link",
+    kb_modified: "Last Modified",
+    kb_technical: "Technical Characteristics",
+    kb_synthesis_title: "Synthesis & Connection",
+    kb_faq_title: "Frequently Asked Questions",
+    kb_related: "Related Transmission",
+    kb_deepen_title: "Deepen Your Understanding",
+    kb_deepen_text: "Explore how these cosmic principles manifest in your personal journey.",
+    kb_cta: "Get Personal Report",
+    news_back_gazette: "Back to Gazette",
+    news_back_sanctuary: "Back to Sanctuary",
+    news_vol: "Vol.",
+    news_no: "No.",
+    news_price: "Price",
+    news_price_value: "One Soul",
+    news_quote: "As above, so below. The celestial rhythms captured in ink and light.",
+    news_latest: "Latest Transmissions",
+    news_full: "Full Transmission",
+    news_empty: "The cosmic ink is currently dry. Check back when the stars align.",
+    news_share: "Share this Wisdom",
+    news_return: "Return to the Archives",
+    readMore: "Read More",
+    horoscope_change_sign: "Change Sign",
+    horoscope_try_again: "Try Again",
+    horoscope_phase1: "Scanning Transits...",
+    horoscope_phase2: "Calculating Vibrations...",
+    horoscope_phase3: "Synchronizing with Stars...",
+    horoscope_phase4: "Manifesting Insight...",
+    cosmic_decree: "Cosmic Decree",
+    s_natal_title: "The Natal Matrix (Natal Chart Report)",
+    s_natal_desc: "Your cosmic blueprint. A deep psychological portrait based on planetary positions at birth. Discover your innate strengths and the unique architecture of your personality.",
+    s_love_title: "Synastry & Love Compatibility",
+    s_love_desc: "Our most requested guide. Why are you drawn to each other? Explore relationship dynamics, domestic harmony, and sexual chemistry between two souls.",
+    s_solar_title: "The 12-Month Solar Return (Yearly Forecast)",
+    s_solar_desc: "\"Your Year Ahead.\" A comprehensive roadmap for the next 12 months. Identify key dates of fortune, periods of luck, and celestial warnings.",
+    s_karmic_title: "Karmic Destiny & Past Lives",
+    s_karmic_desc: "Identify the lessons you've brought from past incarnations. Understand your Nodes of Fate and your soul's current mission.",
+    s_career_title: "Career & Wealth Alignment",
+    s_career_desc: "A niche guide for professionals and seekers. Discover where your abundance lies, which sectors offer the highest returns.",
+    s_num_title: "The Pythagorean Code (Numerology)",
+    s_num_desc: "Mathematical precision for the modern mind. Calculation of your Life Path Number and core vibrations in your name and birth date.",
+    s_hd_title: "Human Design: The Strategy of Life",
+    s_hd_desc: "Identify your energetic type (Manifestor, Generator, etc.). Learn how to make decisions without resistance and align with your natural flow.",
+    s_carto_title: "Astro-Cartography (Relocation Map)",
+    s_carto_desc: "\"Where is your city of power?\" Find specific coordinates on Earth where you'll encounter love, career breakthroughs, or peace.",
+    s_saturn_title: "Saturn Return Survival Guide",
+    s_saturn_desc: "Navigate the critical crisis of age 29-30. Learn how to survive this cosmic 'coming of age' and emerge victorious.",
+    s_dream_title: "The Sage's Dream Decree",
+    s_dream_desc: "A comprehensive interpretation of your dream. Discover the psychological roots, symbolic meanings, and how it aligns with your path.",
+    s_child_title: "The Golden Seed (Child’s Cosmic Blueprint)",
+    s_child_desc: "The ultimate manual for conscious parents. Understand your child's energy, how they learn, and in which activities they will flourish.",
+    s_shadow_title: "The Shadow Work Ritual (Lilith & Pluto)",
+    s_shadow_desc: "Meet your dark side and turn it into your greatest ally. A deep analysis of Lilith, Pluto, and retrograde planets to reclaim locked energy.",
+    s_master_title: "100-Day Master Decree",
+    s_master_desc: "The ultimate long-term roadmap for major life goals. A 100-day plan of energies, favorable moments, and concentration techniques.",
+    s_weather_title: "Astrological Weather Forecast",
+    s_weather_desc: "A professional synthesis of real-time meteorological data and celestial mechanics. Plan your days with precision.",
+    s_fortune_title: "The Fortune Map (Weekly Forecast)",
+    s_fortune_desc: "Your personalized weekly luck index, power windows, and numerical vibrations for the next 7 days.",
+    s_capital_title: "Capital Alignment",
+    s_capital_desc: "Identify your leading income energy and financial resource leaks.",
+    s_pulse_title: "The Energy Pulse",
+    s_pulse_desc: "Biological rhythm guide and a 1-minute mental reset technique.",
+    s_whisper_title: "The Dream Whisper",
+    s_whisper_desc: "A brief psychological insight into your dream. Soft advice from a wise sage to help you find clarity.",
+    s_vibration_title: "The Daily Vibration (Transit Key)",
+    s_vibration_desc: "Your personal \"Frequency of the Day\" and a specific action-mantra to align with today’s transits.",
+    s_spark_title: "The Relationship Spark",
+    s_spark_desc: "A 1-minute chemistry snapshot. Discover the primary \"lesson\" or \"vibe\" between you and another person.",
+    s_oracle_title: "The Odds Oracle (Sports Prediction)",
+    s_oracle_desc: "A synthesis of hard sports data, bookmaker odds, and Horary Astrology to identify 'Cosmic Edges'.",
+    s_goal10_title: "10-Day Goal Accelerator (Free)",
+    s_goal10_desc: "A quick energetic roadmap for your immediate goal. Includes psychological focus and cosmic timing.",
+    s_goal30_title: "30-Day Achievement Plan",
+    s_goal30_desc: "A deep monthly strategy for your goal. Synthesis of astrology, numerology, and achievement psychology.",
+    s_back_to_start: "Back to Start",
+    s_decree: "Decree",
+    s_arch_path: "Architectural Path",
+    s_arch_path_desc: "A structured roadmap synthesizing celestial mechanics and numerical vibrations.",
+    s_privacy: "Privacy Absolute",
+    s_privacy_desc: "Ephemeral data processing. Your coordinates are deleted immediately after synthesis.",
+    s_instant: "Instant Reach",
+    s_instant_desc: "Receive your professional 15-page report in your digital sanctuary within moments.",
+    s_oracle_synthesis: "The Oracle's Synthesis",
+    s_philosophy_1: "Every soul manifests in this physical plane under a specific set of coordinates—mathematical and celestial markers that define the architectural blueprint of one's existence. At Atlantic Oracle, we believe that understanding these markers is not about predicting a fixed destiny, but about revealing the map of potentials you carry.",
+    s_philosophy_2: "This comprehensive study deep-dives into the structural vibrations of your identity. We use advanced algorithms to synthesize the ancient wisdom of Pythagorean numerology with the precise mechanics of modern astrology. The result is a substantive report, ranging from 800 to 1500 words, that provides clarity on your innate strengths, karmic lessons, and the energetic climate of your destiny.",
+    s_ritual_desc: "The ritual is designed for those seeking high-resolution clarity. It bridges the gap between general horoscope forecasts and personal structural analysis. By mapping the interaction between your inner engine (Numerology) and the outer environment (Astrology), we help you achieve a state of flow where friction disappears and your path becomes clear.",
+    s_report_delivery: "Your report will be delivered as a professional 15-page PDF document, suitable for printing and long-term reflection. It includes detailed quarterly breakdowns, specific celestial windows of opportunity, and a psychological roadmap for your current cycle.",
+    s_start_consultation: "Start Your Consultation",
+    s_fee_wisdom: "Fee for Wisdom",
+    s_prof_synthesis: "Professional Synthesis",
+    formSectionForecast: "Forecast Details",
+    formSectionUser: "Your Details",
+    formSectionGoal: "Goal Details",
+    formSectionPartner: "Partner Details",
+    formSectionDream: "Dream Details",
+    formSectionSports: "Sports Event Details",
+    chatError: "The cosmic connection was interrupted. Please try again later.",
+    cosmicDecreeOf: "Cosmic Decree of",
+    widgetTitle: "Widgets for Webmasters",
+    widgetSubtitle: "Enhance your website with the professional insights of Atlantic Oracle. Free, beautiful, and fully responsive widgets.",
+    widgetPremiumDesign: "Premium Design",
+    widgetPremiumDesignDesc: "Crafted with our signature cosmic theme to fit any modern website.",
+    widgetEasyIntegration: "Easy Integration",
+    widgetEasyIntegrationDesc: "Simply copy and paste the iframe code. No complex JS needed.",
+    widgetTrafficRetention: "Traffic Retention",
+    widgetTrafficRetentionDesc: "Keep your visitors engaged with daily content updates from the stars.",
+    widgetSelectTheme: "Select Widget Theme",
+    widgetSelectThemeDesc: "Choose the visual style that matches your website's soul.",
+    widgetDarkTheme: "Dark Theme",
+    widgetLightTheme: "Light Theme",
+    widgetLiveIntegration: "Live Integration",
+    widgetEmbedCode: "Embed Code (iframe)",
+    widgetBioResponsive: "Fully Bio-Responsive",
+    widgetNoCredit: "No Credit Required",
+    widgetCustomPartnership: "Custom Partnership?",
+    widgetCustomPartnershipDesc: "For white-label solutions, custom designs, or API access, contact our technical sanctuary.",
+    widgetInquire: "Inquire via Telegram or Email",
+    widgetHoroscopeTitle: "Daily Horoscope Widget",
+    widgetHoroscopeDesc: "A beautiful, golden zodiac selector that provides daily cosmic insights directly on your site.",
+    widgetWeatherTitle: "Astro-Weather Widget",
+    widgetWeatherDesc: "Real-time weather data synthesized with celestial mechanics. A unique vertical for your audience.",
+    metaHomeTitle: "Atlantic Oracle | Astrology, Numerology & Human Design",
+    metaHomeDescription: "Discover your destiny with Atlantic Oracle. Professional reports on astrology, numerology, love synastry, and human design based on precise celestial data.",
+    metaServicesTitle: "Cosmic Consulting Services | Atlantic Oracle",
+    metaNewsTitle: "Cosmic News & Astrological Forecasts | Atlantic Oracle",
+    metaDatabaseTitle: "Esoteric Wisdom Database | Atlantic Oracle",
+    metaHoroscopeTitle: "Daily Horoscope & Astro-Weather | Atlantic Oracle",
   },
   Portuguese: {
     navNews: "Notícias Cósmicas",
@@ -862,6 +1144,147 @@ export const translations: Record<ReportLanguage, Translations> = {
     h_love: "Amor & Conexão ❤️",
     h_health: "Saúde & Energia 👌",
     h_advice: "Conselho do Sábio ✨",
+    kb_title: "Base de Dados Cósmica",
+    kb_meta_desc: "Acesse a sabedoria ancestral e os dados estruturados do universo.",
+    kb_tag: "Registro da Verdade",
+    kb_header: "Base de Dados Cósmica",
+    kb_subheader: "Uma síntese estruturada de mecânica celestial e arquétipos numéricos.",
+    kb_search: "Pesquisar no registro...",
+    kb_loading: "Acessando base de dados...",
+    kb_empty: "Nenhuma transmissão encontrada correspondente à sua pesquisa.",
+    kb_footer: "Dados fornecidos para fins educacionais e inspiradores. O destino é um conjunto de coordenadas, você é o piloto.",
+    kb_not_found_header: "Transmissão Perdida",
+    kb_not_found_text: "A sabedoria solicitada não pôde ser recuperada da base de dados.",
+    kb_return: "Voltar para a Base de Dados",
+    kb_back: "Voltar para a Base de Dados",
+    kb_copy_link: "Copiar Link",
+    kb_modified: "Última Modificação",
+    kb_technical: "Características Técnicas",
+    kb_synthesis_title: "Síntese e Conexão",
+    kb_faq_title: "Perguntas Frequentes",
+    kb_related: "Transmissão Relacionada",
+    kb_deepen_title: "Aprofunde sua Compreensão",
+    kb_deepen_text: "Explore como esses princípios cósmicos se manifestam em sua jornada pessoal.",
+    kb_cta: "Obter Relatório Pessoal",
+    news_back_gazette: "Voltar para a Gazeta",
+    news_back_sanctuary: "Voltar para o Santuário",
+    news_vol: "Vol.",
+    news_no: "No.",
+    news_price: "Preço",
+    news_price_value: "Uma Alma",
+    news_quote: "Assim como é em cima, é embaixo. Os ritmos celestiais capturados em tinta e luz.",
+    news_latest: "Últimas Transmissões",
+    news_full: "Transmissão Completa",
+    news_empty: "A tinta cósmica está atualmente seca. Volte quando as estrelas se alinharem.",
+    news_share: "Compartilhar esta Sabedoria",
+    news_return: "Voltar para os Arquivos",
+    readMore: "Ler Mais",
+    horoscope_change_sign: "Mudar Signo",
+    horoscope_try_again: "Tentar Novamente",
+    horoscope_phase1: "Digitalizando Trânsitos...",
+    horoscope_phase2: "Calculando Vibrações...",
+    horoscope_phase3: "Sincronizando com as Estrelas...",
+    horoscope_phase4: "Manifestando Visão...",
+    cosmic_decree: "Decreto Cósmico",
+    s_natal_title: "A Matriz Natal (Relatório de Mapa Natal)",
+    s_natal_desc: "Seu blueprint cósmico. Um retrato psicológico profundo baseado nas posições planetárias ao nascer. Descubra suas forças inatas e a arquitetura única de sua personalidade.",
+    s_love_title: "Sinastria & Compatibilidade Amorosa",
+    s_love_desc: "Nosso guia mais solicitado. Por que vocês se atraem? Explore dinâmicas de relacionamento, harmonia doméstica e química sexual entre duas almas.",
+    s_solar_title: "O Retorno Solar de 12 Meses (Previsão Anual)",
+    s_solar_desc: "\"Seu Ano à Frente.\" Um roteiro abrangente para os próximos 12 meses. Identifique datas-chave de fortuna, períodos de sorte e avisos celestiais.",
+    s_karmic_title: "Destino Cármico & Vidas Passadas",
+    s_karmic_desc: "Identifique as lições que você trouxe de encarnações passadas. Entenda seus Nodos do Destino e a missão atual de sua alma nesta vida.",
+    s_career_title: "Alinhamento de Carreira & Riqueza",
+    s_career_desc: "Um guia de nicho para profissionais e buscadores. Descubra onde reside sua abundância e quais setores oferecem os maiores retornos.",
+    s_num_title: "O Código Pitagórico (Numerologia)",
+    s_num_desc: "Precisão matemática para a mente moderna. Cálculo do seu Número do Caminho de Vida e vibrações centrais ocultas no seu nome e data de nascimento.",
+    s_hd_title: "Desenho Humano: A Estratégia de Vida",
+    s_hd_desc: "Identifique seu tipo energético (Manifestador, Gerador, etc.). Aprenda a tomar decisões sem resistência e a se alinhar com seu fluxo natural.",
+    s_carto_title: "Astro-Cartografia (Mapa de Relocação)",
+    s_carto_desc: "\"Onde está sua cidade de poder?\" Encontre coordenadas específicas na Terra onde você encontrará amor, avanços na carreira ou paz espiritual.",
+    s_saturn_title: "Guia de Sobrevivência do Retorno de Saturno",
+    s_saturn_desc: "Navegue pela crise crítica dos 29-30 anos. Aprenda a sobreviver a este 'amadurecimento cósmico' e emerja como uma versão vitoriosa de si mesmo.",
+    s_dream_title: "O Decreto de Sonhos do Sábio",
+    s_dream_desc: "Uma interpretação abrangente do seu sonho. Descubra as raízes psicológicas, significados simbólicos e como ele se alinha com seu caminho cósmico.",
+    s_child_title: "A Semente Dourada (Blueprint Cósmico Infantil)",
+    s_child_desc: "O manual definitivo para pais conscientes. Entenda a energia do seu filho desde o nascimento: como aprendem e em quais atividades florescerão.",
+    s_shadow_title: "O Ritual de Trabalho de Sombras (Lilith & Plutão)",
+    s_shadow_desc: "Conheça seu lado sombrio e transforme-o em seu maior aliado. Uma análise profunda de Lilith, Plutão e planetas retrógrados para recuperar energia.",
+    s_master_title: "Decreto Mestre de 100 Dias",
+    s_master_desc: "O roteiro definitivo de longo prazo para grandes objetivos de vida. Um plano de 100 dias de energias, momentos favoráveis e técnicas de concentração.",
+    s_weather_title: "Previsão do Tempo Astrológica",
+    s_weather_desc: "Uma síntese profissional de dados meteorológicos em tempo real e mecânica celestial. Planeje seus dias com precisão cósmica.",
+    s_fortune_title: "O Mapa da Fortuna (Previsão Semanal)",
+    s_fortune_desc: "Seu índice de sorte semanal personalizado, janelas de poder e vibrações numéricas para os próximos 7 dias.",
+    s_capital_title: "Alinhamento de Capital",
+    s_capital_desc: "Identifique sua energia de renda líder e vazamentos de recursos financeiros.",
+    s_pulse_title: "O Pulso Energético",
+    s_pulse_desc: "Guia de ritmo biológico e uma técnica de reinicialização mental de 1 minuto.",
+    s_whisper_title: "O Sussurro do Sonho",
+    s_whisper_desc: "Uma breve visão psicológica do seu sonho. Conselhos suaves de um sábio para ajudá-lo a encontrar clareza.",
+    s_vibration_title: "A Vibração Diária (Chave de Trânsito)",
+    s_vibration_desc: "Sua \"Frequência do Dia\" pessoal e um mantra de ação específico para se alinhar com os trânsitos de hoje.",
+    s_spark_title: "A Faísca do Relacionamento",
+    s_spark_desc: "Um instantâneo de química de 1 minuto. Descubra a \"lição\" ou \"vibe\" primária entre você e outra pessoa.",
+    s_oracle_title: "O Oráculo das Odds (Previsão Esportiva)",
+    s_oracle_desc: "Uma síntese de dados esportivos, odds de casas de apostas e Astrologia Horária para identificar 'Vantagens Cósmicas'.",
+    s_goal10_title: "Acelerador de Metas de 10 Dias (Grátis)",
+    s_goal10_desc: "Um roteiro energético rápido para sua meta imediata. Inclui foco psicológico e tempo cósmico.",
+    s_goal30_title: "Plano de Conquista de 30 Dias",
+    s_goal30_desc: "Uma estratégia mensal profunda para sua meta. Síntese de astrologia, numerologia e psicologia da conquista.",
+    s_back_to_start: "Voltar para o Início",
+    s_decree: "Decreto",
+    s_arch_path: "Caminho Arquitetônico",
+    s_arch_path_desc: "Um roteiro estruturado que sintetiza mecânica celestial e vibrações numéricas.",
+    s_privacy: "Privacidade Absoluta",
+    s_privacy_desc: "Processamento de dados efêmeros. Suas coordenadas são apagadas imediatamente após a síntese.",
+    s_instant: "Alcance Instantâneo",
+    s_instant_desc: "Receba seu relatório profissional de 15 páginas em seu santuário digital em poucos momentos.",
+    s_oracle_synthesis: "A Síntesa do Oráculo",
+    s_philosophy_1: "Cada alma manifesta-se neste plano físico sob um conjunto específico de coordenadas — marcadores matemáticos e celestiais que definem o blueprint arquitetônico da própria existência. No Atlantic Oracle, acreditamos que entender esses marcadores não é sobre prever um destino fixo, mas sobre revelar o mapa de potenciais que você carrega.",
+    s_philosophy_2: "Este estudo abrangente mergulha profundamente nas vibrações estruturais de sua identidade. Usamos algoritmos avançados para sintetizar a sabedoria milenar da numerologia pitagórica com a mecânica precisa da astrologia moderna. O resultado é um relatório substancial, variando de 800 a 1500 palavras, que fornece clareza sobre suas forças inatas, lições cármicas e o clima energético de seu destino.",
+    s_ritual_desc: "O ritual é projetado para aqueles que buscam clareza de alta resolução. Ele preenche a lacuna entre as previsões gerais do horóscopo e a análise estrutural pessoal. Ao mapear a interação entre seu motor interno (Numerologia) e o ambiente externo (Astrologia), ajudamos você a alcançar um estado de fluxo onde a fricção desaparece e seu caminho se torna claro.",
+    s_report_delivery: "Seu relatório será entregue como um documento PDF profissional de 15 páginas, adequado para impressão e reflexão de longo prazo. Inclui detalhamentos trimestrais detalhados, janelas celestiais específicas de oportunidade e um roteiro psicológico para seu ciclo atual.",
+    s_start_consultation: "Iniciar sua Consulta",
+    s_fee_wisdom: "Taxa de Sabedoria",
+    s_prof_synthesis: "Síntese Profissional",
+    formSectionForecast: "Detalhes da Previsão",
+    formSectionUser: "Seus Dados",
+    formSectionGoal: "Detalhes da Meta",
+    formSectionPartner: "Dados do Parceiro",
+    formSectionDream: "Detalhes do Sonho",
+    formSectionSports: "Detalhes do Evento Esportivo",
+    chatError: "A conexão cósmica foi interrompida. Por favor, tente novamente mais tarde.",
+    cosmicDecreeOf: "Decreto Cósmico de",
+    widgetTitle: "Widgets para Webmasters",
+    widgetSubtitle: "Melhore o seu site com as ideias profissionais do Atlantic Oracle. Widgets gratuitos, bonitos e totalmente responsivos.",
+    widgetPremiumDesign: "Design Premium",
+    widgetPremiumDesignDesc: "Criado com o nosso tema cósmico de marca registada para caber em qualquer site moderno.",
+    widgetEasyIntegration: "Integração Fácil",
+    widgetEasyIntegrationDesc: "Basta copiar e colar o código do iframe. Não é necessário JS complexo.",
+    widgetTrafficRetention: "Retenção de Tráfego",
+    widgetTrafficRetentionDesc: "Mantenha os seus visitantes envolvidos com atualizações diárias de conteúdo das estrelas.",
+    widgetSelectTheme: "Selecionar Tema do Widget",
+    widgetSelectThemeDesc: "Escolha o estilo visual que corresponde à alma do seu site.",
+    widgetDarkTheme: "Tema Escuro",
+    widgetLightTheme: "Tema Claro",
+    widgetLiveIntegration: "Integração ao Vivo",
+    widgetEmbedCode: "Código de Incorporação (iframe)",
+    widgetBioResponsive: "Totalmente Bio-Responsivo",
+    widgetNoCredit: "Crédito Não Necessário",
+    widgetCustomPartnership: "Parceria Personalizada?",
+    widgetCustomPartnershipDesc: "Para soluções de white-label, designs personalizados ou acesso à API, contacte o nosso santuário técnico.",
+    widgetInquire: "Consultar via Telegram ou E-mail",
+    widgetHoroscopeTitle: "Widget de Horóscopo Diário",
+    widgetHoroscopeDesc: "Um belo seletor de zodíaco dourado que fornece informações cósmicas diárias diretamente no seu site.",
+    widgetWeatherTitle: "Widget de Astro-Clima",
+    widgetWeatherDesc: "Dados meteorológicos em tempo real sintetizados com mecânica celeste. Um vertical único para o seu público.",
+    metaHomeTitle: "Atlantic Oracle | Astrologia, Numerologia e Human Design",
+    metaHomeDescription: "Descubra o seu destino com o Atlantic Oracle. Relatórios profissionais de astrologia, numerologia, sinastria amorosa e human design baseados em dados celestiais precisos.",
+    metaServicesTitle: "Serviços de Consultoria Cósmica | Atlantic Oracle",
+    metaNewsTitle: "Notícias Cósmicas e Previsões Astrológicas | Atlantic Oracle",
+    metaDatabaseTitle: "Base de Dados de Sabedoria Esotérica | Atlantic Oracle",
+    metaHoroscopeTitle: "Horóscopo Diário e Astro-Clima | Atlantic Oracle",
   },
   Spanish: {
     navNews: "Noticias Cósmicas",
@@ -883,7 +1306,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     decreesSubtitle: "Seleccione un área de enfoque para su estudio integral.",
     philosophyTitle: "Un Mapa Unificado de tu Existencia",
     philosophySubtitle: "Atlantic Oracle™ representa un cambio de horóscopos generales al análisis de datos estructurados.",
-    philosophyText: "Creemos que la Astrología proporciona el contexto externo —el \"clima\" de tu destino— mientras que la Numerología revela el motor interno: las vibraciones ocultas en tu nombre и fecha de nacimiento.",
+    philosophyText: "Creemos que la Astrología proporciona el contexto externo —el \"clima\" de tu destino— mientras que la Numerología revela el motor interno: las vibraciones ocultas en tu nombre y fecha de nacimiento.",
     featureReports: "Informes de 3-5 Páginas",
     featureReportsDesc: "Análisis sustancial que va de 800 a 1500 palabras por lectura.",
     featureMethodology: "Metodología Dual",
@@ -920,10 +1343,10 @@ export const translations: Record<ReportLanguage, Translations> = {
     consulting: "Consultando...",
     monthlyGift: "Tu Regalo Mensual",
     unlockFullDecree: "Desbloquea tu Decreto Cósmico Completo",
-    experienceDepth: "Experimenta la profundidad de un análisis de 3-5 páginas que mapea todo el plano arquitectónico de tu alma и tu camino kármico.",
+    experienceDepth: "Experimenta la profundidad de un análisis de 3-5 páginas que mapea todo el plano arquitectónico de tu alma y tu camino kármico.",
     consultFullOracle: "Consultar Oráculo Completo",
     sagesRequirement: "Requisito del Sabio",
-    sagesRequirementDesc: "Para un análisis más profundo и preciso, requerimos coordenadas adicionales. Por favor, complete el formulario con la mayor precisión. Tenga en cuenta que el oráculo requiere un momento de silencio celestial para tejer su decreto integral.",
+    sagesRequirementDesc: "Para un análisis más profundo y preciso, requerimos coordenadas adicionales. Por favor, complete el formulario con la mayor precisión. Tenga en cuenta que el oráculo requiere un momento de silencio celestial para tejer su decreto integral.",
     loadingTitle: "Consultando el Registro",
     loadingSubtitle: "El Oráculo está tejiendo sus coordenadas celestiales en un decreto integral. Por favor espere, este proceso toma un momento mientras calculamos alineaciones cósmicas profundas.",
     loadingPhase1: "Alineando tránsitos celestiales...",
@@ -933,40 +1356,40 @@ export const translations: Record<ReportLanguage, Translations> = {
     philosophyQuote: "El destino no es una jaula, sino un conjunto de coordenadas.",
     philosophyIntro: "Vemos la vida como una compleja interacción de ritmos naturales. Así como un navegante necesita tanto una brújula como un mapa de las estrellas, una persona que busca la armonía necesita comprender tanto su frecuencia interna como el entorno externo.",
     astrologyTitle: "Astrología",
-    astrologyDesc: "La Astrología es el estudio de los ciclos cósmicos и los tránsitos planetarios. Revela el \"clima\" de tu vida: cuándo actuar, cuándo esperar и hacia dónde fluye la energía universal en cualquier momento dado.",
+    astrologyDesc: "La Astrología es el estudio de los ciclos cósmicos y los tránsitos planetarios. Revela el \"clima\" de tu vida: cuándo actuar, cuándo esperar y hacia dónde fluye la energía universal en cualquier momento dado.",
     numerologyTitle: "Numerología",
-    numerologyDesc: "La Numerología decodifica la vibración estructural de tu nombre и fecha de nacimiento. Describe tu \"motor\": las cualidades innatas, fortalezas и lecciones espirituales que definen tu identidad única.",
+    numerologyDesc: "La Numerología decodifica la vibración estructural de tu nombre y fecha de nacimiento. Describe tu \"motor\": las cualidades innatas, fortalezas y lecciones espirituales que definen tu identidad única.",
     philosophySynthesis: "Al combinar estas dos disciplinas antiguas, brindamos una visión de alta resolución de su camino, permitiéndole moverse en sintonía con el mundo en lugar de contra él.",
     philosophyAlignment: "Cuando la vibración interna (Números) se alinea con el ritmo externo (Estrellas), la fricción desaparece. Este es el estado de flujo natural que ayudamos a nuestros visitantes a lograr.",
     philosophySignature: "Descifrando el lenguaje secreto de las estrellas.",
     howItWorksTitle: "El Proceso Sagrado",
     howItWorksSubtitle: "Cómo tejemos tu decreto integral.",
     step1Title: "Coordenadas Celestiales",
-    step1Desc: "Recopilamos tus datos de nacimiento и nombre, las coordenadas fundamentales de la entrada de tu alma en el plano físico.",
+    step1Desc: "Recopilamos tus datos de nacimiento y nombre, las coordenadas fundamentales de la entrada de tu alma en el plano físico.",
     step2Title: "Síntesis Matemática",
-    step2Desc: "Nuestro motor calcula la matriz pitagórica de tu nombre и los tránsitos planetarios precisos en el momento de tu nacimiento.",
+    step2Desc: "Nuestro motor calcula la matriz pitagórica de tu nombre y los tránsitos planetarios precisos en el momento de tu nacimiento.",
     step3Title: "Generación del Decreto",
     step3Desc: "El Oráculo sintetiza estos puntos de datos en un informe integral de 3-5 páginas que mapea su camino kármico.",
     howItWorksSummary: "Tus datos son efímeros. No almacenamos información personal después de que se genera el informe.",
     whyItResonatesTitle: "Por qué se siente como si \"funcionara\"",
     whyItResonatesSubtitle: "El razonamiento filosófico más profundo",
-    whyItResonatesIntro: "La astrología и la numerología no reclaman una causalidad física como la gravedad; operan como lenguajes simbólicos arraigados en la filosofía antigua:",
+    whyItResonatesIntro: "La astrología y la numerología no reclaman una causalidad física como la gravedad; operan como lenguajes simbólicos arraigados en la filosofía antigua:",
     asAboveTitle: "“Como es arriba, es abajo”",
-    asAboveDesc: "El principio hermético sugiere que el macrocosmos refleja el microcosmos. Las posiciones celestiales sirven como un mapa atemporal de arquetipos, no forzando resultados, sino reflejando patrones de energía и tiempo.",
+    asAboveDesc: "El principio hermético sugiere que el macrocosmos refleja el microcosmos. Las posiciones celestiales sirven como un mapa atemporal de arquetipos, no forzando resultados, sino reflejando patrones de energía y tiempo.",
     vibrationalTitle: "Correspondencia vibratoria",
-    vibrationalDesc: "Pitágoras enseñó que todo se reduce a vibraciones fundamentales. Decodificamos la “firma” impresa al nacer, revelando tendencias innatas и lecciones rítmicas a través del número и el planeta.",
-    synchronicityTitle: "Sincronicidad и Patrones",
-    synchronicityDesc: "Carl Jung describió la sincronicidad como conexiones acausales a través del significado. Estos sistemas sobresalen al resaltar temas recurrentes, desencadenando el autorreconocimiento и la alineación con tu verdad interior.",
+    vibrationalDesc: "Pitágoras enseñó que todo se reduce a vibraciones fundamentales. Decodificamos la “firma” impresa al nacer, revelando tendencias innatas y lecciones rítmicas a través del número y el planeta.",
+    synchronicityTitle: "Sincronicidad y Patrones",
+    synchronicityDesc: "Carl Jung describió la sincronicidad como conexiones acausales a través del significado. Estos sistemas sobresalen al resaltar temas recurrentes, desencadenando el autorreconocimiento y la alineación con tu verdad interior.",
     psychologicalTitle: "Poder reflexivo psicológico",
-    psychologicalDesc: "Incluso sin pruebas físicas, estos sistemas funcionan como poderosos espejos terapéuticos: estimulan la autoindagación, resaltan potenciales и brindan marcos para traducir la intuición en palabras.",
-    freeWillDisclaimer: "\"Nunca prometemos predicciones como certezas: el libre albedrío, las elecciones и el contexto siempre dan forma a los resultados. El cosmos ilumina las posibilidades; tú decides cómo caminarlas.\"",
-    saveCherishTitle: "Guardar и Valorar",
+    psychologicalDesc: "Incluso sin pruebas físicas, estos sistemas funcionan como poderosos espejos terapéuticos: estimulan la autoindagación, resaltan potenciales y brindan marcos para traducir la intuición en palabras.",
+    freeWillDisclaimer: "\"Nunca prometemos predicciones como certezas: el libre albedrío, las elecciones y el contexto siempre dan forma a los resultados. El cosmos ilumina las posibilidades; tú decides cómo caminarlas.\"",
+    saveCherishTitle: "Guardar y Valorar",
     saveCherishDesc: "Descarga tu lectura como un elegante PDF: diseño cósmico, listo para imprimir o compartir como un regalo significativo.",
-    privacySovereigntyTitle: "Privacidad и Soberanía",
+    privacySovereigntyTitle: "Privacidad y Soberanía",
     privacySovereigntyDesc: "Tus coordenadas se procesan solo para la sesión. Los datos se eliminan inmediatamente después de que se genera su PDF.",
     readyToListen: "¿Listo para escuchar?",
     consultSecretLanguage: "Consultar el Lenguaje Secreto",
-    finalLegalDisclaimer: "Recordatorio final: esta es una herramienta para el entretenimiento, la inspiración и la autorreflexión. No es un sustituto del asesoramiento profesional médico, financiero o legal. Tú eres el autor de tu propio destino.",
+    finalLegalDisclaimer: "Recordatorio final: esta es una herramienta para el entretenimiento, la inspiración y la autorreflexión. No es un sustituto del asesoramiento profesional médico, financiero o legal. Tú eres el autor de tu propio destino.",
     testimonialsTitle: "Ecos de las Almas",
     testimonialsSubtitle: "Voces de quienes recorrieron el camino antes que tú.",
     privacyPolicy: "Política de Privacidad",
@@ -1028,12 +1451,12 @@ export const translations: Record<ReportLanguage, Translations> = {
     unloadWarning: "¡Se está generando su informe! Si cierra la página, podrá encontrarlo en su correo electrónico en 5 minutos. ¿Salir?",
     formEmail: "Correo Electrónico",
     formEmailPlaceholder: "tu@email.com",
-    formEmailHelp: "Requerido solo para enviar su informe del Oráculo и asegurar que no lo pierda.",
+    formEmailHelp: "Requerido solo para enviar su informe del Oráculo y asegurar que no lo pierda.",
     formGoal: "Tu Objetivo",
     formGoalPlaceholder: "Describe tu objetivo claramente (ej. 'Iniciar un negocio', 'Perder 5kg', 'Aprender un nuevo idioma')",
-    formGoalHelp: "Sé específico и claro para el mejor alineamiento energético.",
+    formGoalHelp: "Sé específico y claro para el mejor alineamiento energético.",
     formCity: "Tu Ciudad",
-    formCityPlaceholder: "ej. Londres, Nueva York, Tokio",
+    formCityPlaceholder: "ej. Londres, Nueva York, Tóquio",
     formDuration: "Período del Pronóstico",
     formZodiacSign: "Tu Signo Zodiacal",
     durationToday: "Hoy",
@@ -1049,11 +1472,11 @@ export const translations: Record<ReportLanguage, Translations> = {
     privacySettingsTitle: "Ajustes de Privacidad",
     privacySettingsDesc: "Administre cómo sus datos interactúan con la red cósmica.",
     privacyEssentialCookies: "Cookies Esenciales",
-    privacyEssentialDesc: "Requerido para funcionalidad básica и seguridad. No se puede desactivar.",
+    privacyEssentialDesc: "Requerido para funcionalidad básica y seguridad. No se puede desactivar.",
     privacyAnalyticsCookies: "Analítica",
     privacyAnalyticsDesc: "Nos ayuda a comprender cómo los buscadores interactúan con el Oráculo.",
     privacyMarketingCookies: "Marketing",
-    privacyMarketingDesc: "Se utiliza para compartir noticias и actualizaciones cósmicas con buscadores relevantes.",
+    privacyMarketingDesc: "Se utiliza para compartir noticias y actualizaciones cósmicas con buscadores relevantes.",
     saveSettings: "Guardar Preferencias",
     dataRightsTitle: "Sus Derechos de Datos",
     dataRightsDesc: "Bajo el GDPR, tiene derecho a acceder, exportar o eliminar sus datos sagrados.",
@@ -1065,7 +1488,7 @@ export const translations: Record<ReportLanguage, Translations> = {
     dealerContactTelegram: "Chat de Telegram",
     pitchButton: "¿Cómo monetizar tu canal de SMM?",
     pitchSlide1Title: "Monetiza la Magia de tu Contenido",
-    pitchSlide1Subtitle: "Plataforma de Afiliados P2P: Astrología и Numerología profesional para tu audiencia.",
+    pitchSlide1Subtitle: "Plataforma de Afiliados P2P: Astrología y Numerología profesional para tu audiencia.",
     pitchSlide2Title: "Desafíos de Monetizar Canales de SMM",
     pitchSlide2Point1: "Bajos pagos por publicidad directa.",
     pitchSlide2Point2: "Dificultad para encontrar un producto de alta calidad para recomendar.",
@@ -1074,13 +1497,13 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide3Title: "Atlantic Oracle — Un Negocio Listo en tu Smartphone",
     pitchSlide3Desc: "Creamos una plataforma de análisis personal que convierte a los seguidores en clientes leales.",
     pitchSlide3Feature1: "Informes automatizados de alta calidad.",
-    pitchSlide3Feature2: "Idioma dual: Inglés и Portugués (BR).",
+    pitchSlide3Feature2: "Idioma dual: Inglés y Portugués (BR).",
     pitchSlide3Feature3: "Experiencia de usuario fluida (UX/UI).",
     pitchSlide4Title: "Valor para el Usuario",
-    pitchSlide4Desc: "Informes personales profundos sobre astrología и numerología.",
+    pitchSlide4Desc: "Informes personales profundos sobre astrología y numerología.",
     pitchSlide4Premium: "12 informes premium diferentes (más detallados)",
     pitchSlide4Standard: "6 informes estándar",
-    pitchSlide4Free: "Servicio de horóscopo gratuito para hoy и mañana en la sección de Noticias Cósmicas",
+    pitchSlide4Free: "Servicio de horóscopo gratuito para hoy y mañana en la sección de Noticias Cósmicas",
     pitchSlide4Accent: "Esto no es solo un \"horóscopo diario\", sino un producto analítico profundo para el autodescubrimiento.",
     pitchSlide5Title: "La Asociación más Justa del Mercado",
     pitchSlide5Client: "Para tu cliente: 50% de descuento con tu código promocional personal.",
@@ -1092,12 +1515,12 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide6Text3: "Informes de transacciones semanales directamente desde el sistema.",
     pitchSlide6Text4: "Pagos sin retrasos según lo programado.",
     pitchSlide6Visual: "Pagos Semanales",
-    pitchSlide7Title: "Alcance Global: EN и PT-BR",
+    pitchSlide7Title: "Alcance Global: EN y PT-BR",
     pitchSlide7En: "Inglés: Acceso a una audiencia premium en todo el mundo.",
-    pitchSlide7Pt: "Portugués (Brasil): El mercado esotérico de más rápido crecimiento и más leal del mundo.",
+    pitchSlide7Pt: "Portugués (Brasil): El mercado esotérico de más rápido crecimiento y más leal del mundo.",
     pitchSlide7Message: "No estás limitado por el mercado local. Gana en moneda fuerte.",
     pitchSlide8Title: "Tendencia en el Crecimiento Personal",
-    pitchSlide8Text: "El interés por la salud mental, la astrología и la búsqueda de propósito ha crecido un 40% en los últimos 2 años. Tu audiencia ya está buscando estas respuestas; dáselas a través de Atlantic Oracle.",
+    pitchSlide8Text: "El interés por la salud mental, la astrología y la búsqueda de propósito ha crecido un 40% en los últimos 2 años. Tu audiencia ya está buscando estas respuestas; dáselas a través de Atlantic Oracle.",
     pitchSlide9Title: "Solo 4 pasos para monetizar tu canal",
     pitchSlide9Step1: "Obtén tu código promocional único.",
     pitchSlide9Step2: "Haz una publicación o historia recomendando el servicio.",
@@ -1117,14 +1540,14 @@ export const translations: Record<ReportLanguage, Translations> = {
     pitchSlide10Badge: "El Cierre",
     pitchSlide5ClientTitle: "Para tu Cliente",
     pitchSlide5PartnerTitle: "Para Ti",
-    pitchWinWin: "Parceria Ganha-Ganha",
-    pitchDealerProgram: "Programa de Revendedores",
-    pitchDealerSubtitle: "Monetize seu público compartilhando a sabedoria das estrelas e dos números.",
+    pitchWinWin: "Win-Win Partnership",
+    pitchDealerProgram: "Dealer Program",
+    pitchDealerSubtitle: "Monetize su público compartiendo a sabedoria das estrelas e dos números.",
     dailyVibrationTitle: "The Daily Vibration (Clave de Tránsito)",
-    dailyVibrationSlogan: "Tu \"Frecuencia del Día\" personal и un mantra de acción específico para alinearte con los tránsitos de hoy.",
-    dailyVibrationDesc: "Cálculo corto de cómo las posiciones planetarias de hoy resuenan personalmente con tu carta. Recibes una recomendación clave: qué iniciar hoy и de qué abstenerte, además de una afirmación personal.",
+    dailyVibrationSlogan: "Tu \"Frecuencia del Día\" personal y un mantra de acción específico para alinearte con los tránsitos de hoy.",
+    dailyVibrationDesc: "Cálculo corto de cómo las posiciones planetarias de hoy resuenan personalmente con tu carta. Recibes una recomendación clave: qué iniciar hoy y de qué abstenerte, además de una afirmación personal.",
     relationshipSparkTitle: "The Relationship Spark (Verificación Rápida de Compatibilidad)",
-    relationshipSparkSlogan: "Un snapshot de química de 1 minuto. Descubre la principal \"lección\" o \"vibe\" entre tú и otra persona.",
+    relationshipSparkSlogan: "Un snapshot de química de 1 minuto. Descubre la principal \"lección\" o \"vibe\" entre tú y otra persona.",
     relationshipSparkDesc: "Análisis expreso de compatibilidad basado en dos fechas de nacimiento. En lugar de 5 páginas de texto, obtienes una definición clara del tipo de conexión: \"Maestro Kármico\", \"Espejo\", \"Donante de Energía\" o \"Unión Creativa\". Ideal para una verificación rápida de un nuevo contacto.",
     horoscopeTitle: "Horóscopo Personal para Mañana",
     horoscopeSubtitle: "Seleccione su signo zodiacal para recibir un pronóstico celestial.",
@@ -1149,6 +1572,147 @@ export const translations: Record<ReportLanguage, Translations> = {
     h_love: "Amor & Conexión ❤️",
     h_health: "Salud & Energía 👌",
     h_advice: "Consejo del Sabio ✨",
+    kb_title: "Base de Datos Cósmica",
+    kb_meta_desc: "Accede a la sabiduría ancestral y a los datos estructurados del universo.",
+    kb_tag: "Registro de la Verdad",
+    kb_header: "Base de Datos Cósmica",
+    kb_subheader: "Una síntesis estructurada de mecánica celestial y arquetipos numéricos.",
+    kb_search: "Buscar en el registro...",
+    kb_loading: "Accediendo a la base de datos...",
+    kb_empty: "No se encontraron transmisiones que coincidan con tu búsqueda.",
+    kb_footer: "Datos proporcionados con fines educativos e inspiradores. El destino es un conjunto de coordenadas, tú eres el piloto.",
+    kb_not_found_header: "Transmisión Perdida",
+    kb_not_found_text: "La sabiduría solicitada no pudo ser recuperada de la base de datos.",
+    kb_return: "Voltar a la Base de Datos",
+    kb_back: "Atrás a la Base de Datos",
+    kb_copy_link: "Copiar Enlace",
+    kb_modified: "Última Modificación",
+    kb_technical: "Características Técnicas",
+    kb_synthesis_title: "Síntesis y Conexión",
+    kb_faq_title: "Preguntas Frecuentes",
+    kb_related: "Transmisión Relacionada",
+    kb_deepen_title: "Profundiza tu Comprensión",
+    kb_deepen_text: "Explora cómo estos principios cósmicos se manifiestan en tu viaje personal.",
+    kb_cta: "Obtener Informe Personal",
+    news_back_gazette: "Volver a la Gaceta",
+    news_back_sanctuary: "Volver al Santuario",
+    news_vol: "Vol.",
+    news_no: "No.",
+    news_price: "Precio",
+    news_price_value: "Un Alma",
+    news_quote: "Como es arriba, es abajo. Los ritmos celestiales capturados en tinta y luz.",
+    news_latest: "Últimas Transmisiones",
+    news_full: "Transmisión Completa",
+    news_empty: "La tinta cósmica está actualmente seca. Vuelve cuando las estrellas se alineen.",
+    news_share: "Compartir esta Sabiduría",
+    news_return: "Volver a los Archivos",
+    readMore: "Leer más",
+    horoscope_change_sign: "Cambiar Signo",
+    horoscope_try_again: "Intentar de nuevo",
+    horoscope_phase1: "Escaneando Tránsitos...",
+    horoscope_phase2: "Calculando Vibraciones...",
+    horoscope_phase3: "Sincronizando con Estrellas...",
+    horoscope_phase4: "Manifestando Perspectiva...",
+    cosmic_decree: "Decreto Cósmico",
+    s_natal_title: "La Matriz Natal (Informe de Carta Natal)",
+    s_natal_desc: "Tu blueprint cósmico. Un retrato psicológico profundo basado en las posiciones planetarias al nacer. Descubre tus fortalezas innatas y la arquitectura única de tu personalidad.",
+    s_love_title: "Sinastría y Compatibilidad de Amor",
+    s_love_desc: "Nuestra guía más solicitada. ¿Por qué se atraen? Explora la dinámica de la relación, la armonía doméstica y la química sexual entre dos almas.",
+    s_solar_title: "El Retorno Solar de 12 Meses (Pronóstico Anual)",
+    s_solar_desc: "\"Tu año por delante.\" Una hoja de ruta completa para los próximos 12 meses. Identifica fechas clave de fortuna, periodos de suerte y advertencias celestiales.",
+    s_karmic_title: "Destino Kármico y Vidas Pasadas",
+    s_karmic_desc: "Identifica las lecciones que has traído de encarnaciones pasadas. Comprende tus Nodos del Destino y la misión actual de tu alma en esta vida.",
+    s_career_title: "Alineación de Carrera y Riqueza",
+    s_career_desc: "Una guía para profesionales y buscadores. Descubre dónde reside tu abundancia, qué sectores ofrecen los mayores rendimientos y el mejor momento para cambios de carrera.",
+    s_num_title: "El Código Pitagórico (Numerología)",
+    s_num_desc: "Precisión matemática para la mente moderna. Cálculo de tu Número de Camino de Vida y vibraciones ocultas en tu nombre y fecha de nacimiento.",
+    s_hd_title: "Diseño Humano: La Estrategia de Vida",
+    s_hd_desc: "Identifica tu tipo energético (Manifestador, Generador, etc.). Aprende a tomar decisiones sin resistencia y a alinearte con tu flujo natural.",
+    s_carto_title: "Astro-Cartografía (Mapa de Reubicación)",
+    s_carto_desc: "¿Dónde está tu ciudad de poder? Encuentra coordenadas específicas en la Tierra donde encontrarás amor, avances profesionales o paz espiritual.",
+    s_saturn_title: "Guía de Supervivencia del Retorno de Saturno",
+    s_saturn_desc: "Navega la crisis crítica de los 29-30 años. Aprende a sobrevivir a esta 'madurez cósmica' y emerge como una versión victoriosa de ti mismo.",
+    s_dream_title: "El Decreto de Sueños del Sabio",
+    s_dream_desc: "Una interpretación completa de tu sueño. Descubre las raíces psicológicas, los significados simbólicos y cómo se alinea con tu camino cósmico.",
+    s_child_title: "La Semilla Dorada (Blueprint Cósmico Infantil)",
+    s_child_desc: "El manual definitivo para padres conscientes. Comprende la energía de tu hijo desde el nacimiento: cómo aprende, cómo expresa emociones y en qué actividades brillará más.",
+    s_shadow_title: "El Ritual de Trabajo de Sombras (Inmersión en Lilith y Plutón)",
+    s_shadow_desc: "Conoce tu lado oscuro y conviértelo en tu mejor aliado. Un análisis profundo de Lilith, Plutón y planetas retrógrados para reclamar tu energía bloqueada.",
+    s_master_title: "Decreto Maestro de 100 Días",
+    s_master_desc: "La hoja de ruta definitiva para grandes objetivos de vida. Un plan de 100 días de energías, momentos favorables y técnicas de concentración psicológica.",
+    s_weather_title: "Pronóstico del Tiempo Astrológico",
+    s_weather_desc: "Una síntesis profesional de datos meteorológicos en tiempo real y mecánica celestial. Planifica tus días con precisión cósmica y atmosférica.",
+    s_fortune_title: "El Mapa de la Fortuna (Pronóstico Semanal)",
+    s_fortune_desc: "Tu índice de suerte semanal personalizado, ventanas de poder y vibraciones numéricas para los próximos 7 días.",
+    s_capital_title: "Alineación de Capital",
+    s_capital_desc: "Identifica tu energía de ingresos líder y las fugas de recursos financieros.",
+    s_pulse_title: "El Pulso Energético",
+    s_pulse_desc: "Guía de ritmo biológico y una técnica de reinicio mental de 1 minuto.",
+    s_whisper_title: "El Susurro del Sueño",
+    s_whisper_desc: "Una breve visión psicológica de tu sueño. Consejos suaves de un sabio para ayudarte a encontrar claridad.",
+    s_vibration_title: "La Vibración Diaria (Clave de Tránsito)",
+    s_vibration_desc: "Tu 'Frecuencia del Día' personal y un mantra de acción específico para alinearte con los tránsitos de hoy.",
+    s_spark_title: "La Chispa de la Relación (Verificación Rápida)",
+    s_spark_desc: "Descubre la 'lección' o 'vibe' principal entre tú y otra persona basada en dos fechas de nacimiento.",
+    s_oracle_title: "El Oráculo de las Probabilidades (Predicción Deportiva)",
+    s_oracle_desc: "Una síntesis de datos deportivos reales y Astrología Horaria para identificar 'ventajas cósmicas' frente al mercado.",
+    s_goal10_title: "Acelerador de Objetivos de 10 Días (Gratis)",
+    s_goal10_desc: "Una hoja de ruta energética rápida para tu objetivo inmediato. Incluye enfoque psicológico y tiempo cósmico.",
+    s_goal30_title: "Plan de Logro de 30 Días",
+    s_goal30_desc: "Una estrategia mensual profunda para tu objetivo. Síntesis de astrología, numerología y psicología del logro.",
+    s_back_to_start: "Volver al Inicio",
+    s_decree: "Decreto",
+    s_arch_path: "Camino Arquitectónico",
+    s_arch_path_desc: "Una hoja de ruta estructurada que sintetiza la mecánica celeste y las vibraciones numéricas.",
+    s_privacy: "Privacidad Absoluta",
+    s_privacy_desc: "Procesamiento de datos efímeros. Tus coordenadas se eliminan inmediatamente después de la síntesis.",
+    s_instant: "Alcance Instantáneo",
+    s_instant_desc: "Recibe tu informe profesional de 15 páginas en tu santuario digital en cuestión de momentos.",
+    s_oracle_synthesis: "La Síntesis del Oráculo",
+    s_philosophy_1: "Cada alma se manifiesta en este plano físico bajo un conjunto específico de coordenadas: marcadores matemáticos y celestiales que definen el blueprint arquitectónico de la propia existencia. En Atlantic Oracle, creemos que comprender estos marcadores no se trata de predecir un destino fijo, sino de revelar el mapa de potenciales que llevas.",
+    s_philosophy_2: "Este estudio exhaustivo profundiza en las vibraciones estructurales de tu identidad. Utilizamos algoritmos avanzados para sintetizar la sabiduría antigua de la numerología pitagórica con la mecánica precisa de la astrología moderna. El resultado es un informe sustancial, de entre 800 y 1500 palabras, que proporciona claridad sobre tus fortalezas innatas, lecciones kármicas y el clima energético de tu destino.",
+    s_ritual_desc: "El ritual está diseñado para quienes buscan una claridad de alta resolución. Cierra la brecha entre los pronósticos generales de horóscopo y el análisis estructural personal. Al mapear la interacción entre tu motor interno (Numerología) y el entorno externo (Astrología), te ayudamos a alcanzar un estado de flujo donde la fricción desaparece y tu camino se vuelve claro.",
+    s_report_delivery: "Tu informe se entregará como un documento PDF profesional de 15 páginas, adecuado para imprimir y para la reflexión a largo plazo. Incluye desgloses trimestrales detallados, ventanas celestiales específicas de oportunidad y una hoja de ruta psicológica para tu ciclo actual.",
+    s_start_consultation: "Iniciar tu Consulta",
+    s_fee_wisdom: "Tarifa por Sabiduría",
+    s_prof_synthesis: "Síntesis Profesional",
+    formSectionForecast: "Detalles del Pronóstico",
+    formSectionUser: "Tus Datos",
+    formSectionGoal: "Detalles del Objetivo",
+    formSectionPartner: "Datos de la Pareja",
+    formSectionDream: "Detalles del Sueño",
+    formSectionSports: "Detalles del Evento Deportivo",
+    chatError: "La conexión cósmica se interrumpió. Por favor, inténtalo de nuevo más tarde.",
+    cosmicDecreeOf: "Decreto Cósmico de",
+    widgetTitle: "Widgets para Webmasters",
+    widgetSubtitle: "Mejore su sitio web con las perspectivas profesionales de Atlantic Oracle. Widgets gratuitos, hermosos y totalmente adaptables.",
+    widgetPremiumDesign: "Diseño Premium",
+    widgetPremiumDesignDesc: "Diseñado con nuestro tema cósmico característico para adaptarse a cualquier sitio web moderno.",
+    widgetEasyIntegration: "Integración Fácil",
+    widgetEasyIntegrationDesc: "Simplemente copie y pegue el código iframe. No se necesita JS complejo.",
+    widgetTrafficRetention: "Retención de Tráfico",
+    widgetTrafficRetentionDesc: "Mantenga a sus visitantes interesados con actualizaciones diarias de contenido de las estrellas.",
+    widgetSelectTheme: "Seleccionar Tema del Widget",
+    widgetSelectThemeDesc: "Elija el estilo visual que coincida con el alma de su sitio web.",
+    widgetDarkTheme: "Tema Oscuro",
+    widgetLightTheme: "Tema Claro",
+    widgetLiveIntegration: "Integración en Vivo",
+    widgetEmbedCode: "Código de Inserción (iframe)",
+    widgetBioResponsive: "Totalmente Bio-Adaptable",
+    widgetNoCredit: "No se Requiere Crédito",
+    widgetCustomPartnership: "¿Asociación Personalizada?",
+    widgetCustomPartnershipDesc: "Para soluciones de marca blanca, diseños personalizados o acceso a la API, contacte a nuestro santuario técnico.",
+    widgetInquire: "Consultar por Telegram o Email",
+    widgetHoroscopeTitle: "Widget de Horóscopo Diario",
+    widgetHoroscopeDesc: "Un hermoso selector de zodiaco dorado que proporciona información cósmica diaria directamente en su sitio.",
+    widgetWeatherTitle: "Widget de Astro-Clima",
+    widgetWeatherDesc: "Datos meteorológicos en tiempo real sintetizados con mecánica celeste. Un vertical único para su audiencia.",
+    metaHomeTitle: "Atlantic Oracle | Astrología, Numerología y Diseño Humano",
+    metaHomeDescription: "Descubre tu destino con el Oráculo Atlántico. Informes profesionales de astrología, numerología, sinastría de amor y diseño humano basados en datos celestiales precisos.",
+    metaServicesTitle: "Servicios de Consultoría Cósmica | Atlantic Oracle",
+    metaNewsTitle: "Noticias Cósmicas y Pronósticos Astrológicos | Atlantic Oracle",
+    metaDatabaseTitle: "Base de Datos de Sabiduría Esotérica | Atlantic Oracle",
+    metaHoroscopeTitle: "Horóscopo Diario y Clima Astrológico | Atlantic Oracle",
   },
   Russian: {
     navNews: "Космические Новости",
@@ -1436,6 +2000,12 @@ export const translations: Record<ReportLanguage, Translations> = {
     h_love: "Любовь и Отношения ❤️",
     h_health: "Здоровье и Энергия 👌",
     h_advice: "Совет Оракула ✨",
+    metaHomeTitle: "Atlantic Oracle | Астрология, Нумерология и Дизайн Человека",
+    metaHomeDescription: "Откройте свою судьбу с Atlantic Oracle. Профессиональные отчеты по астрологии, нумерологии, синастрии и дизайну человека на основе точных небесных данных.",
+    metaServicesTitle: "Услуги Космического Консалтинга | Atlantic Oracle",
+    metaNewsTitle: "Космические Новости и Астрологические Прогнозы | Atlantic Oracle",
+    metaDatabaseTitle: "База Знаний Эзотерической Мудрости | Atlantic Oracle",
+    metaHoroscopeTitle: "Ежедневный Гороскоп и Астро-Погода | Atlantic Oracle",
   },
   French: {
     chatTitle: "Guide Cosmique",

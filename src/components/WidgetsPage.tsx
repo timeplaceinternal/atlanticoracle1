@@ -25,16 +25,16 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
   const widgets = [
     {
       id: 'horoscope',
-      title: 'Daily Horoscope Widget',
-      description: 'A beautiful, golden zodiac selector that provides daily cosmic insights directly on your site.',
+      title: t.widgetHoroscopeTitle,
+      description: t.widgetHoroscopeDesc,
       icon: <Sparkles className="w-6 h-6 text-cosmic-gold" />,
       url: `${window.location.origin}/daily-horoscope?widget=true&theme=${theme}`,
       preview: 'horoscope'
     },
     {
       id: 'weather',
-      title: 'Astro-Weather Widget',
-      description: 'Real-time weather data synthesized with celestial mechanics. A unique vertical for your audience.',
+      title: t.widgetWeatherTitle,
+      description: t.widgetWeatherDesc,
       icon: <CloudSun className="w-6 h-6 text-sky-400" />,
       url: `${window.location.origin}/astro-weather?widget=true&theme=${theme}`,
       preview: 'weather'
@@ -61,24 +61,23 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
           
           <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
             <Share2 className="w-4 h-4 text-cosmic-gold" />
-            <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">Affiliate & Partners</span>
+            <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">{t.widgetCustomPartnership.split('?')[0]}</span>
           </div>
           
           <h1 className="text-4xl md:text-6xl font-cinzel text-white uppercase tracking-widest">
-            Widgets for Webmasters
+            {t.widgetTitle}
           </h1>
           <p className="text-cosmic-silver/60 italic font-playfair text-xl max-w-2xl mx-auto leading-relaxed">
-            Enhance your website with the professional insights of Atlantic Oracle. 
-            Free, beautiful, and fully responsive widgets.
+            {t.widgetSubtitle}
           </p>
         </div>
 
         {/* Benefits Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { icon: <Layout className="w-6 h-6" />, title: 'Premium Design', desc: 'Crafted with our signature cosmic theme to fit any modern website.' },
-            { icon: <Code className="w-6 h-6" />, title: 'Easy Integration', desc: 'Simply copy and paste the iframe code. No complex JS needed.' },
-            { icon: <ExternalLink className="w-6 h-6" />, title: 'Traffic Retention', desc: 'Keep your visitors engaged with daily content updates from the stars.' }
+            { icon: <Layout className="w-6 h-6" />, title: t.widgetPremiumDesign, desc: t.widgetPremiumDesignDesc },
+            { icon: <Code className="w-6 h-6" />, title: t.widgetEasyIntegration, desc: t.widgetEasyIntegrationDesc },
+            { icon: <ExternalLink className="w-6 h-6" />, title: t.widgetTrafficRetention, desc: t.widgetTrafficRetentionDesc }
           ].map((benefit, i) => (
             <div key={i} className="bg-cosmic-900/40 p-8 rounded-3xl border border-cosmic-gold/10 space-y-4">
               <div className="text-cosmic-gold">{benefit.icon}</div>
@@ -91,21 +90,21 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
         {/* Theme Selector */}
         <div className="bg-cosmic-900/40 p-8 rounded-[2.5rem] border border-cosmic-gold/10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-xl font-cinzel text-white uppercase tracking-widest">Select Widget Theme</h3>
-            <p className="text-cosmic-silver/50 text-sm">Choose the visual style that matches your website's soul.</p>
+            <h3 className="text-xl font-cinzel text-white uppercase tracking-widest">{t.widgetSelectTheme}</h3>
+            <p className="text-cosmic-silver/50 text-sm">{t.widgetSelectThemeDesc}</p>
           </div>
           <div className="inline-flex p-1 bg-cosmic-950 border border-cosmic-gold/20 rounded-2xl">
             <button 
               onClick={() => setTheme('dark')}
               className={`px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${theme === 'dark' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-silver hover:text-white'}`}
             >
-              Dark Theme
+              {t.widgetDarkTheme}
             </button>
             <button 
               onClick={() => setTheme('light')}
               className={`px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${theme === 'light' ? 'bg-white text-cosmic-950' : 'text-cosmic-silver hover:text-white'}`}
             >
-              Light Theme
+              {t.widgetLightTheme}
             </button>
           </div>
         </div>
@@ -122,7 +121,7 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
                   </div>
                   <div>
                     <h2 className="text-2xl font-cinzel text-white uppercase tracking-widest">{widget.title}</h2>
-                    <p className="text-cosmic-gold/60 text-[10px] font-bold uppercase tracking-widest">Live Integration</p>
+                    <p className="text-cosmic-gold/60 text-[10px] font-bold uppercase tracking-widest">{t.widgetLiveIntegration}</p>
                   </div>
                 </div>
                 
@@ -132,7 +131,7 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-cosmic-silver/40 text-[10px] font-bold uppercase tracking-widest">Embed Code (iframe)</span>
+                    <span className="text-cosmic-silver/40 text-[10px] font-bold uppercase tracking-widest">{t.widgetEmbedCode}</span>
                   </div>
                   <div className="relative group">
                     <pre className="bg-cosmic-950 p-6 rounded-2xl border border-white/5 text-cosmic-gold/80 text-[11px] font-mono overflow-x-auto">
@@ -154,10 +153,10 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
 
                 <div className="flex items-center gap-6 pt-4">
                    <div className="flex items-center gap-2 text-cosmic-silver/40 text-[10px] font-bold uppercase">
-                     <Smartphone className="w-4 h-4" /> Fully Bio-Responsive
+                     <Smartphone className="w-4 h-4" /> {t.widgetBioResponsive}
                    </div>
                    <div className="flex items-center gap-2 text-cosmic-silver/40 text-[10px] font-bold uppercase">
-                     <Check className="w-4 h-4" /> No Credit Required
+                     <Check className="w-4 h-4" /> {t.widgetNoCredit}
                    </div>
                 </div>
               </div>
@@ -197,7 +196,7 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
                               service={service}
                               language={language}
                               onBack={() => {}}
-                              onStart={() => {}}
+                              onStart={() => window.open(`${window.location.origin}/services/${service.slug}?lang=${language === 'Portuguese' ? 'pt' : language === 'Spanish' ? 'es' : 'en'}`, '_blank')}
                               isWidget={true}
                               theme={theme}
                             />
@@ -224,15 +223,15 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
 
         {/* Footer Contact */}
         <div className="pt-20 border-t border-cosmic-gold/10 text-center space-y-6">
-          <h3 className="text-xl font-cinzel text-white uppercase tracking-widest">Custom Partnership?</h3>
+          <h3 className="text-xl font-cinzel text-white uppercase tracking-widest">{t.widgetCustomPartnership}</h3>
           <p className="text-cosmic-silver/60">
-            For white-label solutions, custom designs, or API access, contact our technical sanctuary.
+            {t.widgetCustomPartnershipDesc}
           </p>
           <a 
             href="mailto:oracle@atlanticoracle.com" 
             className="inline-block px-10 py-4 border border-cosmic-gold text-cosmic-gold font-bold rounded-full hover:bg-cosmic-gold hover:text-cosmic-900 transition-all uppercase tracking-widest text-xs"
           >
-            Inquire via Telegram or Email
+            {t.widgetInquire}
           </a>
         </div>
       </div>
