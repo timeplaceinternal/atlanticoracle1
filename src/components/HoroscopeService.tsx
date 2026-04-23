@@ -13,9 +13,10 @@ interface HoroscopeServiceProps {
   onExploreServices: () => void;
   initialSign?: string | null;
   isWidget?: boolean;
+  theme?: 'dark' | 'light';
 }
 
-const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices, initialSign, isWidget }) => {
+const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExploreServices, initialSign, isWidget, theme = 'dark' }) => {
   const t = translations[language] || translations['English'];
   const [selectedSign, setSelectedSign] = useState<string | null>(initialSign || null);
   const [selectedDay, setSelectedDay] = useState<'today' | 'tomorrow'>('tomorrow');
@@ -162,7 +163,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
   };
 
   return (
-    <section className={`w-full ${isWidget ? 'py-4 px-2 bg-transparent border-none' : 'py-12 px-4 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-[3rem] shadow-2xl'} overflow-hidden relative`}>
+    <section className={`w-full ${isWidget ? 'py-4 px-2' : theme === 'light' ? 'py-12 px-4 bg-white/40 backdrop-blur-xl border border-cosmic-gold/20 rounded-[3rem] shadow-xl' : 'py-12 px-4 bg-cosmic-900/40 backdrop-blur-xl border border-cosmic-gold/10 rounded-[3rem] shadow-2xl'} overflow-hidden relative`}>
       <div className={`max-w-4xl mx-auto ${isWidget ? 'space-y-6' : 'space-y-12'}`}>
         {!selectedSign && (
           <motion.div 
@@ -171,23 +172,23 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
             className="text-center space-y-6"
           >
             {!isWidget && (
-              <div className="inline-flex items-center gap-3 px-4 py-2 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full">
+              <div className={`inline-flex items-center gap-3 px-4 py-2 ${theme === 'light' ? 'bg-cosmic-gold/5 border-cosmic-gold/30' : 'bg-cosmic-gold/10 border-cosmic-gold/20'} border rounded-full`}>
                 <Sparkles className="w-4 h-4 text-cosmic-gold" />
                 <span className="text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">{t.horoscopeTitle}</span>
               </div>
             )}
-            <h2 className={`${isWidget ? 'text-2xl' : 'text-3xl md:text-5xl'} font-cinzel text-white uppercase tracking-widest`}>{t.horoscopeTitle}</h2>
-            {!isWidget && <p className="text-cosmic-silver/60 italic font-playfair text-lg">{t.horoscopeSubtitle}</p>}
+            <h2 className={`${isWidget ? 'text-2xl' : 'text-3xl md:text-5xl'} font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest`}>{t.horoscopeTitle}</h2>
+            {!isWidget && <p className={`${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver/60'} italic font-playfair text-lg`}>{t.horoscopeSubtitle}</p>}
             
             {/* Day Selector Toggle */}
             <div className="flex justify-center pt-4">
-              <div className="inline-flex p-1 bg-cosmic-900/60 border border-cosmic-gold/20 rounded-2xl">
+              <div className={`inline-flex p-1 ${theme === 'light' ? 'bg-slate-100 border-cosmic-gold/30' : 'bg-cosmic-900/60 border-cosmic-gold/20'} border rounded-2xl`}>
                 <button
                   onClick={() => setSelectedDay('today')}
                   className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${
                     selectedDay === 'today' 
                       ? 'bg-cosmic-gold text-cosmic-900 shadow-lg shadow-cosmic-gold/20' 
-                      : 'text-cosmic-silver/60 hover:text-cosmic-gold'
+                      : `${theme === 'light' ? 'text-slate-500 hover:text-cosmic-900' : 'text-cosmic-silver/60 hover:text-cosmic-gold'}`
                   }`}
                 >
                   {t.horoscopeToday}
@@ -197,7 +198,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                   className={`px-6 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${
                     selectedDay === 'tomorrow' 
                       ? 'bg-cosmic-gold text-cosmic-900 shadow-lg shadow-cosmic-gold/20' 
-                      : 'text-cosmic-silver/60 hover:text-cosmic-gold'
+                      : `${theme === 'light' ? 'text-slate-500 hover:text-cosmic-900' : 'text-cosmic-silver/60 hover:text-cosmic-gold'}`
                   }`}
                 >
                   {t.horoscopeTomorrow}
@@ -234,8 +235,8 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                   </div>
                   
                   <div className="text-center space-y-0.5">
-                    <span className="block text-[10px] font-bold text-white uppercase tracking-[0.2em] group-hover:text-cosmic-gold transition-colors">{sign.name[language === 'Portuguese' ? 'Portuguese' : 'English']}</span>
-                    <span className="block text-[8px] text-cosmic-silver/50 uppercase tracking-widest">{sign.dates}</span>
+                    <span className={`block text-[10px] font-bold ${theme === 'light' ? 'text-cosmic-950' : 'text-white'} uppercase tracking-[0.2em] group-hover:text-cosmic-gold transition-colors`}>{sign.name[language === 'Portuguese' ? 'Portuguese' : 'English']}</span>
+                    <span className={`block text-[8px] ${theme === 'light' ? 'text-cosmic-950/40' : 'text-cosmic-silver/50'} uppercase tracking-widest`}>{sign.dates}</span>
                   </div>
                 </button>
               ))}
@@ -270,12 +271,12 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                 </div>
               </div>
               <div className="space-y-6 w-full max-w-xs mx-auto">
-                <h3 className="text-xl font-cinzel text-white uppercase tracking-widest h-8">
+                <h3 className={`text-xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest h-8`}>
                   {loadingPhases[loadingPhase]}
                 </h3>
                 
                 {/* Progress bar */}
-                <div className="w-full h-1 bg-cosmic-gold/10 rounded-full overflow-hidden">
+                <div className={`w-full h-1 ${theme === 'light' ? 'bg-cosmic-gold/20' : 'bg-cosmic-gold/10'} rounded-full overflow-hidden`}>
                   <motion.div 
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
@@ -300,7 +301,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
               animate={{ opacity: 1, y: 0 }}
               className="space-y-10 py-6"
             >
-              <div className="flex items-center justify-between border-b border-cosmic-gold/20 pb-6">
+              <div className={`flex items-center justify-between border-b ${theme === 'light' ? 'border-cosmic-gold/40' : 'border-cosmic-gold/20'} pb-6`}>
                 <div className="flex items-center gap-6">
                   {/* Result Header Coin (Reduced Size) */}
                   <div className="w-16 h-16 rounded-full bg-gradient-to-b from-[#FFE27D] via-[#D4AF37] to-[#8A6E2F] border-2 border-[#F3E5AB]/60 flex items-center justify-center shadow-[0_10px_20px_-5px_rgba(0,0,0,0.6),inset_0_2px_4px_rgba(255,255,255,0.5)] relative">
@@ -317,7 +318,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-3xl font-cinzel text-white uppercase tracking-widest">
+                    <h3 className={`text-3xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest`}>
                       {ZODIAC_SIGNS.find(s => s.id === selectedSign)?.name[language === 'Portuguese' ? 'Portuguese' : 'English']}
                     </h3>
                     <div className="flex items-center gap-4 mt-1">
@@ -333,7 +334,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                           className={`px-3 py-1 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all ${
                             selectedDay === 'today' 
                               ? 'bg-cosmic-gold text-cosmic-900' 
-                              : 'text-cosmic-silver/40 hover:text-cosmic-gold border border-cosmic-gold/20'
+                              : `${theme === 'light' ? 'text-slate-500 hover:text-cosmic-900 border-slate-300' : 'text-cosmic-silver/40 hover:text-cosmic-gold border-cosmic-gold/20'} border`
                           }`}
                         >
                           {t.horoscopeToday}
@@ -346,7 +347,7 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                           className={`px-3 py-1 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all ${
                             selectedDay === 'tomorrow' 
                               ? 'bg-cosmic-gold text-cosmic-900' 
-                              : 'text-cosmic-silver/40 hover:text-cosmic-gold border border-cosmic-gold/20'
+                              : `${theme === 'light' ? 'text-slate-500 hover:text-cosmic-900 border-slate-300' : 'text-cosmic-silver/40 hover:text-cosmic-gold border-cosmic-gold/20'} border`
                           }`}
                         >
                           {t.horoscopeTomorrow}
@@ -357,20 +358,20 @@ const HoroscopeService: React.FC<HoroscopeServiceProps> = ({ language, onExplore
                 </div>
                 <button 
                   onClick={reset}
-                  className="text-cosmic-silver/40 hover:text-cosmic-gold transition-colors text-[10px] uppercase tracking-[0.3em]"
+                  className={`${theme === 'light' ? 'text-slate-400 hover:text-cosmic-900' : 'text-cosmic-silver/40 hover:text-cosmic-gold'} transition-colors text-[10px] uppercase tracking-[0.3em]`}
                 >
                   Change Sign
                 </button>
               </div>
 
-              <div className="prose prose-invert prose-gold max-w-none prose-p:text-cosmic-silver prose-p:leading-relaxed prose-p:text-lg prose-p:font-sans prose-headings:font-cinzel prose-headings:text-white prose-headings:uppercase prose-headings:tracking-widest prose-headings:text-xl prose-headings:mt-12 prose-headings:mb-6 prose-strong:text-cosmic-gold prose-ul:list-disc prose-ul:pl-6 prose-li:text-cosmic-silver prose-li:mb-2">
+              <div className={`prose ${theme === 'light' ? 'prose-slate' : 'prose-invert'} prose-gold max-w-none prose-p:leading-relaxed prose-p:text-lg prose-p:font-sans prose-headings:font-cinzel ${theme === 'light' ? 'prose-headings:text-cosmic-900' : 'prose-headings:text-white'} prose-headings:uppercase prose-headings:tracking-widest prose-headings:text-xl prose-headings:mt-12 prose-headings:mb-6 prose-strong:text-cosmic-gold prose-ul:list-disc prose-ul:pl-6 prose-li:mb-2`}>
                 <Markdown>{forecast}</Markdown>
               </div>
 
-              <div className="pt-12 border-t border-cosmic-gold/10 text-center space-y-8">
+              <div className={`pt-12 border-t ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} text-center space-y-8`}>
                 <div className="space-y-4">
-                  <Star className="w-8 h-8 text-cosmic-gold/20 mx-auto" />
-                  <p className="text-cosmic-silver italic font-playfair text-lg max-w-2xl mx-auto">
+                  <Star className={`w-8 h-8 ${theme === 'light' ? 'text-cosmic-gold/30' : 'text-cosmic-gold/20'} mx-auto`} />
+                  <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver'} italic font-playfair text-lg max-w-2xl mx-auto`}>
                     {t.horoscopeInvite}
                   </p>
                 </div>

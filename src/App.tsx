@@ -79,6 +79,14 @@ const App: React.FC = () => {
   });
   const t = translations[language];
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [theme, setThemeState] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return (params.get('theme') as 'dark' | 'light') || 'dark';
+    }
+    return 'dark';
+  });
+  const isWidget = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('widget') === 'true';
 
   useEffect(() => {
     if (!selectedService && typeof window !== 'undefined') {
@@ -179,6 +187,9 @@ const App: React.FC = () => {
       const hash = window.location.hash;
       console.log('Admin check - Path:', cleanPath, 'Params:', params.toString(), 'Hash:', hash);
       
+      const themeParam = params.get('theme') as 'dark' | 'light';
+      if (themeParam) setThemeState(themeParam);
+
       if (cleanPath.includes('admin162463') || params.get('view') === 'admin' || params.get('admin') === 'true' || hash === '#admin') return 'admin';
       if (cleanPath.includes('/news') || params.get('view') === 'news') return 'news';
       if (cleanPath.includes('/dealer') || params.get('view') === 'dealer') return 'dealer';
@@ -551,13 +562,14 @@ const App: React.FC = () => {
 
   if (isWidgetMode) {
     return (
-      <div className="min-h-screen bg-cosmic-950 font-sans selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden p-0 m-0">
-         {view === 'loading' && <LoadingAnimation language={language} />}
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-cosmic-950'} font-sans selection:bg-cosmic-gold selection:text-cosmic-900 overflow-x-hidden p-0 m-0`}>
+         {view === 'loading' && <LoadingAnimation language={language} theme={theme} />}
          {view === 'horoscope' && (
            <HoroscopeService 
              language={language} 
              onExploreServices={() => window.open('https://atlanticoracle.com', '_blank')} 
              isWidget={true}
+             theme={theme}
            />
          )}
          {view === 'service-detail' && selectedService?.id === ServiceType.ASTRO_WEATHER && (
@@ -567,6 +579,7 @@ const App: React.FC = () => {
               onBack={() => {}} 
               onStart={handleStartService} 
               isWidget={true}
+              theme={theme}
             />
          )}
          {view === 'form' && selectedService && (
@@ -576,6 +589,8 @@ const App: React.FC = () => {
                 language={language}
                 onBack={resetToHome} 
                 onSubmit={handleFormSubmit} 
+                isWidget={true}
+                theme={theme}
               />
             </div>
           )}
@@ -583,8 +598,10 @@ const App: React.FC = () => {
             <div className="py-4 px-2">
               <ReadingResult 
                 result={result} 
+                language={language}
                 onReset={resetToHome} 
                 onSelectService={handleStartService}
+                theme={theme}
               />
             </div>
           )}
@@ -924,6 +941,7 @@ const App: React.FC = () => {
               language={language} 
               onBack={resetToHome} 
               onStart={handleStartService} 
+              theme={theme}
             />
           )}
 
@@ -934,6 +952,7 @@ const App: React.FC = () => {
                 language={language}
                 onBack={resetToHome} 
                 onSubmit={handleFormSubmit} 
+                theme={theme}
               />
             </div>
           )}
@@ -997,8 +1016,10 @@ const App: React.FC = () => {
             <div className="py-20 px-6">
               <ReadingResult 
                 result={result} 
+                language={language}
                 onReset={resetToHome} 
                 onSelectService={handleStartService}
+                theme={theme}
               />
             </div>
           )}
@@ -1025,8 +1046,8 @@ const App: React.FC = () => {
             <div className="py-10 md:py-20">
               <div className="max-w-4xl mx-auto px-6 mb-8">
                 <button 
-                  onClick={resetToHome}
-                  className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase text-[10px] font-bold tracking-widest"
+                   onClick={resetToHome}
+                   className="flex items-center gap-2 text-cosmic-gold hover:text-white transition-colors uppercase text-[10px] font-bold tracking-widest"
                 >
                   <ChevronLeft className="w-4 h-4" /> {t.backToStart}
                 </button>
@@ -1035,6 +1056,7 @@ const App: React.FC = () => {
                 language={language} 
                 onExploreServices={() => scrollToSection('services')}
                 initialSign={horoscopeSign}
+                theme={theme}
               />
             </div>
           )}

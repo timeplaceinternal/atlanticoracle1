@@ -11,6 +11,7 @@ interface ServiceDetailPageProps {
   onBack: () => void;
   onStart: (service: Service) => void;
   isWidget?: boolean;
+  theme?: 'dark' | 'light';
 }
 
 const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ 
@@ -18,7 +19,8 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   language, 
   onBack, 
   onStart,
-  isWidget
+  isWidget,
+  theme = 'dark'
 }) => {
   const t = translations[language];
 
@@ -93,21 +95,21 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       {!isWidget && (
         <button 
           onClick={onBack}
-          className="flex items-center gap-2 text-cosmic-silver hover:text-cosmic-gold transition-colors mb-12 group"
+          className={`flex items-center gap-2 ${theme === 'light' ? 'text-slate-500 hover:text-cosmic-gold' : 'text-cosmic-silver hover:text-cosmic-gold'} transition-colors mb-12 group`}
         >
           <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-xs font-bold uppercase tracking-widest">{t.backToStart}</span>
         </button>
       )}
 
-      <div className={`${isWidget ? 'bg-transparent border-none' : 'bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-gold/20 rounded-[3rem]'} overflow-hidden shadow-2xl`}>
+      <div className={`${isWidget ? 'bg-transparent border-none shadow-none' : theme === 'light' ? 'bg-white border border-cosmic-gold/20 rounded-[3rem] shadow-xl' : 'bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-gold/20 rounded-[3rem] shadow-2xl'} overflow-hidden`}>
         <div className={`${isWidget ? 'p-4' : 'p-8 md:p-16'} space-y-12`}>
           <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
-            <div className="w-24 h-24 bg-cosmic-gold/10 rounded-3xl flex items-center justify-center border border-cosmic-gold/20 shadow-inner">
+            <div className={`w-24 h-24 ${theme === 'light' ? 'bg-cosmic-gold/5 border-cosmic-gold/20' : 'bg-cosmic-gold/10 border-cosmic-gold/20'} rounded-3xl flex items-center justify-center border shadow-inner`}>
               {getServiceIcon(service.icon)}
             </div>
             <div className="flex-1 space-y-2">
-              <h1 className="text-4xl md:text-5xl font-cinzel text-white leading-tight">
+              <h1 className={`text-4xl md:text-5xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} leading-tight`}>
                 {service.title}
               </h1>
               <div className="inline-block px-4 py-1 bg-cosmic-gold text-cosmic-900 font-bold text-[10px] uppercase tracking-[0.3em] rounded-full">
@@ -116,38 +118,38 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
             </div>
           </div>
 
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-cosmic-gold/30 to-transparent"></div>
+          <div className={`w-full h-px bg-gradient-to-r from-transparent ${theme === 'light' ? 'via-cosmic-gold/50' : 'via-cosmic-gold/30'} to-transparent`}></div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-4 p-6 border border-cosmic-gold/10 rounded-2xl bg-cosmic-900/40">
+            <div className={`space-y-4 p-6 border ${theme === 'light' ? 'border-cosmic-gold/20 bg-slate-50/50' : 'border-cosmic-gold/10 bg-cosmic-900/40'} rounded-2xl`}>
               <Compass className="w-6 h-6 text-cosmic-gold" />
-              <h3 className="text-white font-cinzel text-xs uppercase tracking-widest">Architectural Path</h3>
-              <p className="text-cosmic-silver/70 text-xs leading-relaxed">
+              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>Architectural Path</h3>
+              <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver/70'} text-xs leading-relaxed`}>
                 A structured roadmap synthesizing celestial mechanics and numerical vibrations.
               </p>
             </div>
-            <div className="space-y-4 p-6 border border-cosmic-gold/10 rounded-2xl bg-cosmic-900/40">
+            <div className={`space-y-4 p-6 border ${theme === 'light' ? 'border-cosmic-gold/20 bg-slate-50/50' : 'border-cosmic-gold/10 bg-cosmic-900/40'} rounded-2xl`}>
               <ShieldCheck className="w-6 h-6 text-cosmic-gold" />
-              <h3 className="text-white font-cinzel text-xs uppercase tracking-widest">Privacy Absolute</h3>
-              <p className="text-cosmic-silver/70 text-xs leading-relaxed">
+              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>Privacy Absolute</h3>
+              <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver/70'} text-xs leading-relaxed`}>
                 Ephemeral data processing. Your coordinates are deleted immediately after synthesis.
               </p>
             </div>
-            <div className="space-y-4 p-6 border border-cosmic-gold/10 rounded-2xl bg-cosmic-900/40">
+            <div className={`space-y-4 p-6 border ${theme === 'light' ? 'border-cosmic-gold/20 bg-slate-50/50' : 'border-cosmic-gold/10 bg-cosmic-900/40'} rounded-2xl`}>
               <Zap className="w-6 h-6 text-cosmic-gold" />
-              <h3 className="text-white font-cinzel text-xs uppercase tracking-widest">Instant Reach</h3>
-              <p className="text-cosmic-silver/70 text-xs leading-relaxed">
+              <h3 className={`font-cinzel text-xs uppercase tracking-widest ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>Instant Reach</h3>
+              <p className={`${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver/70'} text-xs leading-relaxed`}>
                 Receive your professional 15-page report in your digital sanctuary within moments.
               </p>
             </div>
           </div>
 
           <div className="space-y-6">
-            <h2 className="text-2xl font-cinzel text-white uppercase tracking-widest flex items-center gap-3">
+            <h2 className={`text-2xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-widest flex items-center gap-3`}>
               <Star className="w-5 h-5 text-cosmic-gold fill-current" />
               The Oracle's Synthesis
             </h2>
-            <div className="prose prose-invert prose-p:text-cosmic-silver prose-p:font-light prose-p:leading-relaxed prose-p:text-lg">
+            <div className={`prose ${theme === 'light' ? 'prose-slate' : 'prose-invert'} prose-p:text-lg`}>
               <p className="first-letter:text-5xl first-letter:font-cinzel first-letter:text-cosmic-gold first-letter:float-left first-letter:mr-3 first-letter:mt-1">
                 {service.seoContent || service.description}
               </p>
@@ -181,7 +183,7 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
             >
               Start Your Consultation
             </button>
-            <p className="text-[10px] text-cosmic-silver/40 uppercase tracking-[0.3em]">
+            <p className={`text-[10px] ${theme === 'light' ? 'text-slate-400' : 'text-cosmic-silver/40'} uppercase tracking-[0.3em]`}>
               Fee for Wisdom: €{service.price} • Professional Synthesis
             </p>
           </div>

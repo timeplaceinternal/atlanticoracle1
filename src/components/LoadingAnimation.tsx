@@ -5,9 +5,11 @@ import { translations } from '../translations';
 
 interface LoadingAnimationProps {
   language: ReportLanguage;
+  theme?: 'dark' | 'light';
+  request?: any; // Added to match usage in App.tsx
 }
 
-const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
+const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language, theme = 'dark' }) => {
   const t = translations[language];
   const [phase, setPhase] = useState(0);
   
@@ -38,7 +40,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] relative overflow-hidden py-20">
+    <div className={`flex flex-col items-center justify-center min-h-[80vh] relative overflow-hidden py-20 ${theme === 'light' ? 'bg-white' : ''}`}>
       {/* Solar System Container */}
       <div className="relative w-full aspect-square max-w-[600px] flex items-center justify-center scale-[0.6] sm:scale-[0.8] md:scale-100">
         
@@ -47,7 +49,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
           {[...Array(8)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-[200%] h-[1px] bg-gradient-to-r from-transparent via-cosmic-gold/20 to-transparent"
+              className={`absolute w-[200%] h-[1px] bg-gradient-to-r from-transparent ${theme === 'light' ? 'via-cosmic-gold/40' : 'via-cosmic-gold/20'} to-transparent`}
               style={{ rotate: i * 45 }}
               animate={{
                 opacity: [0.1, 0.3, 0.1],
@@ -65,10 +67,14 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
         {/* The Sun */}
         <div className="relative w-24 h-24 z-10">
           <motion.div 
-            className="absolute inset-0 bg-cosmic-gold rounded-full shadow-[0_0_80px_rgba(212,175,55,0.9)]"
+            className={`absolute inset-0 bg-cosmic-gold rounded-full ${theme === 'light' ? 'shadow-[0_0_60px_rgba(212,175,55,0.6)]' : 'shadow-[0_0_80px_rgba(212,175,55,0.9)]'}`}
             animate={{
               scale: [1, 1.05, 1],
-              boxShadow: [
+              boxShadow: theme === 'light' ? [
+                '0 0 40px rgba(212,175,55,0.5)',
+                '0 0 70px rgba(212,175,55,0.7)',
+                '0 0 40px rgba(212,175,55,0.5)'
+              ] : [
                 '0 0 60px rgba(212,175,55,0.8)',
                 '0 0 100px rgba(212,175,55,1)',
                 '0 0 60px rgba(212,175,55,0.8)'
@@ -82,7 +88,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
           {[...Array(4)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute inset-[-20%] border border-cosmic-gold/30 rounded-full"
+              className={`absolute inset-[-20%] border ${theme === 'light' ? 'border-cosmic-gold/50' : 'border-cosmic-gold/30'} rounded-full`}
               animate={{
                 rotate: 360,
                 scale: [1, 1.1, 1],
@@ -101,7 +107,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
         {planets.map((planet, idx) => (
           <div
             key={planet.name}
-            className="absolute rounded-full border border-cosmic-gold/5"
+            className={`absolute rounded-full border ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/5'}`}
             style={{
               width: planet.orbit,
               height: planet.orbit,
@@ -117,7 +123,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
               }}
             >
               <div 
-                className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ${planet.color} relative`}
+                className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ${planet.color} relative border ${theme === 'light' ? 'border-black/10' : 'border-white/5'}`}
                 style={{
                   width: planet.size,
                   height: planet.size,
@@ -127,7 +133,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
                 {/* Earth's Moon */}
                 {planet.hasMoon && (
                   <motion.div
-                    className="absolute w-2 h-2 bg-cosmic-silver rounded-full"
+                    className={`absolute w-2 h-2 ${theme === 'light' ? 'bg-slate-400' : 'bg-cosmic-silver'} rounded-full`}
                     style={{ top: -10, left: -10 }}
                     animate={{ rotate: 360 }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -136,7 +142,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
                 
                 {/* Saturn's Rings */}
                 {planet.hasRings && (
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240%] h-[40%] border-[2px] border-cosmic-gold/40 rounded-[100%] rotate-[25deg]" />
+                  <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240%] h-[40%] border-[2px] ${theme === 'light' ? 'border-cosmic-gold/60' : 'border-cosmic-gold/40'} rounded-[100%] rotate-[25deg]`} />
                 )}
               </div>
             </motion.div>
@@ -148,7 +154,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
       <div className="mt-12 text-center space-y-6 z-20 max-w-lg px-6">
         <div className="space-y-2">
           <motion.h2 
-            className="text-3xl font-cinzel text-white uppercase tracking-[0.4em]"
+            className={`text-3xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} uppercase tracking-[0.4em]`}
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 3, repeat: Infinity }}
           >
@@ -167,7 +173,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
               transition={{ duration: 0.5 }}
               className="text-center"
             >
-              <p className="text-cosmic-gold font-cinzel text-sm uppercase tracking-widest">
+              <p className="text-cosmic-gold font-cinzel text-sm uppercase tracking-widest font-bold">
                 {phases[phase]}
               </p>
             </motion.div>
@@ -175,14 +181,14 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ language }) => {
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
-            className="text-cosmic-silver italic font-playfair text-lg mt-4"
+            className={`italic font-playfair text-lg mt-4 ${theme === 'light' ? 'text-slate-600' : 'text-cosmic-silver'}`}
           >
             {t.loadingSubtitle}
           </motion.p>
         </div>
         
         {/* Progress Bar */}
-        <div className="w-64 h-1 bg-cosmic-gold/10 rounded-full mx-auto overflow-hidden">
+        <div className={`w-64 h-1 ${theme === 'light' ? 'bg-cosmic-gold/20' : 'bg-cosmic-gold/10'} rounded-full mx-auto overflow-hidden`}>
           <motion.div 
             className="h-full bg-cosmic-gold shadow-[0_0_10px_rgba(212,175,55,0.5)]"
             initial={{ width: 0 }}

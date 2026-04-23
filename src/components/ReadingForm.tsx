@@ -13,6 +13,8 @@ interface ReadingFormProps {
   language: ReportLanguage;
   onBack: () => void;
   onSubmit: (request: ReadingRequest) => void;
+  isWidget?: boolean;
+  theme?: 'dark' | 'light';
 }
 
 const MaskedDateInput = React.forwardRef(({ value, onClick, onChange, placeholder, className, required, nextRef }: any, ref: any) => {
@@ -98,14 +100,15 @@ const MaskedDateInput = React.forwardRef(({ value, onClick, onChange, placeholde
   );
 });
 
-const TimeInputFields = ({ data, setter, label, hRef, mRef, t, nextFieldRef }: { 
+const TimeInputFields = ({ data, setter, label, hRef, mRef, t, nextFieldRef, theme }: { 
   data: any, 
   setter: any, 
   label: string, 
   hRef: React.RefObject<HTMLInputElement | null>, 
   mRef: React.RefObject<HTMLInputElement | null>,
   t: any,
-  nextFieldRef?: React.RefObject<HTMLInputElement | null>
+  nextFieldRef?: React.RefObject<HTMLInputElement | null>,
+  theme?: 'dark' | 'light'
 }) => {
   const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>, is12h: boolean, setter: React.Dispatch<React.SetStateAction<any>>, nextRef?: React.RefObject<HTMLInputElement | null>) => {
     const val = e.target.value.replace(/\D/g, '');
@@ -230,7 +233,7 @@ const TimeInputFields = ({ data, setter, label, hRef, mRef, t, nextFieldRef }: {
   );
 };
 
-const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, onSubmit }) => {
+const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, onSubmit, isWidget, theme = 'dark' }) => {
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [birthTime, setBirthTime] = useState({ hour: '', minute: '', is12h: false, amPm: 'AM' });
@@ -348,50 +351,50 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const isFree = service.isFree;
 
   return (
-    <div className="max-w-2xl mx-auto bg-cosmic-800/40 backdrop-blur-xl p-8 rounded-[2rem] border border-cosmic-gold/20">
-      <h2 className="text-3xl font-cinzel text-white mb-6">{getServiceTitle()}</h2>
+    <div className={`max-w-2xl mx-auto ${isWidget ? 'bg-transparent border-none p-2 shadow-none' : theme === 'light' ? 'bg-white border border-cosmic-gold/20 rounded-[2rem] p-8 shadow-xl' : 'bg-cosmic-800/40 backdrop-blur-xl border border-cosmic-gold/20 rounded-[2rem] p-8'} overflow-hidden`}>
+      <h2 className={`text-3xl font-cinzel ${theme === 'light' ? 'text-cosmic-900' : 'text-white'} mb-6`}>{getServiceTitle()}</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-6">
           {isAstroWeather && (
             <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-              <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Forecast Details</h3>
+              <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Forecast Details</h3>
               
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formCity}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formCity}</label>
                 <input 
                   type="text" 
                   value={city} 
                   onChange={(e) => setCity(e.target.value)} 
                   placeholder={t.formCityPlaceholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formZodiacSign}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formZodiacSign}</label>
                 <select 
                   value={zodiacSign} 
                   onChange={(e) => setZodiacSign(e.target.value)}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors appearance-none"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors appearance-none`}
                 >
-                  <option value="aries" className="bg-cosmic-900">Aries ♈</option>
-                  <option value="taurus" className="bg-cosmic-900">Taurus ♉</option>
-                  <option value="gemini" className="bg-cosmic-900">Gemini ♊</option>
-                  <option value="cancer" className="bg-cosmic-900">Cancer ♋</option>
-                  <option value="leo" className="bg-cosmic-900">Leo ♌</option>
-                  <option value="virgo" className="bg-cosmic-900">Virgo ♍</option>
-                  <option value="libra" className="bg-cosmic-900">Libra ♎</option>
-                  <option value="scorpio" className="bg-cosmic-900">Scorpio ♏</option>
-                  <option value="sagittarius" className="bg-cosmic-900">Sagittarius ♐</option>
-                  <option value="capricorn" className="bg-cosmic-900">Capricorn ♑</option>
-                  <option value="aquarius" className="bg-cosmic-900">Aquarius ♒</option>
-                  <option value="pisces" className="bg-cosmic-900">Pisces ♓</option>
+                  <option value="aries" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Aries ♈</option>
+                  <option value="taurus" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Taurus ♉</option>
+                  <option value="gemini" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Gemini ♊</option>
+                  <option value="cancer" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Cancer ♋</option>
+                  <option value="leo" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Leo ♌</option>
+                  <option value="virgo" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Virgo ♍</option>
+                  <option value="libra" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Libra ♎</option>
+                  <option value="scorpio" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Scorpio ♏</option>
+                  <option value="sagittarius" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Sagittarius ♐</option>
+                  <option value="capricorn" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Capricorn ♑</option>
+                  <option value="aquarius" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Aquarius ♒</option>
+                  <option value="pisces" className={theme === 'light' ? 'bg-white' : 'bg-cosmic-900'}>Pisces ♓</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDuration}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formDuration}</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {(['today', 'tomorrow', '3days', '10days'] as const).map((d) => (
                     <button
@@ -401,7 +404,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                       className={`py-3 rounded-xl border text-xs font-bold transition-all ${
                         forecastDuration === d 
                           ? 'bg-cosmic-gold border-cosmic-gold text-cosmic-900' 
-                          : 'bg-cosmic-900/50 border-cosmic-gold/20 text-cosmic-silver hover:border-cosmic-gold/40'
+                          : `${theme === 'light' ? 'bg-slate-50 border-slate-300 text-slate-500 hover:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-cosmic-silver hover:border-cosmic-gold/40'}`
                       }`}
                     >
                       {d === 'today' ? t.durationToday : d === 'tomorrow' ? t.durationTomorrow : d === '3days' ? t.duration3Days : t.duration10Days}
@@ -414,27 +417,27 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
           {!isSportsOracle && !isAstroWeather ? (
             <>
-              <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Your Details</h3>
+              <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Your Details</h3>
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formName}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formName}</label>
                 <input 
                   type="text" 
                   value={name} 
                   onChange={(e) => setName(e.target.value)} 
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   required
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthDate}</label>
+                  <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formBirthDate}</label>
                   <DatePicker
                     selected={birthDate}
                     onChange={(date: Date | null) => setBirthDate(date)}
                     locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
                     dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                     placeholderText={t.formBirthDatePlaceholder}
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                     showYearDropdown
                     scrollableYearDropdown
                     yearDropdownItemNumber={100}
@@ -456,18 +459,19 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                       mRef={minuteRef} 
                       t={t}
                       nextFieldRef={birthPlaceRef}
+                      theme={theme}
                     />
                   </div>
                 )}
                 <div className={isFree ? "md:col-span-1" : "md:col-span-2"}>
-                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formBirthPlace}</label>
+                  <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formBirthPlace}</label>
                   <input 
                     ref={birthPlaceRef}
                     type="text" 
                     value={birthPlace} 
                     onChange={(e) => setBirthPlace(e.target.value)} 
                     placeholder={t.formBirthPlacePlaceholder}
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                     required
                   />
                 </div>
@@ -478,44 +482,44 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {isGoalService && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Goal Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Goal Details</h3>
             <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formGoal}</label>
+              <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formGoal}</label>
               <textarea 
                 value={goal} 
                 onChange={(e) => setGoal(e.target.value)} 
                 placeholder={t.formGoalPlaceholder}
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors min-h-[100px] resize-none"
+                className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors min-h-[100px] resize-none`}
                 required
               />
-              <p className="text-[10px] text-cosmic-silver/50 mt-2 italic">{t.formGoalHelp}</p>
+              <p className={`text-[10px] ${theme === 'light' ? 'text-slate-400' : 'text-cosmic-silver/50'} mt-2 italic`}>{t.formGoalHelp}</p>
             </div>
           </div>
         )}
 
         {isSynastryService && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Partner Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Partner Details</h3>
             <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formPartnerName}</label>
+              <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formPartnerName}</label>
               <input 
                 type="text" 
                 value={partnerName} 
                 onChange={(e) => setPartnerName(e.target.value)} 
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                 required
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formPartnerBirthDate}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formPartnerBirthDate}</label>
                 <DatePicker
                   selected={partnerBirthDate}
                   onChange={(date: Date | null) => setPartnerBirthDate(date)}
                   locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
                   dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                   placeholderText={t.formBirthDatePlaceholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   showYearDropdown
                   scrollableYearDropdown
                   yearDropdownItemNumber={100}
@@ -536,6 +540,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                     hRef={partnerHourRef} 
                     mRef={partnerMinuteRef} 
                     t={t}
+                    theme={theme}
                   />
                 </div>
               )}
@@ -545,37 +550,37 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {isDreamService && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Dream Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Dream Details</h3>
             <div>
-              <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamDescription}</label>
+              <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formDreamDescription}</label>
               <textarea 
                 value={dreamDescription} 
                 onChange={(e) => setDreamDescription(e.target.value)} 
-                className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors min-h-[150px] resize-none"
+                className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors min-h-[150px] resize-none`}
                 required
               />
             </div>
             {!isFree && (
               <>
                 <div>
-                  <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamKeywords}</label>
+                  <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formDreamKeywords}</label>
                   <input 
                     type="text" 
                     value={dreamKeywords} 
                     onChange={(e) => setDreamKeywords(e.target.value)} 
-                    className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                    className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.formDreamDate}</label>
+                    <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formDreamDate}</label>
                     <DatePicker
                       selected={dreamDate}
                       onChange={(date: Date | null) => setDreamDate(date)}
                       locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
                       dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                       placeholderText={t.formBirthDatePlaceholder}
-                      className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                      className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                       showYearDropdown
                       scrollableYearDropdown
                       yearDropdownItemNumber={100}
@@ -594,6 +599,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                       hRef={dreamHourRef} 
                       mRef={dreamMinuteRef} 
                       t={t}
+                      theme={theme}
                     />
                   </div>
                 </div>
@@ -604,52 +610,52 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
 
         {service.id === ServiceType.SPORTS_ORACLE && (
           <div className="space-y-6 pt-6 animate-in fade-in slide-in-from-top-4">
-            <h3 className="text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b border-cosmic-gold/10 pb-2">Sports Event Details</h3>
+            <h3 className={`text-cosmic-gold font-cinzel text-sm uppercase tracking-[0.2em] border-b ${theme === 'light' ? 'border-cosmic-gold/20' : 'border-cosmic-gold/10'} pb-2`}>Sports Event Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsSide1Label}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.sportsSide1Label}</label>
                 <input 
                   type="text" 
                   value={sportsSide1} 
                   onChange={(e) => setSportsSide1(e.target.value)} 
                   placeholder={t.sportsSide1Placeholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   required
                 />
               </div>
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsSide2Label}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.sportsSide2Label}</label>
                 <input 
                   type="text" 
                   value={sportsSide2} 
                   onChange={(e) => setSportsSide2(e.target.value)} 
                   placeholder={t.sportsSide2Placeholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   required
                 />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsVenueLabel}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.sportsVenueLabel}</label>
                 <input 
                   type="text" 
                   value={sportsVenue} 
                   onChange={(e) => setSportsVenue(e.target.value)} 
                   placeholder={t.sportsVenuePlaceholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   required
                 />
               </div>
               <div>
-                <label className="block text-cosmic-silver text-sm mb-2 uppercase tracking-widest">{t.sportsDateLabel}</label>
+                <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.sportsDateLabel}</label>
                 <DatePicker
                   selected={sportsDate}
                   onChange={(date: Date | null) => setSportsDate(date)}
                   locale={language === 'Portuguese' ? 'pt-BR' : 'en'}
                   dateFormat={language === 'Portuguese' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                   placeholderText={t.sportsDatePlaceholder}
-                  className="w-full bg-cosmic-900/50 border border-cosmic-gold/20 rounded-xl p-4 text-white focus:border-cosmic-gold outline-none transition-colors"
+                  className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
                   showYearDropdown
                   scrollableYearDropdown
                   yearDropdownItemNumber={10}
@@ -664,7 +670,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
         )}
 
         <div className="flex flex-col sm:flex-row gap-4 pt-8">
-          <button type="button" onClick={onBack} className="flex-1 py-4 border border-cosmic-gold/20 text-cosmic-silver rounded-xl hover:bg-cosmic-gold/5 transition-colors">{t.formBack}</button>
+          <button type="button" onClick={onBack} className={`flex-1 py-4 border ${theme === 'light' ? 'border-slate-300 text-slate-500 hover:bg-slate-50' : 'border-cosmic-gold/20 text-cosmic-silver hover:bg-cosmic-gold/5'} rounded-xl transition-colors`}>{t.formBack}</button>
           
           <button 
             type="submit" 

@@ -8,6 +8,9 @@ import {
 import { ReportLanguage } from '../types';
 import { translations } from '../translations';
 import HoroscopeService from './HoroscopeService';
+import ServiceDetailPage from './ServiceDetailPage';
+import { SERVICES } from '../constants';
+import { ServiceType } from '../types';
 
 interface WidgetsPageProps {
   language: ReportLanguage;
@@ -17,6 +20,7 @@ interface WidgetsPageProps {
 const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
   const t = translations[language];
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   const widgets = [
     {
@@ -24,7 +28,7 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
       title: 'Daily Horoscope Widget',
       description: 'A beautiful, golden zodiac selector that provides daily cosmic insights directly on your site.',
       icon: <Sparkles className="w-6 h-6 text-cosmic-gold" />,
-      url: `${window.location.origin}/daily-horoscope?widget=true`,
+      url: `${window.location.origin}/daily-horoscope?widget=true&theme=${theme}`,
       preview: 'horoscope'
     },
     {
@@ -32,7 +36,7 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
       title: 'Astro-Weather Widget',
       description: 'Real-time weather data synthesized with celestial mechanics. A unique vertical for your audience.',
       icon: <CloudSun className="w-6 h-6 text-sky-400" />,
-      url: `${window.location.origin}/astro-weather?widget=true`,
+      url: `${window.location.origin}/astro-weather?widget=true&theme=${theme}`,
       preview: 'weather'
     }
   ];
@@ -82,6 +86,28 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
               <p className="text-cosmic-silver/50 text-sm leading-relaxed">{benefit.desc}</p>
             </div>
           ))}
+        </div>
+
+        {/* Theme Selector */}
+        <div className="bg-cosmic-900/40 p-8 rounded-[2.5rem] border border-cosmic-gold/10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="space-y-2 text-center md:text-left">
+            <h3 className="text-xl font-cinzel text-white uppercase tracking-widest">Select Widget Theme</h3>
+            <p className="text-cosmic-silver/50 text-sm">Choose the visual style that matches your website's soul.</p>
+          </div>
+          <div className="inline-flex p-1 bg-cosmic-950 border border-cosmic-gold/20 rounded-2xl">
+            <button 
+              onClick={() => setTheme('dark')}
+              className={`px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${theme === 'dark' ? 'bg-cosmic-gold text-cosmic-900' : 'text-cosmic-silver hover:text-white'}`}
+            >
+              Dark Theme
+            </button>
+            <button 
+              onClick={() => setTheme('light')}
+              className={`px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${theme === 'light' ? 'bg-white text-cosmic-950' : 'text-cosmic-silver hover:text-white'}`}
+            >
+              Light Theme
+            </button>
+          </div>
         </div>
 
         {/* Widgets List */}
@@ -154,22 +180,40 @@ const WidgetsPage: React.FC<WidgetsPageProps> = ({ language, onBack }) => {
                   </div>
                   
                   {/* Preview Content */}
-                  <div className="p-4 overflow-y-auto h-full bg-cosmic-950 scale-75 origin-top">
+                  <div className={`p-4 overflow-y-auto h-full scale-75 origin-top ${theme === 'light' ? 'bg-white' : 'bg-cosmic-950'}`}>
                     {widget.id === 'horoscope' ? (
                        <HoroscopeService 
                          language={language} 
                          onExploreServices={() => {}} 
                          isWidget={true}
+                         theme={theme}
                        />
                     ) : (
-                      <div className="space-y-8 animate-pulse p-10 text-center">
-                        <div className="w-20 h-20 bg-cosmic-gold/10 rounded-full mx-auto" />
-                        <div className="h-8 bg-cosmic-gold/5 w-1/2 mx-auto rounded" />
-                        <div className="h-4 bg-cosmic-gold/5 w-3/4 mx-auto rounded" />
-                        <div className="grid grid-cols-3 gap-4 pt-10">
-                          {[1,2,3].map(i => <div key={i} className="h-20 bg-cosmic-gold/5 rounded-2xl" />)}
-                        </div>
-                      </div>
+                      (() => {
+                        const service = SERVICES.find(s => s.id === ServiceType.ASTRO_WEATHER);
+                        if (service) {
+                          return (
+                            <ServiceDetailPage 
+                              service={service}
+                              language={language}
+                              onBack={() => {}}
+                              onStart={() => {}}
+                              isWidget={true}
+                              theme={theme}
+                            />
+                          );
+                        }
+                        return (
+                          <div className="space-y-8 animate-pulse p-10 text-center">
+                            <div className="w-20 h-20 bg-cosmic-gold/10 rounded-full mx-auto" />
+                            <div className="h-8 bg-cosmic-gold/5 w-1/2 mx-auto rounded" />
+                            <div className="h-4 bg-cosmic-gold/5 w-3/4 mx-auto rounded" />
+                            <div className="grid grid-cols-3 gap-4 pt-10">
+                              {[1,2,3].map(i => <div key={i} className="h-20 bg-cosmic-gold/5 rounded-2xl" />)}
+                            </div>
+                          </div>
+                        );
+                      })()
                     )}
                   </div>
                 </div>

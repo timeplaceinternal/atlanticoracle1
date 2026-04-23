@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-const CosmicBackground: React.FC = () => {
+const CosmicBackground: React.FC<{ theme?: 'dark' | 'light' }> = ({ theme = 'dark' }) => {
   const stars = useMemo(() => {
     return Array.from({ length: 150 }).map((_, i) => ({
       id: i,
@@ -11,6 +11,18 @@ const CosmicBackground: React.FC = () => {
       delay: `${Math.random() * 5}s`,
     }));
   }, []);
+
+  if (theme === 'light') {
+    return (
+      <div className="fixed inset-0 -z-10 bg-slate-50 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.05)_0%,_transparent_70%)]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cosmic-gold/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-100/10 blur-[150px] rounded-full" />
+        <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
+             style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/stardust.png")' }} />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 -z-10 bg-[#020205] overflow-hidden">
