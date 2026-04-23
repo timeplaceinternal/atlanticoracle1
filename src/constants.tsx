@@ -459,12 +459,7 @@ export const getServiceIcon = (iconName: string) => {
 const BASE_RULES = (lang: string) => {
   const langRules: Record<string, string> = {
     'English': 'REPLY ONLY IN AMERICAN ENGLISH (EN-US).',
-    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).',
-    'Spanish': 'REPLY ONLY IN SPANISH (ES).',
-    'Russian': 'REPLY ONLY IN RUSSIAN (RU).',
-    'French': 'REPLY ONLY IN FRENCH (FR).',
-    'German': 'REPLY ONLY IN GERMAN (DE).',
-    'Italian': 'REPLY ONLY IN ITALIAN (IT).'
+    'Portuguese': 'REPLY ONLY IN BRAZILIAN PORTUGUESE (PT-BR).'
   };
   
   const now = new Date();
