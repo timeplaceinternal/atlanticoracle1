@@ -142,13 +142,11 @@ export const LIGHT_DROPS: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     },
     stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
@@ -392,11 +390,7 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
       Portuguese: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
-      Russian: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
-      Spanish: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
-      French: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
-      German: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06",
-      Italian: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06"
+      Spanish: "https://buy.stripe.com/aFa6oI4jX2qE3jibAaeEo06"
     }
   },
   {

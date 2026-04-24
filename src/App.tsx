@@ -28,21 +28,13 @@ import ServiceDetailPage from './components/ServiceDetailPage';
 const STRIPE_URLS_30: Record<ReportLanguage, string> = {
   English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
   Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-  French: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-  German: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-  Spanish: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-  Italian: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
-  Russian: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+  Spanish: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
 };
 
 const STRIPE_URLS_10: Record<ReportLanguage, string> = {
   English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
   Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-  French: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-  German: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-  Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-  Italian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-  Russian: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
+  Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
 };
 const STORAGE_KEY = "atlantic_oracle_pending_request";
 
@@ -76,7 +68,7 @@ const App: React.FC = () => {
       if (lang === 'en') return 'English';
       if (lang === 'es') return 'Spanish';
     }
-    return 'Spanish';
+    return 'English';
   });
   const t = translations[language];
   const [selectedService, setSelectedService] = useState<Service | null>(null);

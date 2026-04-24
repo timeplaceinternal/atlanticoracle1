@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, ChevronRight, Hash, Search, ArrowRight } from 'lucide-react';
 import { kbService } from '../services/kbService';
-import { KnowledgeBasePost, KBCategory } from '../types';
+import { KnowledgeBasePost, KBCategory, ReportLanguage } from '../types';
 import { translations } from '../translations';
 
 interface KnowledgeBasePageProps {

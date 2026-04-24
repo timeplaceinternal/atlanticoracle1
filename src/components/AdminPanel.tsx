@@ -8,6 +8,18 @@ import { ZODIAC_SIGNS } from '../constants';
 import { NewsPost, KnowledgeBasePost, KBCategory, ServiceType, ReportLanguage } from '../types';
 
 const AdminPanel: React.FC = () => {
+  const asString = (val: string | { [key: string]: any } | undefined): string => {
+    if (!val) return '';
+    if (typeof val === 'string') return val;
+    return val.English || '';
+  };
+
+  const asFAQ = (val: any): any[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    return val.English || [];
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -78,7 +90,11 @@ const AdminPanel: React.FC = () => {
         if (diffA !== diffB) return diffA - diffB;
         return Number(b.id) - Number(a.id);
       }));
-      setKbPosts([...fetchedKB].sort((a, b) => b.title.localeCompare(a.title)));
+      setKbPosts([...fetchedKB].sort((a, b) => {
+        const titleA = typeof a.title === 'string' ? a.title : (a.title?.English || '');
+        const titleB = typeof b.title === 'string' ? b.title : (b.title?.English || '');
+        return titleB.localeCompare(titleA);
+      }));
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
@@ -279,12 +295,15 @@ const AdminPanel: React.FC = () => {
   };
 
   const smartFormat = (isKB: boolean) => {
-    const currentText = isKB ? editingKB?.mainContent : editingPost?.text;
+    const rawText = isKB ? editingKB?.mainContent : editingPost?.text;
+    if (!rawText) return;
+
+    const currentText = typeof rawText === 'string' ? rawText : (rawText as any)?.English || '';
     if (!currentText) return;
 
     // Detect lines that look like headings (short, no punctuation at end)
     const lines = currentText.split('\n');
-    const formattedLines = lines.map(line => {
+    const formattedLines = lines.map((line: string) => {
       const trimmed = line.trim();
       if (trimmed.length > 0 && trimmed.length < 70 && !/[.!?]$/.test(trimmed) && !trimmed.startsWith('#')) {
         return `## ${trimmed}`;
@@ -403,7 +422,9 @@ const AdminPanel: React.FC = () => {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      const title = editingKB.title.trim();
+      const rawTitle = editingKB.title;
+      const titleStr = typeof rawTitle === 'string' ? rawTitle : (rawTitle as any)?.English || '';
+      const title = titleStr.trim();
       const newPost: KnowledgeBasePost = {
         id: editingKB.id || Date.now().toString(),
         slug: editingKB.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
@@ -448,8 +469,13 @@ const AdminPanel: React.FC = () => {
   const handleSavePost = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const title = editingPost?.title?.trim();
-    const text = editingPost?.text?.trim();
+    const rawTitle = editingPost?.title;
+    const rawText = editingPost?.text;
+    const titleStr = typeof rawTitle === 'string' ? rawTitle : (rawTitle as any)?.English || '';
+    const textStr = typeof rawText === 'string' ? rawText : (rawText as any)?.English || '';
+    
+    const title = titleStr.trim();
+    const text = textStr.trim();
 
     if (!title || !text) {
       alert("Please provide both a title and content for the transmission.");
@@ -615,7 +641,7 @@ const AdminPanel: React.FC = () => {
               </div>
               <input 
                 type="text"
-                value={editingKB.title || ''} 
+                value={asString(editingKB.title)} 
                 onChange={(e) => setEditingKB({...editingKB, title: e.target.value})}
                 placeholder="The [Term Name]"
                 className="w-full bg-transparent text-4xl font-cinzel text-white uppercase tracking-widest outline-none border-b border-cosmic-gold/20 focus:border-cosmic-gold"
@@ -625,7 +651,7 @@ const AdminPanel: React.FC = () => {
             <div className="space-y-2">
               <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60">Short Definition (Snippet)</label>
               <textarea 
-                value={editingKB.shortDefinition || ''} 
+                value={asString(editingKB.shortDefinition)} 
                 onChange={(e) => setEditingKB({...editingKB, shortDefinition: e.target.value})}
                 placeholder="1-2 sentences for AI snippet..."
                 className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-4 text-white outline-none focus:border-cosmic-gold/40 h-24 resize-none"
@@ -644,7 +670,7 @@ const AdminPanel: React.FC = () => {
                 </button>
               </div>
               <textarea 
-                value={editingKB.mainContent || ''} 
+                value={asString(editingKB.mainContent)} 
                 onChange={(e) => setEditingKB({...editingKB, mainContent: e.target.value})}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
@@ -662,7 +688,7 @@ const AdminPanel: React.FC = () => {
                   <Table className="w-3 h-3" /> Data Table (HTML)
                 </label>
                 <textarea 
-                  value={editingKB.dataTable || ''} 
+                  value={asString(editingKB.dataTable)} 
                   onChange={(e) => setEditingKB({...editingKB, dataTable: e.target.value})}
                   placeholder="<table>...</table>"
                   className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-4 text-white font-mono text-xs h-32 resize-none"
@@ -673,7 +699,7 @@ const AdminPanel: React.FC = () => {
                   <BookOpen className="w-3 h-3" /> Synthesis Note
                 </label>
                 <textarea 
-                  value={editingKB.synthesisNote || ''} 
+                  value={asString(editingKB.synthesisNote)} 
                   onChange={(e) => setEditingKB({...editingKB, synthesisNote: e.target.value})}
                   placeholder="Connection between systems..."
                   className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-4 text-white italic h-32 resize-none"
@@ -685,13 +711,13 @@ const AdminPanel: React.FC = () => {
               <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/60 flex items-center gap-2">
                 <HelpCircle className="w-3 h-3" /> FAQ Block
               </label>
-              {(editingKB.faq || []).map((item, idx) => (
+              {asFAQ(editingKB.faq).map((item, idx) => (
                 <div key={idx} className="p-4 bg-cosmic-800/20 border border-cosmic-gold/10 rounded-2xl space-y-3">
                   <input 
                     type="text"
                     value={item.question}
                     onChange={(e) => {
-                      const newFaq = [...(editingKB.faq || [])];
+                      const newFaq = [...asFAQ(editingKB.faq)];
                       newFaq[idx].question = e.target.value;
                       setEditingKB({...editingKB, faq: newFaq});
                     }}
@@ -701,7 +727,7 @@ const AdminPanel: React.FC = () => {
                   <textarea 
                     value={item.answer}
                     onChange={(e) => {
-                      const newFaq = [...(editingKB.faq || [])];
+                      const newFaq = [...asFAQ(editingKB.faq)];
                       newFaq[idx].answer = e.target.value;
                       setEditingKB({...editingKB, faq: newFaq});
                     }}
@@ -710,7 +736,7 @@ const AdminPanel: React.FC = () => {
                   />
                   <button 
                     onClick={() => {
-                      const newFaq = (editingKB.faq || []).filter((_, i) => i !== idx);
+                      const newFaq = asFAQ(editingKB.faq).filter((_, i) => i !== idx);
                       setEditingKB({...editingKB, faq: newFaq});
                     }}
                     className="text-red-400 text-[10px] uppercase tracking-widest"
@@ -720,7 +746,7 @@ const AdminPanel: React.FC = () => {
                 </div>
               ))}
               <button 
-                onClick={() => setEditingKB({...editingKB, faq: [...(editingKB.faq || []), { question: '', answer: '' }]})}
+                onClick={() => setEditingKB({...editingKB, faq: [...asFAQ(editingKB.faq), { question: '', answer: '' }]})}
                 className="text-cosmic-gold text-[10px] uppercase tracking-widest flex items-center gap-2"
               >
                 <Plus className="w-3 h-3" /> Add FAQ Item
@@ -735,7 +761,7 @@ const AdminPanel: React.FC = () => {
                     <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Title</label>
                     <input 
                       type="text" 
-                      value={editingKB.metaTitle || ''} 
+                      value={asString(editingKB.metaTitle)} 
                       onChange={(e) => setEditingKB({...editingKB, metaTitle: e.target.value})}
                       className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none"
                     />
@@ -743,7 +769,7 @@ const AdminPanel: React.FC = () => {
                   <div className="space-y-1">
                     <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Description</label>
                     <textarea 
-                      value={editingKB.metaDescription || ''} 
+                      value={asString(editingKB.metaDescription)} 
                       onChange={(e) => setEditingKB({...editingKB, metaDescription: e.target.value})}
                       className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none h-24 resize-none"
                     />
@@ -869,7 +895,7 @@ const AdminPanel: React.FC = () => {
             </div>
 
             <textarea 
-              value={editingPost.title || ''} 
+              value={asString(editingPost.title)} 
               onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
               placeholder="ENTER SACRED TITLE..."
               rows={2}
@@ -999,7 +1025,7 @@ const AdminPanel: React.FC = () => {
             {/* Text Content Editor */}
             <div className="relative">
               <textarea 
-                value={editingPost.text || ''} 
+                value={asString(editingPost.text)} 
                 onChange={(e) => setEditingPost({...editingPost, text: e.target.value})}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
@@ -1010,10 +1036,10 @@ const AdminPanel: React.FC = () => {
                 className="w-full bg-transparent text-cosmic-silver leading-relaxed text-xl font-serif italic outline-none min-h-[400px] resize-none placeholder:text-white/5 overflow-hidden"
               />
               {/* Drop Cap Preview (Visual only) */}
-              {editingPost.text && (
+              {asString(editingPost.text) && (
                 <div className="absolute top-0 left-0 pointer-events-none opacity-10">
                   <span className="text-7xl font-cinzel text-cosmic-gold mr-4 float-left mt-2">
-                    {editingPost.text.charAt(0)}
+                    {asString(editingPost.text).charAt(0)}
                   </span>
                 </div>
               )}
@@ -1029,16 +1055,16 @@ const AdminPanel: React.FC = () => {
                   <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Title</label>
                   <input 
                     type="text" 
-                    value={editingPost.metaTitle || ''} 
+                    value={asString(editingPost.metaTitle)} 
                     onChange={(e) => setEditingPost({...editingPost, metaTitle: e.target.value})}
-                    placeholder={editingPost.title || "SEO Title"}
+                    placeholder={asString(editingPost.title) || "SEO Title"}
                     className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none focus:border-cosmic-gold/40"
                   />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-widest text-cosmic-gold/40">Meta Description</label>
                   <textarea 
-                    value={editingPost.metaDescription || ''} 
+                    value={asString(editingPost.metaDescription)} 
                     onChange={(e) => setEditingPost({...editingPost, metaDescription: e.target.value})}
                     placeholder="Brief summary for search engines..."
                     className="w-full bg-cosmic-800/40 border border-cosmic-gold/10 rounded-xl p-3 text-white text-sm outline-none focus:border-cosmic-gold/40 h-24 resize-none"
@@ -1201,8 +1227,8 @@ const AdminPanel: React.FC = () => {
                       <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
                       <span>{post.topic}</span>
                     </div>
-                    <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
-                    <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.text}</p>
+                    <h4 className="text-xl font-cinzel text-white">{asString(post.title)}</h4>
+                    <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{asString(post.text)}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1234,8 +1260,8 @@ const AdminPanel: React.FC = () => {
                       <span className="w-1 h-1 bg-cosmic-gold/30 rounded-full"></span>
                       <span>{new Date(post.dateModified).toLocaleDateString()}</span>
                     </div>
-                    <h4 className="text-xl font-cinzel text-white">{post.title}</h4>
-                    <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{post.shortDefinition}</p>
+                    <h4 className="text-xl font-cinzel text-white">{asString(post.title)}</h4>
+                    <p className="text-cosmic-silver/60 text-sm line-clamp-1 max-w-2xl">{asString(post.shortDefinition)}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">

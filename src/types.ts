@@ -27,7 +27,7 @@ export enum ServiceType {
   GOAL_100_DAYS = 'goal-100-days'
 }
 
-export type ReportLanguage = 'English' | 'French' | 'German' | 'Spanish' | 'Italian' | 'Portuguese' | 'Russian';
+export type ReportLanguage = 'English' | 'Spanish' | 'Portuguese';
 
 export interface Service {
   id: ServiceType;

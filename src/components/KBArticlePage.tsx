@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BookOpen, ChevronLeft, ArrowRight, Table, HelpCircle, Link as LinkIcon, Share2, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { kbService } from '../services/kbService';
-import { KnowledgeBasePost, ServiceType } from '../types';
+import { KnowledgeBasePost, ServiceType, ReportLanguage } from '../types';
 import { translations } from '../translations';
 
 interface KBArticlePageProps {
