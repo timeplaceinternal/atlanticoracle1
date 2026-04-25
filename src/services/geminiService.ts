@@ -1,17 +1,7 @@
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { ReadingRequest, ServiceType, ReportLanguage } from "../types";
 import { COSMIC_PROMPTS } from "../constants";
 
 export const generateCosmicReading = async (request: ReadingRequest): Promise<string> => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  
-  if (!apiKey) {
-    console.error("!!! GEMINI_API_KEY is missing from environment variables.");
-    throw new Error("The Oracle is currently disconnected from the cosmic source (API Key missing). Please contact support.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
-  
   let prompt = "";
   const { 
     serviceId, name, birthDate, birthTime, birthPlace, language, 
@@ -90,28 +80,22 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
     });
   }
 
-  const response = await ai.models.generateContent({
-    model: modelName,
-    contents: [{ role: 'user', parts }],
-    config: {
-      tools: (serviceId === ServiceType.SPORTS_ORACLE || serviceId === ServiceType.ASTRO_WEATHER) ? [{ googleSearch: {} }] : undefined,
-      thinkingConfig: isPro ? { thinkingLevel: ThinkingLevel.LOW } : undefined,
-      temperature: (serviceId === ServiceType.ASTRO_WEATHER || serviceId === ServiceType.SPORTS_ORACLE) ? 0.0 : undefined
-    }
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ request, prompt, modelName, isPro, parts })
   });
-  
-  return response.text || "The stars are silent today.";
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "The Oracle is momentarily unreachable.");
+  }
+
+  const data = await res.json();
+  return data.text || "The stars are silent today.";
 };
 
 export const generateAssistantResponse = async (message: string, history: { role: 'user' | 'model', text: string }[], language: ReportLanguage): Promise<string> => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  
-  if (!apiKey) {
-    console.error("!!! GEMINI_API_KEY is missing.");
-    return "The Oracle is currently disconnected. Please try again later.";
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
   const systemPrompt = (COSMIC_PROMPTS as any).AI_ASSISTANT(language);
   
   // Build contents with alternating roles
@@ -120,50 +104,42 @@ export const generateAssistantResponse = async (message: string, history: { role
     { role: 'model', parts: [{ text: language === 'Spanish' ? "Entendido. Soy el Guía Cósmico. Asistiré al buscador con precisión experta y brevedad." : language === 'Portuguese' ? "Entendido. Sou o Guia Cósmico. Assistirei ao buscador com precisão especialista e brevidade." : "Understood. I am the Cosmic Guide. I will assist the seeker with expert precision and brevity." }] }
   ];
 
-  // Add history (skip the very first welcome message if it's from the model to maintain alternating order)
-  history.forEach((h, idx) => {
-    // Gemini expects user -> model -> user -> model
-    // Our first two messages are user (system) -> model (ack)
-    // So the next should be user.
-    // If history[0] is model, we might need to skip or adjust.
+  history.forEach((h) => {
     contents.push({
       role: h.role === 'user' ? 'user' : 'model',
       parts: [{ text: h.text }]
     });
   });
 
-  // Add current message
   contents.push({
     role: 'user',
     parts: [{ text: message }]
   });
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents,
-    config: {
-      tools: [{ googleSearch: {} }]
-    }
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contents })
   });
-  
-  return response.text || "The stars are silent today.";
+
+  if (!res.ok) return "The Oracle is currently disconnected. Please try again later.";
+
+  const data = await res.json();
+  return data.text || "The stars are silent today.";
 };
 
 export const generateHoroscope = async (sign: string, language: ReportLanguage, day: 'today' | 'tomorrow' = 'tomorrow'): Promise<string> => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  
-  if (!apiKey) {
-    console.error("!!! GEMINI_API_KEY is missing from environment variables.");
-    throw new Error("The Oracle is currently disconnected from the cosmic source (API Key missing).");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
   const prompt = (COSMIC_PROMPTS as any)[ServiceType.HOROSCOPE_TOMORROW](sign, language, day);
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
+  const res = await fetch("/api/horoscope", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
   });
-  
-  return response.text || "The stars are silent today.";
+
+  if (!res.ok) throw new Error("The Oracle is currently disconnected.");
+
+  const data = await res.json();
+  return data.text || "The stars are silent today.";
 };
+
