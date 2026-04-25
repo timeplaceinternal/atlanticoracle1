@@ -394,6 +394,20 @@ export const SERVICES: Service[] = [
     }
   },
   {
+    id: ServiceType.PROFESSIONAL_DECODING,
+    slug: "professional-decoding",
+    title: "Professional Natal Chart Decoding",
+    description: "Unlock the secrets of your soul's blueprint. Upload your natal chart image for a professional, AI-powered analysis of your cosmic design.",
+    seoContent: "Receive a professional, AI-powered analysis of your natal chart. Upload your birth chart image (JPEG or PNG) and let our advanced AI decode the intricate details of your cosmic blueprint. Understand your unique strengths, challenges, and life path with unparalleled depth and accuracy.",
+    icon: "sparkles",
+    price: 30,
+    stripeUrls: {
+      English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
+      Spanish: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
+    }
+  },
+  {
     id: ServiceType.HOROSCOPE_TOMORROW,
     slug: "daily-horoscope",
     title: "Personal Daily Horoscope",
@@ -590,6 +604,20 @@ export const COSMIC_PROMPTS = {
     3. The Return Transit: Specific phases and challenges of the return.
     4. Mastering Lessons: Career, relationships, and self-authority.
     5. Emerging Victorious: How to build a solid foundation for the next 30 years.
+    6. Practical Recommendations for the Transition.
+  `,
+  [ServiceType.PROFESSIONAL_DECODING]: (name: string, lang: string) => `
+    ${PROMPT_CORE(lang)}
+    Service: Professional Natal Chart Decoding (Visual Analysis). Subject: ${name}.
+    TASK: You are provided with an image of a natal chart. Perform a highly professional, expert-level visual analysis.
+    This is a premium 15-page report. Structure it into detailed chapters:
+    1. Visual Overview of the Chart (The shape, distribution of planets).
+    2. The Ascendant & House Placements (As visible in the chart).
+    3. The Sun & Moon: Core Luminaries Analysis.
+    4. Major Aspects (Squares, Trines, Conjunctions visible in the chart).
+    5. Planet Positions in Signs & Houses.
+    6. Synthesis: The Master Souls Blueprint.
+    Provide nuanced, professional analysis based STRICTLY on the visual data in the provided chart image.
   `,
   // FREE SERVICES PROMPTS
   [ServiceType.FORTUNE_MAP]: (name: string, date: string, lang: string) => `

@@ -169,6 +169,8 @@ export interface Translations {
   formGoal: string;
   formGoalPlaceholder: string;
   formGoalHelp: string;
+  formChartImage: string;
+  formChartImageHelp: string;
   formCity: string;
   formCityPlaceholder: string;
   formDuration: string;
@@ -374,6 +376,8 @@ export interface Translations {
   s_goal10_desc: string;
   s_goal30_title: string;
   s_goal30_desc: string;
+  s_prof_natal_title: string;
+  s_prof_natal_desc: string;
   s_back_to_start: string;
   s_decree: string;
   s_arch_path: string;
@@ -599,6 +603,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     formGoal: "Your Goal",
     formGoalPlaceholder: "Describe your goal clearly (e.g., 'Start a business', 'Lose 5kg', 'Learn a new language')",
     formGoalHelp: "Be specific and clear for the best energetic alignment.",
+    formChartImage: "Upload Your Natal Chart Image",
+    formChartImageHelp: "JPEG or PNG. AI will decode the chart visually. No birth data required.",
     formCity: "Your City",
     formCityPlaceholder: "e.g. London, New York, Tokyo",
     formDuration: "Forecast Period",
@@ -804,6 +810,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     s_goal10_desc: "A quick energetic roadmap for your immediate goal. Includes psychological focus and cosmic timing.",
     s_goal30_title: "30-Day Achievement Plan",
     s_goal30_desc: "A deep monthly strategy for your goal. Synthesis of astrology, numerology, and achievement psychology.",
+    s_prof_natal_title: "Professional Natal Chart Decoding",
+    s_prof_natal_desc: "Direct analytical decoding of your natal chart from an uploaded image. Professional 15-page expert synthesis.",
     s_back_to_start: "Back to Start",
     s_decree: "Decree",
     s_arch_path: "Architectural Path",
@@ -1027,6 +1035,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     formGoal: "Seu Objetivo",
     formGoalPlaceholder: "Descreva seu objetivo claramente (ex: 'Abrir um negócio', 'Perder 5kg', 'Aprender um novo idioma')",
     formGoalHelp: "Seja específico e claro para o melhor alinhamento energético.",
+    formChartImage: "Carregue a Imagem do seu Mapa Natal",
+    formChartImageHelp: "JPEG ou PNG. A IA decodificará o mapa visualmente. Não são necessários dados de nascimento.",
     formCity: "Sua Cidade",
     formCityPlaceholder: "ex: Londres, Nova York, Tóquio",
     formDuration: "Período da Previsão",
@@ -1232,6 +1242,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     s_goal10_desc: "Um roteiro energético rápido para sua meta imediata. Inclui foco psicológico e tempo cósmico.",
     s_goal30_title: "Plano de Conquista de 30 Dias",
     s_goal30_desc: "Uma estratégia mensal profunda para sua meta. Síntese de astrologia, numerologia e psicologia da conquista.",
+    s_prof_natal_title: "Decodificação Profissional do Mapa Natal",
+    s_prof_natal_desc: "Decodificação analítica direta do seu mapa natal a partir de uma imagem enviada. Síntese especializada profissional de 15 páginas.",
     s_back_to_start: "Voltar para o Início",
     s_decree: "Decreto",
     s_arch_path: "Caminho Arquitetônico",
@@ -1455,6 +1467,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     formGoal: "Tu Objetivo",
     formGoalPlaceholder: "Describe tu objetivo claramente (ej. 'Iniciar un negocio', 'Perder 5kg', 'Aprender un nuevo idioma')",
     formGoalHelp: "Sé específico y claro para el mejor alineamiento energético.",
+    formChartImage: "Cargue la Imagen de su Carta Natal",
+    formChartImageHelp: "JPEG o PNG. La IA decodificará la carta visualmente. No se requieren datos de nacimiento.",
     formCity: "Tu Ciudad",
     formCityPlaceholder: "ej. Londres, Nueva York, Tóquio",
     formDuration: "Período del Pronóstico",
@@ -1660,6 +1674,8 @@ export const translations: Record<ReportLanguage, Translations> = {
     s_goal10_desc: "Una hoja de ruta energética rápida para tu objetivo inmediato. Incluye enfoque psicológico y tiempo cósmico.",
     s_goal30_title: "Plan de Logro de 30 Días",
     s_goal30_desc: "Una estrategia mensual profunda para tu objetivo. Síntesis de astrología, numerología y psicología del logro.",
+    s_prof_natal_title: "Decodificación Profesional de Carta Natal",
+    s_prof_natal_desc: "Decodificación analítica directa de su carta natal a partir de una imagen cargada. Síntesis experta profesional de 15 páginas.",
     s_back_to_start: "Volver al Inicio",
     s_decree: "Decreto",
     s_arch_path: "Camino Arquitectónico",

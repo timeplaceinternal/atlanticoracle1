@@ -3,6 +3,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { enUS } from 'date-fns/locale/en-US';
 import { es } from 'date-fns/locale/es';
+import { History as HistoryIcon } from 'lucide-react';
 import { Service, ReadingRequest, ReportLanguage, ServiceType } from '../types';
 import { translations } from '../translations';
 import { ZODIAC_SIGNS } from '../constants';
@@ -267,6 +268,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const [city, setCity] = useState('');
   const [zodiacSign, setZodiacSign] = useState('aries');
   const [forecastDuration, setForecastDuration] = useState<'today' | 'tomorrow' | '3days' | '10days'>('today');
+  const [chartImage, setChartImage] = useState<string | undefined>(undefined);
+  const [chartImageName, setChartImageName] = useState<string | undefined>(undefined);
 
   const hourRef = React.useRef<HTMLInputElement>(null);
   const minuteRef = React.useRef<HTMLInputElement>(null);
@@ -304,15 +307,17 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const handleSubmit = (e: React.FormEvent, isTest: boolean = false) => {
     e.preventDefault();
     const isSportsOracle = service.id === ServiceType.SPORTS_ORACLE;
+    const isProfDecoding = service.id === ServiceType.PROFESSIONAL_DECODING;
     
     onSubmit({
       name: isSportsOracle ? undefined : name,
-      birthDate: isSportsOracle ? undefined : formatDate(birthDate),
-      birthTime: isSportsOracle ? undefined : formatTimeForSubmit(birthTime),
-      birthPlace: isSportsOracle ? undefined : birthPlace,
+      birthDate: (isSportsOracle || isProfDecoding) ? undefined : formatDate(birthDate),
+      birthTime: (isSportsOracle || isProfDecoding) ? undefined : formatTimeForSubmit(birthTime),
+      birthPlace: (isSportsOracle || isProfDecoding) ? undefined : birthPlace,
       language,
       isTest,
       serviceId: service.id,
+      chartImage,
       goal: (service.id === ServiceType.GOAL_10_DAYS || service.id === ServiceType.GOAL_30_DAYS || service.id === ServiceType.GOAL_100_DAYS) ? goal : undefined,
       partnerName: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? partnerName : undefined,
       partnerBirthDate: (service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK) ? formatDate(partnerBirthDate) : undefined,
@@ -349,6 +354,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
   const isDreamService = service.id === ServiceType.DREAM_INTERPRETATION || service.id === ServiceType.FREE_DREAM_INTERPRETATION;
   const isSynastryService = service.id === ServiceType.LOVE_SYNASTRY || service.id === ServiceType.RELATIONSHIP_SPARK;
   const isGoalService = service.id === ServiceType.GOAL_10_DAYS || service.id === ServiceType.GOAL_30_DAYS || service.id === ServiceType.GOAL_100_DAYS;
+  const isProfDecoding = service.id === ServiceType.PROFESSIONAL_DECODING;
   const isSportsOracle = service.id === ServiceType.SPORTS_ORACLE;
   const isAstroWeather = service.id === ServiceType.ASTRO_WEATHER;
   const isFree = service.isFree;
@@ -424,54 +430,105 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ service, language, onBack, on
                   required
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formBirthDate}</label>
-                  <DatePicker
-                    selected={birthDate}
-                    onChange={(date: Date | null) => setBirthDate(date)}
-                    locale={language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es' : 'en'}
-                    dateFormat={language === 'English' ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
-                    placeholderText={t.formBirthDatePlaceholder}
-                    className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
-                    showYearDropdown
-                    scrollableYearDropdown
-                    yearDropdownItemNumber={100}
-                    required
-                    customInput={
-                      <MaskedDateInput 
-                        nextRef={isFree ? birthPlaceRef : hourRef} 
-                      />
-                    }
-                  />
+
+              {isProfDecoding ? (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-4">
+                  <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm uppercase tracking-widest`}>{t.formChartImage}</label>
+                  <div className={`relative group cursor-pointer ${theme === 'light' ? 'bg-slate-50 border-slate-300' : 'bg-cosmic-900/50 border-cosmic-gold/20'} border-2 border-dashed rounded-2xl p-8 transition-all hover:border-cosmic-gold/50 text-center`}>
+                    <input 
+                      type="file" 
+                      accept="image/jpeg,image/png"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setChartImageName(file.name);
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setChartImage(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      required={!chartImage}
+                    />
+                    <div className="space-y-2">
+                      <div className="flex justify-center">
+                        <div className="p-4 bg-cosmic-gold/10 rounded-full text-cosmic-gold group-hover:scale-110 transition-transform">
+                          <HistoryIcon className="w-8 h-8" />
+                        </div>
+                      </div>
+                      <p className={`text-sm ${theme === 'light' ? 'text-cosmic-900' : 'text-white'}`}>
+                        {chartImageName || t.formChartImage}
+                      </p>
+                      <p className={`text-[10px] ${theme === 'light' ? 'text-slate-400' : 'text-cosmic-silver/50'} italic`}>
+                        {t.formChartImageHelp}
+                      </p>
+                    </div>
+                  </div>
+                  {chartImage && (
+                    <div className="relative rounded-xl overflow-hidden border border-cosmic-gold/30 h-48 animate-in zoom-in-95">
+                      <img src={chartImage} alt="Preview" className="w-full h-full object-contain bg-black/20" />
+                      <button 
+                        type="button" 
+                        onClick={() => { setChartImage(undefined); setChartImageName(undefined); }}
+                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {!isFree && (
-                  <div className="md:col-span-2">
-                    <TimeInputFields 
-                      data={birthTime} 
-                      setter={setBirthTime} 
-                      label={t.formBirthTime} 
-                      hRef={hourRef} 
-                      mRef={minuteRef} 
-                      t={t}
-                      nextFieldRef={birthPlaceRef}
-                      theme={theme}
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formBirthDate}</label>
+                    <DatePicker
+                      selected={birthDate}
+                      onChange={(date: Date | null) => setBirthDate(date)}
+                      locale={language === 'Portuguese' ? 'pt-BR' : language === 'Spanish' ? 'es' : 'en'}
+                      dateFormat={language === 'English' ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
+                      placeholderText={t.formBirthDatePlaceholder}
+                      className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
+                      showYearDropdown
+                      scrollableYearDropdown
+                      yearDropdownItemNumber={100}
+                      required
+                      customInput={
+                        <MaskedDateInput 
+                          nextRef={isFree ? birthPlaceRef : hourRef} 
+                        />
+                      }
                     />
                   </div>
-                )}
-                <div className={isFree ? "md:col-span-1" : "md:col-span-2"}>
-                  <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formBirthPlace}</label>
-                  <input 
-                    ref={birthPlaceRef}
-                    type="text" 
-                    value={birthPlace} 
-                    onChange={(e) => setBirthPlace(e.target.value)} 
-                    placeholder={t.formBirthPlacePlaceholder}
-                    className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
-                    required
-                  />
+                  {!isFree && (
+                    <div className="md:col-span-2">
+                      <TimeInputFields 
+                        data={birthTime} 
+                        setter={setBirthTime} 
+                        label={t.formBirthTime} 
+                        hRef={hourRef} 
+                        mRef={minuteRef} 
+                        t={t}
+                        nextFieldRef={birthPlaceRef}
+                        theme={theme}
+                      />
+                    </div>
+                  )}
+                  <div className={isFree ? "md:col-span-1" : "md:col-span-2"}>
+                    <label className={`block ${theme === 'light' ? 'text-cosmic-900/60' : 'text-cosmic-silver'} text-sm mb-2 uppercase tracking-widest`}>{t.formBirthPlace}</label>
+                    <input 
+                      ref={birthPlaceRef}
+                      type="text" 
+                      value={birthPlace} 
+                      onChange={(e) => setBirthPlace(e.target.value)} 
+                      placeholder={t.formBirthPlacePlaceholder}
+                      className={`w-full ${theme === 'light' ? 'bg-slate-50 border-slate-300 text-cosmic-900 focus:border-cosmic-gold' : 'bg-cosmic-900/50 border-cosmic-gold/20 text-white focus:border-cosmic-gold'} rounded-xl p-4 outline-none transition-colors`}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </>
           ) : null}
         </div>

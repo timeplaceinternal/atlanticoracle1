@@ -12,6 +12,7 @@ export enum ServiceType {
   DREAM_INTERPRETATION = 'dream-interpretation',
   GOLDEN_SEED = 'golden-seed',
   SHADOW_WORK = 'shadow-work',
+  PROFESSIONAL_DECODING = 'professional-decoding',
   DAILY_VIBRATION = 'daily-vibration',
   RELATIONSHIP_SPARK = 'relationship-spark',
   SPORTS_ORACLE = 'sports-oracle',
@@ -73,6 +74,7 @@ export interface ReadingRequest {
   forecastDuration?: 'today' | 'tomorrow' | '3days' | '10days';
   zodiacSign?: string;
   goal?: string;
+  chartImage?: string;
   timestamp: number;
 }
 

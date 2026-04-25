@@ -56,6 +56,8 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
       forecastDuration || "today",
       language
     );
+  } else if (serviceId === ServiceType.PROFESSIONAL_DECODING) {
+    prompt = COSMIC_PROMPTS[ServiceType.PROFESSIONAL_DECODING](name || "Seeker", language);
   } else {
     // Standard services (Natal Chart, Yearly Solar, etc.)
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);
@@ -67,13 +69,30 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
                 serviceId === ServiceType.KARMIC_DESTINY || 
                 serviceId === ServiceType.CAREER_WEALTH || 
                 serviceId === ServiceType.SATURN_RETURN || 
-                serviceId === ServiceType.SHADOW_WORK);
+                serviceId === ServiceType.SHADOW_WORK ||
+                serviceId === ServiceType.PROFESSIONAL_DECODING);
 
   const modelName = isPro ? "gemini-3.1-pro-preview" : "gemini-3-flash-preview";
 
+  // Prepare contents for Gemini
+  const parts: any[] = [{ text: prompt }];
+
+  // Add image if available and service requires it
+  if (request.chartImage && serviceId === ServiceType.PROFESSIONAL_DECODING) {
+    const base64Data = request.chartImage.split(',')[1] || request.chartImage;
+    const mimeType = request.chartImage.split(';')[0].split(':')[1] || 'image/jpeg';
+    
+    parts.push({
+      inlineData: {
+        mimeType: mimeType,
+        data: base64Data
+      }
+    });
+  }
+
   const response = await ai.models.generateContent({
     model: modelName,
-    contents: prompt,
+    contents: [{ role: 'user', parts }],
     config: {
       tools: (serviceId === ServiceType.SPORTS_ORACLE || serviceId === ServiceType.ASTRO_WEATHER) ? [{ googleSearch: {} }] : undefined,
       thinkingConfig: isPro ? { thinkingLevel: ThinkingLevel.LOW } : undefined,
