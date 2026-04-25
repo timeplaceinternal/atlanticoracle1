@@ -137,7 +137,10 @@ export const generateHoroscope = async (sign: string, language: ReportLanguage, 
     body: JSON.stringify({ prompt })
   });
 
-  if (!res.ok) throw new Error("The Oracle is currently disconnected.");
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({ error: "The Oracle is currently disconnected." }));
+    throw new Error(errorData.error || "The Oracle is currently disconnected.");
+  }
 
   const data = await res.json();
   return data.text || "The stars are silent today.";
