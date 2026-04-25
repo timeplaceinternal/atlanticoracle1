@@ -42,9 +42,6 @@ export interface Service {
   stripeUrls?: {
     [key in ReportLanguage]?: string;
   };
-  stripeUrlsDiscounted?: {
-    [key in ReportLanguage]?: string;
-  };
 }
 
 export interface ReadingRequest {

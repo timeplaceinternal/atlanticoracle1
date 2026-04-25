@@ -40,10 +40,6 @@ export const LIGHT_DROPS: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 5 EUR link
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -55,10 +51,6 @@ export const LIGHT_DROPS: Service[] = [
     price: 10,
     isFree: false,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
@@ -74,10 +66,6 @@ export const LIGHT_DROPS: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -89,10 +77,6 @@ export const LIGHT_DROPS: Service[] = [
     price: 10,
     isFree: false,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
@@ -108,10 +92,6 @@ export const LIGHT_DROPS: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -125,10 +105,6 @@ export const LIGHT_DROPS: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -140,11 +116,6 @@ export const LIGHT_DROPS: Service[] = [
     price: 10,
     isFree: false,
     stripeUrls: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
-    },
-    stripeUrlsDiscounted: {
       English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
       Spanish: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
@@ -186,10 +157,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04", // Replace with 15 EUR link
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04" // Replace with 15 EUR link
     }
   },
   {
@@ -203,10 +170,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -220,10 +183,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -237,10 +196,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -254,10 +209,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -271,10 +222,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -288,10 +235,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -305,10 +248,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -322,10 +261,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -339,10 +274,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -356,10 +287,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {
@@ -373,10 +300,6 @@ export const SERVICES: Service[] = [
     stripeUrls: {
       English: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05",
       Portuguese: "https://buy.stripe.com/3cI4gA3fTc1e7zycEeeEo05"
-    },
-    stripeUrlsDiscounted: {
-      English: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04",
-      Portuguese: "https://buy.stripe.com/eVqbJ28Ad5CQ3ji1ZAeEo04"
     }
   },
   {

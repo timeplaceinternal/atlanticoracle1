@@ -278,12 +278,6 @@ export interface Translations {
   chatTitle: string;
   chatPlaceholder: string;
   chatWelcome: string;
-  chatPromoMessage: string;
-  promoTitle: string;
-  promoDesc: string;
-  promoButton: string;
-  promoCodeLabel: string;
-  promoSuccess: string;
   h_career: string;
   h_love: string;
   h_health: string;
@@ -712,12 +706,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatTitle: "Cosmic Guide",
     chatPlaceholder: "Ask the stars...",
     chatWelcome: "Welcome, seeker. How can I guide your journey today?",
-    chatPromoMessage: "Looking for a sign? Use the code SPACE for 25% off any service.",
-    promoTitle: "Unlock 25% Discount",
-    promoDesc: "Share the wisdom of the stars with your circle to reveal the sacred promo code.",
-    promoButton: "I agree to share",
-    promoCodeLabel: "Your Sacred Code:",
-    promoSuccess: "Code revealed! Use it at checkout.",
     h_career: "Career & Ambition 🤓",
     h_love: "Love & Connection ❤️",
     h_health: "Health & Energy 👌",
@@ -1144,12 +1132,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatTitle: "Guia Cósmico",
     chatPlaceholder: "Pergunte às estrelas...",
     chatWelcome: "Bem-vindo, buscador. Como posso guiar sua jornada hoje?",
-    chatPromoMessage: "Procurando um sinal? Use o código SPACE para 25% de desconto em qualquer serviço.",
-    promoTitle: "Desbloquear 25% de Desconto",
-    promoDesc: "Compartilhe a sabedoria das estrelas com seu círculo para revelar o código promocional sagrado.",
-    promoButton: "Eu concordo em compartilhar",
-    promoCodeLabel: "Seu Código Sagrado:",
-    promoSuccess: "Código revelado! Use-o no checkout.",
     h_career: "Carreira & Ambição 🤓",
     h_love: "Amor & Conexão ❤️",
     h_health: "Saúde & Energia 👌",
@@ -1576,12 +1558,6 @@ export const translations: Record<ReportLanguage, Translations> = {
     chatTitle: "Guía Cósmico",
     chatPlaceholder: "Pregunta a las estrellas...",
     chatWelcome: "Bienvenido, buscador. ¿Cómo puedo guiar tu camino hoy?",
-    chatPromoMessage: "¿Buscas una señal? Usa el código SPACE para un 25% de descuento en cualquier servicio.",
-    promoTitle: "Desbloquear 25% de Descuento",
-    promoDesc: "Comparte la sabiduría de las estrellas con tu círculo para revelar el código promocional sagrado.",
-    promoButton: "Acepto compartir",
-    promoCodeLabel: "Tu Código Sagrado:",
-    promoSuccess: "¡Código revelado! Úsalo al finalizar la compra.",
     h_career: "Carrera & Ambición 🤓",
     h_love: "Amor & Conexión ❤️",
     h_health: "Salud & Energía 👌",

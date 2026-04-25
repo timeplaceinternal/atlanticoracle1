@@ -20,7 +20,7 @@ import HoroscopeService from './components/HoroscopeService';
 import { SERVICES, LIGHT_DROPS, getServiceIcon } from './constants';
 import { Service, ServiceType, ReadingRequest, ReadingResult as ReadingResultType, ReportLanguage } from './types';
 import { generateCosmicReading } from './services/geminiService';
-import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2, Ticket, Share2 } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, ShieldCheck, ExternalLink, Menu, X, Sparkles, BookOpen, Compass, Mail, Quote, Facebook, Send, MessageCircle, Globe, Loader2 } from 'lucide-react';
 import { translations } from './translations';
 import AIAssistant from './components/AIAssistant';
 import ServiceDetailPage from './components/ServiceDetailPage';
@@ -206,9 +206,6 @@ const App: React.FC = () => {
   });
 
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
-  const [promoCode, setPromoCode] = useState('');
-  const [isPromoApplied, setIsPromoApplied] = useState(false);
-  const [isPromoUnlocked, setIsPromoUnlocked] = useState(false);
 
   useEffect(() => {
     (window as any).openPrivacySettings = () => setIsPrivacySettingsOpen(true);
@@ -581,10 +578,6 @@ const App: React.FC = () => {
       stripeUrl.searchParams.set('locale', 'es');
     }
     
-    if (isPromoApplied) {
-      stripeUrl.searchParams.set('prefilled_promo_code', 'SPACE');
-    }
-    
     window.location.href = stripeUrl.toString();
   };
 
@@ -641,26 +634,6 @@ const App: React.FC = () => {
     }
     setIsMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleShare = async () => {
-    const shareData = {
-      title: 'Atlantic Oracle™',
-      text: t.shareText,
-      url: 'https://atlanticoracle.com'
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        window.open('https://www.facebook.com/sharer/sharer.php?u=https://atlanticoracle.com', '_blank');
-      }
-      setIsPromoUnlocked(true);
-    } catch (err) {
-      console.error('Error sharing:', err);
-      setIsPromoUnlocked(true);
-    }
   };
 
   const isWidgetMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('widget') === 'true';
@@ -967,43 +940,7 @@ const App: React.FC = () => {
               language={language} 
             />
 
-              {/* PROMO SECTION */}
-              <section className="px-6 max-w-4xl mx-auto py-20">
-                <div className="bg-cosmic-800/20 backdrop-blur-2xl border border-cosmic-gold/20 p-12 rounded-[3rem] text-center space-y-8 relative overflow-hidden group">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cosmic-gold to-transparent opacity-50"></div>
-                  
-                  <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-1 bg-cosmic-gold/10 border border-cosmic-gold/20 rounded-full text-[10px] font-bold text-cosmic-gold uppercase tracking-[0.3em]">
-                      <Ticket className="w-3 h-3" />
-                      Special Offer
-                    </div>
-                    <h3 className="text-3xl md:text-4xl font-cinzel text-white uppercase tracking-widest">{t.promoTitle}</h3>
-                    <p className="text-cosmic-silver font-light max-w-2xl mx-auto italic font-playfair">
-                      {t.promoDesc}
-                    </p>
-                  </div>
-
-                  {!isPromoUnlocked ? (
-                    <button 
-                      onClick={handleShare}
-                      className="inline-flex items-center gap-3 px-10 py-5 bg-cosmic-gold text-cosmic-900 font-bold rounded-full hover:scale-105 transition-transform active:scale-95 shadow-xl shadow-cosmic-gold/20"
-                    >
-                      <Share2 className="w-5 h-5" />
-                      {t.promoButton}
-                    </button>
-                  ) : (
-                    <div className="animate-in fade-in zoom-in duration-500 space-y-4">
-                      <div className="text-cosmic-gold font-cinzel text-sm uppercase tracking-widest">{t.promoSuccess}</div>
-                      <div className="inline-block px-8 py-4 bg-cosmic-gold/5 border-2 border-dashed border-cosmic-gold/30 rounded-2xl">
-                        <span className="text-cosmic-silver text-xs uppercase tracking-widest block mb-1">{t.promoCodeLabel}</span>
-                        <span className="text-4xl font-cinzel text-cosmic-gold tracking-[0.5em] font-bold">SPACE</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-              
-              <PhilosophySection language={language} />
+            <PhilosophySection language={language} />
               <HowItWorksSection language={language} />
 
               {/* TESTIMONIALS SECTION */}
@@ -1085,28 +1022,6 @@ const App: React.FC = () => {
                 </p>
                 
                 <div className="space-y-6">
-                  <div className="bg-cosmic-900/50 border border-cosmic-gold/20 rounded-2xl p-4 flex items-center gap-3">
-                    <Ticket className="w-5 h-5 text-cosmic-gold" />
-                    <input 
-                      type="text" 
-                      value={promoCode}
-                      onChange={(e) => {
-                        const val = e.target.value.toUpperCase();
-                        setPromoCode(val);
-                        if (val === 'SPACE') {
-                          setIsPromoApplied(true);
-                        } else {
-                          setIsPromoApplied(false);
-                        }
-                      }}
-                      placeholder="PROMO CODE"
-                      className="bg-transparent border-none outline-none text-white text-sm tracking-widest w-full uppercase"
-                    />
-                    {isPromoApplied && (
-                      <span className="text-cosmic-gold text-[10px] font-bold animate-in fade-in zoom-in">25% OFF</span>
-                    )}
-                  </div>
-
                   <button 
                     onClick={handleProceedToStripe} 
                     className="w-full py-5 bg-white text-cosmic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
