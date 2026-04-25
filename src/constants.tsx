@@ -319,9 +319,9 @@ export const SERVICES: Service[] = [
   {
     id: ServiceType.PROFESSIONAL_DECODING,
     slug: "professional-decoding",
-    title: "Professional Natal Chart Decoding",
-    description: "Unlock the secrets of your soul's blueprint. Upload your natal chart image for a professional, AI-powered analysis of your cosmic design.",
-    seoContent: "Receive a professional, AI-powered analysis of your natal chart. Upload your birth chart image (JPEG or PNG) and let our advanced AI decode the intricate details of your cosmic blueprint. Understand your unique strengths, challenges, and life path with unparalleled depth and accuracy.",
+    title: "Natal Chart Decoding",
+    description: "Unlock the secrets of your soul's blueprint. Upload your natal chart image for an AI-powered analysis of your cosmic design.",
+    seoContent: "Receive an AI-powered analysis of your natal chart. Upload your birth chart image (JPEG or PNG) and let our advanced AI decode the intricate details of your cosmic blueprint. Understand your unique strengths, challenges, and life path with unparalleled depth and accuracy.",
     icon: "sparkles",
     price: 30,
     stripeUrls: {
@@ -421,7 +421,7 @@ const BASE_RULES = (lang: string) => {
 
 const PROMPT_CORE = (lang: string) => `
   ${BASE_RULES(lang)}
-  DEPTH: Professional, analytical.
+  DEPTH: Deep, analytical.
   LENGTH: As specified in the service task below.
   STRUCTURE: Use a structured approach with clear chapters or sections where appropriate.
   ENVIRONMENTAL INFLUENCE: Include a few interesting sentences about the subject's birth place (city/country/region). Explain how the specific environment and culture of their origin have helped shape their unique personality and energetic signature.
@@ -529,18 +529,26 @@ export const COSMIC_PROMPTS = {
     5. Emerging Victorious: How to build a solid foundation for the next 30 years.
     6. Practical Recommendations for the Transition.
   `,
-  [ServiceType.PROFESSIONAL_DECODING]: (name: string, lang: string) => `
+  [ServiceType.PROFESSIONAL_DECODING]: (name: string, date: string, time: string, place: string, lang: string) => `
     ${PROMPT_CORE(lang)}
-    Service: Professional Natal Chart Decoding (Visual Analysis). Subject: ${name}.
-    TASK: You are provided with an image of a natal chart. Perform a highly professional, expert-level visual analysis.
-    This is a premium 15-page report. Structure it into detailed chapters:
-    1. Visual Overview of the Chart (The shape, distribution of planets).
-    2. The Ascendant & House Placements (As visible in the chart).
-    3. The Sun & Moon: Core Luminaries Analysis.
-    4. Major Aspects (Squares, Trines, Conjunctions visible in the chart).
-    5. Planet Positions in Signs & Houses.
-    6. Synthesis: The Master Souls Blueprint.
-    Provide nuanced, professional analysis based STRICTLY on the visual data in the provided chart image.
+    Service: Natal Chart Decoding (Visual Analysis & Numerology). 
+    Subject: ${name}, born ${date} at ${time} in ${place}.
+    
+    TASK: You are provided with an image of a natal chart. Perform a high-quality, expert-level analysis combining the visual data from the chart and a deep numerological perspective based on the birth data.
+    
+    VOLUME: This is a premium 20-page comprehensive study. Reach maximum depth without "water". 
+    Each section must be fully developed with analytical precision.
+    
+    STRUCTURE:
+    1. Visual Topology: The shape and distribution of planetary energy in the chart.
+    2. Ascendant & Elemental Balance: The structural mask and behavioral patterns.
+    3. The Core Luminaries: A deep dive into Sun and Moon placements as the engine of destiny.
+    4. Matrix of Numbers: Analytical numerological perspective. Calculate the Life Path Number from the ${date} and explain its resonance with the Saturn/Pluto placements seen in the chart. Synthesize name vibrations with cosmic transits.
+    5. Major Aspects & Geometric Tension: Analysis of squares, trines, and conjunctions as energetic circuits.
+    6. Planet-Sign-House Integration: Exhaustive decoding of each placement.
+    7. Ethical Synthesis: The Master Soul's Blueprint — an architectural synthesis of stars and numbers.
+    
+    Provide nuanced, deep analysis. Synthesis is key: how do the numbers confirm what we see in the stars?
   `,
   // FREE SERVICES PROMPTS
   [ServiceType.FORTUNE_MAP]: (name: string, date: string, lang: string) => `
@@ -558,7 +566,7 @@ export const COSMIC_PROMPTS = {
     Generate a professional, comprehensive 4-page financial energy analysis.
     1. Capital Analysis: Define leading income energy (structure, charisma, or intuition).
     2. Loss Zone: Where are they leaking resources internally?
-    3. Investment in SELF: Professional advice on why knowing their mechanics provides the highest ROI.
+    3. Investment in SELF: Expert advice on why knowing their mechanics provides the highest ROI.
     4. Weekly Plan: List 3 specific financial actions sequentially (Action 1, Action 2, Action 3). DO NOT USE TABLES.
     5. Deep Financial Strategy: Expand on each point with professional depth to ensure a 4-page comprehensive report.
   `,
@@ -567,7 +575,7 @@ export const COSMIC_PROMPTS = {
     SERVICE: THE ENERGY PULSE. Subject: ${name}, born ${date}.
     Generate a professional, detailed 4-page energetic rhythm guide.
     1. Force Dynamics: List weekly energy peak and silence days sequentially. DO NOT USE TABLES.
-    2. Bio-rhythms: Professional sleep/activity advice based on birth date.
+    2. Bio-rhythms: Expert sleep/activity advice based on birth date.
     3. Reset Technique: One 1-minute mental reset practice (breathing/visualization).
     4. Focus Mode: Strategic direction for energy (Health, Relations, Career).
     5. Extended Energetic Analysis: Provide deep insights into the subject's biological rhythms to ensure the report reaches at least 4 pages.
@@ -580,7 +588,7 @@ export const COSMIC_PROMPTS = {
     KEYWORDS: ${keywords}
     
     TASK: Provide a professional, deep psychological interpretation (~4 pages). 
-    STYLE: Professional, analytical yet empathetic, soft advice from a "wise sage". 
+    STYLE: Deep, analytical yet empathetic, soft advice from a "wise sage". 
     Focus on clarity and a strategic path forward. Expand on the symbols and archetypes to provide a comprehensive 4-page decree.
   `,
   [ServiceType.DREAM_INTERPRETATION]: (name: string, bDate: string, bTime: string, bPlace: string, description: string, keywords: string, dDate: string, dTime: string, lang: string) => `
@@ -594,7 +602,7 @@ export const COSMIC_PROMPTS = {
     1. Symbolic & Archetypal Analysis: Deep psychological dive.
     2. The "Why": Detailed logic behind symbols based on collective unconscious.
     3. Cosmic Alignment: How this dream interacts with the subject's natal chart and current transits.
-    4. The Sage's Path: Professional advice and a gentle, wise path forward.
+    4. The Sage's Path: Expert advice and a gentle, wise path forward.
     
     STYLE: Simple, understandable language of a "wise sage". Trusting and positive.
   `,
@@ -799,7 +807,7 @@ export const COSMIC_PROMPTS = {
         - Relationship Spark: 1-minute chemistry snapshot (Karmic Teacher, Mirror, etc.).
         - Energy Pulse: Current energetic state.
         - Fortune Map: Quick luck/opportunity check.
-    - DECREES (30 EUR): Professional, comprehensive 15-page deep-dive reports.
+    - DECREES (30 EUR): Comprehensive 15-page deep-dive reports.
     - FREE SERVICES:
         - Daily Horoscope: Available in the "Cosmic News" section. General forecasts for all signs.
         - Promo Discount: Users can unlock a 25% discount (code SPACE) by sharing the site via the "Unlock Discount" section on the home page.

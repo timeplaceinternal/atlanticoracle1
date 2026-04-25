@@ -47,7 +47,7 @@ export const generateCosmicReading = async (request: ReadingRequest): Promise<st
       language
     );
   } else if (serviceId === ServiceType.PROFESSIONAL_DECODING) {
-    prompt = COSMIC_PROMPTS[ServiceType.PROFESSIONAL_DECODING](name || "Seeker", language);
+    prompt = COSMIC_PROMPTS[ServiceType.PROFESSIONAL_DECODING](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);
   } else {
     // Standard services (Natal Chart, Yearly Solar, etc.)
     prompt = (COSMIC_PROMPTS as any)[serviceId](name || "Seeker", birthDate || "unknown", birthTime || "unknown", birthPlace || "unknown", language);

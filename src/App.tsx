@@ -1210,6 +1210,12 @@ const App: React.FC = () => {
             <p className="text-cosmic-silver text-[10px] max-w-xl mx-auto leading-loose opacity-60 uppercase tracking-[0.4em] pt-8 block">
               {t.footerCopyright}
             </p>
+
+            <div className="pt-8 border-t border-cosmic-gold/5 mt-8">
+              <p className="text-[8px] text-cosmic-silver/30 max-w-2xl mx-auto leading-relaxed uppercase tracking-widest italic">
+                {t.finalLegalDisclaimer}
+              </p>
+            </div>
           </div>
         </footer>
       </div>
